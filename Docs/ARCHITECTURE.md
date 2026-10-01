@@ -4,6 +4,9 @@ Juego de fútbol 3D arcade para móviles (Unity 6, URP, C#). Principio: **simple
 Este documento resume lo implementado. Detalle de la Fase 1 en [PHASE1.md](PHASE1.md); sistemas puros
 (balón, cámara, input, partido) en [CORE_SYSTEMS.md](CORE_SYSTEMS.md) y datos (jugadores, equipos,
 formaciones) en [DATA_CORE.md](DATA_CORE.md).
+Dirección visual y arte de jugadores (solo diseño): [VISUAL_STYLE.md](VISUAL_STYLE.md),
+[PLAYER_ASSET_SPEC.md](PLAYER_ASSET_SPEC.md), [PLAYER_ANIMATION_SPEC.md](PLAYER_ANIMATION_SPEC.md),
+[PLAYER_PRESENTATION_ARCHITECTURE.md](PLAYER_PRESENTATION_ARCHITECTURE.md) y [FIRST_PLAYER_SHEET.md](FIRST_PLAYER_SHEET.md).
 
 ## Capas (assembly definitions)
 
