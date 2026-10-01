@@ -272,7 +272,7 @@ namespace FS27.Core.Tests
             AssertClean(string.Join("\n", names), "Core type and member names");
         }
 
-        private static string FindCoreSourceDirectory()
+        internal static string FindCoreSourceDirectory()
         {
             foreach (string start in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
             {

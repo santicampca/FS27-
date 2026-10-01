@@ -38,6 +38,7 @@ namespace FS27.Core
         ProfileGoalkeeperMismatch,
 
         // Player System V2 (appended, so earlier codes keep their values)
+        /// <summary>Retired: roles and affinities are now one list, so they can no longer disagree. Kept so later codes keep their numbers.</summary>
         ProfileAffinityCountMismatch,
         ProfileAffinityOutOfRange,
         ProfileBehaviourOutOfRange,

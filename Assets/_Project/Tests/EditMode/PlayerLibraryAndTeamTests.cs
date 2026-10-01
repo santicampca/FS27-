@@ -20,17 +20,18 @@ namespace FS27.Core.Tests
                 library.TryAdd(TestData.Player(prefix + "-gk", 1, PlayerRole.Goalkeeper));
                 library.TryAdd(TestData.Player(prefix + "-d1", 2, PlayerRole.Defender));
                 library.TryAdd(TestData.Player(prefix + "-d2", 3, PlayerRole.Defender));
+                library.TryAdd(TestData.Player(prefix + "-m1", 8, PlayerRole.Midfielder));
                 library.TryAdd(TestData.Player(prefix + "-f1", 9, PlayerRole.Forward));
                 library.TryAdd(TestData.Player(prefix + "-f2", 10, PlayerRole.Forward));
             }
             foreach (var p in library.All) library.TryAssignToTeam(p.Id, p.Id.StartsWith("blue") ? "blue" : "red");
         }
 
-        private static string[] Ids(string prefix) { return new[] { prefix + "-gk", prefix + "-d1", prefix + "-d2", prefix + "-f1", prefix + "-f2" }; }
+        private static string[] Ids(string prefix) { return new[] { prefix + "-gk", prefix + "-d1", prefix + "-d2", prefix + "-m1", prefix + "-f1", prefix + "-f2" }; }
 
         private TeamDefinition Team(string id)
         {
-            Assert.IsTrue(TeamRoster.TryBuild(id, "Team " + id, new TeamColors(), DefaultFormations.TwoTwo, Ids(id), library, out var team, out var problem), problem);
+            Assert.IsTrue(TeamRoster.TryBuild(id, "Team " + id, new TeamColors(), DefaultFormations.TwoOneTwo, Ids(id), library, out var team, out var problem), problem);
             return team;
         }
 
@@ -39,11 +40,11 @@ namespace FS27.Core.Tests
         [Test]
         public void PlayerIds_AreUnique_TheLibraryRefusesRepeats()
         {
-            Assert.AreEqual(10, library.Count);
+            Assert.AreEqual(12, library.Count);
             Assert.IsFalse(library.TryAdd(TestData.Player("blue-gk", 5, PlayerRole.Goalkeeper)), "same id again");
-            Assert.AreEqual(10, library.Count);
+            Assert.AreEqual(12, library.Count);
             Assert.IsTrue(library.TryAdd(TestData.Player("brand-new", 5, PlayerRole.Midfielder)));
-            Assert.AreEqual(11, library.Count);
+            Assert.AreEqual(13, library.Count);
         }
 
         [Test]
@@ -53,7 +54,7 @@ namespace FS27.Core.Tests
             Assert.IsFalse(library.TryAdd(new PlayerDefinition { Id = "has space", Name = "x" }));
             Assert.IsFalse(library.TryAdd(new PlayerDefinition { Id = null, Name = "x" }));
             Assert.IsFalse(library.TryAdd(new PlayerDefinition { Id = "", Name = "x" }));
-            Assert.AreEqual(10, library.Count);
+            Assert.AreEqual(12, library.Count);
         }
 
         [Test]
@@ -70,39 +71,50 @@ namespace FS27.Core.Tests
         // ================= Teams reference players =================
 
         [Test]
-        public void ATeam_ReferencesTheLibrarysOwnPlayers_NotCopies()
+        public void ATeam_HoldsSixIds_AndResolvesToTheLibrarysOwnPlayers_NotCopies()
         {
             var team = Team("blue");
-            Assert.AreEqual(5, team.Players.Count);
-            Assert.IsTrue(TeamRoster.UsesLibraryPlayers(team, library));
-            for (int i = 0; i < 5; i++)
+            Assert.AreEqual(6, team.PlayerIds.Count);
+            CollectionAssert.AreEqual(Ids("blue"), team.PlayerIds);
+            Assert.IsTrue(TeamRoster.TryResolve(team, library, out var resolved));
+            Assert.AreEqual(6, resolved.Count);
+            for (int i = 0; i < 6; i++)
             {
                 library.TryGet(Ids("blue")[i], out var inLibrary);
-                Assert.AreSame(inLibrary, team.Players[i]);
+                Assert.AreSame(inLibrary, resolved[i]);
             }
-            CollectionAssert.AreEqual(Ids("blue"), TeamRoster.GetPlayerIds(team));
         }
 
         [Test]
-        public void EditingAPlayerInTheLibrary_ChangesItInTheTeamToo()
+        public void EditingAPlayerInTheLibrary_ChangesItForTheTeamToo()
         {
             var team = Team("blue");
             library.TryGet("blue-f1", out var f1);
             f1.Attributes = f1.Attributes.With(PlayerAttributeId.Finishing, 96);
             f1.Name = "Edited Name";
-            Assert.AreEqual(96, team.Players[3].Attributes.Finishing);
-            Assert.AreEqual("Edited Name", team.Players[3].Name);
+            TeamRoster.TryResolve(team, library, out var resolved);
+            Assert.AreEqual(96, resolved[4].Attributes.Finishing);
+            Assert.AreEqual("Edited Name", resolved[4].Name);
         }
 
         [Test]
-        public void TwoTeams_ShareNoPlayerInstances_AndTogetherUseEveryLibraryPlayerOnce()
+        public void TwoTeams_ShareNoPlayers_AndTogetherUseEveryLibraryPlayerOnce()
         {
             var blue = Team("blue"); var red = Team("red");
-            var all = blue.Players.Concat(red.Players).ToList();
-            Assert.AreEqual(10, all.Count);
-            Assert.AreEqual(10, all.Distinct().Count(), "no player appears twice");
+            var all = blue.PlayerIds.Concat(red.PlayerIds).ToList();
+            Assert.AreEqual(12, all.Count);
+            Assert.AreEqual(12, all.Distinct().Count(), "no player appears twice");
             Assert.AreEqual(library.Count, all.Count);
-            Assert.IsTrue(DataValidator.ValidateMatchTeams(blue, red, formations).IsValid, DataValidator.ValidateMatchTeams(blue, red, formations).ToString());
+            var r = DataValidator.ValidateMatchTeams(blue, red, library, formations);
+            Assert.IsTrue(r.IsValid, r.ToString());
+        }
+
+        [Test]
+        public void ATeamCanBeBuiltWithAnyNumberOfPlayers_TheSixPlayerRuleIsTheValidatorsJob()
+        {
+            Assert.IsTrue(TeamRoster.TryBuild("five", "Five", new TeamColors(), DefaultFormations.TwoOneTwo, Ids("blue").Take(5).ToList(), library, out var five, out _));
+            Assert.IsTrue(DataValidator.ValidateTeam(five, library, formations).Has(ValidationCode.TeamPlayerCountInvalid));
+            Assert.IsTrue(DataValidator.ValidateTeam(Team("blue"), library, formations).IsValid);
         }
 
         [Test]
@@ -118,35 +130,35 @@ namespace FS27.Core.Tests
         {
             var ids = Ids("blue").ToList();
             ids[2] = "ghost";
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), "2-2", ids, library, out var team, out var problem));
+            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, ids, library, out var team, out var problem));
             Assert.IsNull(team);
             StringAssert.Contains("ghost", problem);
 
             ids = Ids("blue").ToList();
             ids[1] = ids[0];
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), "2-2", ids, library, out team, out problem));
+            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, ids, library, out team, out problem));
             StringAssert.Contains("twice", problem);
 
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), "2-2", null, library, out _, out _));
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), "2-2", Ids("blue"), null, out _, out _));
+            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, null, library, out _, out _));
+            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, Ids("blue"), null, out _, out _));
         }
 
         [Test]
-        public void UsesLibraryPlayers_DetectsACopy()
+        public void ResolvingATeam_FailsCleanly_WhenAnIdIsMissingFromTheLibrary()
         {
             var team = Team("blue");
-            Assert.IsTrue(TeamRoster.UsesLibraryPlayers(team, library));
-            team.Players[1] = new PlayerDefinition(team.Players[1].Id, "Clone", 2, PlayerRole.Defender, team.Players[1].Attributes);
-            Assert.IsFalse(TeamRoster.UsesLibraryPlayers(team, library), "an equal-looking copy is not the library's player");
-            Assert.IsFalse(TeamRoster.UsesLibraryPlayers(null, library));
-            Assert.IsFalse(TeamRoster.UsesLibraryPlayers(Team("red"), null));
+            team.PlayerIds[1] = "ghost";
+            Assert.IsFalse(TeamRoster.TryResolve(team, library, out var resolved));
+            Assert.AreEqual(0, resolved.Count);
+            Assert.IsFalse(TeamRoster.TryResolve(null, library, out _));
+            Assert.IsFalse(TeamRoster.TryResolve(Team("red"), null, out _));
         }
 
         [Test]
-        public void TeamDefinition_StillHoldsPlayersAndFormationById_AndNothingElseWasAdded()
+        public void TeamDefinition_HoldsIdsAndFormationById_NoPlayerInstances()
         {
             var fields = typeof(TeamDefinition).GetFields(BindingFlags.Public | BindingFlags.Instance).Select(f => f.Name).ToArray();
-            CollectionAssert.AreEquivalent(new[] { "Id", "Name", "Colors", "Players", "FormationId" }, fields);
+            CollectionAssert.AreEquivalent(new[] { "Id", "Name", "Colors", "PlayerIds", "FormationId" }, fields);
         }
 
         // ================= Moving a player changes data, not copies =================
@@ -159,9 +171,9 @@ namespace FS27.Core.Tests
             Assert.AreEqual("red", moved.TeamId);
             CollectionAssert.DoesNotContain(library.GetByTeam("blue").Select(p => p.Id).ToArray(), "blue-f2");
             CollectionAssert.Contains(library.GetByTeam("red").Select(p => p.Id).ToArray(), "blue-f2");
-            Assert.AreEqual(4, library.GetByTeam("blue").Count);
-            Assert.AreEqual(6, library.GetByTeam("red").Count);
-            Assert.AreEqual(10, library.Count, "nobody was duplicated or lost");
+            Assert.AreEqual(5, library.GetByTeam("blue").Count);
+            Assert.AreEqual(7, library.GetByTeam("red").Count);
+            Assert.AreEqual(12, library.Count, "nobody was duplicated or lost");
         }
 
         [Test]
@@ -169,13 +181,13 @@ namespace FS27.Core.Tests
         {
             library.TryAssignToTeam("red-f2", "blue");
             library.TryAssignToTeam("blue-f2", "red");   // swap two players
-            var blueIds = new[] { "blue-gk", "blue-d1", "blue-d2", "blue-f1", "red-f2" };
-            var redIds = new[] { "red-gk", "red-d1", "red-d2", "red-f1", "blue-f2" };
-            Assert.IsTrue(TeamRoster.TryBuild("blue", "Blue", new TeamColors(), "2-2", blueIds, library, out var blue, out _));
-            Assert.IsTrue(TeamRoster.TryBuild("red", "Red", new TeamColors(), "2-2", redIds, library, out var red, out _));
+            var blueIds = new[] { "blue-gk", "blue-d1", "blue-d2", "blue-m1", "blue-f1", "red-f2" };
+            var redIds = new[] { "red-gk", "red-d1", "red-d2", "red-m1", "red-f1", "blue-f2" };
+            Assert.IsTrue(TeamRoster.TryBuild("blue", "Blue", new TeamColors(), DefaultFormations.TwoOneTwo, blueIds, library, out var blue, out _));
+            Assert.IsTrue(TeamRoster.TryBuild("red", "Red", new TeamColors(), DefaultFormations.TwoOneTwo, redIds, library, out var red, out _));
             // Shirt numbers collide only if two players in the SAME team share one; here f2 numbers are 10 and 10 but on different teams.
-            Assert.IsTrue(DataValidator.ValidateMatchTeams(blue, red, formations).IsValid, DataValidator.ValidateMatchTeams(blue, red, formations).ToString());
-            Assert.IsTrue(TeamRoster.UsesLibraryPlayers(blue, library));
+            var result = DataValidator.ValidateMatchTeams(blue, red, library, formations);
+            Assert.IsTrue(result.IsValid, result.ToString());
         }
 
         [Test]
@@ -183,7 +195,7 @@ namespace FS27.Core.Tests
         {
             library.TryAssignToTeam("blue-f2", "red");
             var blueStillListingIt = Team("blue");
-            var r = DataValidator.ValidateTeam(blueStillListingIt, formations);
+            var r = DataValidator.ValidateTeam(blueStillListingIt, library, formations);
             Assert.IsTrue(r.Has(ValidationCode.TeamPlayerTeamIdMismatch));
         }
 
@@ -205,7 +217,7 @@ namespace FS27.Core.Tests
         public void ATeamBuiltFromTheLibrary_IsAValidMatchTeam()
         {
             var team = Team("blue");
-            var r = DataValidator.ValidateTeam(team, formations);
+            var r = DataValidator.ValidateTeam(team, library, formations);
             Assert.IsTrue(r.IsValid, r.ToString());
         }
 

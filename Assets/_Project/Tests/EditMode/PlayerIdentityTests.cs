@@ -147,14 +147,15 @@ namespace FS27.Core.Tests
         [Test]
         public void ATeamRejectsAPlayerThatClaimsAnotherTeam_AndAcceptsOneThatMatches()
         {
-            var team = TestData.Team("blue");
-            Assert.IsTrue(DataValidator.ValidateTeam(team).IsValid, "players without a TeamId are accepted");
+            var lib = new PlayerLibrary();
+            var team = TestData.Team(lib, "blue");
+            Assert.IsTrue(DataValidator.ValidateTeam(team, lib).IsValid, "players without a TeamId are accepted");
 
-            foreach (var pl in team.Players) pl.TeamId = "blue";
-            Assert.IsTrue(DataValidator.ValidateTeam(team).IsValid, DataValidator.ValidateTeam(team).ToString());
+            foreach (var pl in lib.All) pl.TeamId = "blue";
+            Assert.IsTrue(DataValidator.ValidateTeam(team, lib).IsValid, DataValidator.ValidateTeam(team, lib).ToString());
 
-            team.Players[2].TeamId = "red";
-            var r = DataValidator.ValidateTeam(team);
+            TestData.At(lib, team, 2).TeamId = "red";
+            var r = DataValidator.ValidateTeam(team, lib);
             Assert.IsTrue(r.Has(ValidationCode.TeamPlayerTeamIdMismatch));
             Assert.AreEqual(1, r.CountOf(ValidationCode.TeamPlayerTeamIdMismatch));
         }

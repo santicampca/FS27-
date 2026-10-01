@@ -25,6 +25,18 @@ namespace FS27.Core.Tests
             };
         }
 
+        /// <summary>Replaces the role at <paramref name="index"/>, keeping its affinity.</summary>
+        public static void SetRole(PlayerPlayingProfile p, int index, PlayerArchetype role)
+        {
+            p.Roles[index] = new RoleAffinity(role, p.Roles[index].Affinity);
+        }
+
+        /// <summary>Replaces the affinity at <paramref name="index"/>, keeping its role.</summary>
+        public static void SetAffinity(PlayerPlayingProfile p, int index, int affinity)
+        {
+            p.Roles[index] = new RoleAffinity(p.Roles[index].Role, affinity);
+        }
+
         public static PlayerPlayingProfile Profile()
         {
             return new PlayerPlayingProfile(Id, PitchZone.Wing, new[] { PitchZone.Attack, PitchZone.Midfield },
@@ -48,11 +60,11 @@ namespace FS27.Core.Tests
         // ================= Role set =================
 
         [Test]
-        public void TheOfficialRoleSet_HasElevenRoles_InFourGroups()
+        public void TheOfficialRoleSet_HasTwelveRoles_InFourGroupsOfThree()
         {
-            Assert.AreEqual(11, RoleInfo.OfficialRoles.Length);
-            Assert.AreEqual(11, RoleInfo.OfficialRoles.Distinct().Count());
-            Assert.AreEqual(2, RoleInfo.OfficialRoles.Count(r => RoleInfo.GroupOf(r) == RoleGroup.Defense));
+            Assert.AreEqual(12, RoleInfo.OfficialRoles.Length);
+            Assert.AreEqual(12, RoleInfo.OfficialRoles.Distinct().Count());
+            Assert.AreEqual(3, RoleInfo.OfficialRoles.Count(r => RoleInfo.GroupOf(r) == RoleGroup.Defense));
             Assert.AreEqual(3, RoleInfo.OfficialRoles.Count(r => RoleInfo.GroupOf(r) == RoleGroup.Creation));
             Assert.AreEqual(3, RoleInfo.OfficialRoles.Count(r => RoleInfo.GroupOf(r) == RoleGroup.Mobility));
             Assert.AreEqual(3, RoleInfo.OfficialRoles.Count(r => RoleInfo.GroupOf(r) == RoleGroup.Attack));
@@ -62,18 +74,35 @@ namespace FS27.Core.Tests
         public void TheOfficialRoles_HaveTheirSpanishNames()
         {
             CollectionAssert.AreEqual(
-                new[] { "Guardián", "Muro", "Constructor", "Creador", "Arquitecto", "Motor", "Ala", "Explosivo", "Finalizador", "Cazagoles", "Objetivo" },
+                new[] { "Muro", "Guardián", "Ancla", "Constructor", "Creador", "Arquitecto", "Motor", "Ala", "Explosivo", "Finalizador", "Cazagoles", "Objetivo" },
                 RoleInfo.OfficialRoles.Select(RoleInfo.SpanishName).ToArray());
         }
 
         [Test]
-        public void ExistingRoleNamesAndNumbers_WereKept_NotRenamed()
+        public void SurvivingRoleNamesAndNumbers_WereKept_NotRenamedOrRenumbered()
         {
             var expected = new System.Collections.Generic.Dictionary<string, int>
             {
-                { "Explosive", 0 }, { "Creator", 1 }, { "Finisher", 2 }, { "Destroyer", 3 }, { "Anchor", 4 }, { "Engine", 5 }, { "ShotStopper", 6 }, { "Sweeper", 7 }
+                { "Explosive", 0 }, { "Creator", 1 }, { "Finisher", 2 }, { "Anchor", 4 }, { "Engine", 5 }
             };
             foreach (var kv in expected) Assert.AreEqual(kv.Value, (int)Enum.Parse(typeof(PlayerArchetype), kv.Key), kv.Key);
+        }
+
+        [Test]
+        public void TheEnumIsExactlyTheTwelveOfficialRoles_NoDuplicateConcepts()
+        {
+            CollectionAssert.AreEquivalent(RoleInfo.OfficialRoles, Enum.GetValues(typeof(PlayerArchetype)).Cast<PlayerArchetype>().ToArray());
+            var names = Enum.GetNames(typeof(PlayerArchetype));
+            foreach (string retired in new[] { "Destroyer", "ShotStopper", "Sweeper" })
+                CollectionAssert.DoesNotContain(names, retired);
+            Assert.AreEqual(12, names.Length);
+        }
+
+        [Test]
+        public void RetiredRoleNumbers_AreNotReused()
+        {
+            foreach (int retired in new[] { 3, 6, 7 })
+                Assert.IsFalse(Enum.IsDefined(typeof(PlayerArchetype), retired), retired.ToString());
         }
 
         [Test]
@@ -84,8 +113,9 @@ namespace FS27.Core.Tests
                 Assert.IsTrue(Enum.IsDefined(typeof(RoleGroup), RoleInfo.GroupOf(r)), r.ToString());
                 Assert.IsFalse(string.IsNullOrEmpty(RoleInfo.SpanishName(r)), r.ToString());
             }
-            Assert.IsFalse(RoleInfo.IsOfficial(PlayerArchetype.ShotStopper));
             Assert.IsTrue(RoleInfo.IsOfficial(PlayerArchetype.Explosive));
+            Assert.IsFalse(RoleInfo.IsOfficial((PlayerArchetype)99));
+            Assert.Throws<ArgumentOutOfRangeException>(() => RoleInfo.GroupOf((PlayerArchetype)99));
         }
 
         [Test]
@@ -119,9 +149,9 @@ namespace FS27.Core.Tests
         [Test]
         public void InvalidOrRepeatedRoles_AreReported()
         {
-            var p = Valid(); p.Archetypes[1] = PlayerArchetype.Explosive;
+            var p = Valid(); SakData.SetRole(p, 1, PlayerArchetype.Explosive);
             Assert.IsTrue(Check(p).Has(AiDataIssueCode.ProfileArchetypeDuplicate));
-            p = Valid(); p.Archetypes[0] = (PlayerArchetype)77;
+            p = Valid(); SakData.SetRole(p, 0, (PlayerArchetype)77);
             Assert.IsTrue(Check(p).Has(AiDataIssueCode.ProfileArchetypeInvalid));
         }
 
@@ -142,17 +172,27 @@ namespace FS27.Core.Tests
         [TestCase(101, false)]
         public void Affinity_IsZeroToOneHundred(int value, bool valid)
         {
-            var p = Valid(); p.ArchetypeAffinities[0] = value;
+            var p = Valid(); SakData.SetAffinity(p, 0, value);
             Assert.AreEqual(valid, !Check(p).Has(AiDataIssueCode.ProfileAffinityOutOfRange), value.ToString());
         }
 
         [Test]
-        public void AffinityCount_MustMatchTheRoles_OrBeEmpty()
+        public void RoleAndAffinity_AreOneStructure_NotTwoParallelLists()
         {
-            var p = Valid(); p.ArchetypeAffinities.RemoveAt(2);
-            Assert.IsTrue(Check(p).Has(AiDataIssueCode.ProfileAffinityCountMismatch));
-            p.ArchetypeAffinities.Clear();
-            Assert.IsTrue(Check(p).IsValid, "empty means: derive from the rank");
+            var fields = typeof(PlayerPlayingProfile).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            Assert.AreEqual(1, fields.Count(f => f.FieldType == typeof(System.Collections.Generic.List<RoleAffinity>)));
+            Assert.IsFalse(fields.Any(f => f.FieldType == typeof(System.Collections.Generic.List<PlayerArchetype>)));
+            Assert.IsFalse(fields.Any(f => f.FieldType == typeof(System.Collections.Generic.List<int>)));
+        }
+
+        [Test]
+        public void ARoleCannotHaveAnAffinityWithoutBeingARole_AndViceVersa()
+        {
+            var p = Valid();
+            Assert.AreEqual(p.Roles.Count, p.GetRoleAffinities().Length);
+            p.Roles.RemoveAt(2);
+            Assert.AreEqual(2, p.GetRoleAffinities().Length);
+            Assert.AreEqual(0, p.GetAffinity(PlayerArchetype.Finisher));
         }
 
         [Test]
@@ -181,7 +221,7 @@ namespace FS27.Core.Tests
             Assert.IsTrue(Valid().TryGetPrimaryRole(out var role));
             Assert.AreEqual(PlayerArchetype.Explosive, role);
 
-            var p = Valid(); p.ArchetypeAffinities[2] = 99;
+            var p = Valid(); SakData.SetAffinity(p, 2, 99);
             p.TryGetPrimaryRole(out role);
             Assert.AreEqual(PlayerArchetype.Finisher, role);
 
@@ -319,7 +359,7 @@ namespace FS27.Core.Tests
             var profile = PlayingProfileDefaults.FromPlayer(player);
             Assert.AreEqual(PitchZone.Defense, profile.PrimaryZone);
             Assert.IsTrue(Check(profile, player).IsValid);
-            Assert.AreEqual(90, profile.GetAffinity(PlayerArchetype.Destroyer));
+            Assert.AreEqual(90, profile.GetAffinity(PlayerArchetype.Wall));
         }
     }
 }

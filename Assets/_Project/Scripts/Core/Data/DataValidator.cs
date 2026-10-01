@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace FS27.Core
 {
     /// <summary>
-    /// Checks that player, formation and team data is usable for a 5v5 match. Pure functions: they never
+    /// Checks that player, formation and team data is usable for a 6v6 match (1 goalkeeper + 5 field players per team). Pure functions: they never
     /// change the data and report EVERY problem found (as <see cref="ValidationCode"/>s), not just the first.
     /// Run it when data is loaded or authored, so the match code can assume valid input.
     /// </summary>

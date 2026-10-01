@@ -26,7 +26,7 @@ namespace FS27.Core.Tests
             profiles = new PlayingProfileCatalog();
             profiles.TryAdd(profile);
             cardTypes = new PlayerCardCatalog();
-            team = new TeamDefinition("team-cobalt", "Cobalt Test Team", new TeamColors(new ColorRgb(10, 40, 200), new ColorRgb(255, 140, 0)), DefaultFormations.TwoTwo, sak);
+            team = new TeamDefinition("team-cobalt", "Cobalt Test Team", new TeamColors(new ColorRgb(10, 40, 200), new ColorRgb(255, 140, 0)), DefaultFormations.TwoOneTwo, "fs27-p-sak");
             builder = new PlayerCardBuilder(calc, profiles, cardTypes, id => id == "team-cobalt" ? team : null);
         }
 
@@ -154,7 +154,7 @@ namespace FS27.Core.Tests
             profile.SecondaryZones.Clear();
             Assert.AreEqual(PitchZone.Attack, card.PrimaryZone);
             Assert.AreEqual(0, card.SecondaryZones.Count);
-            profile.ArchetypeAffinities[1] = 99;
+            SakData.SetAffinity(profile, 1, 99);
             card.TryGetPrimaryRole(out var role);
             Assert.AreEqual(PlayerArchetype.Creator, role);
         }
@@ -319,7 +319,7 @@ namespace FS27.Core.Tests
         {
             var attrs = sak.Attributes;
             var zones = profile.SecondaryZones.ToArray();
-            var affinities = profile.ArchetypeAffinities.ToArray();
+            var roles = profile.Roles.ToArray();
             string name = sak.Name; int number = sak.Number;
 
             foreach (CardType t in Enum.GetValues(typeof(CardType)))
@@ -330,7 +330,7 @@ namespace FS27.Core.Tests
             }
             Assert.AreEqual(attrs, sak.Attributes);
             CollectionAssert.AreEqual(zones, profile.SecondaryZones);
-            CollectionAssert.AreEqual(affinities, profile.ArchetypeAffinities);
+            CollectionAssert.AreEqual(roles, profile.Roles);
             Assert.AreEqual(name, sak.Name); Assert.AreEqual(number, sak.Number);
         }
 

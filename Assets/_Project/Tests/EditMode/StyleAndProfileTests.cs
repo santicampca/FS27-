@@ -183,7 +183,7 @@ namespace FS27.Core.Tests
             Assert.IsTrue(p.HasArchetype(PlayerArchetype.Explosive));
             Assert.IsTrue(p.HasArchetype(PlayerArchetype.Creator));
             Assert.IsTrue(p.HasArchetype(PlayerArchetype.Finisher));
-            Assert.IsFalse(p.HasArchetype(PlayerArchetype.Destroyer));
+            Assert.IsFalse(p.HasArchetype(PlayerArchetype.Wall));
         }
 
         [Test]
@@ -205,7 +205,8 @@ namespace FS27.Core.Tests
             Assert.AreEqual(PitchZone.Defense, PlayingProfileDefaults.ZoneForRole(PlayerRole.Defender));
             Assert.AreEqual(PitchZone.Midfield, PlayingProfileDefaults.ZoneForRole(PlayerRole.Midfielder));
             Assert.AreEqual(PitchZone.Attack, PlayingProfileDefaults.ZoneForRole(PlayerRole.Forward));
-            Assert.AreEqual(PlayerArchetype.ShotStopper, PlayingProfileDefaults.ArchetypeForRole(PlayerRole.Goalkeeper));
+            Assert.AreEqual(PlayerArchetype.Guardian, PlayingProfileDefaults.ArchetypeForRole(PlayerRole.Goalkeeper));
+            Assert.AreEqual(PlayerArchetype.Wall, PlayingProfileDefaults.ArchetypeForRole(PlayerRole.Defender));
             foreach (PlayerRole role in Enum.GetValues(typeof(PlayerRole)))
             {
                 var player = new PlayerDefinition("p-" + role, "Generic", 7, role, TestData.Attrs(50));
@@ -248,16 +249,16 @@ namespace FS27.Core.Tests
             p = NicoProfile(); p.SecondaryZones.Add(PitchZone.Wing);
             Assert.IsTrue(PlayingProfileValidator.Validate(p).Has(AiDataIssueCode.ProfileSecondaryEqualsPrimary));
 
-            p = NicoProfile(); p.Archetypes.Clear();
+            p = NicoProfile(); p.Roles.Clear();
             Assert.IsTrue(PlayingProfileValidator.Validate(p).Has(AiDataIssueCode.ProfileArchetypeCountInvalid));
 
-            p = NicoProfile(); p.Archetypes.Add(PlayerArchetype.Anchor);
+            p = NicoProfile(); p.AddRole(PlayerArchetype.Anchor, 50);
             Assert.IsTrue(PlayingProfileValidator.Validate(p).Has(AiDataIssueCode.ProfileArchetypeCountInvalid), "more than three");
 
-            p = NicoProfile(); p.Archetypes[1] = PlayerArchetype.Explosive;
+            p = NicoProfile(); SakData.SetRole(p, 1, PlayerArchetype.Explosive);
             Assert.IsTrue(PlayingProfileValidator.Validate(p).Has(AiDataIssueCode.ProfileArchetypeDuplicate));
 
-            p = NicoProfile(); p.Archetypes[0] = (PlayerArchetype)99;
+            p = NicoProfile(); SakData.SetRole(p, 0, (PlayerArchetype)99);
             Assert.IsTrue(PlayingProfileValidator.Validate(p).Has(AiDataIssueCode.ProfileArchetypeInvalid));
         }
 
@@ -265,7 +266,7 @@ namespace FS27.Core.Tests
         public void ProfileValidator_KeepsTheGoalZoneForGoalkeepersOnly()
         {
             var keeper = new PlayerDefinition("p-gk", "Generic Keeper", 1, PlayerRole.Goalkeeper, TestData.Attrs(70));
-            var ok = new PlayerPlayingProfile("p-gk", PitchZone.Goal, null, PlayerArchetype.ShotStopper, PlayerArchetype.Sweeper);
+            var ok = new PlayerPlayingProfile("p-gk", PitchZone.Goal, null, PlayerArchetype.Guardian, PlayerArchetype.Anchor);
             Assert.IsTrue(PlayingProfileValidator.Validate(ok, keeper).IsValid);
 
             var keeperOutfield = new PlayerPlayingProfile("p-gk", PitchZone.Midfield, null, PlayerArchetype.Engine);
@@ -352,7 +353,7 @@ namespace FS27.Core.Tests
 
             Assert.AreEqual(PitchZone.Wing, p.PrimaryZone);
             CollectionAssert.AreEqual(new[] { PitchZone.Attack, PitchZone.Midfield }, p.SecondaryZones);
-            CollectionAssert.AreEqual(new[] { PlayerArchetype.Explosive, PlayerArchetype.Creator, PlayerArchetype.Finisher }, p.Archetypes);
+            CollectionAssert.AreEqual(new[] { PlayerArchetype.Explosive, PlayerArchetype.Creator, PlayerArchetype.Finisher }, p.Roles.Select(r => r.Role).ToArray());
         }
 
         [Test]

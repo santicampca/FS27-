@@ -44,28 +44,53 @@ namespace FS27.Core.Tests
             return new PlayerDefinition(id, "Generic " + id, number, role, Attrs(attr));
         }
 
-        /// <summary>A valid 5-player team: goalkeeper first, as the default formations expect.</summary>
-        public static TeamDefinition Team(string prefix = "blue", string formationId = DefaultFormations.TwoTwo)
+        /// <summary>
+        /// A valid 6v6 team: goalkeeper first, as the default formations expect, then 2 defenders, 1 midfielder and 2 forwards.
+        /// The 6 players are added to <paramref name="library"/>; the team itself holds only their ids.
+        /// </summary>
+        public static TeamDefinition Team(PlayerLibrary library, string prefix = "blue", string formationId = DefaultFormations.TwoOneTwo)
         {
-            return new TeamDefinition(prefix, "Team " + prefix,
+            var team = new TeamDefinition(prefix, "Team " + prefix,
                 new TeamColors(new ColorRgb(20, 80, 200), new ColorRgb(255, 255, 255)),
                 formationId,
-                Player(prefix + "-gk", 1, PlayerRole.Goalkeeper),
-                Player(prefix + "-d1", 2, PlayerRole.Defender),
-                Player(prefix + "-d2", 3, PlayerRole.Defender),
-                Player(prefix + "-f1", 9, PlayerRole.Forward),
-                Player(prefix + "-f2", 10, PlayerRole.Forward));
+                prefix + "-gk", prefix + "-d1", prefix + "-d2", prefix + "-m1", prefix + "-f1", prefix + "-f2");
+            library.TryAdd(Player(prefix + "-gk", 1, PlayerRole.Goalkeeper));
+            library.TryAdd(Player(prefix + "-d1", 2, PlayerRole.Defender));
+            library.TryAdd(Player(prefix + "-d2", 3, PlayerRole.Defender));
+            library.TryAdd(Player(prefix + "-m1", 8, PlayerRole.Midfielder));
+            library.TryAdd(Player(prefix + "-f1", 9, PlayerRole.Forward));
+            library.TryAdd(Player(prefix + "-f2", 10, PlayerRole.Forward));
+            return team;
+        }
+
+        /// <summary>The library's player at a lineup index of the team.</summary>
+        public static PlayerDefinition At(PlayerLibrary library, TeamDefinition team, int index)
+        {
+            library.TryGet(team.PlayerIds[index], out PlayerDefinition p);
+            return p;
         }
     }
 
     public class DataCoreTests
     {
         private FormationLibrary library;
+        private PlayerLibrary players;
 
         [SetUp]
         public void SetUp()
         {
             library = FormationLibrary.CreateDefault();
+            players = new PlayerLibrary();
+        }
+
+        private TeamDefinition NewTeam(string prefix = "blue", string formationId = DefaultFormations.TwoOneTwo)
+        {
+            return TestData.Team(players, prefix, formationId);
+        }
+
+        private PlayerDefinition At(TeamDefinition team, int index)
+        {
+            return TestData.At(players, team, index);
         }
 
         // ================= Player =================
@@ -215,7 +240,7 @@ namespace FS27.Core.Tests
         // ================= Formations =================
 
         [Test]
-        public void DefaultFormations_AreAllValidFor5v5()
+        public void DefaultFormations_AreAllValidFor6v6()
         {
             foreach (FormationDefinition f in DefaultFormations.CreateAll())
             {
@@ -229,20 +254,22 @@ namespace FS27.Core.Tests
         {
             var all = DefaultFormations.CreateAll();
             Assert.AreEqual(3, all.Count);
-            CollectionAssert.AreEquivalent(new[] { "2-2", "1-2-1", "2-1-1" }, all.Select(f => f.Id).ToArray());
+            CollectionAssert.AreEquivalent(new[] { "2-1-2", "1-2-2", "2-2-1" }, all.Select(f => f.Id).ToArray());
             Assert.AreEqual(3, all.Select(f => f.Id).Distinct().Count());
             Assert.AreEqual(3, all.Select(f => f.Name).Distinct().Count());
         }
 
         [Test]
-        public void DefaultFormations_HaveOneKeeperAtSlotZero_AndFourOutfielders()
+        public void DefaultFormations_HaveOneKeeperAtSlotZero_AndFiveFieldPlayers()
         {
             foreach (FormationDefinition f in DefaultFormations.CreateAll())
             {
-                Assert.AreEqual(5, f.Positions.Count, f.Id);
+                Assert.AreEqual(DataRules.PlayersPerTeam, f.Positions.Count, f.Id);
+                Assert.AreEqual(6, f.Positions.Count, f.Id);
+                Assert.AreEqual(5, f.Positions.Count(p => p.Role != PlayerRole.Goalkeeper), f.Id);
                 Assert.AreEqual(1, f.Positions.Count(p => p.Role == PlayerRole.Goalkeeper), f.Id);
                 Assert.AreEqual(0, f.GoalkeeperIndex, f.Id);
-                CollectionAssert.AreEquivalent(new[] { 0, 1, 2, 3, 4 }, f.Positions.Select(p => p.PlayerIndex).ToArray(), f.Id);
+                CollectionAssert.AreEquivalent(new[] { 0, 1, 2, 3, 4, 5 }, f.Positions.Select(p => p.PlayerIndex).ToArray(), f.Id);
             }
         }
 
@@ -261,30 +288,41 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void DefaultFormations_RolesMatchTheirNames()
+        public void DefaultFormations_ZonesMatchTheirNames()
         {
-            var roles = DefaultFormations.CreateAll().ToDictionary(f => f.Id, f => f.Positions.Select(p => p.Role).Where(r => r != PlayerRole.Goalkeeper).ToArray());
-            Assert.AreEqual(2, roles["2-2"].Count(r => r == PlayerRole.Defender));
-            Assert.AreEqual(2, roles["2-2"].Count(r => r == PlayerRole.Forward));
-            Assert.AreEqual(1, roles["1-2-1"].Count(r => r == PlayerRole.Defender));
-            Assert.AreEqual(2, roles["1-2-1"].Count(r => r == PlayerRole.Midfielder));
-            Assert.AreEqual(1, roles["1-2-1"].Count(r => r == PlayerRole.Forward));
-            Assert.AreEqual(2, roles["2-1-1"].Count(r => r == PlayerRole.Defender));
-            Assert.AreEqual(1, roles["2-1-1"].Count(r => r == PlayerRole.Midfielder));
-            Assert.AreEqual(1, roles["2-1-1"].Count(r => r == PlayerRole.Forward));
+            var zones = DefaultFormations.CreateAll().ToDictionary(f => f.Id, f => f.Positions.Select(p => p.Zone).Where(z => z != PitchZone.Goal).ToArray());
+            Assert.AreEqual(2, zones["2-1-2"].Count(z => z == PitchZone.Defense));
+            Assert.AreEqual(1, zones["2-1-2"].Count(z => z == PitchZone.Midfield));
+            Assert.AreEqual(1, zones["2-1-2"].Count(z => z == PitchZone.Wing));
+            Assert.AreEqual(1, zones["2-1-2"].Count(z => z == PitchZone.Attack));
+            Assert.AreEqual(1, zones["1-2-2"].Count(z => z == PitchZone.Defense));
+            Assert.AreEqual(2, zones["1-2-2"].Count(z => z == PitchZone.Midfield));
+            Assert.AreEqual(1, zones["1-2-2"].Count(z => z == PitchZone.Wing));
+            Assert.AreEqual(1, zones["1-2-2"].Count(z => z == PitchZone.Attack));
+            Assert.AreEqual(2, zones["2-2-1"].Count(z => z == PitchZone.Defense));
+            Assert.AreEqual(2, zones["2-2-1"].Count(z => z == PitchZone.Midfield));
+            Assert.AreEqual(1, zones["2-2-1"].Count(z => z == PitchZone.Attack));
+        }
+
+        [Test]
+        public void DefaultFormations_EachSlotZoneAgreesWithWhereItSits()
+        {
+            foreach (FormationDefinition f in DefaultFormations.CreateAll())
+                foreach (FormationPosition p in f.Positions)
+                    Assert.AreEqual(PlayingProfileDefaults.ZoneOfRelativePosition(p.Relative), p.Zone, f.Id + " slot " + p.PlayerIndex);
         }
 
         [Test]
         public void DefaultFormations_AreFreshInstancesEachCall()
         {
-            var a = DefaultFormations.CreateDiamond();
+            var a = DefaultFormations.CreateOneTwoTwo();
             a.Positions.Clear();
-            Assert.AreEqual(5, DefaultFormations.CreateDiamond().Positions.Count);
+            Assert.AreEqual(6, DefaultFormations.CreateOneTwoTwo().Positions.Count);
         }
 
         private static FormationDefinition Good()
         {
-            return DefaultFormations.CreateTwoTwo();
+            return DefaultFormations.CreateTwoOneTwo();
         }
 
         [Test]
@@ -294,9 +332,9 @@ namespace FS27.Core.Tests
         }
 
         [TestCase(0)]
-        [TestCase(4)]
-        [TestCase(6)]
-        public void Formation_WrongSlotCount_IsNot5v5(int count)
+        [TestCase(5)]
+        [TestCase(7)]
+        public void Formation_WrongSlotCount_IsNot6v6(int count)
         {
             var f = Good();
             while (f.Positions.Count > count) f.Positions.RemoveAt(f.Positions.Count - 1);
@@ -322,7 +360,7 @@ namespace FS27.Core.Tests
         }
 
         [TestCase(-1)]
-        [TestCase(5)]
+        [TestCase(6)]
         [TestCase(99)]
         public void Formation_PlayerIndexOutOfRange_IsReported(int index)
         {
@@ -370,6 +408,43 @@ namespace FS27.Core.Tests
         }
 
         [Test]
+        public void Formation_ExactlyFiveSlots_IsTheOldFiveAPlayerShapeAndIsRejected()
+        {
+            var f = Good();
+            f.Positions.RemoveAt(5);
+            Assert.IsTrue(DataValidator.ValidateFormation(f).Has(ValidationCode.FormationPositionCountInvalid));
+        }
+
+        [Test]
+        public void Formation_UndefinedZone_IsReported()
+        {
+            var f = Good();
+            var p = f.Positions[2]; p.Zone = (PitchZone)42; f.Positions[2] = p;
+            Assert.IsTrue(DataValidator.ValidateFormation(f).Has(ValidationCode.FormationZoneInvalid));
+        }
+
+        [Test]
+        public void Formation_FieldPlayerInTheGoalZone_AndKeeperOutsideIt_AreReported()
+        {
+            var f = Good();
+            var p = f.Positions[2]; p.Zone = PitchZone.Goal; f.Positions[2] = p;
+            Assert.IsTrue(DataValidator.ValidateFormation(f).Has(ValidationCode.FormationZoneInvalid));
+
+            f = Good();
+            var k = f.Positions[0]; k.Zone = PitchZone.Defense; f.Positions[0] = k;
+            Assert.IsTrue(DataValidator.ValidateFormation(f).Has(ValidationCode.FormationZoneInvalid));
+        }
+
+        [Test]
+        public void FormationPosition_WithoutAZone_TakesItFromTheBroadRole()
+        {
+            Assert.AreEqual(PitchZone.Goal, new FormationPosition(0, PlayerRole.Goalkeeper, 0.1f, 0.5f).Zone);
+            Assert.AreEqual(PitchZone.Defense, new FormationPosition(1, PlayerRole.Defender, 0.3f, 0.5f).Zone);
+            Assert.AreEqual(PitchZone.Midfield, new FormationPosition(2, PlayerRole.Midfielder, 0.5f, 0.5f).Zone);
+            Assert.AreEqual(PitchZone.Attack, new FormationPosition(3, PlayerRole.Forward, 0.8f, 0.5f).Zone);
+        }
+
+        [Test]
         public void Formation_InvalidRole_IdAndName_AreReported()
         {
             var f = Good();
@@ -385,8 +460,8 @@ namespace FS27.Core.Tests
         [Test]
         public void Formation_Lookup_ByPlayerIndex_AndKeeperIndex()
         {
-            var f = DefaultFormations.CreateDiamond();
-            Assert.IsTrue(f.TryGetByPlayerIndex(4, out var fwd));
+            var f = DefaultFormations.CreateOneTwoTwo();
+            Assert.IsTrue(f.TryGetByPlayerIndex(5, out var fwd));
             Assert.AreEqual(PlayerRole.Forward, fwd.Role);
             Assert.IsFalse(f.TryGetByPlayerIndex(9, out _));
             Assert.AreEqual(0, f.GoalkeeperIndex);
@@ -408,7 +483,7 @@ namespace FS27.Core.Tests
         public void FieldPosition_Keeper_SitsNearItsOwnGoalLine()
         {
             var field = new FieldDimensions(); // 40 x 25
-            var keeper = DefaultFormations.CreateTwoTwo().Positions[0];
+            var keeper = DefaultFormations.CreateTwoOneTwo().Positions[0];
             Vec2 attackingRight = keeper.ToFieldPosition(field, true);
             Vec2 attackingLeft = keeper.ToFieldPosition(field, false);
             Assert.AreEqual(-17.6f, attackingRight.X, 1e-3f);
@@ -460,9 +535,9 @@ namespace FS27.Core.Tests
         public void Library_Default_ContainsTheThreeFormations()
         {
             Assert.AreEqual(3, library.Count);
-            Assert.IsTrue(library.Contains("2-2"));
-            Assert.IsTrue(library.Contains("1-2-1"));
-            Assert.IsTrue(library.Contains("2-1-1"));
+            Assert.IsTrue(library.Contains("2-1-2"));
+            Assert.IsTrue(library.Contains("1-2-2"));
+            Assert.IsTrue(library.Contains("2-2-1"));
             Assert.IsFalse(library.Contains("3-1"));
             Assert.IsFalse(library.Contains(null));
         }
@@ -470,8 +545,8 @@ namespace FS27.Core.Tests
         [Test]
         public void Library_TryGet_ReturnsTheFormation()
         {
-            Assert.IsTrue(library.TryGet("1-2-1", out var f));
-            Assert.AreEqual("1-2-1", f.Id);
+            Assert.IsTrue(library.TryGet("1-2-2", out var f));
+            Assert.AreEqual("1-2-2", f.Id);
             Assert.IsFalse(library.TryGet("nope", out var none));
             Assert.IsNull(none);
             Assert.IsFalse(library.TryGet(null, out _));
@@ -480,7 +555,7 @@ namespace FS27.Core.Tests
         [Test]
         public void Library_RejectsDuplicatesNullAndBadIds_WithoutChangingItself()
         {
-            Assert.IsFalse(library.TryAdd(DefaultFormations.CreateTwoTwo()));
+            Assert.IsFalse(library.TryAdd(DefaultFormations.CreateTwoOneTwo()));
             Assert.IsFalse(library.TryAdd(null));
             Assert.IsFalse(library.TryAdd(new FormationDefinition { Id = "with space", Name = "x" }));
             Assert.IsFalse(library.TryAdd(new FormationDefinition { Id = null, Name = "x" }));
@@ -494,27 +569,29 @@ namespace FS27.Core.Tests
             Assert.IsTrue(library.TryAdd(extra));
             Assert.AreEqual(4, library.Count);
             Assert.AreEqual("1-1-2", library.All[3].Id);
-            Assert.AreEqual("2-2", library.All[0].Id);
+            Assert.AreEqual("2-1-2", library.All[0].Id);
         }
 
-        // ================= Team =================
+        // ================= Team (6v6: 1 goalkeeper + 5 field players, referenced by id) =================
 
         [Test]
-        public void Team_Valid_PassesWithAndWithoutLibrary()
+        public void Team_Valid_6Players_1Keeper_5FieldPlayers_Passes()
         {
-            var t = TestData.Team();
-            Assert.IsTrue(DataValidator.ValidateTeam(t).IsValid);
-            var r = DataValidator.ValidateTeam(t, library);
+            var t = NewTeam();
+            var r = DataValidator.ValidateTeam(t, players, library);
             Assert.IsTrue(r.IsValid, r.ToString());
+            Assert.AreEqual(6, t.PlayerIds.Count);
+            Assert.AreEqual(1, t.PlayerIds.Count(id => At(t, t.PlayerIds.IndexOf(id)).Role == PlayerRole.Goalkeeper));
+            Assert.AreEqual(5, t.PlayerIds.Count(id => At(t, t.PlayerIds.IndexOf(id)).Role != PlayerRole.Goalkeeper));
         }
 
         [Test]
         public void Team_Valid_WithEachDefaultFormation()
         {
-            // Roles of the sample players do not need to match slot roles; only the keeper alignment matters.
-            foreach (string id in new[] { "2-2", "1-2-1", "2-1-1" })
+            // Roles of the sample players do not need to match slot zones; only the keeper alignment matters.
+            foreach (string id in new[] { "2-1-2", "1-2-2", "2-2-1" })
             {
-                var r = DataValidator.ValidateTeam(TestData.Team("blue", id), library);
+                var r = DataValidator.ValidateTeam(NewTeam("t" + id, id), players, library);
                 Assert.IsTrue(r.IsValid, id + ": " + r);
             }
         }
@@ -522,70 +599,111 @@ namespace FS27.Core.Tests
         [Test]
         public void Team_Null_IsReported()
         {
-            Assert.IsTrue(DataValidator.ValidateTeam(null).Has(ValidationCode.TeamNull));
+            Assert.IsTrue(DataValidator.ValidateTeam(null, players).Has(ValidationCode.TeamNull));
         }
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(4)]
-        [TestCase(6)]
+        [TestCase(5)]
+        [TestCase(7)]
         [TestCase(11)]
-        public void Team_MustHaveExactlyFivePlayers(int count)
+        public void Team_MustHaveExactlySixPlayers(int count)
         {
-            var t = TestData.Team();
-            while (t.Players.Count > count) t.Players.RemoveAt(t.Players.Count - 1);
-            for (int i = t.Players.Count; i < count; i++) t.Players.Add(TestData.Player("extra" + i, 20 + i, PlayerRole.Midfielder));
-            var r = DataValidator.ValidateTeam(t);
+            var t = NewTeam();
+            while (t.PlayerIds.Count > count) t.PlayerIds.RemoveAt(t.PlayerIds.Count - 1);
+            for (int i = t.PlayerIds.Count; i < count; i++)
+            {
+                players.TryAdd(TestData.Player("extra" + i, 20 + i, PlayerRole.Midfielder));
+                t.PlayerIds.Add("extra" + i);
+            }
+            var r = DataValidator.ValidateTeam(t, players);
             Assert.IsTrue(r.Has(ValidationCode.TeamPlayerCountInvalid), "count " + count);
         }
 
         [Test]
-        public void Team_ExactlyFive_DoesNotRaiseTheCountError()
+        public void Team_FivePlayers_IsInvalid_TheOldRuleIsGone()
         {
-            Assert.IsFalse(DataValidator.ValidateTeam(TestData.Team()).Has(ValidationCode.TeamPlayerCountInvalid));
+            var t = NewTeam();
+            t.PlayerIds.RemoveAt(5);
+            Assert.AreEqual(5, t.PlayerIds.Count);
+            Assert.IsTrue(DataValidator.ValidateTeam(t, players).Has(ValidationCode.TeamPlayerCountInvalid));
         }
 
         [Test]
-        public void Team_NullPlayerList_IsReportedAsWrongCount()
+        public void Team_SevenPlayers_IsInvalid()
         {
-            var t = TestData.Team();
-            t.Players = null;
-            Assert.IsTrue(DataValidator.ValidateTeam(t).Has(ValidationCode.TeamPlayerCountInvalid));
+            var t = NewTeam();
+            players.TryAdd(TestData.Player("blue-extra", 11, PlayerRole.Forward));
+            t.PlayerIds.Add("blue-extra");
+            Assert.IsTrue(DataValidator.ValidateTeam(t, players).Has(ValidationCode.TeamPlayerCountInvalid));
         }
 
         [Test]
-        public void Team_NullPlayerEntry_IsReported()
+        public void Team_ExactlySix_DoesNotRaiseTheCountError()
         {
-            var t = TestData.Team();
-            t.Players[2] = null;
-            var r = DataValidator.ValidateTeam(t);
-            Assert.IsTrue(r.Has(ValidationCode.PlayerNull));
+            Assert.IsFalse(DataValidator.ValidateTeam(NewTeam(), players).Has(ValidationCode.TeamPlayerCountInvalid));
         }
 
         [Test]
-        public void Team_WithoutGoalkeeper_IsReported()
+        public void Team_NullPlayerIdList_IsReportedAsWrongCount()
         {
-            var t = TestData.Team();
-            t.Players[0].Role = PlayerRole.Defender;
-            var r = DataValidator.ValidateTeam(t);
+            var t = NewTeam();
+            t.PlayerIds = null;
+            Assert.IsTrue(DataValidator.ValidateTeam(t, players).Has(ValidationCode.TeamPlayerCountInvalid));
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("has space")]
+        public void Team_InvalidPlayerId_IsReported(string id)
+        {
+            var t = NewTeam();
+            t.PlayerIds[2] = id;
+            Assert.IsTrue(DataValidator.ValidateTeam(t, players).Has(ValidationCode.TeamPlayerIdInvalid));
+        }
+
+        [Test]
+        public void Team_PlayerNotInTheLibrary_IsReportedWithTheId()
+        {
+            var t = NewTeam();
+            t.PlayerIds[3] = "ghost";
+            var r = DataValidator.ValidateTeam(t, players);
+            Assert.IsTrue(r.Has(ValidationCode.TeamPlayerNotFound));
+            StringAssert.Contains("ghost", r.Issues.First(i => i.Code == ValidationCode.TeamPlayerNotFound).Subject);
+        }
+
+        [Test]
+        public void Team_WithoutAPlayerLibrary_CannotBeChecked()
+        {
+            var r = DataValidator.ValidateTeam(NewTeam(), null);
+            Assert.IsTrue(r.Has(ValidationCode.TeamPlayerLookupMissing));
+        }
+
+        [Test]
+        public void Team_WithoutGoalkeeper_ZeroKeepers_IsReported()
+        {
+            var t = NewTeam();
+            At(t, 0).Role = PlayerRole.Defender;
+            var r = DataValidator.ValidateTeam(t, players);
             Assert.IsTrue(r.Has(ValidationCode.TeamGoalkeeperCountInvalid));
         }
 
         [Test]
         public void Team_WithTwoGoalkeepers_IsReported()
         {
-            var t = TestData.Team();
-            t.Players[1].Role = PlayerRole.Goalkeeper;
-            var r = DataValidator.ValidateTeam(t);
+            var t = NewTeam();
+            At(t, 1).Role = PlayerRole.Goalkeeper;
+            var r = DataValidator.ValidateTeam(t, players);
             Assert.IsTrue(r.Has(ValidationCode.TeamGoalkeeperCountInvalid));
         }
 
         [Test]
         public void Team_DuplicatePlayerId_IsReported_WithTheIdInTheMessage()
         {
-            var t = TestData.Team();
-            t.Players[3].Id = t.Players[1].Id;
-            var r = DataValidator.ValidateTeam(t);
+            var t = NewTeam();
+            t.PlayerIds[3] = t.PlayerIds[1];
+            var r = DataValidator.ValidateTeam(t, players);
             Assert.IsTrue(r.Has(ValidationCode.TeamDuplicatePlayerId));
             var issue = r.Issues.First(i => i.Code == ValidationCode.TeamDuplicatePlayerId);
             StringAssert.Contains("blue-d1", issue.Subject);
@@ -594,18 +712,18 @@ namespace FS27.Core.Tests
         [Test]
         public void Team_DuplicateShirtNumber_IsReported()
         {
-            var t = TestData.Team();
-            t.Players[4].Number = t.Players[0].Number;
-            var r = DataValidator.ValidateTeam(t);
+            var t = NewTeam();
+            At(t, 4).Number = At(t, 0).Number;
+            var r = DataValidator.ValidateTeam(t, players);
             Assert.AreEqual(1, r.CountOf(ValidationCode.TeamDuplicateShirtNumber));
         }
 
         [Test]
         public void Team_InvalidPlayer_IsReportedUnderTheTeam()
         {
-            var t = TestData.Team();
-            t.Players[1].Attributes = TestData.WithAttribute(2, 150); // Stamina
-            var r = DataValidator.ValidateTeam(t);
+            var t = NewTeam();
+            At(t, 1).Attributes = TestData.WithAttribute(2, 150); // Stamina
+            var r = DataValidator.ValidateTeam(t, players);
             Assert.AreEqual(1, r.Count, r.ToString());
             var issue = r.Issues[0];
             Assert.AreEqual(ValidationCode.PlayerAttributeOutOfRange, issue.Code);
@@ -617,10 +735,10 @@ namespace FS27.Core.Tests
         [Test]
         public void Team_BadIdAndName_AreReported()
         {
-            var t = TestData.Team();
+            var t = NewTeam();
             t.Id = "";
             t.Name = "  ";
-            var r = DataValidator.ValidateTeam(t);
+            var r = DataValidator.ValidateTeam(t, players);
             Assert.IsTrue(r.Has(ValidationCode.TeamIdInvalid));
             Assert.IsTrue(r.Has(ValidationCode.TeamNameInvalid));
         }
@@ -630,30 +748,28 @@ namespace FS27.Core.Tests
         [TestCase("has space")]
         public void Team_MissingOrInvalidFormationId_IsReported(string formationId)
         {
-            var t = TestData.Team();
+            var t = NewTeam();
             t.FormationId = formationId;
-            Assert.IsTrue(DataValidator.ValidateTeam(t).Has(ValidationCode.TeamFormationIdInvalid));
+            Assert.IsTrue(DataValidator.ValidateTeam(t, players).Has(ValidationCode.TeamFormationIdInvalid));
         }
 
         [Test]
-        public void Team_UnknownFormation_IsReportedOnlyWhenALibraryIsGiven()
+        public void Team_UnknownFormation_IsReportedOnlyWhenAFormationLibraryIsGiven()
         {
-            var t = TestData.Team("blue", "3-1");
-            Assert.IsFalse(DataValidator.ValidateTeam(t).Has(ValidationCode.TeamFormationNotFound));
-            Assert.IsTrue(DataValidator.ValidateTeam(t, library).Has(ValidationCode.TeamFormationNotFound));
+            var t = NewTeam("blue", "3-1");
+            Assert.IsFalse(DataValidator.ValidateTeam(t, players).Has(ValidationCode.TeamFormationNotFound));
+            Assert.IsTrue(DataValidator.ValidateTeam(t, players, library).Has(ValidationCode.TeamFormationNotFound));
         }
 
         [Test]
         public void Team_KeeperNotWhereTheFormationExpectsIt_IsReported()
         {
-            var t = TestData.Team();
+            var t = NewTeam();
             // Keeper moved to lineup index 2: the default formations put the keeper slot on index 0.
-            var keeper = t.Players[0];
-            t.Players[0] = t.Players[2];
-            t.Players[2] = keeper;
-            var r = DataValidator.ValidateTeam(t, library);
+            (t.PlayerIds[0], t.PlayerIds[2]) = (t.PlayerIds[2], t.PlayerIds[0]);
+            var r = DataValidator.ValidateTeam(t, players, library);
             Assert.IsTrue(r.Has(ValidationCode.TeamFormationGoalkeeperMismatch), r.ToString());
-            Assert.AreEqual(2, t.GoalkeeperIndex);
+            Assert.AreEqual(2, t.GoalkeeperIndex(players));
         }
 
         [Test]
@@ -663,15 +779,14 @@ namespace FS27.Core.Tests
                 new FormationPosition(0, PlayerRole.Defender, 0.3f, 0.3f),
                 new FormationPosition(1, PlayerRole.Defender, 0.3f, 0.7f),
                 new FormationPosition(2, PlayerRole.Goalkeeper, 0.06f, 0.5f),
-                new FormationPosition(3, PlayerRole.Forward, 0.7f, 0.3f),
-                new FormationPosition(4, PlayerRole.Forward, 0.7f, 0.7f));
+                new FormationPosition(3, PlayerRole.Midfielder, 0.5f, 0.5f),
+                new FormationPosition(4, PlayerRole.Forward, 0.7f, 0.3f),
+                new FormationPosition(5, PlayerRole.Forward, 0.7f, 0.7f));
             library.TryAdd(custom);
 
-            var t = TestData.Team("blue", "custom");
-            var keeper = t.Players[0];
-            t.Players[0] = t.Players[2];
-            t.Players[2] = keeper;
-            var r = DataValidator.ValidateTeam(t, library);
+            var t = NewTeam("blue", "custom");
+            (t.PlayerIds[0], t.PlayerIds[2]) = (t.PlayerIds[2], t.PlayerIds[0]);
+            var r = DataValidator.ValidateTeam(t, players, library);
             Assert.IsTrue(r.IsValid, r.ToString());
         }
 
@@ -679,32 +794,54 @@ namespace FS27.Core.Tests
         public void Team_UsingABrokenFormation_SurfacesTheFormationErrors()
         {
             library.TryAdd(new FormationDefinition("broken", "Broken", new FormationPosition(0, PlayerRole.Goalkeeper, 0.1f, 0.5f)));
-            var r = DataValidator.ValidateTeam(TestData.Team("blue", "broken"), library);
+            var r = DataValidator.ValidateTeam(NewTeam("blue", "broken"), players, library);
             Assert.IsTrue(r.Has(ValidationCode.FormationPositionCountInvalid));
             StringAssert.Contains("blue", r.Issues.First(i => i.Code == ValidationCode.FormationPositionCountInvalid).Subject);
         }
 
         [Test]
-        public void Team_KeeperIndexHelper_IsMinusOneWithoutAKeeper()
+        public void Team_AFiveSlotFormation_IsRejectedForATeam()
         {
-            var t = TestData.Team();
-            t.Players[0].Role = PlayerRole.Midfielder;
-            Assert.AreEqual(-1, t.GoalkeeperIndex);
+            var five = DefaultFormations.CreateTwoOneTwo();
+            five.Id = "old-five";
+            five.Positions.RemoveAt(5);
+            library.TryAdd(five);
+            var r = DataValidator.ValidateTeam(NewTeam("blue", "old-five"), players, library);
+            Assert.IsTrue(r.Has(ValidationCode.FormationPositionCountInvalid));
+        }
+
+        [Test]
+        public void Team_KeeperIndexHelper_IsMinusOneWithoutAKeeper_OrWithoutALibrary()
+        {
+            var t = NewTeam();
+            Assert.AreEqual(0, t.GoalkeeperIndex(players));
+            Assert.AreEqual(-1, t.GoalkeeperIndex(null));
+            At(t, 0).Role = PlayerRole.Midfielder;
+            Assert.AreEqual(-1, t.GoalkeeperIndex(players));
         }
 
         [Test]
         public void Team_ManyProblems_AreAllCollected()
         {
-            var t = TestData.Team();
-            t.Players.RemoveAt(4);                         // 4 players
-            t.Players[0].Role = PlayerRole.Forward;        // no keeper
-            t.Players[2].Number = t.Players[1].Number;     // duplicate number
+            var t = NewTeam();
+            t.PlayerIds.RemoveAt(5);                       // 5 players
+            At(t, 0).Role = PlayerRole.Forward;            // no keeper
+            At(t, 2).Number = At(t, 1).Number;             // duplicate number
             t.FormationId = "";                            // no formation
-            var r = DataValidator.ValidateTeam(t, library);
+            var r = DataValidator.ValidateTeam(t, players, library);
             Assert.IsTrue(r.Has(ValidationCode.TeamPlayerCountInvalid));
             Assert.IsTrue(r.Has(ValidationCode.TeamGoalkeeperCountInvalid));
             Assert.IsTrue(r.Has(ValidationCode.TeamDuplicateShirtNumber));
             Assert.IsTrue(r.Has(ValidationCode.TeamFormationIdInvalid));
+        }
+
+        [Test]
+        public void Team_HoldsOnlyIds_NoPlayerCopies()
+        {
+            var fields = typeof(TeamDefinition).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            Assert.IsFalse(fields.Any(f => typeof(PlayerDefinition).IsAssignableFrom(f.FieldType)
+                                         || (f.FieldType.IsGenericType && f.FieldType.GetGenericArguments().Any(a => typeof(PlayerDefinition).IsAssignableFrom(a)))));
+            Assert.AreEqual(typeof(System.Collections.Generic.List<string>), typeof(TeamDefinition).GetField("PlayerIds").FieldType);
         }
 
         // ================= Validation result =================
@@ -714,9 +851,9 @@ namespace FS27.Core.Tests
         {
             Assert.AreEqual("valid", new ValidationResult().ToString());
 
-            var t = TestData.Team();
-            t.Players[0].Role = PlayerRole.Defender;
-            string text = DataValidator.ValidateTeam(t, library).ToString();
+            var t = NewTeam();
+            At(t, 0).Role = PlayerRole.Defender;
+            string text = DataValidator.ValidateTeam(t, players, library).ToString();
             StringAssert.Contains("TeamGoalkeeperCountInvalid", text);
             StringAssert.Contains("team 'blue'", text);
         }
@@ -741,44 +878,47 @@ namespace FS27.Core.Tests
         [Test]
         public void Match_TwoValidDistinctTeams_AreAccepted()
         {
-            var r = DataValidator.ValidateMatchTeams(TestData.Team("blue"), TestData.Team("red", DefaultFormations.Diamond), library);
+            var r = DataValidator.ValidateMatchTeams(NewTeam("blue"), NewTeam("red", DefaultFormations.OneTwoTwo), players, library);
             Assert.IsTrue(r.IsValid, r.ToString());
         }
 
         [Test]
         public void Match_SameTeamId_IsReported()
         {
-            var r = DataValidator.ValidateMatchTeams(TestData.Team("blue"), TestData.Team("blue"), library);
+            var home = NewTeam("blue");
+            var away = NewTeam("blue2");
+            away.Id = "blue";
+            var r = DataValidator.ValidateMatchTeams(home, away, players, library);
             Assert.IsTrue(r.Has(ValidationCode.MatchSameTeam));
         }
 
         [Test]
         public void Match_SharedPlayerIdBetweenTeams_IsReported()
         {
-            var home = TestData.Team("blue");
-            var away = TestData.Team("red");
-            away.Players[2].Id = home.Players[2].Id;
-            var r = DataValidator.ValidateMatchTeams(home, away, library);
+            var home = NewTeam("blue");
+            var away = NewTeam("red");
+            away.PlayerIds[2] = home.PlayerIds[2];
+            var r = DataValidator.ValidateMatchTeams(home, away, players, library);
             Assert.AreEqual(1, r.CountOf(ValidationCode.MatchDuplicatePlayerId));
         }
 
         [Test]
         public void Match_NullTeam_IsReportedWithoutCrashing()
         {
-            var r = DataValidator.ValidateMatchTeams(TestData.Team("blue"), null, library);
+            var r = DataValidator.ValidateMatchTeams(NewTeam("blue"), null, players, library);
             Assert.IsTrue(r.Has(ValidationCode.TeamNull));
-            r = DataValidator.ValidateMatchTeams(null, null, library);
+            r = DataValidator.ValidateMatchTeams(null, null, players, library);
             Assert.AreEqual(2, r.CountOf(ValidationCode.TeamNull));
         }
 
         [Test]
         public void Match_ProblemsOfBothTeams_AreMerged()
         {
-            var home = TestData.Team("blue");
-            var away = TestData.Team("red");
-            home.Players[0].Role = PlayerRole.Defender;
-            away.Players.RemoveAt(0);
-            var r = DataValidator.ValidateMatchTeams(home, away, library);
+            var home = NewTeam("blue");
+            var away = NewTeam("red");
+            At(home, 0).Role = PlayerRole.Defender;
+            away.PlayerIds.RemoveAt(0);
+            var r = DataValidator.ValidateMatchTeams(home, away, players, library);
             Assert.IsTrue(r.Has(ValidationCode.TeamGoalkeeperCountInvalid));
             Assert.IsTrue(r.Has(ValidationCode.TeamPlayerCountInvalid));
         }
@@ -789,7 +929,7 @@ namespace FS27.Core.Tests
         {
             typeof(PlayerDefinition), typeof(TeamDefinition), typeof(FormationDefinition), typeof(FormationPosition),
             typeof(TeamColors), typeof(ColorRgb), typeof(PlayerRole), typeof(FormationLibrary), typeof(DefaultFormations),
-            typeof(DataValidator), typeof(DataRules), typeof(ValidationResult), typeof(ValidationIssue), typeof(ValidationCode)
+            typeof(DataValidator), typeof(DataRules), typeof(IPlayerLookup), typeof(ValidationResult), typeof(ValidationIssue), typeof(ValidationCode)
         };
 
         [Test]
@@ -827,10 +967,12 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void Rules_Constants_Describe5v5()
+        public void Rules_Constants_Describe6v6()
         {
-            Assert.AreEqual(5, DataRules.PlayersPerTeam);
+            Assert.AreEqual(6, DataRules.PlayersPerTeam);
             Assert.AreEqual(1, DataRules.GoalkeepersPerTeam);
+            Assert.AreEqual(5, DataRules.FieldPlayersPerTeam);
+            Assert.AreEqual(DataRules.GoalkeepersPerTeam + DataRules.FieldPlayersPerTeam, DataRules.PlayersPerTeam);
             Assert.AreEqual(1, PlayerAttributes.Min);
             Assert.AreEqual(99, PlayerAttributes.Max);
         }

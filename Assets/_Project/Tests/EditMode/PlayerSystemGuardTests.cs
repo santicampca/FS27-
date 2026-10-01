@@ -185,7 +185,7 @@ namespace FS27.Core.Tests
         public void EverythingAFuturePresentationNeeds_IsReadableFromTheDataAlone()
         {
             var sak = SakData.Player();
-            var team = new TeamDefinition("team-cobalt", "Cobalt Test Team", new TeamColors(new ColorRgb(10, 40, 200), new ColorRgb(255, 140, 0)), "2-2", sak);
+            var team = new TeamDefinition("team-cobalt", "Cobalt Test Team", new TeamColors(new ColorRgb(10, 40, 200), new ColorRgb(255, 140, 0)), DefaultFormations.TwoOneTwo, sak.Id);
             // body, number and kit colours come from data; nothing visual is stored or written back.
             Assert.AreEqual(BodyType.Light, sak.BodyType);
             Assert.AreEqual(176, sak.HeightCm);
@@ -224,12 +224,13 @@ namespace FS27.Core.Tests
             library.TryAdd(TestData.Player("cobalt-gk", 1, PlayerRole.Goalkeeper));
             library.TryAdd(TestData.Player("cobalt-d1", 2, PlayerRole.Defender));
             library.TryAdd(TestData.Player("cobalt-d2", 3, PlayerRole.Defender));
+            library.TryAdd(TestData.Player("cobalt-m1", 8, PlayerRole.Midfielder));
             library.TryAdd(TestData.Player("cobalt-f1", 9, PlayerRole.Forward));
             foreach (var p in library.All) library.TryAssignToTeam(p.Id, "cobalt");
 
-            Assert.IsTrue(TeamRoster.TryBuild("cobalt", "Cobalt Test Team", new TeamColors(), DefaultFormations.TwoTwo,
-                new[] { "cobalt-gk", "cobalt-d1", "cobalt-d2", "cobalt-f1", "fs27-p-sak" }, library, out var team, out var problem), problem);
-            Assert.IsTrue(DataValidator.ValidateTeam(team, formations).IsValid, DataValidator.ValidateTeam(team, formations).ToString());
+            Assert.IsTrue(TeamRoster.TryBuild("cobalt", "Cobalt Test Team", new TeamColors(), DefaultFormations.TwoOneTwo,
+                new[] { "cobalt-gk", "cobalt-d1", "cobalt-d2", "cobalt-m1", "cobalt-f1", "fs27-p-sak" }, library, out var team, out var problem), problem);
+            Assert.IsTrue(DataValidator.ValidateTeam(team, library, formations).IsValid, DataValidator.ValidateTeam(team, library, formations).ToString());
             Assert.IsTrue(PlayerSystemValidator.ValidateAll(library, new[] { SakData.Profile() }).IsValid);
 
             cardTypes.Set(sak.Id, CardType.Rare);
@@ -241,14 +242,68 @@ namespace FS27.Core.Tests
             int overall = card.Overall;
             library.TryGet("fs27-p-sak", out var same);
             Assert.AreSame(sak, same);
-            Assert.AreSame(sak, team.Players[4], "the team, the library and the card all point at the one definition");
+            Assert.IsTrue(TeamRoster.TryResolve(team, library, out var squad));
+            Assert.AreSame(sak, squad[5], "the team (by id), the library and the card all point at the one definition");
 
             // One edit, seen everywhere.
             same.Attributes = same.Attributes.With(PlayerAttributeId.Speed, 99).With(PlayerAttributeId.Acceleration, 99).With(PlayerAttributeId.Finishing, 99);
             Assert.AreEqual(99, card.GetAttribute(PlayerAttributeId.Speed));
-            Assert.AreEqual(99, team.Players[4].Attributes.Speed);
+            Assert.AreEqual(99, squad[5].Attributes.Speed);
             Assert.GreaterOrEqual(card.Overall, overall);
             Assert.AreEqual(calc.GetOverall(sak, profiles.GetOrDefault(sak)), card.Overall);
+        }
+
+        // ================= 6v6 foundation =================
+
+        [Test]
+        public void TeamSizeLivesInOnePlace_AndIsSixVersusSix()
+        {
+            Assert.AreEqual(6, DataRules.PlayersPerTeam);
+            Assert.AreEqual(1, DataRules.GoalkeepersPerTeam);
+            Assert.AreEqual(5, DataRules.FieldPlayersPerTeam);
+        }
+
+        [Test]
+        public void CoreSources_HoldNoFivePlayerTeamRule()
+        {
+            string core = DifficultyGuardTests.FindCoreSourceDirectory();
+            if (core == null) Assert.Ignore("Core sources not reachable from the test's working directory.");
+            string[] banned = { "5v5", "exactly 5", "1 goalkeeper + 4", "4 outfield", "five players", "int PlayersPerTeam = 5" };
+            foreach (string file in System.IO.Directory.GetFiles(core, "*.cs", System.IO.SearchOption.AllDirectories))
+            {
+                string text = System.IO.File.ReadAllText(file);
+                foreach (string phrase in banned)
+                    Assert.IsFalse(text.Contains(phrase), System.IO.Path.GetFileName(file) + " still says '" + phrase + "'");
+            }
+        }
+
+        [Test]
+        public void Reaction_IsNotOneOfTheTwelveAttributes_AndNeverEntersRatingsOrTheCard()
+        {
+            Assert.AreEqual(12, PlayerAttributeInfo.All.Length);
+            Assert.IsFalse(PlayerAttributeInfo.All.Select(a => a.ToString()).Contains("Reaction"));
+
+            var calc = PlayerRatingCalculator.CreateDefault();
+            var low = SakData.Player(); low.Attributes.Reaction = 1;
+            var high = SakData.Player(); high.Attributes.Reaction = 99;
+            var profile = SakData.Profile();
+            Assert.AreEqual(calc.GetOverall(low, profile), calc.GetOverall(high, profile));
+            foreach (PlayerArchetype role in RoleInfo.OfficialRoles)
+                Assert.AreEqual(calc.GetRoleRating(low, role), calc.GetRoleRating(high, role), role.ToString());
+            foreach (PitchZone zone in Enum.GetValues(typeof(PitchZone)))
+                Assert.AreEqual(calc.GetZoneRating(low, zone), calc.GetZoneRating(high, zone), zone.ToString());
+            foreach (PlayerAttributeId id in PlayerAttributeInfo.All)
+                Assert.AreNotEqual("Reaction", id.ToString());
+        }
+
+        [Test]
+        public void TheTeamRule_IsEnforcedAgainstTheLibrary_NotAgainstEmbeddedPlayers()
+        {
+            // A valid 6v6 team needs its players to exist in the library: ids alone are not enough.
+            var lib = new PlayerLibrary();
+            var team = TestData.Team(lib, "blue");
+            Assert.IsTrue(DataValidator.ValidateTeam(team, lib, FormationLibrary.CreateDefault()).IsValid);
+            Assert.IsTrue(DataValidator.ValidateTeam(team, new PlayerLibrary()).Has(ValidationCode.TeamPlayerNotFound));
         }
     }
 }
