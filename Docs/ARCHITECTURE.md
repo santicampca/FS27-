@@ -7,6 +7,7 @@ formaciones) en [DATA_CORE.md](DATA_CORE.md).
 Dificultad e infraestructura de IA (sin IA todavía): [DIFFICULTY_SYSTEM.md](DIFFICULTY_SYSTEM.md).
 **FS27 es 6v6: cada equipo tiene 1 portero + 5 jugadores de campo (6 en total).** Los equipos referencian jugadores por id (`TeamDefinition.PlayerIds` → `PlayerLibrary`).
 Sistema de jugadores V2 (identidad, 12 atributos, polivalencia, overall, carta): [PLAYER_SYSTEM.md](PLAYER_SYSTEM.md).
+Sistema de portero V1 (perfil con 8 capacidades, rating propio, estilos; solo datos, sin IA): [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md).
 
 ## Capas (assembly definitions)
 
@@ -46,11 +47,11 @@ El jugador nunca sabe de dónde viene la entrada. La IA futura usará `PlayerInt
 
 ## Pruebas
 
-- Lógica de `Core`: 692 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
+- Lógica de `Core`: 794 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
   `dotnet test Tests/Core.Tests` (más rápido que abrir el editor).
 - Unity Test Runner: Window → General → Test Runner → EditMode.
 
 ## Qué viene después (no implementado)
 
-Pase, tiro, portero, IA, equipos, menús, estadio, y el cableado a Unity de los sistemas de Core (adaptadores finos
+Pase, tiro, gameplay e IA del portero, IA, menús, estadio, y el cableado a Unity de los sistemas de Core (adaptadores finos
 que se harán tras validar la Fase 1 en el editor). Ver el roadmap acordado.

@@ -149,7 +149,7 @@ Speed, Acceleration, Agility, Strength, Stamina, Shooting, Finishing, Passing, C
 | `Attack` | 10 | 8 | 6 | 5 | 1 | 18 | 20 | 4 | 12 | 8 | 8 | 0 |
 | `Wing` | 16 | 14 | 14 | 1 | 6 | 4 | 3 | 8 | 10 | 16 | 8 | 0 |
 
-La zona `Goal` se aproxima con Defense, Agility y Control porque **aún no existen atributos específicos de portero**: los 12 atributos son el sistema base de *jugador*, y el portero tendrá un **GK System** propio en una fase posterior (no se han inventado todavía Diving, Handling, Kicking, Positioning, Reflexes, etc.).
+La zona `Goal` se aproxima con Defense, Agility y Control para el Overall: los 12 atributos son el sistema base de *jugador*. Las capacidades específicas del portero (Reflexes, Handling, etc.) viven en su `GoalkeeperProfile` y **no entran en el Overall**: ver [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md).
 
 ### Ratings transparentes (tests)
 - Con +10 en **Shooting**, el rating de Cazagoles sube +2,0 y el de Constructor +0,1.
@@ -240,7 +240,7 @@ Resueltas por la corrección estructural 6v6:
 5. **Control** sigue llamándose `BallControl` internamente (`Control` es un alias de propiedad, sin renombrado masivo).
 
 Pendientes:
-- **Portero:** sin atributos propios; su rating se aproxima con los 12 actuales y su rol por defecto (`Guardian`) es provisional hasta el GK System.
+- **Portero:** sus capacidades específicas están en el `GoalkeeperProfile` (Goalkeeper System V1); su rol de jugador por defecto (`Guardian`) sigue siendo provisional.
 - **`PlayerDefinition.TeamId`** coexiste con `TeamDefinition.PlayerIds` (es la pertenencia vista desde el jugador); el validador comprueba que no se contradigan. Alternativa: eliminar `TeamId` y derivarlo siempre de los equipos.
 - **Pesos iniciales:** todos los pesos y factores son estimaciones por ajustar jugando.
 
@@ -254,4 +254,4 @@ Pendientes:
 
 ## 23. Qué NO se implementó (a propósito)
 
-Pase, tiro, IA completa, portero completo, UI, integración con Unity, modelos 3D, mercado, sobres, economía, monedas, tienda, online, cuentas, backend, jugadores/clubes/ligas reales y cualquier botón de sprint (el sprint sigue dependiendo solo de la intensidad del joystick).
+Pase, tiro, IA completa, portero completo (el Goalkeeper System V1 solo aporta datos, rating y perfil), UI, integración con Unity, modelos 3D, mercado, sobres, economía, monedas, tienda, online, cuentas, backend, jugadores/clubes/ligas reales y cualquier botón de sprint (el sprint sigue dependiendo solo de la intensidad del joystick).

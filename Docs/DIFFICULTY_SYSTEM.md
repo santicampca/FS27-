@@ -201,8 +201,8 @@ Se consumirá por la futura IA de equipo; aquí solo existen los datos y su orde
 
 ## 11. Portero (solo configuración)
 
-`GoalkeeperParameters` (reacción, posicionamiento, anticipación, toma de decisiones, tiempo de parada, lectura de tiro, respuesta al rebote) y `GoalkeeperSkillModel`, que los combina con los atributos del portero (Reaction → reflejos/lectura/tiempo; Defense → posición/decisión/rebote).
-Respeta el límite humano de reacción y no modifica atributos. **No hay IA de portero**; solo la base de configuración.
+`GoalkeeperParameters` (reacción, posicionamiento, anticipación, toma de decisiones, tiempo de parada, lectura de tiro, respuesta al rebote) y `GoalkeeperSkillModel`, que los combina con las **capacidades del `GoalkeeperProfile`** (Reflexes → reacción y lectura; Positioning/Agility/Speed/Acceleration → posición y anticipación; Command → decisión; Diving → parada; Handling → rebote). Ver [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md).
+Respeta el límite humano de reacción y no modifica atributos ni capacidades; Reaction ya no interviene en el portero. **No hay IA de portero**; solo la base de configuración.
 
 ## 12. Asistencias del jugador humano (separadas de la IA)
 

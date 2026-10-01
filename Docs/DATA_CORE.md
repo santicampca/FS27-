@@ -23,7 +23,7 @@ TeamDefinition ──► PlayerIds: List<string>   (el orden = la alineación; �
 
 El equipo **no contiene copias** de `PlayerDefinition`: solo ids. Existe una única instancia por jugador (en la `PlayerLibrary`),
 lo que permite cambiar un jugador de equipo, editar plantillas, crear equipos y reutilizar jugadores sin duplicar nada.
-Para resolver los ids se usa `IPlayerLookup` (la `PlayerLibrary` lo implementa), por lo que `Data` no depende de `Players`.
+Para resolver los ids (y los perfiles de portero) se usa `IPlayerLookup` (la `PlayerLibrary` lo implementa), por lo que `Data` no depende de `Players`.
 
 | Tipo | Contenido |
 |---|---|
@@ -68,7 +68,7 @@ Cada problema es un `ValidationIssue` con `Code` (enum `ValidationCode`, lo que 
 |---|---|
 | `ValidatePlayer` | id válido (1-64, sin espacios), nombre (1-32, no vacío), número 1..99, rol definido, los atributos en 1..99, identidad y datos físicos |
 | `ValidateFormation` | exactamente 6 posiciones (1 portero + 5 de campo), índices 0..5 sin repetir, exactamente 1 portero, roles y zonas definidos (solo el portero en la zona `Goal`), coordenadas en 0..1 (NaN/infinito rechazados) |
-| `ValidateTeam(team, players, formations?)` | exactamente 6 ids de jugador, ids válidos y sin repetir, todos existentes en la biblioteca de jugadores, cada jugador válido, exactamente 1 portero (y por tanto 5 de campo), números de camiseta sin repetir, `TeamId` del jugador coherente, `FormationId` presente. Con biblioteca de formaciones: la formación existe, es válida (6 posiciones) y su slot de portero coincide con el portero del equipo |
+| `ValidateTeam(team, players, formations?)` | exactamente 6 ids de jugador, ids válidos y sin repetir, todos existentes en la biblioteca de jugadores, cada jugador válido, exactamente 1 portero (y por tanto 5 de campo) **con `GoalkeeperProfile` válido** (y ningún jugador de campo con uno; ver [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md)), números de camiseta sin repetir, `TeamId` del jugador coherente, `FormationId` presente. Con biblioteca de formaciones: la formación existe, es válida (6 posiciones) y su slot de portero coincide con el portero del equipo |
 | `ValidateMatchTeams(home, away, players, formations?)` | ambos equipos válidos, ids de equipo distintos, ningún id de jugador compartido |
 
 Ejemplo de uso (pseudocódigo): `var r = DataValidator.ValidateTeam(team, playerLibrary, formationLibrary); if (!r.IsValid) log(r.ToString());`
