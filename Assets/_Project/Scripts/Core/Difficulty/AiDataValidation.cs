@@ -41,7 +41,12 @@ namespace FS27.Core
         ProfileAffinityCountMismatch,
         ProfileAffinityOutOfRange,
         ProfileBehaviourOutOfRange,
-        ProfilePlayerIdMismatch
+        ProfilePlayerIdMismatch,
+
+        // Player rating configuration
+        RatingWeightsMissing,
+        RatingWeightsInvalid,
+        RatingFactorOutOfRange
     }
 
     public sealed class AiDataIssue
