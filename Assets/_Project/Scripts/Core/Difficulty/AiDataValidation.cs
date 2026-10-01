@@ -35,7 +35,13 @@ namespace FS27.Core
         ProfileArchetypeCountInvalid,
         ProfileArchetypeDuplicate,
         ProfileArchetypeInvalid,
-        ProfileGoalkeeperMismatch
+        ProfileGoalkeeperMismatch,
+
+        // Player System V2 (appended, so earlier codes keep their values)
+        ProfileAffinityCountMismatch,
+        ProfileAffinityOutOfRange,
+        ProfileBehaviourOutOfRange,
+        ProfilePlayerIdMismatch
     }
 
     public sealed class AiDataIssue
