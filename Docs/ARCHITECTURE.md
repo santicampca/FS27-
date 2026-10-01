@@ -5,6 +5,7 @@ Este documento resume lo implementado. Detalle de la Fase 1 en [PHASE1.md](PHASE
 (balón, cámara, input, partido) en [CORE_SYSTEMS.md](CORE_SYSTEMS.md) y datos (jugadores, equipos,
 formaciones) en [DATA_CORE.md](DATA_CORE.md).
 Dificultad e infraestructura de IA (sin IA todavía): [DIFFICULTY_SYSTEM.md](DIFFICULTY_SYSTEM.md).
+Sistema de jugadores V2 (identidad, 12 atributos, polivalencia, overall, carta): [PLAYER_SYSTEM.md](PLAYER_SYSTEM.md).
 
 ## Capas (assembly definitions)
 
@@ -44,7 +45,7 @@ El jugador nunca sabe de dónde viene la entrada. La IA futura usará `PlayerInt
 
 ## Pruebas
 
-- Lógica de `Core`: 451 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
+- Lógica de `Core`: 670 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
   `dotnet test Tests/Core.Tests` (más rápido que abrir el editor).
 - Unity Test Runner: Window → General → Test Runner → EditMode.
 

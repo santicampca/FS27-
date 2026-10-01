@@ -4,6 +4,8 @@ Capa de datos pura en `Assets/_Project/Scripts/Core/Data`. Sin UnityEngine, sin 
 solo **qué es** un jugador, un equipo y una formación, y la validación de que son utilizables en un 5 contra 5.
 Todo es aditivo: reutiliza `PlayerAttributes` y `FieldDimensions` sin modificarlos.
 
+> **Actualizado por Player System V2:** `PlayerAttributes` pasó de 9 a 12 atributos + `Reaction` heredado y `PlayerDefinition` ganó identidad y datos físicos. Ver [PLAYER_SYSTEM.md](PLAYER_SYSTEM.md). Donde este documento dice "los 9 atributos", léase "los atributos (12 + Reaction)".
+
 ## Modelo
 
 ```
