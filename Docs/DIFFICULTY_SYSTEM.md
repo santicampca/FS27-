@@ -226,7 +226,7 @@ Por ahora existe solo el estilo neutro **Equilibrado**; presión alta, contraata
 Un jugador no es "una posición". `PlayerPlayingProfile` (aparte de `PlayerDefinition`, enlazado por id) describe:
 - **Zona principal** (`Goal`, `Defense`, `Midfield`, `Attack`, `Wing`), p. ej. *Banda*;
 - **Zonas secundarias**, p. ej. *Ataque* y *Mediocampo*;
-- hasta tres **arquetipos** (`Explosive`, `Creator`, `Finisher`, `Destroyer`, `Anchor`, `Engine`, `ShotStopper`, `Sweeper`; lista ampliable).
+- hasta tres **roles** con afinidad (los 12 roles oficiales, ver [PLAYER_SYSTEM.md](PLAYER_SYSTEM.md); este documento los llamó antes "arquetipos", y los antiguos `Destroyer`, `ShotStopper` y `Sweeper` ya no existen).
 
 Sin perfil explícito se deriva del `PlayerRole` existente (`PlayingProfileDefaults`), así que **todo lo ya creado sigue funcionando**. `ZoneOfRelativePosition` traduce una posición de formación a zona.
 `RoleExecutionModel`: **la dificultad no cambia el rol, cambia lo bien que se ejecuta**. En su zona principal, la calidad es la disciplina de rol del nivel; fuera de ella, la penalización por encaje (secundaria < principal) es menor en niveles con más adaptabilidad.

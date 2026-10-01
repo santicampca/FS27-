@@ -1,6 +1,7 @@
 # FS27 — Player System V2
 
 Estado: **implementado y probado fuera de Unity** (C# puro en `Core`, `dotnet test Tests/Core.Tests`). No se ha probado nada dentro del editor de Unity.
+**FS27 es 6v6: cada equipo = 1 portero + 5 jugadores de campo (6 en total).** Este documento describe a *un jugador*; el equipo y las formaciones están en [DATA_CORE.md](DATA_CORE.md).
 Extiende lo que ya existía (`PlayerDefinition`, `PlayerAttributes`, `PlayerPlayingProfile`, `RoleExecutionModel`…); no hay un segundo sistema de jugadores.
 
 ```
@@ -37,7 +38,7 @@ Fuente de verdad de identidad, datos básicos y atributos. Campos nuevos (todos 
 
 ## 3. `PlayerPlayingProfile` (perfil de juego)
 
-Vive aparte de la definición, enlazado por `PlayerId` (como ya estaba). Contiene lo que **no** son atributos: zona principal, zonas secundarias, hasta 3 **roles con afinidad (0–100)** y el **perfil de comportamiento** (`RiskPreference`, `Creativity`, `Aggression`). No guarda ningún atributo (hay un test que lo impide).
+Vive aparte de la definición, enlazado por `PlayerId` (como ya estaba). Contiene lo que **no** son atributos: zona principal, zonas secundarias, hasta 3 **roles con afinidad (0–100)** en **una única lista** (`Roles`: cada elemento es un `RoleAffinity` = rol + afinidad; no hay dos listas paralelas) y el **perfil de comportamiento** (`RiskPreference`, `Creativity`, `Aggression`). No guarda ningún atributo (hay un test que lo impide).
 Si un jugador no tiene perfil explícito se deriva de su `PlayerRole` (`PlayingProfileDefaults`), así que todo lo anterior sigue funcionando.
 
 ## 4. Atributos
@@ -54,7 +55,7 @@ Los **12 atributos** del sistema, escala 1–99 (`PlayerAttributeId` los nombra;
 Cómo encaja con lo que ya existía (**decisiones de integración**, ver §21):
 - **Stamina**: es el campo `Stamina` de siempre. Sigue alimentando sprint, recuperación y fatiga a través de `PlayerStats`/`StaminaSystem` (sin tocar). No existe una segunda stamina (un test lo vigila).
 - **Control** = el campo existente `BallControl`. `PlayerAttributes.Control` es un alias de propiedad (una sola variable, un solo valor).
-- **Reaction** se **conserva** como atributo heredado porque la infraestructura de dificultad/IA (`ReactionModel`, anticipación, portero) lo lee. **No participa** en overall, roles ni zonas.
+- **Reaction NO es uno de los 12 atributos.** Es un campo heredado que pertenece al sistema de IA/dificultad (`ReactionModel`, anticipación, portero), que lo lee. **No participa** en overall, rating de rol, rating de zona ni en las estadísticas de la carta (un test lo vigila).
 - **Agility, Finishing, Dribbling y Technique** son nuevos (se añadieron al final de la estructura). Aún no cambian el movimiento: el movimiento no se tocó.
 
 ## 5. Zonas
@@ -63,17 +64,17 @@ Cómo encaja con lo que ya existía (**decisiones de integración**, ver §21):
 
 ## 6. Roles
 
-Son **datos**, no código por jugador. Un jugador tiene hasta 3, cada uno con afinidad 0–100. Se conservó la terminología inglesa existente (`PlayerArchetype`); `RoleInfo` aporta el nombre en español y el grupo:
+Son **datos**, no código por jugador. Un jugador tiene hasta 3, cada uno con afinidad 0–100. Se conservó la terminología inglesa existente (`PlayerArchetype`); `RoleInfo` aporta el nombre en español y el grupo. **Los 12 roles oficiales:**
 
 | Grupo | Rol (español) | `PlayerArchetype` |
 |---|---|---|
-| Defensa | Guardián · Muro | `Guardian` · `Wall` |
+| Defensa | Muro · Guardián · Ancla | `Wall` · `Guardian` · `Anchor` |
 | Creación | Constructor · Creador · Arquitecto | `Builder` · `Creator` · `Architect` |
 | Movilidad | Motor · Ala · Explosivo | `Engine` · `Winger` · `Explosive` |
 | Ataque | Finalizador · Cazagoles · Objetivo | `Finisher` · `GoalHunter` · `Target` |
 
-`Explosive`, `Creator`, `Finisher` y `Engine` ya existían (sin renombrar ni renumerar). Se añadieron `Guardian`, `Wall`, `Builder`, `Architect`, `Winger`, `GoalHunter` y `Target`.
-`Destroyer`, `Anchor`, `ShotStopper` y `Sweeper` (anteriores) se **mantienen** para no romper nada; los dos últimos sirven para perfiles de portero. Son 11 roles oficiales (el enunciado hablaba de 12: ver §21).
+El enum `PlayerArchetype` contiene **exactamente estos 12** (un test lo comprueba). `Explosive`, `Creator`, `Finisher`, `Anchor` y `Engine` ya existían y conservan nombre y número; se añadieron `Guardian`, `Wall`, `Builder`, `Architect`, `Winger`, `GoalHunter` y `Target`.
+**Migración de roles antiguos** (sin alias permanentes): `Destroyer` duplicaba a Muro/Guardián y se **eliminó** (el perfil por defecto de un defensa pasa a `Wall`). `ShotStopper` y `Sweeper` eran roles de portero: se **eliminaron** y los roles de portero se diseñarán con el futuro sistema de portero (el perfil por defecto de un portero usa `Guardian` como marcador provisional). Los números 3, 6 y 7 quedan retirados y no se reutilizan.
 
 ## 7. Polivalencia
 
@@ -128,6 +129,7 @@ Speed, Acceleration, Agility, Strength, Stamina, Shooting, Finishing, Passing, C
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | Guardián (`Guardian`) | 12 | 8 | 14 | 10 | 8 | 0 | 0 | 4 | 6 | 2 | 2 | 34 |
 | Muro (`Wall`) | 4 | 2 | 6 | 28 | 10 | 0 | 0 | 6 | 6 | 2 | 2 | 34 |
+| Ancla (`Anchor`) | 2 | 2 | 4 | 16 | 10 | 0 | 0 | 16 | 14 | 2 | 8 | 26 |
 | Constructor (`Builder`) | 2 | 2 | 6 | 3 | 8 | 1 | 0 | 30 | 20 | 6 | 18 | 4 |
 | Creador (`Creator`) | 4 | 4 | 8 | 2 | 4 | 4 | 4 | 20 | 14 | 14 | 20 | 2 |
 | Arquitecto (`Architect`) | 2 | 2 | 6 | 0 | 4 | 4 | 4 | 26 | 16 | 10 | 26 | 0 |
@@ -137,10 +139,6 @@ Speed, Acceleration, Agility, Strength, Stamina, Shooting, Finishing, Passing, C
 | Finalizador (`Finisher`) | 8 | 6 | 6 | 4 | 0 | 20 | 24 | 2 | 12 | 8 | 10 | 0 |
 | Cazagoles (`GoalHunter`) | 12 | 8 | 6 | 2 | 0 | 20 | 30 | 1 | 10 | 4 | 6 | 1 |
 | Objetivo (`Target`) | 3 | 2 | 1 | 28 | 6 | 12 | 16 | 6 | 14 | 0 | 8 | 4 |
-| Recuperador (`Destroyer`) | 8 | 6 | 10 | 20 | 12 | 0 | 0 | 4 | 6 | 2 | 2 | 30 |
-| Ancla (`Anchor`) | 2 | 2 | 4 | 16 | 10 | 0 | 0 | 16 | 14 | 2 | 8 | 26 |
-| Paradón (`ShotStopper`) | 4 | 4 | 28 | 10 | 4 | 0 | 0 | 0 | 10 | 0 | 8 | 32 |
-| Líbero (`Sweeper`) | 6 | 4 | 14 | 6 | 0 | 0 | 0 | 20 | 14 | 0 | 12 | 24 |
 
 #### Pesos por zona
 | Zona | Spee | Acce | Agil | Stre | Stam | Shoo | Fini | Pass | Cont | Drib | Tech | Defe |
@@ -151,7 +149,7 @@ Speed, Acceleration, Agility, Strength, Stamina, Shooting, Finishing, Passing, C
 | `Attack` | 10 | 8 | 6 | 5 | 1 | 18 | 20 | 4 | 12 | 8 | 8 | 0 |
 | `Wing` | 16 | 14 | 14 | 1 | 6 | 4 | 3 | 8 | 10 | 16 | 8 | 0 |
 
-La portería (`Goal`, `ShotStopper`, `Sweeper`) se aproxima con Defense, Agility y Control porque **aún no existen atributos específicos de portero** (mejora futura).
+La zona `Goal` se aproxima con Defense, Agility y Control porque **aún no existen atributos específicos de portero**: los 12 atributos son el sistema base de *jugador*, y el portero tendrá un **GK System** propio en una fase posterior (no se han inventado todavía Diving, Handling, Kicking, Positioning, Reflexes, etc.).
 
 ### Ratings transparentes (tests)
 - Con +10 en **Shooting**, el rating de Cazagoles sube +2,0 y el de Constructor +0,1.
@@ -183,11 +181,17 @@ No tiene setters. Nada del núcleo depende de ella (test por reflexión): el flu
 
 ## 16. Relación con `TeamDefinition`
 
-`TeamDefinition` **no se modificó**. Sigue guardando su lista de jugadores y la formación por id. Para no duplicar jugadores:
-- `PlayerLibrary` es el único registro (ids únicos).
-- `TeamRoster.TryBuild` construye un equipo a partir de ids con **las mismas instancias** de la biblioteca (referencias, no copias); `UsesLibraryPlayers` lo comprueba.
+Un equipo FS27 son **6 jugadores: 1 portero + 5 de campo**. `TeamDefinition` ya **no contiene jugadores, solo sus ids**:
+
+```
+TeamDefinition → PlayerIds[6] → PlayerLibrary → PlayerDefinition   (una sola instancia lógica por jugador)
+```
+
+- `PlayerLibrary` es el único registro (ids únicos) y la forma de resolver un id (`IPlayerLookup`).
+- `TeamRoster.TryBuild` crea un equipo a partir de ids existentes; `TeamRoster.TryResolve` devuelve los jugadores de la biblioteca (las mismas instancias, nunca copias). Editar un jugador lo cambia para todos los equipos, cartas y ratings.
 - Mover un jugador es cambiar su `TeamId` (`TryAssignToTeam`) y reconstruir las plantillas; el validador detecta si un equipo lista a un jugador que dice pertenecer a otro.
-Esto prepara cambiar jugadores de equipo, editar plantillas, crear equipos y torneos ficticios sin duplicar jugadores. (Ver §21: propuesta de pasar a ids puros.)
+- `DataValidator.ValidateTeam(team, players, formations)` exige 6 ids distintos y existentes, jugadores válidos, exactamente 1 portero (y por tanto 5 de campo) y una formación de 6 posiciones. La regla de "exactamente 5 jugadores" **ya no existe**.
+Esto prepara cambiar jugadores de equipo, editar plantillas, crear equipos y torneos ficticios sin duplicar jugadores.
 
 ## 17. Relación con Difficulty
 
@@ -226,23 +230,27 @@ Resultados con los pesos iniciales (calculados por el código):
 
 Son cifras de la misma familia que las del ejemplo pedido (Wing 92 · Attack 87 · Midfield 73 · Defense 42; Explosivo 91 · Creador 84 · Finalizador 82; Overall 87) pero **no idénticas**: dependen de los pesos iniciales, que son editables. No se forzaron para que coincidieran.
 
-## 21. Decisiones que requieren aprobación
+## 21. Decisiones tomadas y pendientes
 
-1. **Reaction.** No está en tu lista de 12, pero la infraestructura de dificultad/IA la lee. Se mantiene como 13.º campo heredado fuera de todos los ratings. Alternativas: eliminarla (obliga a tocar `ReactionModel`, anticipación, portero y sus tests) o derivarla de Agility/Technique.
-2. **"12 roles".** La lista tiene **11** (2 + 3 + 3 + 3). Se implementaron 11. ¿Falta un 12.º (¿otro de Defensa?) o era un error de cuenta?
-3. **Roles anteriores.** `Destroyer` y `Anchor` se solapan con Guardián y Muro; `ShotStopper` y `Sweeper` sirven de rol de portero. Se conservan sin renombrar. ¿Se retiran los solapados?
-4. **Control = `BallControl`.** Se mantuvo el nombre del campo para no romper nada y se añadió `Control` como alias. ¿Renombrar el campo (cambio amplio)?
-5. **Afinidades.** Se guardan en una lista paralela a `Archetypes` (así no se rompió el perfil existente) mantenida con `AddRole`; el validador exige que coincidan. Alternativa: una única lista de `RoleAffinity`.
-6. **Equipos por referencia.** `TeamDefinition` conserva `List<PlayerDefinition>`; se evita la duplicación con `PlayerLibrary`/`TeamRoster`. Alternativa más pura: que `TeamDefinition` guarde solo `PlayerIds` (cambia Data Core y sus tests).
-7. **Portero.** Sin atributos propios (reflejos, manos…), su rating se aproxima con los 12 actuales.
-8. **Pesos iniciales.** Todos los pesos y factores son estimaciones por ajustar jugando.
+Resueltas por la corrección estructural 6v6:
+1. **Reaction** queda fuera de los 12 atributos (pertenece a IA/dificultad) y fuera de overall, ratings y carta.
+2. **12 roles oficiales** (Muro, Guardián, Ancla / Constructor, Creador, Arquitecto / Motor, Ala, Explosivo / Finalizador, Cazagoles, Objetivo); `Destroyer`, `ShotStopper` y `Sweeper` eliminados, sin alias.
+3. **Una sola lista** `Roles` (rol + afinidad), máximo 3 roles, afinidad 0–100.
+4. **Equipos por ids**: `TeamDefinition.PlayerIds` + `PlayerLibrary`.
+5. **Control** sigue llamándose `BallControl` internamente (`Control` es un alias de propiedad, sin renombrado masivo).
+
+Pendientes:
+- **Portero:** sin atributos propios; su rating se aproxima con los 12 actuales y su rol por defecto (`Guardian`) es provisional hasta el GK System.
+- **`PlayerDefinition.TeamId`** coexiste con `TeamDefinition.PlayerIds` (es la pertenencia vista desde el jugador); el validador comprueba que no se contradigan. Alternativa: eliminar `TeamId` y derivarlo siempre de los equipos.
+- **Pesos iniciales:** todos los pesos y factores son estimaciones por ajustar jugando.
 
 ## 22. Cambios en lo existente (mínimos y justificados)
 
-- `PlayerAttributes`: +4 campos, alias `Control`, `GetValue`/`With`. `PlayerDefinition`: campos de identidad. `PlayerArchetype`: +7 roles. `PlayerPlayingProfile`: afinidades y comportamiento.
+- `PlayerAttributes`: +4 campos, alias `Control`, `GetValue`/`With`. `PlayerDefinition`: campos de identidad. `PlayerArchetype`: roles oficiales (12). `PlayerPlayingProfile`: lista única `Roles` y comportamiento.
 - `DataValidator`, `PlayingProfileValidator` y los códigos de error: validan lo nuevo (los códigos se **añaden al final**).
-- Tests existentes tocados: el helper `TestData` (ahora rellena los 13 atributos), el rango de dos tests parametrizados (de 9 a 13 atributos), el test que fijaba los 9 atributos y el que fijaba los 5 campos de `PlayerDefinition` (se actualizaron a la forma nueva); y `AssertClean` pasó de `private` a `internal` para reutilizarlo.
-- No se tocaron movimiento, stamina, input, balón, cámara, partido, dificultad (datos y modelos), equipo ni formaciones.
+- Corrección 6v6: `TeamDefinition` pasa a ids, `DataRules` fija 1 + 5 = 6 jugadores, las formaciones por defecto tienen 6 posiciones con zona.
+- Tests existentes tocados: el helper `TestData` (ahora rellena los atributos y crea equipos de 6 con una `PlayerLibrary`) y los tests que fijaban 5 jugadores, 9 atributos o los roles antiguos.
+- No se tocaron movimiento, stamina, input, balón, cámara, partido ni dificultad (datos y modelos).
 
 ## 23. Qué NO se implementó (a propósito)
 
