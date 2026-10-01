@@ -222,6 +222,7 @@ namespace FS27.Core.Tests
             library.TryAdd(sak);
             profiles.TryAdd(SakData.Profile());
             library.TryAdd(TestData.Player("cobalt-gk", 1, PlayerRole.Goalkeeper));
+            library.TryAddGoalkeeperProfile(TestData.Keeper(70, "cobalt-gk"));
             library.TryAdd(TestData.Player("cobalt-d1", 2, PlayerRole.Defender));
             library.TryAdd(TestData.Player("cobalt-d2", 3, PlayerRole.Defender));
             library.TryAdd(TestData.Player("cobalt-m1", 8, PlayerRole.Midfielder));

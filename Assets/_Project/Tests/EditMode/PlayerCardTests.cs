@@ -164,7 +164,8 @@ namespace FS27.Core.Tests
         {
             var allowed = new HashSet<Type>
             {
-                typeof(PlayerDefinition), typeof(PlayerPlayingProfile), typeof(TeamDefinition), typeof(CardType), typeof(PlayerRatingCalculator)
+                typeof(PlayerDefinition), typeof(PlayerPlayingProfile), typeof(TeamDefinition), typeof(CardType), typeof(PlayerRatingCalculator),
+                typeof(GoalkeeperProfile), typeof(GoalkeeperRatingCalculator)
             };
             var fields = typeof(PlayerCardData).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             foreach (var f in fields)

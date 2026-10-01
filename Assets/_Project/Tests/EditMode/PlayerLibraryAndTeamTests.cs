@@ -18,6 +18,7 @@ namespace FS27.Core.Tests
             foreach (string prefix in new[] { "blue", "red" })
             {
                 library.TryAdd(TestData.Player(prefix + "-gk", 1, PlayerRole.Goalkeeper));
+                library.TryAddGoalkeeperProfile(TestData.Keeper(70, prefix + "-gk"));
                 library.TryAdd(TestData.Player(prefix + "-d1", 2, PlayerRole.Defender));
                 library.TryAdd(TestData.Player(prefix + "-d2", 3, PlayerRole.Defender));
                 library.TryAdd(TestData.Player(prefix + "-m1", 8, PlayerRole.Midfielder));

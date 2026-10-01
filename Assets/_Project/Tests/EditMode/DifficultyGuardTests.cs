@@ -87,7 +87,7 @@ namespace FS27.Core.Tests
                     AiErrorModel.Resolve(AiErrorModel.Assess(k, d, a, ErrorContext.Calm, new ErrorTuning()), new SeededRandom(3));
                 PositioningModel.ApplyError(Vec2.Zero, d.Positioning, a, 1f, new Vec2(1f, 1f), new PositioningTuning());
                 AnticipationModel.Horizon(new PerceptionContext { EventPosition = new Vec2(0f, 5f) }, d.Anticipation, a, new AnticipationTuning());
-                GoalkeeperSkillModel.Resolve(d.Goalkeeper, a, KeeperTuning);
+                GoalkeeperSkillModel.Resolve(d.Goalkeeper, a, TestData.Keeper(70), KeeperTuning);
                 AssistResolver.Resolve(d, null);
             }
 

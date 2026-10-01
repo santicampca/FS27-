@@ -632,7 +632,7 @@ namespace FS27.Core.Tests
                 foreach (var role in AllRoles) calc.GetRoleExecution01(sak, prof, role, d);
                 foreach (var zone in AllZones) calc.GetZoneExecution01(sak, prof, zone, d, null);
                 AiSkillResolver.Resolve(d, sak.Attributes);
-                GoalkeeperSkillModel.Resolve(d.Goalkeeper, sak.Attributes, new GoalkeeperTuning());
+                GoalkeeperSkillModel.Resolve(d.Goalkeeper, sak.Attributes, TestData.Keeper(70), new GoalkeeperTuning());
             }
 
             Assert.AreEqual(attrs, sak.Attributes);

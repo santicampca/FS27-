@@ -55,12 +55,19 @@ namespace FS27.Core.Tests
                 formationId,
                 prefix + "-gk", prefix + "-d1", prefix + "-d2", prefix + "-m1", prefix + "-f1", prefix + "-f2");
             library.TryAdd(Player(prefix + "-gk", 1, PlayerRole.Goalkeeper));
+            library.TryAddGoalkeeperProfile(Keeper(70, prefix + "-gk"));
             library.TryAdd(Player(prefix + "-d1", 2, PlayerRole.Defender));
             library.TryAdd(Player(prefix + "-d2", 3, PlayerRole.Defender));
             library.TryAdd(Player(prefix + "-m1", 8, PlayerRole.Midfielder));
             library.TryAdd(Player(prefix + "-f1", 9, PlayerRole.Forward));
             library.TryAdd(Player(prefix + "-f2", 10, PlayerRole.Forward));
             return team;
+        }
+
+        /// <summary>A goalkeeper profile with every capability at <paramref name="value"/>.</summary>
+        public static GoalkeeperProfile Keeper(int value, string playerId = "gk")
+        {
+            return new GoalkeeperProfile(playerId, GoalkeeperStyle.ShotStopper, value, value, value, value, value, value, value, value);
         }
 
         /// <summary>The library's player at a lineup index of the team.</summary>

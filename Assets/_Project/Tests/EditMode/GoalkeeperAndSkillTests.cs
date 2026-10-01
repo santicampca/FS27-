@@ -35,10 +35,10 @@ namespace FS27.Core.Tests
         public void Keeper_ImprovesWithLevel_OnEveryParameter()
         {
             var keeper = TestData.Attrs(70);
-            GoalkeeperSkill prev = GoalkeeperSkillModel.Resolve(L(DifficultyLevel.Novice).Goalkeeper, keeper, tuning);
+            GoalkeeperSkill prev = GoalkeeperSkillModel.Resolve(L(DifficultyLevel.Novice).Goalkeeper, keeper, TestData.Keeper(70), tuning);
             foreach (var l in Levels.Skip(1))
             {
-                var s = GoalkeeperSkillModel.Resolve(L(l).Goalkeeper, keeper, tuning);
+                var s = GoalkeeperSkillModel.Resolve(L(l).Goalkeeper, keeper, TestData.Keeper(70), tuning);
                 Assert.Less(s.ReactionSeconds, prev.ReactionSeconds, l.ToString());
                 Assert.Greater(s.Positioning, prev.Positioning, l.ToString());
                 Assert.Greater(s.Anticipation, prev.Anticipation, l.ToString());
@@ -51,11 +51,11 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void KeeperAttributes_StillMatter_InTheSameDifficulty()
+        public void KeeperCapabilities_StillMatter_InTheSameDifficulty()
         {
             var d = L(DifficultyLevel.Professional).Goalkeeper;
-            var weak = GoalkeeperSkillModel.Resolve(d, TestData.Attrs(15), tuning);
-            var strong = GoalkeeperSkillModel.Resolve(d, TestData.Attrs(95), tuning);
+            var weak = GoalkeeperSkillModel.Resolve(d, TestData.Attrs(15), TestData.Keeper(15), tuning);
+            var strong = GoalkeeperSkillModel.Resolve(d, TestData.Attrs(95), TestData.Keeper(95), tuning);
             Assert.Greater(weak.ReactionSeconds, strong.ReactionSeconds);
             Assert.Less(weak.Positioning, strong.Positioning);
             Assert.Less(weak.SaveTiming, strong.SaveTiming);
@@ -68,14 +68,14 @@ namespace FS27.Core.Tests
         {
             foreach (var l in Levels)
             {
-                var s = GoalkeeperSkillModel.Resolve(L(l).Goalkeeper, TestData.Attrs(99), tuning);
+                var s = GoalkeeperSkillModel.Resolve(L(l).Goalkeeper, TestData.Attrs(99), TestData.Keeper(99), tuning);
                 Assert.GreaterOrEqual(s.ReactionSeconds, DifficultyRules.AbsoluteMinReactionSeconds);
                 Assert.GreaterOrEqual(s.ReactionSeconds, tuning.MinReactionSeconds - 1e-6f);
                 foreach (float q in new[] { s.Positioning, s.Anticipation, s.DecisionMaking, s.SaveTiming, s.ShotReading, s.ReboundResponse })
                     Assert.LessOrEqual(q, 1f);
             }
             var broken = new GoalkeeperParameters { ReactionSeconds = 0.01f };
-            Assert.GreaterOrEqual(GoalkeeperSkillModel.Resolve(broken, TestData.Attrs(99), new GoalkeeperTuning { MinReactionSeconds = 0f }).ReactionSeconds,
+            Assert.GreaterOrEqual(GoalkeeperSkillModel.Resolve(broken, TestData.Attrs(99), TestData.Keeper(99), new GoalkeeperTuning { MinReactionSeconds = 0f }).ReactionSeconds,
                 DifficultyRules.AbsoluteMinReactionSeconds);
         }
 
@@ -83,7 +83,7 @@ namespace FS27.Core.Tests
         public void KeeperSkill_NeverModifiesTheKeepersAttributes()
         {
             var a = TestData.Attrs(66); var copy = a;
-            foreach (var l in Levels) GoalkeeperSkillModel.Resolve(L(l).Goalkeeper, a, tuning);
+            foreach (var l in Levels) GoalkeeperSkillModel.Resolve(L(l).Goalkeeper, a, TestData.Keeper(66), tuning);
             Assert.AreEqual(copy, a);
         }
 
@@ -91,9 +91,9 @@ namespace FS27.Core.Tests
         public void KeeperTuning_IsConfigurable()
         {
             var g = L(DifficultyLevel.Professional).Goalkeeper;
-            var flat = new GoalkeeperTuning { AttributeFactorAtWorst = 1f, AttributeFactorAtBest = 1f, ReactionAttributeInfluence = 0f };
-            var weak = GoalkeeperSkillModel.Resolve(g, TestData.Attrs(1), flat);
-            var strong = GoalkeeperSkillModel.Resolve(g, TestData.Attrs(99), flat);
+            var flat = new GoalkeeperTuning { AttributeFactorAtWorst = 1f, AttributeFactorAtBest = 1f, ReflexesReactionInfluence = 0f };
+            var weak = GoalkeeperSkillModel.Resolve(g, TestData.Attrs(1), TestData.Keeper(1), flat);
+            var strong = GoalkeeperSkillModel.Resolve(g, TestData.Attrs(99), TestData.Keeper(99), flat);
             Assert.AreEqual(weak.Positioning, strong.Positioning, 1e-6f);
             Assert.AreEqual(weak.ReactionSeconds, strong.ReactionSeconds, 1e-6f);
         }
