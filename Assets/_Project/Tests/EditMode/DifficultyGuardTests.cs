@@ -237,7 +237,7 @@ namespace FS27.Core.Tests
             new Regex(@"\bnba\b", RegexOptions.IgnoreCase)
         };
 
-        private static void AssertClean(string text, string where)
+        internal static void AssertClean(string text, string where)
         {
             string lower = text.ToLowerInvariant();
             foreach (string term in BannedTerms)
