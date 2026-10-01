@@ -42,6 +42,30 @@ namespace FS27.Core
             CheckAttribute(r, who, "Defense", a.Defense);
             CheckAttribute(r, who, "Strength", a.Strength);
             CheckAttribute(r, who, "Reaction", a.Reaction);
+            CheckAttribute(r, who, "Agility", a.Agility);
+            CheckAttribute(r, who, "Finishing", a.Finishing);
+            CheckAttribute(r, who, "Dribbling", a.Dribbling);
+            CheckAttribute(r, who, "Technique", a.Technique);
+
+            // Player System V2 identity and physical data.
+            if (!string.IsNullOrEmpty(player.ShortName) && (string.IsNullOrWhiteSpace(player.ShortName) || player.ShortName.Length > PlayerRules.MaxShortNameLength))
+                r.Add(ValidationCode.PlayerShortNameInvalid, who, "Short name must be 1-" + PlayerRules.MaxShortNameLength + " characters (or empty to derive it).");
+            if (!PlayerRules.IsValidNationalityCode(player.NationalityCode))
+                r.Add(ValidationCode.PlayerNationalityInvalid, who, "Nationality code must be 2-3 capital letters (or empty).");
+            if (!string.IsNullOrEmpty(player.TeamId) && !DataRules.IsValidId(player.TeamId))
+                r.Add(ValidationCode.PlayerTeamIdInvalid, who, "Team id must be 1-" + DataRules.MaxIdLength + " characters with no spaces (or empty).");
+            if (player.Age < PlayerRules.MinAge || player.Age > PlayerRules.MaxAge)
+                r.Add(ValidationCode.PlayerAgeOutOfRange, who, "Age " + player.Age + " is outside " + PlayerRules.MinAge + ".." + PlayerRules.MaxAge + ".");
+            if (player.HeightCm < PlayerRules.MinHeightCm || player.HeightCm > PlayerRules.MaxHeightCm)
+                r.Add(ValidationCode.PlayerHeightOutOfRange, who, "Height " + player.HeightCm + " cm is outside " + PlayerRules.MinHeightCm + ".." + PlayerRules.MaxHeightCm + ".");
+            if (player.WeightKg < PlayerRules.MinWeightKg || player.WeightKg > PlayerRules.MaxWeightKg)
+                r.Add(ValidationCode.PlayerWeightOutOfRange, who, "Weight " + player.WeightKg + " kg is outside " + PlayerRules.MinWeightKg + ".." + PlayerRules.MaxWeightKg + ".");
+            if (!Enum.IsDefined(typeof(PreferredFoot), player.PreferredFoot))
+                r.Add(ValidationCode.PlayerFootInvalid, who, "Preferred foot " + (int)player.PreferredFoot + " is not valid.");
+            if (player.WeakFootQuality < PlayerRules.MinWeakFoot || player.WeakFootQuality > PlayerRules.MaxWeakFoot)
+                r.Add(ValidationCode.PlayerWeakFootOutOfRange, who, "Weak foot quality " + player.WeakFootQuality + " is outside " + PlayerRules.MinWeakFoot + ".." + PlayerRules.MaxWeakFoot + ".");
+            if (!Enum.IsDefined(typeof(BodyType), player.BodyType))
+                r.Add(ValidationCode.PlayerBodyTypeInvalid, who, "Body type " + (int)player.BodyType + " is not valid.");
             return r;
         }
 
@@ -157,6 +181,8 @@ namespace FS27.Core
                     if (p == null) continue;
 
                     if (p.Role == PlayerRole.Goalkeeper) keepers++;
+                    if (!string.IsNullOrEmpty(p.TeamId) && team.Id != null && p.TeamId != team.Id)
+                        r.Add(ValidationCode.TeamPlayerTeamIdMismatch, who + " > player '" + p.Id + "'", "Player says it belongs to team '" + p.TeamId + "' but is listed in team '" + team.Id + "'.");
                     if (p.Id != null && !ids.Add(p.Id))
                         r.Add(ValidationCode.TeamDuplicatePlayerId, who + " > player '" + p.Id + "'", "Player id is used more than once in this team.");
                     if (p.Number >= DataRules.MinShirtNumber && p.Number <= DataRules.MaxShirtNumber && !numbers.Add(p.Number))

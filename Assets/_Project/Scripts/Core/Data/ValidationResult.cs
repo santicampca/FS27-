@@ -39,7 +39,19 @@ namespace FS27.Core
 
         // A match between two teams
         MatchSameTeam,
-        MatchDuplicatePlayerId
+        MatchDuplicatePlayerId,
+
+        // Player System V2 (appended, so earlier codes keep their values)
+        PlayerShortNameInvalid,
+        PlayerNationalityInvalid,
+        PlayerTeamIdInvalid,
+        PlayerAgeOutOfRange,
+        PlayerHeightOutOfRange,
+        PlayerWeightOutOfRange,
+        PlayerFootInvalid,
+        PlayerWeakFootOutOfRange,
+        PlayerBodyTypeInvalid,
+        TeamPlayerTeamIdMismatch
     }
 
     public sealed class ValidationIssue

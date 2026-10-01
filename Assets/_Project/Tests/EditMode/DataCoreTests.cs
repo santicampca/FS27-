@@ -9,29 +9,34 @@ namespace FS27.Core.Tests
     /// <summary>Fictional, generic data only (no real players or teams).</summary>
     internal static class TestData
     {
+        /// <summary>All 12 core attributes plus the legacy Reaction set to the same value.</summary>
         public static PlayerAttributes Attrs(int value = 70)
         {
             return new PlayerAttributes
             {
                 Speed = value, Acceleration = value, Stamina = value, BallControl = value, Passing = value,
-                Shooting = value, Defense = value, Strength = value, Reaction = value
+                Shooting = value, Defense = value, Strength = value, Reaction = value,
+                Agility = value, Finishing = value, Dribbling = value, Technique = value
             };
         }
 
+        /// <summary>Attributes at 70 except the one at <paramref name="index"/> (order of <see cref="AttributeNames"/>).</summary>
         public static PlayerAttributes WithAttribute(int index, int value)
         {
-            int[] v = Enumerable.Repeat(70, 9).ToArray();
+            int[] v = Enumerable.Repeat(70, 13).ToArray();
             v[index] = value;
             return new PlayerAttributes
             {
                 Speed = v[0], Acceleration = v[1], Stamina = v[2], BallControl = v[3], Passing = v[4],
-                Shooting = v[5], Defense = v[6], Strength = v[7], Reaction = v[8]
+                Shooting = v[5], Defense = v[6], Strength = v[7], Reaction = v[8],
+                Agility = v[9], Finishing = v[10], Dribbling = v[11], Technique = v[12]
             };
         }
 
         public static readonly string[] AttributeNames =
         {
-            "Speed", "Acceleration", "Stamina", "BallControl", "Passing", "Shooting", "Defense", "Strength", "Reaction"
+            "Speed", "Acceleration", "Stamina", "BallControl", "Passing", "Shooting", "Defense", "Strength", "Reaction",
+            "Agility", "Finishing", "Dribbling", "Technique"
         };
 
         public static PlayerDefinition Player(string id, int number, PlayerRole role, int attr = 70)
@@ -164,7 +169,7 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void Player_EveryAttribute_IsRangeChecked([Range(0, 8)] int index, [Values(-1, 0, 100, 250)] int bad)
+        public void Player_EveryAttribute_IsRangeChecked([Range(0, 12)] int index, [Values(-1, 0, 100, 250)] int bad)
         {
             var p = TestData.Player("p", 5, PlayerRole.Defender);
             p.Attributes = TestData.WithAttribute(index, bad);
@@ -176,7 +181,7 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void Player_AttributeBoundaries_AreAccepted([Range(0, 8)] int index, [Values(1, 99)] int edge)
+        public void Player_AttributeBoundaries_AreAccepted([Range(0, 12)] int index, [Values(1, 99)] int edge)
         {
             var p = TestData.Player("p", 5, PlayerRole.Defender);
             p.Attributes = TestData.WithAttribute(index, edge);
@@ -814,10 +819,11 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void PlayerAttributes_StillHasTheNineExpectedAttributes()
+        public void PlayerAttributes_HasTheTwelveCoreAttributesPlusTheLegacyReaction_AndNoSecondStamina()
         {
             var names = typeof(PlayerAttributes).GetFields(BindingFlags.Public | BindingFlags.Instance).Select(f => f.Name).ToArray();
             CollectionAssert.AreEquivalent(TestData.AttributeNames, names);
+            Assert.AreEqual(1, names.Count(n => n.ToLowerInvariant().Contains("stamina")), "one stamina attribute only");
         }
 
         [Test]

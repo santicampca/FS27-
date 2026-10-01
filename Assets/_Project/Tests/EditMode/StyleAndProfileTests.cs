@@ -187,10 +187,15 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void ThePlayerDefinition_IsNotModified_ByHavingAProfile()
+        public void ThePlayerDefinition_HoldsIdentityAndAttributes_NotThePlayingProfile()
         {
             var fields = FieldNames(typeof(PlayerDefinition)).Select(n => n.ToLowerInvariant()).ToArray();
-            CollectionAssert.AreEquivalent(new[] { "id", "name", "number", "role", "attributes" }, fields);
+            // Identity, basic data and attributes live in the definition (Player System V2 extended it)...
+            foreach (string expected in new[] { "id", "name", "number", "role", "attributes", "shortname", "nationalitycode", "teamid", "age", "heightcm", "weightkg", "preferredfoot", "weakfootquality", "bodytype" })
+                CollectionAssert.Contains(fields, expected);
+            // ...while zones, roles and behaviour stay in the playing profile.
+            Assert.IsFalse(fields.Any(n => n.Contains("zone") || n.Contains("archetype") || n.Contains("affinity") || n.Contains("risk") || n.Contains("creativity") || n.Contains("aggression")),
+                string.Join(",", fields));
         }
 
         [Test]
