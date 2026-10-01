@@ -2,7 +2,8 @@
 
 Juego de fútbol 3D arcade para móviles (Unity 6, URP, C#). Principio: **simple ahora, extensible después**.
 Este documento resume lo implementado. Detalle de la Fase 1 en [PHASE1.md](PHASE1.md); sistemas puros
-(balón, cámara, input, partido) en [CORE_SYSTEMS.md](CORE_SYSTEMS.md).
+(balón, cámara, input, partido) en [CORE_SYSTEMS.md](CORE_SYSTEMS.md) y datos (jugadores, equipos,
+formaciones) en [DATA_CORE.md](DATA_CORE.md).
 
 ## Capas (assembly definitions)
 
@@ -42,7 +43,7 @@ El jugador nunca sabe de dónde viene la entrada. La IA futura usará `PlayerInt
 
 ## Pruebas
 
-- Lógica de `Core`: 124 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
+- Lógica de `Core`: 277 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
   `dotnet test Tests/Core.Tests` (más rápido que abrir el editor).
 - Unity Test Runner: Window → General → Test Runner → EditMode.
 

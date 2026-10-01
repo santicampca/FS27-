@@ -2,7 +2,7 @@
 
 Cuatro sistemas independientes en `Assets/_Project/Scripts/Core`. No dependen de Unity ni entre sí
 (salvo tipos básicos: `Vec2`, `Vec3`, `PlayerIntent`), se prueban fuera del editor con
-`dotnet test Tests/Core.Tests` (124 tests) y **no sustituyen nada de lo ya existente** en Unity:
+`dotnet test Tests/Core.Tests` (277 tests en total, con Data Core) y **no sustituyen nada de lo ya existente** en Unity:
 cuando validemos el juego, los componentes de Unity pasarán a ser adaptadores finos sobre ellos.
 
 | Sistema | Carpeta | Tests |
@@ -11,6 +11,8 @@ cuando validemos el juego, los componentes de Unity pasarán a ser adaptadores f
 | Camera Architecture | `Core/Camera` | `CameraCoreTests` |
 | Input / PlayerIntent | `Core/Input` (+ `PlayerIntent`, `IIntentSource` en la raíz) | `InputCoreTests` |
 | Match Core | `Core/Match` | `MatchCoreTests` |
+
+Datos de jugadores, equipos y formaciones: ver [DATA_CORE.md](DATA_CORE.md).
 
 ## Regla de sprint (vale para todo el proyecto)
 
