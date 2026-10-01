@@ -78,7 +78,7 @@ namespace FS27.Core
 
         // ------------------------------------------------------------------ formation
 
-        /// <summary>A formation is 5v5-compatible: 5 slots, lineup indices 0..4 once each, exactly 1 goalkeeper, coordinates in 0..1.</summary>
+        /// <summary>A formation is 6v6-compatible: one slot per team player (<see cref="DataRules.PlayersPerTeam"/>), lineup indices once each, exactly 1 goalkeeper (in the Goal zone), coordinates in 0..1.</summary>
         public static ValidationResult ValidateFormation(FormationDefinition formation)
         {
             var r = new ValidationResult();
@@ -99,7 +99,7 @@ namespace FS27.Core
             int count = positions == null ? 0 : positions.Count;
             if (count != DataRules.PlayersPerTeam)
                 r.Add(ValidationCode.FormationPositionCountInvalid, who,
-                    "A 5v5 formation needs exactly " + DataRules.PlayersPerTeam + " positions, found " + count + ".");
+                    "A 6v6 formation needs exactly " + DataRules.PlayersPerTeam + " positions (1 goalkeeper + " + DataRules.FieldPlayersPerTeam + " field players), found " + count + ".");
             if (positions == null) return r;
 
             var seen = new HashSet<int>();
@@ -119,6 +119,11 @@ namespace FS27.Core
                     r.Add(ValidationCode.FormationRoleInvalid, slot, "Role " + (int)p.Role + " is not a valid role.");
                 else if (p.Role == PlayerRole.Goalkeeper)
                     keepers++;
+
+                if (!Enum.IsDefined(typeof(PitchZone), p.Zone))
+                    r.Add(ValidationCode.FormationZoneInvalid, slot, "Zone " + (int)p.Zone + " is not a valid zone.");
+                else if ((p.Role == PlayerRole.Goalkeeper) != (p.Zone == PitchZone.Goal))
+                    r.Add(ValidationCode.FormationZoneInvalid, slot, "Only the goalkeeper slot belongs to the Goal zone.");
 
                 if (!InRelativeRange(p.Relative.X) || !InRelativeRange(p.Relative.Y))
                     r.Add(ValidationCode.FormationPositionOutOfRange, slot,
@@ -140,11 +145,12 @@ namespace FS27.Core
         // ------------------------------------------------------------------ team
 
         /// <summary>
-        /// Validates a team ready to play: exactly 5 valid players with unique ids and shirt numbers, exactly 1 goalkeeper
-        /// and a formation id. With a <paramref name="formations"/> library it also checks the formation exists, is valid
-        /// and puts its goalkeeper slot on the team's goalkeeper.
+        /// Validates a team ready to play (6v6): exactly <see cref="DataRules.PlayersPerTeam"/> distinct player ids that all exist in
+        /// <paramref name="players"/>, each a valid player with a unique shirt number, exactly 1 goalkeeper (so 5 field players), and a
+        /// formation id. With a <paramref name="formations"/> library it also checks the formation exists, is valid and puts
+        /// its goalkeeper slot on the team's goalkeeper.
         /// </summary>
-        public static ValidationResult ValidateTeam(TeamDefinition team, FormationLibrary formations = null)
+        public static ValidationResult ValidateTeam(TeamDefinition team, IPlayerLookup players, FormationLibrary formations = null)
         {
             var r = new ValidationResult();
             if (team == null)
@@ -160,38 +166,55 @@ namespace FS27.Core
             if (!DataRules.IsValidName(team.Name))
                 r.Add(ValidationCode.TeamNameInvalid, who, "Name must be 1-" + DataRules.MaxNameLength + " characters and not blank.");
 
-            List<PlayerDefinition> players = team.Players;
-            int count = players == null ? 0 : players.Count;
+            List<string> ids = team.PlayerIds;
+            int count = ids == null ? 0 : ids.Count;
             if (count != DataRules.PlayersPerTeam)
                 r.Add(ValidationCode.TeamPlayerCountInvalid, who,
-                    "A match team needs exactly " + DataRules.PlayersPerTeam + " players, found " + count + ".");
+                    "A 6v6 team needs exactly " + DataRules.PlayersPerTeam + " players (" + DataRules.GoalkeepersPerTeam + " goalkeeper + " +
+                    DataRules.FieldPlayersPerTeam + " field players), found " + count + ".");
+            if (players == null)
+                r.Add(ValidationCode.TeamPlayerLookupMissing, who, "A player library is needed to check the team's players.");
 
-            if (players != null)
+            if (ids != null)
             {
-                var ids = new HashSet<string>();
+                var seenIds = new HashSet<string>();
                 var numbers = new HashSet<int>();
                 int keepers = 0;
 
-                for (int i = 0; i < players.Count; i++)
+                for (int i = 0; i < ids.Count; i++)
                 {
-                    PlayerDefinition p = players[i];
+                    string id = ids[i];
+                    if (!DataRules.IsValidId(id))
+                    {
+                        r.Add(ValidationCode.TeamPlayerIdInvalid, who + " > slot " + i, "Player id must be 1-" + DataRules.MaxIdLength + " characters with no spaces.");
+                        continue;
+                    }
+                    if (!seenIds.Add(id))
+                    {
+                        r.Add(ValidationCode.TeamDuplicatePlayerId, who + " > player '" + id + "'", "Player id is used more than once in this team.");
+                        continue;
+                    }
+                    if (players == null) continue;
+                    if (!players.TryGet(id, out PlayerDefinition p) || p == null)
+                    {
+                        r.Add(ValidationCode.TeamPlayerNotFound, who + " > player '" + id + "'", "Player id is not in the player library.");
+                        continue;
+                    }
+
                     ValidationResult pr = ValidatePlayer(p);
                     foreach (ValidationIssue issue in pr.Issues)
                         r.Add(issue.Code, who + " > " + issue.Subject, issue.Message);
-                    if (p == null) continue;
 
                     if (p.Role == PlayerRole.Goalkeeper) keepers++;
                     if (!string.IsNullOrEmpty(p.TeamId) && team.Id != null && p.TeamId != team.Id)
                         r.Add(ValidationCode.TeamPlayerTeamIdMismatch, who + " > player '" + p.Id + "'", "Player says it belongs to team '" + p.TeamId + "' but is listed in team '" + team.Id + "'.");
-                    if (p.Id != null && !ids.Add(p.Id))
-                        r.Add(ValidationCode.TeamDuplicatePlayerId, who + " > player '" + p.Id + "'", "Player id is used more than once in this team.");
                     if (p.Number >= DataRules.MinShirtNumber && p.Number <= DataRules.MaxShirtNumber && !numbers.Add(p.Number))
                         r.Add(ValidationCode.TeamDuplicateShirtNumber, who + " > player '" + p.Id + "'", "Shirt number " + p.Number + " is used more than once in this team.");
                 }
 
-                if (keepers != DataRules.GoalkeepersPerTeam)
+                if (players != null && keepers != DataRules.GoalkeepersPerTeam)
                     r.Add(ValidationCode.TeamGoalkeeperCountInvalid, who,
-                        "A team needs exactly " + DataRules.GoalkeepersPerTeam + " goalkeeper, found " + keepers + ".");
+                        "A team needs exactly " + DataRules.GoalkeepersPerTeam + " goalkeeper (the other " + DataRules.FieldPlayersPerTeam + " are field players), found " + keepers + ".");
             }
 
             if (!DataRules.IsValidId(team.FormationId))
@@ -210,7 +233,7 @@ namespace FS27.Core
                     foreach (ValidationIssue issue in fr.Issues)
                         r.Add(issue.Code, who + " > " + issue.Subject, issue.Message);
 
-                    int teamKeeper = team.GoalkeeperIndex;
+                    int teamKeeper = team.GoalkeeperIndex(players);
                     int slotKeeper = formation.GoalkeeperIndex;
                     if (teamKeeper >= 0 && slotKeeper >= 0 && teamKeeper != slotKeeper)
                         r.Add(ValidationCode.TeamFormationGoalkeeperMismatch, who,
@@ -223,25 +246,25 @@ namespace FS27.Core
         // ------------------------------------------------------------------ match
 
         /// <summary>Both teams valid, different, and no player id shared between them.</summary>
-        public static ValidationResult ValidateMatchTeams(TeamDefinition home, TeamDefinition away, FormationLibrary formations = null)
+        public static ValidationResult ValidateMatchTeams(TeamDefinition home, TeamDefinition away, IPlayerLookup players, FormationLibrary formations = null)
         {
             var r = new ValidationResult();
-            r.Merge(ValidateTeam(home, formations));
-            r.Merge(ValidateTeam(away, formations));
+            r.Merge(ValidateTeam(home, players, formations));
+            r.Merge(ValidateTeam(away, players, formations));
             if (home == null || away == null) return r;
 
             if (home.Id != null && home.Id == away.Id)
                 r.Add(ValidationCode.MatchSameTeam, "match", "Home and away are the same team id '" + home.Id + "'.");
 
-            if (home.Players != null && away.Players != null)
+            if (home.PlayerIds != null && away.PlayerIds != null)
             {
                 var homeIds = new HashSet<string>();
-                foreach (PlayerDefinition p in home.Players)
-                    if (p != null && p.Id != null) homeIds.Add(p.Id);
+                foreach (string id in home.PlayerIds)
+                    if (id != null) homeIds.Add(id);
 
-                foreach (PlayerDefinition p in away.Players)
-                    if (p != null && p.Id != null && homeIds.Contains(p.Id))
-                        r.Add(ValidationCode.MatchDuplicatePlayerId, "match > player '" + p.Id + "'", "The same player id appears in both teams.");
+                foreach (string id in away.PlayerIds)
+                    if (id != null && homeIds.Contains(id))
+                        r.Add(ValidationCode.MatchDuplicatePlayerId, "match > player '" + id + "'", "The same player id appears in both teams.");
             }
             return r;
         }

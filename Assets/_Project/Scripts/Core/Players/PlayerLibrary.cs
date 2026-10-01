@@ -7,7 +7,7 @@ namespace FS27.Core
     /// <see cref="PlayerDefinition"/> (by instance in memory, by id in data). Moving a player between teams is a change of
     /// <see cref="PlayerDefinition.TeamId"/> (+ rebuilding the rosters), never a copy.
     /// </summary>
-    public sealed class PlayerLibrary
+    public sealed class PlayerLibrary : IPlayerLookup
     {
         private readonly Dictionary<string, PlayerDefinition> byId = new Dictionary<string, PlayerDefinition>();
         private readonly List<PlayerDefinition> ordered = new List<PlayerDefinition>();
@@ -60,14 +60,15 @@ namespace FS27.Core
     }
 
     /// <summary>
-    /// Builds team rosters out of library players, so teams REFERENCE players instead of owning copies. The team's player list holds
-    /// the library's own instances: edit a player and every team, card and rating sees the change.
+    /// Builds team rosters out of library players. A team holds only player ids, so there is exactly one logical player per id
+    /// (the library's own instance): edit a player and every team, card and rating sees the change.
     /// </summary>
     public static class TeamRoster
     {
         /// <summary>
         /// Builds a team from ordered player ids (the order is the lineup). Fails, creating nothing, if an id is unknown or repeated.
-        /// It does not modify any player (use <see cref="PlayerLibrary.TryAssignToTeam"/> to set their team).
+        /// It does not modify any player (use <see cref="PlayerLibrary.TryAssignToTeam"/> to set their team) and does not check the
+        /// 6v6 rules: <see cref="DataValidator.ValidateTeam"/> does.
         /// </summary>
         public static bool TryBuild(string teamId, string teamName, TeamColors colors, string formationId, IList<string> playerIds,
                                     PlayerLibrary library, out TeamDefinition team, out string problem)
@@ -80,11 +81,11 @@ namespace FS27.Core
                 return false;
             }
 
-            var players = new List<PlayerDefinition>();
+            var ids = new List<string>();
             var seen = new HashSet<string>();
             foreach (string id in playerIds)
             {
-                if (!library.TryGet(id, out PlayerDefinition p))
+                if (!library.TryGet(id, out _))
                 {
                     problem = "Unknown player id '" + id + "'.";
                     return false;
@@ -94,29 +95,29 @@ namespace FS27.Core
                     problem = "Player id '" + id + "' is listed twice.";
                     return false;
                 }
-                players.Add(p);
+                ids.Add(id);
             }
 
-            team = new TeamDefinition { Id = teamId, Name = teamName, Colors = colors, FormationId = formationId, Players = players };
+            team = new TeamDefinition { Id = teamId, Name = teamName, Colors = colors, FormationId = formationId, PlayerIds = ids };
             return true;
         }
 
-        /// <summary>The ids of a team's players, in lineup order.</summary>
-        public static string[] GetPlayerIds(TeamDefinition team)
+        /// <summary>
+        /// The players of a team, in lineup order: the library's own instances (references, never copies). False, with an empty
+        /// list, if the team is null or any id is not in the library.
+        /// </summary>
+        public static bool TryResolve(TeamDefinition team, IPlayerLookup library, out List<PlayerDefinition> players)
         {
-            if (team == null || team.Players == null) return new string[0];
-            var ids = new string[team.Players.Count];
-            for (int i = 0; i < ids.Length; i++) ids[i] = team.Players[i] != null ? team.Players[i].Id : null;
-            return ids;
-        }
-
-        /// <summary>True if every player in the team is the very same instance the library holds (no copies).</summary>
-        public static bool UsesLibraryPlayers(TeamDefinition team, PlayerLibrary library)
-        {
-            if (team == null || team.Players == null || library == null) return false;
-            foreach (PlayerDefinition p in team.Players)
+            players = new List<PlayerDefinition>();
+            if (team == null || team.PlayerIds == null || library == null) return false;
+            foreach (string id in team.PlayerIds)
             {
-                if (p == null || !library.TryGet(p.Id, out PlayerDefinition inLibrary) || !ReferenceEquals(p, inLibrary)) return false;
+                if (id == null || !library.TryGet(id, out PlayerDefinition p) || p == null)
+                {
+                    players.Clear();
+                    return false;
+                }
+                players.Add(p);
             }
             return true;
         }

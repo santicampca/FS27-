@@ -51,7 +51,11 @@ namespace FS27.Core
         PlayerFootInvalid,
         PlayerWeakFootOutOfRange,
         PlayerBodyTypeInvalid,
-        TeamPlayerTeamIdMismatch
+        TeamPlayerTeamIdMismatch,
+        FormationZoneInvalid,
+        TeamPlayerNotFound,
+        TeamPlayerIdInvalid,
+        TeamPlayerLookupMissing
     }
 
     public sealed class ValidationIssue

@@ -34,8 +34,11 @@ namespace FS27.Core
     }
 
     /// <summary>
-    /// A team: identity, colours, its players and the formation it starts with.
-    /// The order of <see cref="Players"/> is the lineup: the player at index i takes the formation slot with PlayerIndex i.
+    /// A team: identity, colours, the ids of its players and the formation it starts with. FS27 is 6v6, so a playable team
+    /// lists 6 ids (1 goalkeeper + 5 field players, see <see cref="DataRules"/>).
+    /// The team holds only player IDS, never players: the single logical <see cref="PlayerDefinition"/> of each id lives in the
+    /// <see cref="PlayerLibrary"/>, so editing a player, moving them to another team or reusing them needs no copies.
+    /// The order of <see cref="PlayerIds"/> is the lineup: the player at index i takes the formation slot with PlayerIndex i.
     /// The formation is referenced by id (resolved through a <see cref="FormationLibrary"/>), so teams and formations
     /// stay independent assets.
     /// </summary>
@@ -45,31 +48,29 @@ namespace FS27.Core
         public string Id;
         public string Name;
         public TeamColors Colors;
-        public List<PlayerDefinition> Players = new List<PlayerDefinition>();
+        public List<string> PlayerIds = new List<string>();
         public string FormationId;
 
         public TeamDefinition()
         {
         }
 
-        public TeamDefinition(string id, string name, TeamColors colors, string formationId, params PlayerDefinition[] players)
+        public TeamDefinition(string id, string name, TeamColors colors, string formationId, params string[] playerIds)
         {
             Id = id;
             Name = name;
             Colors = colors;
             FormationId = formationId;
-            Players = new List<PlayerDefinition>(players);
+            PlayerIds = new List<string>(playerIds);
         }
 
-        /// <summary>Lineup index of the first goalkeeper, or -1.</summary>
-        public int GoalkeeperIndex
+        /// <summary>Lineup index of the first goalkeeper (looking the players up), or -1.</summary>
+        public int GoalkeeperIndex(IPlayerLookup players)
         {
-            get
-            {
-                for (int i = 0; i < Players.Count; i++)
-                    if (Players[i] != null && Players[i].Role == PlayerRole.Goalkeeper) return i;
-                return -1;
-            }
+            if (players == null || PlayerIds == null) return -1;
+            for (int i = 0; i < PlayerIds.Count; i++)
+                if (PlayerIds[i] != null && players.TryGet(PlayerIds[i], out PlayerDefinition p) && p != null && p.Role == PlayerRole.Goalkeeper) return i;
+            return -1;
         }
     }
 }
