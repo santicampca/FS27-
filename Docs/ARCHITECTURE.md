@@ -1,12 +1,14 @@
 # FS27 — Arquitectura
 
 Juego de fútbol 3D arcade para móviles (Unity 6, URP, C#). Principio: **simple ahora, extensible después**.
-Este documento resume lo implementado. Detalle de la Fase 1 en [PHASE1.md](PHASE1.md).
+Este documento resume lo implementado. Detalle de la Fase 1 en [PHASE1.md](PHASE1.md); sistemas puros
+(balón, cámara, input, partido) en [CORE_SYSTEMS.md](CORE_SYSTEMS.md).
 
 ## Capas (assembly definitions)
 
 ```
-FS27.Core            C# puro, sin UnityEngine. Reglas y modelos: intent, atributos, locomoción, stamina.
+FS27.Core            C# puro, sin UnityEngine. Reglas y modelos: intent, atributos, locomoción, stamina,
+                     Ball Core, Camera Architecture, Input, Match Core.
    ▲
 FS27.Gameplay        Componentes de juego: PlayerEntity, PlayerMovement, Ball*, FieldBounds, TuningProfile.
    ▲        ▲
@@ -40,10 +42,11 @@ El jugador nunca sabe de dónde viene la entrada. La IA futura usará `PlayerInt
 
 ## Pruebas
 
-- Lógica de `Core`: 28 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
+- Lógica de `Core`: 124 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
   `dotnet test Tests/Core.Tests` (más rápido que abrir el editor).
 - Unity Test Runner: Window → General → Test Runner → EditMode.
 
 ## Qué viene después (no implementado)
 
-Pase, tiro, portería, rivales, IA, equipos, menús, estadio. Ver el roadmap acordado.
+Pase, tiro, portero, IA, equipos, menús, estadio, y el cableado a Unity de los sistemas de Core (adaptadores finos
+que se harán tras validar la Fase 1 en el editor). Ver el roadmap acordado.
