@@ -15,24 +15,21 @@ namespace FS27.Core
 
     /// <summary>
     /// What a player is like in play: the "roles" of a versatile player (an explosive winger who also creates and finishes).
-    /// This is a list that can grow; the AI interprets these tags, the difficulty never changes them.
+    /// The AI interprets these tags, the difficulty never changes them.
     ///
-    /// The official FS27 role set (see <see cref="RoleInfo"/>) is: Guardian, Wall (Defense); Builder, Creator, Architect (Creation);
-    /// Engine, Winger, Explosive (Mobility); Finisher, GoalHunter, Target (Attack). Destroyer, Anchor, ShotStopper and Sweeper
-    /// were defined earlier and are kept (not renamed) for compatibility and for goalkeeper-specific profiles.
+    /// The 12 official FS27 roles (see <see cref="RoleInfo"/>), by group: Defense — Wall, Guardian, Anchor; Creation — Builder,
+    /// Creator, Architect; Mobility — Engine, Winger, Explosive; Attack — Finisher, GoalHunter, Target.
+    /// The numbers are fixed once assigned (they may be stored in data). 3, 6 and 7 belonged to roles that duplicated official
+    /// ones (or were goalkeeper-specific, which waits for a goalkeeper system); they are retired and must not be reused.
     /// </summary>
     public enum PlayerArchetype
     {
         Explosive = 0,
         Creator = 1,
         Finisher = 2,
-        Destroyer = 3,
         Anchor = 4,
         Engine = 5,
-        ShotStopper = 6,
-        Sweeper = 7,
 
-        // Player System V2 (appended, so earlier values keep their numbers)
         Guardian = 8,
         Wall = 9,
         Builder = 10,
@@ -69,13 +66,8 @@ namespace FS27.Core
         public string PlayerId;
         public PitchZone PrimaryZone;
         public List<PitchZone> SecondaryZones = new List<PitchZone>();
-        /// <summary>The player's roles (up to <see cref="MaxArchetypes"/>), most defining first.</summary>
-        public List<PlayerArchetype> Archetypes = new List<PlayerArchetype>();
-        /// <summary>
-        /// Affinity (0..100) of each role, by position in <see cref="Archetypes"/>. May be left empty: affinities are then
-        /// derived from the rank (see <see cref="DefaultAffinityByRank"/>). Prefer <see cref="AddRole"/>, which keeps both lists in step.
-        /// </summary>
-        public List<int> ArchetypeAffinities = new List<int>();
+        /// <summary>The player's roles with their affinity (0..100): up to <see cref="MaxArchetypes"/>, most defining first. The only place roles live.</summary>
+        public List<RoleAffinity> Roles = new List<RoleAffinity>();
 
         // ---- Behaviour profile: how the player TENDS to play. Not attributes: nothing here changes what the player can do. ----
 
@@ -86,7 +78,7 @@ namespace FS27.Core
         /// <summary>0 = passive, 100 = aggressive.</summary>
         public int Aggression = 50;
 
-        /// <summary>Affinity given to the 1st, 2nd and 3rd role when none is stated explicitly.</summary>
+        /// <summary>Affinity given to the 1st, 2nd and 3rd role by the convenience constructor that lists roles without affinities.</summary>
         public static readonly int[] DefaultAffinityByRank = { 90, 75, 60 };
 
         public PlayerPlayingProfile()
@@ -98,7 +90,7 @@ namespace FS27.Core
             PlayerId = playerId;
             PrimaryZone = primary;
             SecondaryZones = new List<PitchZone>(secondary ?? new PitchZone[0]);
-            foreach (RoleAffinity r in roles) AddRole(r.Role, r.Affinity);
+            Roles = new List<RoleAffinity>(roles ?? new RoleAffinity[0]);
         }
 
         public PlayerPlayingProfile(string playerId, PitchZone primary, PitchZone[] secondary, params PlayerArchetype[] archetypes)
@@ -106,12 +98,12 @@ namespace FS27.Core
             PlayerId = playerId;
             PrimaryZone = primary;
             SecondaryZones = new List<PitchZone>(secondary ?? new PitchZone[0]);
-            Archetypes = new List<PlayerArchetype>(archetypes);
+            for (int i = 0; i < archetypes.Length; i++) Roles.Add(new RoleAffinity(archetypes[i], RankAffinity(i)));
         }
 
         public bool HasArchetype(PlayerArchetype a)
         {
-            return Archetypes != null && Archetypes.Contains(a);
+            return IndexOfRole(a) >= 0;
         }
 
         public bool PlaysIn(PitchZone zone)
@@ -119,13 +111,10 @@ namespace FS27.Core
             return zone == PrimaryZone || (SecondaryZones != null && SecondaryZones.Contains(zone));
         }
 
-        /// <summary>Adds a role with its affinity (keeps <see cref="Archetypes"/> and <see cref="ArchetypeAffinities"/> aligned). Returns this.</summary>
+        /// <summary>Adds a role with its affinity. Returns this.</summary>
         public PlayerPlayingProfile AddRole(PlayerArchetype role, int affinity)
         {
-            // Make earlier roles explicit first, so ranks stay meaningful once an explicit value is added.
-            while (ArchetypeAffinities.Count < Archetypes.Count) ArchetypeAffinities.Add(RankAffinity(ArchetypeAffinities.Count));
-            Archetypes.Add(role);
-            ArchetypeAffinities.Add(affinity);
+            Roles.Add(new RoleAffinity(role, affinity));
             return this;
         }
 
@@ -140,37 +129,39 @@ namespace FS27.Core
         /// <summary>The affinity (0..100) of a role this player has, or 0 if it is not one of their roles.</summary>
         public int GetAffinity(PlayerArchetype role)
         {
-            if (Archetypes == null) return 0;
-            int i = Archetypes.IndexOf(role);
-            if (i < 0) return 0;
-            if (ArchetypeAffinities != null && i < ArchetypeAffinities.Count) return ArchetypeAffinities[i];
-            return RankAffinity(i);
+            int i = IndexOfRole(role);
+            return i < 0 ? 0 : Roles[i].Affinity;
         }
 
         /// <summary>The role with the highest affinity (the first one on a tie). False if the player has no roles.</summary>
         public bool TryGetPrimaryRole(out PlayerArchetype role)
         {
             role = default;
-            if (Archetypes == null || Archetypes.Count == 0) return false;
+            if (Roles == null || Roles.Count == 0) return false;
             int best = -1;
-            for (int i = 0; i < Archetypes.Count; i++)
+            for (int i = 0; i < Roles.Count; i++)
             {
-                int a = GetAffinity(Archetypes[i]);
-                if (a > best)
+                if (Roles[i].Affinity > best)
                 {
-                    best = a;
-                    role = Archetypes[i];
+                    best = Roles[i].Affinity;
+                    role = Roles[i].Role;
                 }
             }
             return true;
         }
 
+        /// <summary>A copy of the roles with their affinities, in order.</summary>
         public RoleAffinity[] GetRoleAffinities()
         {
-            int n = Archetypes == null ? 0 : Archetypes.Count;
-            var result = new RoleAffinity[n];
-            for (int i = 0; i < n; i++) result[i] = new RoleAffinity(Archetypes[i], GetAffinity(Archetypes[i]));
-            return result;
+            return Roles == null ? new RoleAffinity[0] : Roles.ToArray();
+        }
+
+        private int IndexOfRole(PlayerArchetype role)
+        {
+            if (Roles == null) return -1;
+            for (int i = 0; i < Roles.Count; i++)
+                if (Roles[i].Role == role) return i;
+            return -1;
         }
 
         private static int RankAffinity(int rank)
@@ -197,8 +188,8 @@ namespace FS27.Core
         {
             switch (role)
             {
-                case PlayerRole.Goalkeeper: return PlayerArchetype.ShotStopper;
-                case PlayerRole.Defender: return PlayerArchetype.Destroyer;
+                case PlayerRole.Goalkeeper: return PlayerArchetype.Guardian; // placeholder until the goalkeeper system defines goalkeeper roles
+                case PlayerRole.Defender: return PlayerArchetype.Wall;
                 case PlayerRole.Midfielder: return PlayerArchetype.Engine;
                 default: return PlayerArchetype.Finisher;
             }
@@ -278,25 +269,19 @@ namespace FS27.Core
                 }
             }
 
-            int count = p.Archetypes == null ? 0 : p.Archetypes.Count;
+            int count = p.Roles == null ? 0 : p.Roles.Count;
             if (count < 1 || count > PlayerPlayingProfile.MaxArchetypes)
-                r.Add(AiDataIssueCode.ProfileArchetypeCountInvalid, who, "A player needs 1-" + PlayerPlayingProfile.MaxArchetypes + " archetypes, found " + count + ".");
-            if (p.Archetypes != null)
+                r.Add(AiDataIssueCode.ProfileArchetypeCountInvalid, who, "A player needs 1-" + PlayerPlayingProfile.MaxArchetypes + " roles, found " + count + ".");
+            if (p.Roles != null)
             {
                 var seen = new HashSet<PlayerArchetype>();
-                foreach (PlayerArchetype a in p.Archetypes)
+                foreach (RoleAffinity ra in p.Roles)
                 {
-                    if (!Enum.IsDefined(typeof(PlayerArchetype), a)) r.Add(AiDataIssueCode.ProfileArchetypeInvalid, who, "Archetype " + (int)a + " is not valid.");
-                    else if (!seen.Add(a)) r.Add(AiDataIssueCode.ProfileArchetypeDuplicate, who, "Archetype " + a + " is listed twice.");
+                    if (!Enum.IsDefined(typeof(PlayerArchetype), ra.Role)) r.Add(AiDataIssueCode.ProfileArchetypeInvalid, who, "Role " + (int)ra.Role + " is not valid.");
+                    else if (!seen.Add(ra.Role)) r.Add(AiDataIssueCode.ProfileArchetypeDuplicate, who, "Role " + ra.Role + " is listed twice.");
+                    if (ra.Affinity < 0 || ra.Affinity > 100) r.Add(AiDataIssueCode.ProfileAffinityOutOfRange, who, "Affinity " + ra.Affinity + " of role " + ra.Role + " is outside 0..100.");
                 }
             }
-
-            int affinityCount = p.ArchetypeAffinities == null ? 0 : p.ArchetypeAffinities.Count;
-            if (affinityCount != 0 && affinityCount != count)
-                r.Add(AiDataIssueCode.ProfileAffinityCountMismatch, who, "There are " + affinityCount + " affinities for " + count + " roles: they must match (or be left empty).");
-            if (p.ArchetypeAffinities != null)
-                foreach (int a in p.ArchetypeAffinities)
-                    if (a < 0 || a > 100) r.Add(AiDataIssueCode.ProfileAffinityOutOfRange, who, "Role affinity " + a + " is outside 0..100.");
 
             Behaviour(r, who, "RiskPreference", p.RiskPreference);
             Behaviour(r, who, "Creativity", p.Creativity);

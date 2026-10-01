@@ -5,15 +5,14 @@ namespace FS27.Core
         Defense,
         Creation,
         Mobility,
-        Attack,
-        Goalkeeping
+        Attack
     }
 
     /// <summary>
     /// Facts about each role: its group, its Spanish display name and whether it belongs to the official set.
     /// Display names are for UI only; ids in data stay the enum names. The enum keeps its existing English terminology.
     ///
-    /// Official set (11): Defense — Guardian (Guardián), Wall (Muro); Creation — Builder (Constructor), Creator (Creador),
+    /// Official set (12): Defense — Wall (Muro), Guardian (Guardián), Anchor (Ancla); Creation — Builder (Constructor), Creator (Creador),
     /// Architect (Arquitecto); Mobility — Engine (Motor), Winger (Ala), Explosive (Explosivo); Attack — Finisher (Finalizador),
     /// GoalHunter (Cazagoles), Target (Objetivo).
     /// </summary>
@@ -21,7 +20,7 @@ namespace FS27.Core
     {
         public static readonly PlayerArchetype[] OfficialRoles =
         {
-            PlayerArchetype.Guardian, PlayerArchetype.Wall,
+            PlayerArchetype.Wall, PlayerArchetype.Guardian, PlayerArchetype.Anchor,
             PlayerArchetype.Builder, PlayerArchetype.Creator, PlayerArchetype.Architect,
             PlayerArchetype.Engine, PlayerArchetype.Winger, PlayerArchetype.Explosive,
             PlayerArchetype.Finisher, PlayerArchetype.GoalHunter, PlayerArchetype.Target
@@ -38,7 +37,6 @@ namespace FS27.Core
             {
                 case PlayerArchetype.Guardian:
                 case PlayerArchetype.Wall:
-                case PlayerArchetype.Destroyer:
                 case PlayerArchetype.Anchor:
                     return RoleGroup.Defense;
                 case PlayerArchetype.Builder:
@@ -54,7 +52,7 @@ namespace FS27.Core
                 case PlayerArchetype.Target:
                     return RoleGroup.Attack;
                 default:
-                    return RoleGroup.Goalkeeping;
+                    throw new System.ArgumentOutOfRangeException("role", role, "Not a role.");
             }
         }
 
@@ -73,10 +71,7 @@ namespace FS27.Core
                 case PlayerArchetype.Finisher: return "Finalizador";
                 case PlayerArchetype.GoalHunter: return "Cazagoles";
                 case PlayerArchetype.Target: return "Objetivo";
-                case PlayerArchetype.Destroyer: return "Recuperador";
                 case PlayerArchetype.Anchor: return "Ancla";
-                case PlayerArchetype.ShotStopper: return "Paradón";
-                case PlayerArchetype.Sweeper: return "Líbero";
                 default: return role.ToString();
             }
         }

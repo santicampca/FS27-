@@ -117,7 +117,7 @@ namespace FS27.Core
             Zone(t, PitchZone.Wing,     W(16, 14, 14, 1, 6, 4, 3, 8, 10, 16, 8, 0));
             Zone(t, PitchZone.Attack,   W(10, 8, 6, 5, 1, 18, 20, 4, 12, 8, 8, 0));
 
-            // ---- Official roles ----
+            // ---- The 12 official roles ----
             Role(t, PlayerArchetype.Guardian,   W(12, 8, 14, 10, 8, 0, 0, 4, 6, 2, 2, 34));
             Role(t, PlayerArchetype.Wall,       W(4, 2, 6, 28, 10, 0, 0, 6, 6, 2, 2, 34));
             Role(t, PlayerArchetype.Builder,    W(2, 2, 6, 3, 8, 1, 0, 30, 20, 6, 18, 4));
@@ -129,12 +129,7 @@ namespace FS27.Core
             Role(t, PlayerArchetype.Finisher,   W(8, 6, 6, 4, 0, 20, 24, 2, 12, 8, 10, 0));
             Role(t, PlayerArchetype.GoalHunter, W(12, 8, 6, 2, 0, 20, 30, 1, 10, 4, 6, 1));
             Role(t, PlayerArchetype.Target,     W(3, 2, 1, 28, 6, 12, 16, 6, 14, 0, 8, 4));
-
-            // ---- Roles defined before Player System V2 (kept) ----
-            Role(t, PlayerArchetype.Destroyer,   W(8, 6, 10, 20, 12, 0, 0, 4, 6, 2, 2, 30));
-            Role(t, PlayerArchetype.Anchor,      W(2, 2, 4, 16, 10, 0, 0, 16, 14, 2, 8, 26));
-            Role(t, PlayerArchetype.ShotStopper, W(4, 4, 28, 10, 4, 0, 0, 0, 10, 0, 8, 32));
-            Role(t, PlayerArchetype.Sweeper,     W(6, 4, 14, 6, 0, 0, 0, 20, 14, 0, 12, 24));
+            Role(t, PlayerArchetype.Anchor,     W(2, 2, 4, 16, 10, 0, 0, 16, 14, 2, 8, 26));
             return t;
         }
 
