@@ -1,0 +1,14 @@
+{
+    "name": "FS27.Infrastructure",
+    "rootNamespace": "FS27.Infrastructure",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

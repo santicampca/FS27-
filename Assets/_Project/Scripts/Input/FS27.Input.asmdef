@@ -1,0 +1,14 @@
+{
+    "name": "FS27.Input",
+    "rootNamespace": "FS27.Input",
+    "references": ["FS27.Core","Unity.InputSystem","UnityEngine.UI"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+{
+    "name": "FS27.Gameplay",
+    "rootNamespace": "FS27.Gameplay",
+    "references": ["FS27.Core"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

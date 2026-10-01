@@ -1,0 +1,14 @@
+{
+    "name": "FS27.UI",
+    "rootNamespace": "FS27.UI",
+    "references": ["FS27.Core","FS27.Gameplay","UnityEngine.UI"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+{
+    "name": "FS27.Editor",
+    "rootNamespace": "FS27.EditorTools",
+    "references": ["FS27.Core","FS27.Gameplay","FS27.Input","FS27.Cameras","FS27.UI","FS27.Infrastructure","Unity.InputSystem","UnityEngine.UI"],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
