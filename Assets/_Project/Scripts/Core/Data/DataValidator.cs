@@ -146,7 +146,7 @@ namespace FS27.Core
 
         /// <summary>
         /// Validates a team ready to play (6v6): exactly <see cref="DataRules.PlayersPerTeam"/> distinct player ids that all exist in
-        /// <paramref name="players"/>, each a valid player with a unique shirt number, exactly 1 goalkeeper (so 5 field players), and a
+        /// <paramref name="players"/>, each a valid player with a unique shirt number, exactly 1 goalkeeper (so 5 field players) who has a goalkeeper profile (and no field player has one), and a
         /// formation id. With a <paramref name="formations"/> library it also checks the formation exists, is valid and puts
         /// its goalkeeper slot on the team's goalkeeper.
         /// </summary>
@@ -206,6 +206,18 @@ namespace FS27.Core
                         r.Add(issue.Code, who + " > " + issue.Subject, issue.Message);
 
                     if (p.Role == PlayerRole.Goalkeeper) keepers++;
+
+                    bool hasKeeperProfile = players.TryGetGoalkeeperProfile(p.Id, out GoalkeeperProfile keeperProfile);
+                    if (p.Role == PlayerRole.Goalkeeper && !hasKeeperProfile)
+                        r.Add(ValidationCode.GoalkeeperProfileMissing, who + " > player '" + p.Id + "'", "The goalkeeper has no goalkeeper profile.");
+                    if (p.Role != PlayerRole.Goalkeeper && hasKeeperProfile)
+                        r.Add(ValidationCode.GoalkeeperProfileOnFieldPlayer, who + " > player '" + p.Id + "'", "A field player must not have a goalkeeper profile.");
+                    if (hasKeeperProfile)
+                    {
+                        // Role problems were reported above; here only the profile's own data (ranges, styles, ids).
+                        foreach (ValidationIssue issue in GoalkeeperProfileValidator.Validate(keeperProfile).Issues)
+                            r.Add(issue.Code, who + " > " + issue.Subject, issue.Message);
+                    }
                     if (!string.IsNullOrEmpty(p.TeamId) && team.Id != null && p.TeamId != team.Id)
                         r.Add(ValidationCode.TeamPlayerTeamIdMismatch, who + " > player '" + p.Id + "'", "Player says it belongs to team '" + p.TeamId + "' but is listed in team '" + team.Id + "'.");
                     if (p.Number >= DataRules.MinShirtNumber && p.Number <= DataRules.MaxShirtNumber && !numbers.Add(p.Number))

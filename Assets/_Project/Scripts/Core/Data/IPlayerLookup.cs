@@ -7,5 +7,8 @@ namespace FS27.Core
     public interface IPlayerLookup
     {
         bool TryGet(string id, out PlayerDefinition player);
+
+        /// <summary>The goalkeeper profile of a player, if that player has one (field players do not).</summary>
+        bool TryGetGoalkeeperProfile(string playerId, out GoalkeeperProfile profile);
     }
 }

@@ -6,14 +6,19 @@ namespace FS27.Core
     /// The one registry of players, by id. A player exists ONCE here; teams, cards and profiles refer to that same
     /// <see cref="PlayerDefinition"/> (by instance in memory, by id in data). Moving a player between teams is a change of
     /// <see cref="PlayerDefinition.TeamId"/> (+ rebuilding the rosters), never a copy.
+    /// Goalkeepers are players too: the library also holds each goalkeeper's <see cref="GoalkeeperProfile"/> (one per goalkeeper, by player id),
+    /// so asking for a player returns the one definition and, when it is a goalkeeper, its profile. There is no separate goalkeeper library.
     /// </summary>
     public sealed class PlayerLibrary : IPlayerLookup
     {
         private readonly Dictionary<string, PlayerDefinition> byId = new Dictionary<string, PlayerDefinition>();
         private readonly List<PlayerDefinition> ordered = new List<PlayerDefinition>();
+        private readonly Dictionary<string, GoalkeeperProfile> goalkeeperProfiles = new Dictionary<string, GoalkeeperProfile>();
+        private readonly List<GoalkeeperProfile> orderedGoalkeeperProfiles = new List<GoalkeeperProfile>();
 
         public int Count => ordered.Count;
         public IReadOnlyList<PlayerDefinition> All => ordered;
+        public IReadOnlyList<GoalkeeperProfile> GoalkeeperProfiles => orderedGoalkeeperProfiles;
 
         /// <summary>Adds a player. Returns false (and adds nothing) if it is null, has an invalid id, or the id is already used.</summary>
         public bool TryAdd(PlayerDefinition player)
@@ -37,6 +42,36 @@ namespace FS27.Core
                 return false;
             }
             return byId.TryGetValue(id, out player);
+        }
+
+        /// <summary>
+        /// Adds a goalkeeper profile for a player already in the library. Returns false (and adds nothing) if the profile is null, its
+        /// player is unknown, or that player already has one. Whether the player really is a goalkeeper is a validation matter
+        /// (<see cref="GoalkeeperProfileValidator"/>, <see cref="DataValidator.ValidateTeam"/>), not a refusal here.
+        /// </summary>
+        public bool TryAddGoalkeeperProfile(GoalkeeperProfile profile)
+        {
+            if (profile == null || !Contains(profile.PlayerId) || goalkeeperProfiles.ContainsKey(profile.PlayerId)) return false;
+            goalkeeperProfiles.Add(profile.PlayerId, profile);
+            orderedGoalkeeperProfiles.Add(profile);
+            return true;
+        }
+
+        public bool TryGetGoalkeeperProfile(string playerId, out GoalkeeperProfile profile)
+        {
+            if (playerId == null)
+            {
+                profile = null;
+                return false;
+            }
+            return goalkeeperProfiles.TryGetValue(playerId, out profile);
+        }
+
+        /// <summary>The player and its goalkeeper profile together. False unless the player exists and has a profile.</summary>
+        public bool TryGetGoalkeeper(string playerId, out PlayerDefinition player, out GoalkeeperProfile profile)
+        {
+            profile = null;
+            return TryGet(playerId, out player) && TryGetGoalkeeperProfile(playerId, out profile);
         }
 
         /// <summary>The players that say they belong to a team (<see cref="PlayerDefinition.TeamId"/>), in registration order.</summary>
@@ -158,7 +193,16 @@ namespace FS27.Core
             var profileResult = new AiDataValidationResult();
 
             foreach (PlayerDefinition p in library.All)
+            {
                 players.Merge(DataValidator.ValidatePlayer(p));
+                if (p != null && p.Role == PlayerRole.Goalkeeper && !library.TryGetGoalkeeperProfile(p.Id, out _))
+                    players.Add(ValidationCode.GoalkeeperProfileMissing, "player '" + p.Id + "'", "A goalkeeper needs a goalkeeper profile.");
+            }
+            foreach (GoalkeeperProfile gk in library.GoalkeeperProfiles)
+            {
+                library.TryGet(gk.PlayerId, out PlayerDefinition owner);
+                players.Merge(GoalkeeperProfileValidator.Validate(gk, owner));
+            }
 
             foreach (PlayerPlayingProfile pr in profiles)
             {
