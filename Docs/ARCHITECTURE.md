@@ -8,6 +8,7 @@ Dificultad e infraestructura de IA (sin IA todavía): [DIFFICULTY_SYSTEM.md](DIF
 **FS27 es 6v6: cada equipo tiene 1 portero + 5 jugadores de campo (6 en total).** Los equipos referencian jugadores por id (`TeamDefinition.PlayerIds` → `PlayerLibrary`).
 Sistema de jugadores V2 (identidad, 12 atributos, polivalencia, overall, carta): [PLAYER_SYSTEM.md](PLAYER_SYSTEM.md).
 Sistema de portero V1 (perfil con 8 capacidades, rating propio, estilos; solo datos, sin IA): [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md).
+Creator Engine (apariencia + FootballDNA + prompts → datos; **primer 50 %**, sin 3D ni animación todavía): [CREATOR_ENGINE.md](CREATOR_ENGINE.md).
 
 ## Capas (assembly definitions)
 
@@ -47,7 +48,7 @@ El jugador nunca sabe de dónde viene la entrada. La IA futura usará `PlayerInt
 
 ## Pruebas
 
-- Lógica de `Core`: 794 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
+- Lógica de `Core`: 946 tests NUnit en `Assets/_Project/Tests/EditMode`, ejecutables también fuera de Unity:
   `dotnet test Tests/Core.Tests` (más rápido que abrir el editor).
 - Unity Test Runner: Window → General → Test Runner → EditMode.
 
