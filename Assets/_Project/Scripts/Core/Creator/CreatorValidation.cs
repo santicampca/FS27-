@@ -45,7 +45,13 @@ namespace FS27.Core
         ResultInconsistent,
         // ---- json
         JsonInvalid,
-        JsonShapeInvalid
+        JsonShapeInvalid,
+        // ---- semantic layer (appended in the intelligence phase)
+        SemanticSchemaUnknown,
+        SemanticFieldInvalid,
+        SemanticTargetUnknown,
+        SemanticValueOutOfRange,
+        SemanticRelationInvalid
     }
 
     public enum CreatorSeverity
