@@ -107,6 +107,13 @@ namespace FS27.Core
             Act(c, "gk_dive", FootballActionKind.GoalkeeperSave, MovementStyle.Default, 0f, 3f, false, 0.9f, "save");
             Act(c, "gk_catch", FootballActionKind.GoalkeeperCatch, MovementStyle.Default, 0f, 3f, false, 0.7f, "save", "catch");
             Act(c, "gk_throw", FootballActionKind.GoalkeeperDistribution, MovementStyle.Default, 0f, 3f, false, 0.8f, "distribute");
+            Act(c, "shot_curved", FootballActionKind.CurvedShot, MovementStyle.Default, 0f, 7f, false, 0.7f, "shot", "curve");
+            Act(c, "chip_lift", FootballActionKind.Chip, MovementStyle.Default, 0f, 7f, false, 0.65f, "shot", "chip");
+            Act(c, "pass_wall", FootballActionKind.WallPass, MovementStyle.Default, 0f, 7f, false, 0.5f, "pass", "wall");
+            Act(c, "pass_through", FootballActionKind.ThroughPass, MovementStyle.Default, 0f, 7f, false, 0.55f, "pass", "through");
+            Act(c, "skill_move", FootballActionKind.SkillMove, MovementStyle.Feint, 0f, 6f, false, 0.7f, "feint", "skill");
+            Act(c, "pass_skill_lob", FootballActionKind.SkillLobPass, MovementStyle.Default, 0f, 6f, false, 0.7f, "pass", "skill");
+            Act(c, "gk_rush", FootballActionKind.GoalkeeperRush, MovementStyle.Default, 0f, 7f, false, 0.8f, "rush");
             return c;
         }
 

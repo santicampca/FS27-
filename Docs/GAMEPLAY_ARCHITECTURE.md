@@ -1,9 +1,12 @@
-# FS27 — Arquitectura de gameplay V1 (6v6)
+# FS27 — Arquitectura de gameplay V1 (CERRADA)
 
-Estado: **diseño, con las decisiones de la Fase 0 aplicadas. No hay código nuevo.** Este documento audita la especificación del Superprompt Maestro contra lo que ya existe en el repositorio y fija el contrato y la hoja de ruta para implementar.
-Nada aquí cambia contratos existentes de jugadores, porteros, entrenadores o árbitros. Las ampliaciones que se mencionan (banquillo, periodos, estados de partido) son **propuestas aditivas para la fase de implementación**, no cambios hechos.
+Estado: **arquitectura cerrada. Todas las decisiones de este documento son definitivas.** La implementación del gameplay empieza después, por la fase 1 de la sección K.
+Esta fase de cierre solo modificó documentación y movió `FootballActionKind` a un archivo neutro de Core (con acciones nuevas añadidas al final). No se implementó gameplay, ni se tocaron los contratos de jugadores, porteros, entrenadores ni árbitros.
+Las ampliaciones que se mencionan (banquillo, periodos, estados de partido, tipo de competición) son **propuestas aditivas para la fase de implementación**.
 
-Leyenda: ✅ resuelto por decisión de Fase 0 · ⚠ sigue abierto (ver L.2).
+Leyenda: ✅ resuelto y cerrado · 🔧 resuelto y ya aplicado en código · ⏳ pendiente de implementar (decisión tomada, falta construir) · ⚙ valor de configuración sin cifra decidida.
+
+**Principio rector:** `GameMode` (cómo se juega: Arena | Classic) y `CompetitionMatchType` (cómo se resuelve el resultado: Normal | Knockout) son conceptos **independientes**. Ninguna regla de desempate depende del modo.
 
 ---
 
@@ -26,71 +29,62 @@ Leyenda: ✅ resuelto por decisión de Fase 0 · ⚠ sigue abierto (ver L.2).
 | Reglas de balón fuera/gol, controlador de partido | `Core/Match/*` | Mínimo (ver A.2). |
 | Joystick virtual, teclado/gamepad | `Core/Input/*`, `Input/*` | Solo movimiento. |
 | Formaciones | `Core/Data/FormationDefinition.cs` | Solo posiciones/slots. |
-| Creator Engine (comportamientos, DNA, `FootballActionKind`) | `Core/Creator/*` | Hecho; identidad/animación, no reglas. |
+| Creator Engine (comportamientos, DNA, animación) | `Core/Creator/*` | Hecho; identidad/animación, no reglas. `FootballActionKind` ya no vive aquí (`Core/FootballActionKind.cs`). |
 
-### A.2 Conflictos entre la especificación y el proyecto
+### A.2 Conflictos entre la especificación y el proyecto — todos cerrados
 
-Formato: conflicto · sistema afectado · **resolución**.
+**C1 ✅ Dos físicas de balón.** `Gameplay/BallPhysics.cs` mueve el balón con `Rigidbody`; `Core/Ball/BallSimulator` (puro) no se usa en Gameplay.
+Cierre: **`Core/Ball/BallSimulator` es la fuente autoritativa.** Flujo: `Input → Core Simulation → BallSimulator → MatchState → Presentación Unity / Rigidbody`. El `Rigidbody` representa visualmente (y puede participar en la presentación física donde corresponda) pero **nunca decide**: copia el `BallState`. Objetivos: determinismo, tests, depuración, replays; online fuera de alcance. ⏳ Adaptar `BallPhysics/BallController/BallInteractor` en la fase 1.
 
-**C1 ✅ Dos físicas de balón.** `Gameplay/BallPhysics.cs` y `BallController.cs` mueven el balón con el `Rigidbody` de Unity; `Core/Ball/BallSimulator.cs` (puro) no se usa en Gameplay.
-Resolución (decisión 8): **`BallSimulator` es la fuente autoritativa.** El `Rigidbody` deja de ser la verdad; la presentación física de Unity refleja el estado de Core (seguidor visual, sin decidir nada). Paso fijo, determinista siempre que sea razonable. Impacto: `BallPhysics/BallController/BallInteractor` se adaptan en la fase de implementación; `docs/ARCHITECTURE.md` ("solo el balón es dinámico") queda obsoleto entonces.
+**C2 ✅ `MatchRules` genera córners/bandas/saques de puerta siempre.** Cierre: reglas **por modo, en datos** (`MatchModeDefinition` + `IModeRules`). Classic = comportamiento actual; Arena no usa la regla de líneas. ⏳ fase 1.
 
-**C2 ✅ `MatchRules` genera córners, saques de banda y saques de puerta siempre.** No existe el concepto de modo.
-Resolución: reglas **por modo, en datos** (`MatchModeDefinition` + `IModeRules`). Classic = comportamiento actual de `MatchRules`; Arena no usa la regla de líneas.
+**C3 ✅ Arena y los límites.** Cierre: campo cerrado; el balón **rebota** y continúa en juego. Sin saque de banda, córner ni saque de puerta. El rebote conserva de forma coherente velocidad, dirección, ángulo y energía (la física exacta se define al implementar; coeficiente de restitución configurable). El gol cuenta solo por la boca de la portería; el resto de la línea de fondo rebota. Tras una parada el portero juega el balón sin reanudación formal.
 
-**C3 ✅ Arena y los límites del campo.**
-Resolución (decisión 1): **campo cerrado, el balón rebota en paredes/límites.** Sin córners, saques de banda, saques de puerta, faltas ni fuera de juego; el juego continúa. El gol cuenta solo dentro de la boca de la portería; el resto de la línea de fondo rebota como una pared. Tras una parada el portero juega el balón sin reanudación formal. Solo hay saque inicial tras gol y al empezar cada tiempo.
+**C4 ✅ `MatchState`.** Cierre: **se amplía el existente** hasta ser la fuente autoritativa; no hay `GameState` ni segundo estado. `MatchController` evoluciona a `MatchEngine`, único escritor. Nuevos valores de `MatchPhase` solo al final (no se renumeran). Contenido en B.4. ⏳ fase 1.
 
-**C4 ✅ `MatchState` es una vista de solo lectura.**
-Resolución (decisión 9): **se amplía el `MatchState` existente** y termina siendo el estado autoritativo del partido; no se crea un segundo estado. `MatchController` evoluciona a `MatchEngine` como único escritor. Los valores nuevos de `MatchPhase` se añaden **al final** (los actuales no se renumeran). Detalle de fases por modo en F y G.
+**C5 ✅ Atributo legado `Reaction`.** Cierre: se mantiene; se marca como **legacy / internal derived value**; **no es el 13.º atributo oficial**; no entra en Overall, tarjetas ni datos nuevos; la IA aún lo consume. Deuda M-1.
 
-**C5 ✅ Atributo legado `Reaction`.**
-Resolución (decisión 10): se **mantiene temporalmente**, documentado como **valor legado, interno y derivado**; **no es uno de los 12 atributos oficiales**, no entra en Overall, tarjetas ni datos nuevos. No se elimina porque lo consumen `ReactionModel`, `AnticipationModel` y `AiErrorModel`. Marcado en código (comentario/`Obsolete`) y retirada: fase posterior (deuda M-1).
+**C6 ✅ Stamina.** Cierre: sistema continuo (no solo sprint) sobre `Stamina01` con una `FatigueCurve` que afecta de forma progresiva a velocidad, sprint, aceleración, recuperación, acciones físicas, presión, precisión bajo fatiga y repetición de esfuerzos. Referencias conceptuales 100 % / ~70 % / ~40 % / ~20 % / 0 % (a 0 no se puede hacer sprint hasta recuperar); se prefiere curva continua a estados rígidos. ⏳ fase 3.
 
-**C6 ✅ La stamina actual no es la de la spec.** `StaminaSystem` solo gasta en sprint.
-Resolución: se **mantiene** `Stamina01` como único valor y se añade una `FatigueCurve` continua (multiplicadores de velocidad pico, aceleración, precisión, presión) y costes de energía por acción. El bloqueo de sprint a 0 ya cumple la spec. Los umbrales 70/40/20 son orientativos.
+**C7 ✅ Nombre `Capability` ocupado** (`GoalkeeperCapability`). Cierre: habilidades técnicas = **`SkillDefinition` y `PlayerSkillSet`**, solo contrato conceptual. **No se asigna ninguna habilidad a los 156 jugadores** ni se inventan; catálogo y asignación = fase posterior y separada.
 
-**C7 ✅ `Capability` ya está ocupado** (`GoalkeeperCapability`).
-Resolución (decisión 11): las habilidades técnicas se llaman **`SkillDefinition` y `PlayerSkillSet`**. En esta fase solo existe el **contrato conceptual**. **No se crea catálogo y no se asigna ninguna habilidad a los 156 jugadores** (fase posterior y separada). `BehaviorId` (Creator) sigue siendo identidad/animación.
+**C8 🔧 `FootballActionKind` dentro del Creator.** Cierre aplicado: el enum vive ahora en `Core/FootballActionKind.cs` (mismo namespace `FS27.Core`, sin romper referencias). Los 16 valores originales conservan su número (ahora explícito, 0–15) y no se reordenan; ninguna serialización usa el número (se comprobó: las especificaciones guardan nombres/ids, no el entero del enum). Añadidos **al final** (16–22), solo los siete pedidos: `CurvedShot`, `Chip`, `WallPass`, `ThroughPass`, `SkillMove`, `SkillLobPass`, `GoalkeeperRush`. Referencias "C8/C9" de la auditoría: son identificadores de **conflicto** de este documento (C8 = esta migración, C9 = el pad de acciones), **no** valores del enum.
+Consecuencias: el test que exige que toda acción tenga un perfil de animación se mantuvo y se añadieron siete perfiles **Planned** (sin clips, `RootMotionWeight = 0`) al catálogo por defecto; no hay arte ni animación final. Test nuevo `FootballActionKindTests` fija los números y el desacoplamiento.
+Quedan sin enum las acciones defensivas de H.2 que no están en la lista mínima (presión/contención, entrada deslizante, disputa física, despeje): `Tackle`, `Intercept`, `Block` y `Shield` cubren parte; se decidirá al implementar el pad (fase 5) y solo si hace falta un valor real, añadido al final. No se añaden valores de relleno.
 
-**C8 ⚠ `FootballActionKind` vive en el Creator y le faltan acciones.** (`Core/Creator/CharacterRuntimeContracts.cs`.) Faltan tiro con efecto, vaselina, pared, pase al hueco, regate/skill, pase especial, entrada de pie/deslizante, disputa física, despeje, orden al portero, presión/contención.
-Propuesta (para implementación): un único `PlayerIntent`; los valores nuevos se añaden **al final** del enum y el enum se mueve a un archivo neutro de Core (mismo namespace), sin tocar contratos. Aún no se hace.
+**C9 ⏳ Controles A/B/C.** Cierre del diseño en H; falta `ActionPadModel` (fase 5).
 
-**C9 ⚠ Faltan los controles A/B/C.** Solo existe `VirtualStickModel`. Propuesta: `ActionPadModel` puro en `Core/Input`. Tabla definitiva en H.
+**C10 ✅ C pulsación = sacar al portero.** Cierre: contextual, con prioridad cuando el usuario **no tiene la posesión** o el balón está **en su tercio**. La IA del portero **puede rechazarla** si la salida es claramente absurda, el balón está demasiado lejos, el riesgo es excesivo o la posición no permite una salida razonable; un toque accidental no provoca siempre una salida irracional (resultado `Accepted` / `Refused(motivo)`). C swipe ↑/↓ conserva las acciones especiales de ataque. C no tiene otra función defensiva principal.
 
-**C10 ✅ C pulsación = sacar al portero.**
-Resolución (decisión 2): C pulsación sin swipe **ordena la salida del portero**. La orden es **contextual**, con **prioridad cuando el usuario no tiene la posesión o el balón está en su tercio**. **La IA del portero puede rechazarla** si la salida no es razonable (la orden devuelve `Accepted` o `Refused(motivo)`; nunca se fuerza una salida absurda). C swipe ↑/↓ conserva las acciones especiales de ataque. C no tiene ninguna otra función defensiva principal.
+**C11 ✅ Sin datos de habilidades.** Cierre: fase posterior (catálogo + asignación validada). Tests de skills con datos de prueba.
 
-**C11 ⚠ Sin datos de habilidades por jugador.** Sigue siendo así por decisión: fase posterior (catálogo + asignación validada por ti). Mientras tanto los tests 8, 9 y 14 usan datos de prueba, nunca jugadores reales.
+**C12 ✅ Formaciones.** Cierre: data-driven; ninguna definitiva ahora ni en el motor; las crea Claude después desde jugadores, roles, zonas y entrenadores. Deben poder expresar posiciones iniciales, zonas, roles, comportamiento con balón, sin balón y en transición, anchura, profundidad y responsabilidades (`FormationBehaviorProfile`, fase 9). `DefaultFormations` = esqueleto de tests.
 
-**C12 ✅ Formaciones.**
-Resolución (decisión 12): **no se diseñan formaciones definitivas en esta fase.** El motor es data-driven: lee `FormationDefinition` por id y nunca contiene una formación. Las formaciones y su comportamiento (`FormationBehaviorProfile`: con balón, sin balón, transición, responsabilidades) las creará Claude después, desde jugadores, roles, zonas y entrenadores. Las bases de `DefaultFormations` son esqueleto técnico de tests, no contenido de juego.
+**C13 ✅ Coach Boost.** Cierre: **no modifica atributos ni `BaseOverall`**. `CompatibilityScore ≥ 80 → CoachBoost +1`; `< 80 → 0`; nunca negativo. `EffectiveOverall = BaseOverall + CoachBoost`. **El motor de gameplay NO consume todavía `EffectiveOverall` como modificador adicional**: sin efecto oculto ni doble aplicación. La influencia real en simulación queda para una fase posterior de balance.
 
-**C13 ✅ Coach Boost.**
-Resolución (decisión 3): **no se modifica ningún atributo individual**; los 12 atributos no cambian y `BaseOverall` permanece intacto. `CompatibilityScore ≥ 80 → CoachBoost +1`; `< 80 → 0`; nunca negativo. `EffectiveOverall = BaseOverall + CoachBoost`. Por tanto **no existe capa `EffectiveAttributes`** (la propuesta anterior se retira). El boost es un valor de rating contextual; la simulación no lo convierte en atributos.
-⚠ Queda abierto si el boost influye en la simulación por otra vía (p. ej. un parámetro de IA): hasta que se decida, **el motor no lo consume**; solo lo exponen tarjetas/HUD/rating de equipo.
+**C14 ✅ Plantilla.** Cierre: **6 titulares + 4 suplentes = 10 disponibles; mínimo 1 portero suplente.** Propuesta aditiva: `BenchIds` junto a la alineación actual de `TeamDefinition`. ⏳ fase 2.
 
-**C14 ✅ Banquillo.**
-Resolución (decisión 4): **6 titulares + 4 suplentes, con al menos 1 portero suplente.** Máximo **3 sustituciones por equipo y partido**; 4 suplentes **no** implican 4 cambios. Propuesta aditiva para implementación: `TeamDefinition.BenchIds` (hoy `TeamDefinition` solo tiene la alineación de 6). Validación: ≥1 portero entre los 4 suplentes.
+**C15 ✅ Duración.** Cierre: Arena 2 × 6 min (sin descanso tradicional, cambio de lado al acabar el 1.º); Classic 2 × 8 min (con descanso). **Configurables** en `MatchModeDefinition`. `MatchSettings` actual (180 s, un periodo) no cambia hasta la fase 1.
 
-**C15 ✅ Duración y formato.**
-Resolución (decisión 6): **Arena: 2 tiempos de 6 min, sin descanso tradicional, cambio de lado al terminar el primero. Classic: 2 tiempos de 8 min, con descanso. Valores configurables** (`MatchModeDefinition`: periodos y segundos por periodo). El `MatchSettings` actual (180 s, un periodo) no cambia hasta la implementación; los valores 6/8 min son los que entrarán como datos de modo.
+**C16 ✅ Expulsiones (Classic).** Cierre: ver sección F.3.
 
-**C16 ✅ Expulsiones (Classic).**
-Resolución (decisión 7): la roja expulsa al jugador, que **no puede volver**; el equipo sigue con uno menos mientras tenga **al menos 3 jugadores activos** en el campo (cuentan todos, sea cual sea su puesto). Portero expulsado: con portero suplente y **una sustitución disponible**, entra el suplente y **consume 1 cambio**; **sin cambios disponibles**, un jugador de campo ocupa la portería. **Nunca** hay sustitución fuera del límite de 3 (el expulsado tampoco se repone).
-⚠ Abiertos: resultado si un equipo cae por debajo de 3 (L.2-1), cómo se rinde un jugador de campo en portería sin crear atributos (L.2-2), acumulación de amarillas (L.2-3).
+**C17 ✅ Sustitución del portero.** Consume 1 de los 3 cambios como cualquier otra.
 
-**C17 ✅ Sustitución del portero.** Un cambio de portero cuenta como cualquier otro: consume 1 de los 3.
+**C18 ✅ Frecuencia de simulación.** Paso fijo de física 60 Hz; decisión de IA ~10–15 Hz con escalonado determinista; percepción ~5 Hz (valores iniciales configurables; se afinan al medir en móvil).
 
-**C18 ⚠ Frecuencia de simulación (propuesta, sin objeción).** Física a paso fijo 60 Hz; decisión de IA a ~10–15 Hz con escalonado determinista por jugador; percepción ~5 Hz (`DecisionIntervalSeconds` de dificultad ya existe: 0,32 s). Se confirma al medir en móvil.
+**C19 ✅ Estadísticas y eventos.** Nuevos, filtrados por modo. No se inventan estadísticas permanentes nuevas más allá de las ya enumeradas en la spec original (sección 39); las de reglas solo existen en Classic.
 
-**C19 ✅ Estadísticas y eventos.** No existe nada; se crean nuevos, filtrados por modo.
+**C20 ✅ Modo ≠ tipo de competición.** Nuevo en este cierre. `GameMode` y `CompetitionMatchType` son ejes independientes; el desempate depende solo del segundo (ver F.2).
+
+**C21 ✅ Jugador de campo como portero.** Cierre: se deriva en runtime, sin atributos nuevos (ver F.4).
+
+**C22 ✅ Segunda amarilla.** Cierre: Classic, 2 amarillas = roja (ver F.3).
 
 ### A.3 Sistemas que faltan por completo
 Player AI, Team AI, transiciones, sistema de habilidades (solo contrato por ahora), resolución de duelos, detección de contacto/falta/fuera de juego, `ActionPadModel`, motor de partido con máquina de estados por modo, bus de eventos, estadísticas, sustituciones, tarjetas, reglas por modo, árbitro operativo, selector de jugador activo, fatiga continua, banquillo, formaciones con comportamiento (fase posterior), replay/log determinista.
 
 ### A.4 Ambigüedades de la spec original
-Todas resueltas por la Fase 0 salvo las listadas en L.2.
+Todas resueltas por la Fase 0 y por este cierre. Los pocos valores que son configuración sin cifra decidida (⚙) están en L.2.
 
 ---
 
@@ -142,34 +136,46 @@ Reglas de dependencia (verificables con tests de guarda como los existentes):
 ```
 // Datos existentes (SIN cambios)
 PlayerDefinition / PlayerPlayingProfile / PlayerAttributes(12 oficiales) / GoalkeeperProfile / CoachDefinition / RefereeDefinition
-// Valor legado, no oficial: PlayerAttributes.Reaction (interno, derivado, consumido por la IA)
+// Valor legado, no oficial: PlayerAttributes.Reaction (legacy / internal derived; lo consume la IA)
 
-// Conceptuales nuevos
+// Ejes independientes del partido (conceptuales, nuevos)
+enum GameMode            { Arena, Classic }                 // cómo se juega
+enum CompetitionMatchType{ Normal, Knockout }               // cómo se resuelve el resultado (Normal = liga/amistoso)
+enum MatchTerminationReason { Regulation, ExtraTime, PenaltyShootout, InsufficientPlayers }  // (valores finales al implementar)
+
+MatchModeDefinition { Mode, flags de reglas, Periods[ {Seconds} ], Boundaries(Walls|Lines), SideSwitch, RestKind,
+                      RestStaminaRecovery (Classic 0.25, Arena 0.10), MaxSubstitutions = 3 }       // todo configurable
+CompetitionRules    { Type, ExtraTime{ Periods, Seconds }, Shootout{ KicksPerTeam, SuddenDeath } } // solo Knockout los usa; configurable
 SkillDefinition { SkillId, Kind, RequiredAttributes, Conditions, EnergyCost }   // contrato; sin catálogo
 PlayerSkillSet  { PlayerId, SkillIds[] }                                          // contrato; sin asignaciones
-MatchModeDefinition { ModeId, flags de reglas, Periods[ {Seconds} ], Boundaries(Walls|Lines), SideSwitch, RestKind, MaxSubstitutions=3 }
 TeamDefinition (ampliación aditiva futura): StarterIds[6] (= PlayerIds actual) + BenchIds[4], ≥1 GK en BenchIds
 
 IMatchSimulation.Step(MatchState, IntentFrame, dt)        // determinista, paso fijo
 IntentFrame { PlayerIntent[] }                             // origen irrelevante
 GoalkeeperOrderResult { Accepted | Refused(reason) }       // respuesta a C tap
+EmergencyKeeperProfile.Derive(PlayerAttributes) -> 8 capacidades en runtime (F.4; no se guarda)
 RuleVerdict { Kind, Team, Position, Severity, Advantage }
 IPlayerBrain.Decide(PerceptionSnapshot, TeamPlan, dt) -> PlayerIntent
 ITeamBrain.Plan(PerceptionSnapshot, MatchContext) -> TeamPlan
 IModeRules.Judge(MatchState, SimulationEvents) -> RuleVerdict[]
+IResultResolver.Resolve(MatchState, CompetitionRules) -> Finished | ExtraTime | PenaltyShootout    // depende SOLO de CompetitionMatchType
 ```
+Regla de contrato: `IResultResolver` no recibe `GameMode`; `IModeRules` no recibe `CompetitionMatchType`. Así los dos conceptos no se pueden mezclar.
 
 ### B.4 Estado único
 
 ```
-MatchState (autoritativo)
-  Mode, Settings, Clock, Period, Phase, Score
+MatchState (autoritativo; no existe ningún otro estado paralelo)
+  GameMode, CompetitionMatchType, Settings/ModeDefinition, CompetitionRules
+  Clock, Period, Phase (MatchPhase), Score, Result, TerminationReason
   Ball (BallState de Core + Possession + LastTouch)
-  Teams[2]: FormationId, CoachId, Squad(Starters, Bench), Subs { Used, Max=3 }, Cards, Sent-off, Stats, Referee-ref (solo Classic)
-  Players[12 en pista]: id, RuntimeState(pos, vel, heading, Stamina01, acción, flags), Active/Expulsado
+  Teams[2]: FormationId, CoachId, Squad(Starters[6], Bench[4]), Subs { Used, Max=3 },
+            Cards (amarillas por jugador), Expulsados, Stats, Referee-ref (solo Classic)
+  Players en pista: id, RuntimeState(pos, vel, heading, Stamina01, acción, flags), Active/Expulsado, ocupa-portería
+  ExtraTime (periodo actual), PenaltyShootout (tiradas, marcador de tanda)
   PendingRestart, ActiveFoul/Advantage (Classic)
 ```
-El `CoachBoost` no vive aquí como atributo: se consulta con `CoachBoostRules` cuando una vista de rating lo necesita.
+`CoachBoost` y `EffectiveOverall` no son estado de simulación: se consultan con `CoachBoostRules` desde vistas de rating (tarjeta, HUD) y el motor no los lee.
 
 ---
 
@@ -198,12 +204,66 @@ La velocidad la define **solo la longitud del vector de movimiento** (ya impleme
 
 ## F. MATCH LOOP
 
-**Arena:** `PreMatch → Kickoff → InPlay (tiempo 1, 6 min) → SideSwitch → Kickoff → InPlay (tiempo 2, 6 min) → FullTime`; `Goal → Kickoff` en ambos tiempos. `SideSwitch` es una transición breve (cambio de lado + recolocación), **sin descanso tradicional** ni interrupciones por reglas. Sin `DeadBall` por infracciones ni salidas; el balón rebota en las paredes.
-**Classic:** `PreMatch → Kickoff → InPlay ⇄ DeadBall(Foul|Offside|OutOfBounds…) → Restart(ThrowIn|Corner|FreeKick|Penalty|GoalKick) → InPlay … → HalfTime (descanso) → Kickoff → … → FullTime` (2 × 8 min); `Goal → Kickoff`.
-Duraciones, número de periodos, cambio de lado y tipo de descanso salen de `MatchModeDefinition` (configurable). El `MatchEngine` es el único que cambia de fase y rechaza fases/eventos que el modo no declara (eso hace verificables los tests de modo).
+### F.1 Máquina de estados
+Estados conceptuales: `PreMatch, Kickoff, InPlay, DeadBall, Goal, Restart, HalfTime, ExtraTime, PenaltyShootout, FullTime` (más los ya existentes `GoalCelebration`, `Paused`). No todos existen en los dos modos; el `MatchEngine` es el único que cambia de fase y rechaza los que el modo no declara.
 
-Sustituciones: contador único por equipo (máx. 3) en `MatchState`; solicitud → `SubstitutionRules.Validate` → `PlayerSubstituted`. Classic: con balón muerto o en el descanso. Arena: ⚠ momento permitido abierto (L.2-4).
-Expulsión (Classic): jugador `Expulsado`, no vuelve; si quedan menos de 3 activos el partido no puede continuar (resultado: L.2-1). Portero expulsado: ver C16.
+**Arena:** `PreMatch → Kickoff → InPlay (6 min) → SideSwitch → Kickoff → InPlay (6 min) → resolución`. `Goal → Kickoff`. `SideSwitch` es un cambio de lado + recolocación, no un descanso. Sin `DeadBall` por reglas.
+**Classic:** `PreMatch → Kickoff → InPlay ⇄ DeadBall(Foul|Offside|OutOfBounds…) → Restart(ThrowIn|Corner|FreeKick|Penalty|GoalKick) → InPlay … → HalfTime → Kickoff → … (8 min por tiempo) → resolución`. `Goal → Kickoff`.
+**Resolución (ambos modos igual):** al terminar el tiempo reglamentario se consulta a `IResultResolver` (F.2).
+
+### F.2 Empates, prórroga y penales (independientes del modo)
+
+| Modo | Tipo | Empate tras tiempo reglamentario |
+|---|---|---|
+| Arena | Normal (liga/amistoso) | **Termina empatado.** Sin prórroga ni penales |
+| Classic | Normal | **Termina empatado.** Sin prórroga ni penales |
+| Arena | Knockout | Prórroga → si sigue empatado, tanda de penales |
+| Classic | Knockout | Prórroga → si sigue empatado, tanda de penales |
+
+Reglas:
+- Un empate es un empate: nunca activa prórroga ni penales por sí solo.
+- La prórroga depende **exclusivamente** de `CompetitionMatchType = Knockout` (no de Classic ni de Arena). Duración y número de periodos: ⚙ configurable (`CompetitionRules.ExtraTime`).
+- La tanda de penales solo se activa si es Knockout **y** el empate persiste tras la prórroga; **determina al ganador**. Formato (tiradas por equipo, muerte súbita): ⚙ configurable (`CompetitionRules.Shootout`).
+- Un partido Normal jamás entra en `ExtraTime` ni en `PenaltyShootout`; un Knockout con ganador al finalizar el tiempo reglamentario tampoco.
+- En Arena la prórroga se juega con las reglas de Arena (campo cerrado, sin reglas de infracción); en Classic con las de Classic. El stamina de la prórroga usa la misma curva continua; la recuperación entre periodos es ⚙ configurable.
+- Marcador: los goles de la tanda no se suman al marcador de juego; `Result` registra ganador y `TerminationReason`.
+
+### F.3 Disciplina y expulsiones (solo Classic)
+- **Segunda amarilla:** dos amarillas = roja. Secuencia: primera amarilla → segunda amarilla (se registra la tarjeta y el evento) → expulsión. Usa el **mismo estado de expulsión** que una roja directa. Arena no usa este sistema.
+- Roja (directa o por doble amarilla): el jugador queda fuera, no vuelve y no se repone; el equipo continúa con uno menos.
+- **Mínimo de jugadores:** con **3 activos** el partido continúa. Con **menos de 3** el partido **termina inmediatamente** con `MatchTerminationReason = InsufficientPlayers`; el rival obtiene la **victoria técnica** y **se conserva el marcador existente**; no se sigue simulando. Esto aplica también a un Knockout: no hay prórroga ni penales tras una terminación por jugadores insuficientes.
+- **Portero expulsado:**
+  1. Hay portero suplente **y** queda una sustitución → entra el suplente y **consume 1 sustitución**.
+  2. No queda ninguna sustitución → **un jugador de campo puede ocupar la portería** (F.4); no se crea ningún cambio.
+  3. El equipo está en el mínimo permitido → **no se crea ninguna sustitución fuera del límite**.
+- **Nunca** hay una sustitución fuera del límite de 3 (la expulsión no concede cambios).
+
+### F.4 Jugador de campo como portero (solo Classic, excepcional)
+No se crean atributos nuevos ni se modifica `PlayerDefinition`; no se guarda nada ni se convierte al jugador en un portero real. Las 8 capacidades se **derivan en runtime**, cada una como combinación de los atributos oficiales indicados:
+
+| Capacidad de portero | Derivada de |
+|---|---|
+| Reflexes | Agility + Control |
+| Handling | Control + Technique |
+| Positioning | Defense + Agility |
+| Diving | Agility + Speed |
+| Kicking | Passing + Technique |
+| Distribution | Passing + Control |
+| Command | Comportamiento contextual / IA (no es un valor derivado de atributos) |
+| Recovery | Stamina + Agility |
+
+Debe rendir **claramente peor** que un portero especializado: la fórmula de combinación incluye una penalización de falta de especialización ⚙ (valor al implementar y calibrar contra los porteros de la base de datos). El GRL de un portero real sigue siendo la media exacta de sus 8 atributos; el portero de emergencia no tiene GRL.
+
+### F.5 Sustituciones y tiempos
+Contador único por equipo (máx. 3) en `MatchState`; solicitud → `SubstitutionRules.Validate` → `PlayerSubstituted`.
+- **Classic:** respeta las interrupciones/reanudaciones del modo (balón muerto, descanso).
+- **Arena:** las sustituciones **no detienen artificialmente un ataque**; solo se ejecutan en un **momento seguro / interrupción válida del Match Engine** (p. ej. tras un gol, en el cambio de lado o cuando el engine declare una ventana segura). No hay una ventana tradicional obligatoria.
+- Un sustituido o expulsado no vuelve.
+
+### F.6 Stamina entre periodos
+- **Classic, descanso:** +25 % de la stamina máxima.
+- **Arena, cambio de lado:** +10 % de la stamina máxima.
+- Nunca supera el 100 %. Ambos valores son configurables en `MatchModeDefinition`.
 
 ---
 
@@ -214,7 +274,7 @@ Expulsión (Classic): jugador `Expulsado`, no vuelve; si quedan menos de 3 activ
 | Campo | **Cerrado, el balón rebota en paredes/límites** | Líneas con reanudación |
 | Continuidad | Partido continuo | Se interrumpe por infracciones y salidas |
 | Duración | **2 × 6 min (configurable)** | **2 × 8 min (configurable)** |
-| Descanso | Sin descanso tradicional; **cambio de lado** al acabar el 1.º tiempo | Con descanso (HalfTime) |
+| Descanso | Sin descanso tradicional; **cambio de lado** al acabar el 1.º tiempo (**+10 % stamina**) | Con descanso, HalfTime (**+25 % stamina**) |
 | Faltas / tarjetas / penaltis / tiros libres | **No existen** | Sí |
 | Fuera de juego | **No** | Sí (2.º último defensor; el portero cuenta como defensor) |
 | Córner / saque de banda / saque de puerta | **No** | Sí |
@@ -222,9 +282,12 @@ Expulsión (Classic): jugador `Expulsado`, no vuelve; si quedan menos de 3 activ
 | Árbitro | No existe como sistema | Sí; perfil por parámetros |
 | Ventaja | No | Sí |
 | Lesiones | **No** | **No** |
-| Expulsiones | No | Roja = fuera; juega con uno menos con ≥3 activos |
+| Disciplina | No hay tarjetas | Amarilla; **2 amarillas = roja**; roja = expulsión |
+| Expulsiones | No | Equipo con uno menos si queda ≥3 activos; con <3 el partido termina (`InsufficientPlayers`, victoria técnica, marcador conservado) |
+| Empate | Liga/amistoso: empate. Knockout: prórroga → penales | Liga/amistoso: empate. Knockout: prórroga → penales (**igual que Arena**: depende del tipo de competición, no del modo) |
+| Portero de emergencia | No aplica | Capacidades derivadas en runtime (F.4) |
 | Plantilla | 6 + 4 (≥1 portero suplente) | 6 + 4 (≥1 portero suplente) |
-| Sustituciones | Máx. 3 por equipo | Máx. 3 por equipo |
+| Sustituciones | Máx. 3; solo en momento seguro del engine, sin parar un ataque | Máx. 3; en las interrupciones/reanudaciones de Classic |
 | Eventos emitidos | Gol, pase, tiro, entrada, recuperación, posesión, sustitución | + falta, fuera de juego, córner, banda, penalti, tarjeta |
 | Estadísticas | Sin faltas/tarjetas/córners/fueras de juego | Todas |
 | Reanudaciones | Saque inicial (inicio de tiempo y tras gol) | Todas |
@@ -242,14 +305,14 @@ Joystick izquierdo: dirección + intensidad (0–30 % trote, 30–70 % carrera, 
 | Botón | Gesto | Acción | Condiciones | Atributos |
 |---|---|---|---|---|
 | A | tap | Tiro normal / potente (según carga) | Balón controlado o disponible | Shooting, Finishing, Control |
-| A | swipe ↓ | Tiro con efecto | Posesión; rango razonable | Shooting, Finishing, Technique, pie, presión, equilibrio |
-| A | swipe ↑ | Vaselina | Espacio sobre el portero; ángulo | Finishing, Technique, Control, distancia |
+| A | swipe ↓ | Tiro con efecto (`CurvedShot`) | Posesión; rango razonable | Shooting, Finishing, Technique, pie, presión, equilibrio |
+| A | swipe ↑ | Vaselina (`Chip`) | Espacio sobre el portero; ángulo | Finishing, Technique, Control, distancia |
 | B | tap | Pase corto | Receptor válido | Passing, Technique, Control |
-| B | swipe ↓ | Pedir pared | Compañero + línea + presión evaluados; devolución viable | Passing, Technique, Control, Creativity |
-| B | swipe ↑ | Pase al hueco | Receptor con carrera + espacio | Passing, Technique, Creativity, RiskPreference |
-| C | swipe ↑ | Regate / filigrana | **Solo si el jugador tiene la skill disponible** y hay espacio | Technique, Dribbling, Control, Agility, Stamina |
-| C | swipe ↓ | Pase elevado con habilidad | **Solo con skill de pase especial** | Technique, Passing, Control, pie |
-| C | tap | **Sacar al portero** (contextual; ver H.2) | Prioridad sin posesión o balón en tu tercio; el portero puede rechazar | Positioning, Command, Diving del portero; contexto |
+| B | swipe ↓ | Pedir pared (`WallPass`) | Compañero + línea + presión evaluados; devolución viable | Passing, Technique, Control, Creativity |
+| B | swipe ↑ | Pase al hueco (`ThroughPass`) | Receptor con carrera + espacio | Passing, Technique, Creativity, RiskPreference |
+| C | swipe ↑ | Regate / filigrana (`SkillMove`) | **Solo si el jugador tiene la skill disponible** y hay espacio | Technique, Dribbling, Control, Agility, Stamina |
+| C | swipe ↓ | Pase elevado con habilidad (`SkillLobPass`) | **Solo con skill de pase especial** | Technique, Passing, Control, pie |
+| C | tap | **Sacar al portero** (`GoalkeeperRush`; contextual) | Prioridad sin posesión o balón en tu tercio; la IA del portero puede rechazarla | Positioning, Command, Diving del portero; contexto |
 
 ### H.2 Defensa (sin balón) — definitiva
 
@@ -272,61 +335,75 @@ Notas:
 
 ## I. SUSTITUCIONES Y PLANTILLA
 
-- **6 titulares + 4 suplentes por equipo, con al menos 1 portero suplente.**
-- **Máximo 3 sustituciones por equipo y partido** (un único contador, sin ventanas, sin cupo por tiempo, sin lesiones). Tener 4 suplentes **no** da 4 cambios; la 4.ª solicitud se rechaza, incluido el cambio de portero.
-- Un jugador sustituido o expulsado no vuelve. El expulsado no se repone.
-- Portero expulsado: ver C16 (consume 1 cambio si entra el suplente; sin cambios, un jugador de campo va a portería; nunca hay cambio extra).
+- **6 titulares + 4 suplentes = 10 disponibles, con al menos 1 portero suplente.**
+- **Máximo 3 sustituciones por equipo y partido.** Un único contador, sin ventanas, sin cupo por tiempo, sin lesiones. 4 suplentes **no** son 4 cambios; la 4.ª solicitud se rechaza, incluido el cambio de portero.
+- Arena: solo en momento seguro del engine (F.5). Classic: en las interrupciones del modo.
+- Portero expulsado: F.3. Un expulsado o sustituido no vuelve. Nada concede cambios extra.
 
 ---
 
-## J. TEST PLAN
+## J. TEST PLAN (39 casos obligatorios + guardas)
 
-Tests puros (NUnit, `dotnet test`), sin nombres reales en identificadores:
+Tests puros (NUnit, `dotnet test`), sin nombres reales en identificadores. Estado: 🔧 = ya existe (cierre); ⏳ = se escribe con el sistema.
 
-| Área | Qué verifica |
-|---|---|
-| Modo | Arena no emite `FoulCommitted/OffsideDetected/CornerAwarded/ThrowInAwarded/PenaltyAwarded/CardIssued` ni saque de puerta; Classic sí puede |
-| Arena | Campo cerrado: el balón rebota y nunca sale; solo cuenta gol por la boca; juego continuo |
-| Formato | Arena 2×6 con cambio de lado y sin descanso; Classic 2×8 con descanso; valores configurables |
-| Plantilla/Sustituciones | 6+4 con ≥1 GK suplente; 4.ª sustitución rechazada; 4 suplentes ≠ 4 cambios; contador por equipo; el cambio de portero cuenta |
-| Expulsión | Roja: no vuelve; continúa con ≥3 activos; con <3 no continúa; GK expulsado: suplente consume 1 cambio, sin cambios → jugador de campo, nunca cambio extra |
-| Input | A↓ efecto; A↑ vaselina; B↓ pared; B↑ pase al hueco; C tap → orden al portero; C↑/C↓ solo con skill disponible; sin skill → no se ejecuta; no existe sprint button; defensa: A tap/↓/↑ y B tap/↓/↑ según H.2 |
-| Portero | C tap emite orden; la IA acepta si es razonable y rechaza si no; GRL = media exacta de 8 |
-| Stamina | Baja stamina reduce sprint pico; 0 bloquea sprint; curva continua |
-| Atributos | Los 12 no cambian; `Reaction` no aparece en tarjetas/Overall (guarda de legado) |
-| Coach Boost | `BaseOverall` nunca cambia; ≥80 → +1; <80 → 0; nunca −1; ningún atributo se modifica |
-| Balón | `BallSimulator` es la verdad; el Rigidbody visual no altera `BallState`; misma semilla → misma trayectoria |
-| Pase/tiro/regate/duelo | Atributos importan; pie débil penaliza; mismo input → mismo resultado |
-| IA | Decisión estable con semilla; no todos corren al balón; dificultad no cambia atributos |
-| Árbitro | Veredicto por parámetros, no por nombres; Arena sin árbitro |
-| Reglas Classic | Contacto legal vs infracción, ventaja, fuera de juego (GK cuenta), córner, banda, penalti, tarjetas |
-| Transiciones | Disparadores, prioridades, recuperación de forma |
-| MatchState | Única fuente de verdad; fases por modo; sin escritores externos |
-| Skills | Solo contrato: sin comparación por nombre; sin catálogo ni asignaciones en datos |
-| Formaciones | El motor no contiene formaciones; las toma de datos |
-| Guardas | Sin comparaciones por nombre; Simulation no depende de Presentation/UI; Core sin `UnityEngine` |
-| Rendimiento/Replay | Sin allocations en el paso caliente; entradas + semilla reproducen el mismo `MatchState` final |
+| # | Caso | Estado |
+|---|---|---|
+| 1 | Arena puede terminar empatado | ⏳ f1 |
+| 2 | Classic puede terminar empatado | ⏳ f1 |
+| 3 | Arena Normal no tiene prórroga | ⏳ f1 |
+| 4 | Classic Normal no tiene prórroga | ⏳ f1 |
+| 5 | Arena Knockout empatado → prórroga | ⏳ f1 |
+| 6 | Classic Knockout empatado → prórroga | ⏳ f1 |
+| 7 | Knockout empatado tras prórroga → penales | ⏳ f1 |
+| 8 | League/Friendly nunca activa penales | ⏳ f1 |
+| 9 | Classic con <3 activos → terminado (`InsufficientPlayers`, victoria técnica, marcador conservado) | ⏳ f11 |
+| 10–13 | Arena no genera faltas / fuera de juego / córners / saques de banda | ⏳ f1/f6 |
+| 14 | Arena rebota en las paredes | ⏳ f6 |
+| 15 | Máximo 3 sustituciones | ⏳ f2 |
+| 16 | El banquillo contiene portero suplente | ⏳ f2 |
+| 17 | Segunda amarilla → roja (mismo estado de expulsión) | ⏳ f11 |
+| 18 | Portero expulsado con suplente consume una sustitución | ⏳ f11 |
+| 19 | Sin sustituciones, un jugador de campo puede ocupar la portería | ⏳ f11 |
+| 20 | C tap ordena la salida del portero (y la IA puede rechazarla) | ⏳ f5/f7 |
+| 21–24 | A↓ tiro con efecto · A↑ vaselina · B↓ pared · B↑ pase al hueco | ⏳ f5 |
+| 25–26 | C↑ skill · C↓ pase especial (solo con skill disponible) | ⏳ f5 |
+| 27 | Un jugador sin skill no puede ejecutarla | ⏳ f5 |
+| 28 | No existe botón de sprint (guarda estructural; ya existe para `PlayerIntent`/`MovementStyle`/`FootballActionKind`) | 🔧 parcial |
+| 29 | La stamina afecta progresivamente al rendimiento | ⏳ f3 |
+| 30 | Descanso Classic recupera 25 % (tope 100 %) | ⏳ f3 |
+| 31 | Cambio de lado Arena recupera 10 % (tope 100 %) | ⏳ f3 |
+| 32 | `CoachBoost` no modifica atributos | ⏳ f1 (el cálculo ya está testeado en el sistema de entrenadores) |
+| 33 | `CoachBoost` no se aplica dos veces / el motor no consume `EffectiveOverall` | ⏳ f1 |
+| 34 | `EffectiveOverall = BaseOverall + CoachBoost` | 🔧 ya cubierto (sistema de entrenadores) |
+| 35 | `Reaction` no es atributo oficial (no está en `PlayerAttributeId`, Overall ni tarjeta) | 🔧 ya cubierto por las guardas de atributos; marca legacy ⏳ f2 |
+| 36 | `FootballActionKind` está desacoplado del Creator | 🔧 `FootballActionKindTests` |
+| 37 | `FootballActionKind` conserva compatibilidad con los valores existentes | 🔧 `FootballActionKindTests` |
+| 38 | `BallSimulator` es la fuente de verdad (el Rigidbody no altera `BallState`) | ⏳ f1 |
+| 39 | `MatchState` es la única fuente autoritativa | ⏳ f1 |
+
+Guardas adicionales (⏳ con su fase): `IResultResolver` no depende de `GameMode` ni `IModeRules` de `CompetitionMatchType`; ninguna comparación por nombre de jugador/entrenador/árbitro; Simulation no depende de Presentation/UI; Core sin `UnityEngine`; el motor no contiene formaciones; skills solo contrato; portero de emergencia no guarda atributos ni toca `PlayerDefinition`; determinismo por semilla y replay; sin allocations en el paso caliente.
 
 ---
 
 ## K. HOJA DE RUTA DE IMPLEMENTACIÓN
 
-Cada fase: rama propia, tests verdes, sin push/PR salvo que lo pidas.
+Cada fase: rama propia, tests verdes, sin push/PR salvo que se pida.
 
-0. ✅ **Decisiones** (este documento).
-1. **Núcleo determinista**: paso fijo, `MatchState` ampliado, `MatchModeDefinition`/`IModeRules` (Classic = lo actual), bus de eventos filtrado por modo, `BallSimulator` autoritativo y Rigidbody visual reflejando Core.
-2. **Datos mínimos**: banquillo 6+4 (validación ≥1 GK suplente), periodos por modo (Arena 2×6, Classic 2×8), contratos `SkillDefinition`/`PlayerSkillSet` **sin catálogo ni asignaciones**, marca de legado de `Reaction`.
-3. **Locomoción completa**: curva de fatiga, BodyType físico, selector de jugador.
-4. **Acciones base**: control, pase, tiro (normal/efecto/vaselina), regate, protección; contactos y duelos.
-5. **Input**: `ActionPadModel` (A/B/C + gestos, ataque y defensa de H) sobre `PlayerIntent`.
-6. **Arena completo**: campo cerrado, 2×6, cambio de lado, sustituciones, estadísticas — modo más simple primero.
-7. **Portero**: IA y orden C con aceptación/rechazo.
+0. ✅ **Decisiones y cierre de arquitectura** (este documento) + `FootballActionKind` movido a Core.
+1. **Núcleo determinista:** paso fijo; `MatchState` ampliado (modo, tipo de competición, fases `HalfTime/ExtraTime/PenaltyShootout/FullTime`, motivo de finalización); `MatchModeDefinition` + `IModeRules`; `CompetitionRules` + `IResultResolver` (empate/prórroga/penales, tests 1–8); bus de eventos filtrado por modo; `BallSimulator` autoritativo con Rigidbody visual reflejando Core (tests 38–39, 32–33).
+2. **Datos mínimos:** banquillo 6+4 (≥1 GK suplente), periodos por modo (Arena 2×6, Classic 2×8), contratos `SkillDefinition`/`PlayerSkillSet` sin catálogo ni asignaciones, marca `legacy/internal derived` de `Reaction`.
+3. **Locomoción y stamina:** `FatigueCurve` continua, recuperación 25 %/10 % configurable, BodyType físico, selector de jugador.
+4. **Acciones base:** control, pase, tiro (normal/efecto/vaselina), regate, protección; contactos y duelos.
+5. **Input:** `ActionPadModel` (A/B/C + gestos, ataque y defensa de H) sobre `PlayerIntent`; decidir si hacen falta valores nuevos del enum para las acciones defensivas.
+6. **Arena completo:** campo cerrado con rebote, 2×6, cambio de lado, sustituciones en momento seguro, estadísticas.
+7. **Portero:** IA, orden C con aceptación/rechazo, portero de emergencia derivado (F.4).
 8. **IA de jugador y de equipo** + transiciones.
-9. **Fase propia de formaciones**: `FormationBehaviorProfile` y formaciones generadas por Claude desde jugadores, roles, zonas y entrenadores.
-10. **Fase propia de habilidades**: catálogo y asignación, validadas por ti.
-11. **Classic**: `ContactJudge`, fuera de juego, reanudaciones, tarjetas/expulsiones, penaltis, árbitro por parámetros, ventaja, descanso.
+9. **Formaciones** (fase propia): `FormationBehaviorProfile` y formaciones creadas por Claude desde jugadores, roles, zonas y entrenadores.
+10. **Habilidades** (fase propia): catálogo y asignación validadas por ti.
+11. **Classic:** `ContactJudge`, fuera de juego, reanudaciones, tarjetas (2 amarillas = roja), expulsiones y mínimo de 3 activos, penaltis y tanda, árbitro por parámetros, ventaja, descanso.
 12. **Estadísticas, replay/log determinista, perfilado móvil.**
-13. **Presentación** enchufada a estado y eventos. Online queda fuera.
+13. **Presentación** sobre estado y eventos. Online fuera de alcance.
+14. **Balance del Coach Boost** en simulación (solo cuando se defina su influencia; hasta entonces el motor no lo consume).
 
 Dependencias duras: 1 → todo; 2 → 4/5/6; 4 → 6/11; 8 y 9 → pulir 6/11.
 
@@ -334,43 +411,52 @@ Dependencias duras: 1 → todo; 2 → 4/5/6; 4 → 6/11; 8 y 9 → pulir 6/11.
 
 ## L. DECISIONES
 
-### L.1 Decididas en la Fase 0 (aplicadas arriba)
+### L.1 Decisiones cerradas
 
 | # | Decisión | Dónde |
 |---|---|---|
-| 1 | Arena: campo cerrado con rebote; sin córners, bandas, saques de puerta, faltas ni fuera de juego; el juego continúa | C3, G, F |
-| 2 | C tap = orden de salida del portero, contextual, prioridad sin posesión/tercio propio; la IA puede rechazar; C swipe ↑/↓ = especiales de ataque | C10, H |
-| 3 | Coach Boost: no toca atributos; ≥80 → +1, <80 → 0; Effective = Base + Boost | C13 |
-| 4 | Plantilla 6 + 4, ≥1 portero suplente, máx. 3 cambios; 4 suplentes ≠ 4 cambios | C14, I |
-| 5 | Controles defensivos A/B definitivos; C solo "sacar portero" | H.2 |
-| 6 | Arena 2×6 sin descanso y cambio de lado; Classic 2×8 con descanso; configurable | C15, F, G |
-| 7 | Expulsiones Classic (≥3 activos; portero expulsado según cambios disponibles; nunca cambio extra) | C16, I |
-| 8 | `BallSimulator` autoritativo; Rigidbody refleja Core | C1 |
-| 9 | `MatchState` existente ampliado como estado autoritativo | C4, B.4 |
-| 10 | `Reaction` legado/interno/derivado, mantenido; deuda documentada | C5, M |
-| 11 | Skills: solo contrato `SkillDefinition`/`PlayerSkillSet`; sin catálogo ni asignaciones | C7 |
-| 12 | Formaciones data-driven; ninguna definitiva ahora; ninguna en el motor | C12 |
+| 1 | Arena: campo cerrado con rebote; sin córners, bandas, saques de puerta, faltas, fuera de juego, tiros libres por falta ni tarjetas; sin lesiones | C3, G |
+| 2 | **`GameMode` ≠ `CompetitionMatchType`**; el desempate depende solo del tipo de competición | C20, F.2, B.3 |
+| 3 | Un empate es un empate (Arena y Classic no eliminatorios); Knockout: prórroga → penales | F.2 |
+| 4 | Prórroga y penales solo con `Knockout`, nunca por modo ni por un simple empate | F.2 |
+| 5 | `BallSimulator` autoritativo; Rigidbody solo presenta | C1 |
+| 6 | `MatchState` existente ampliado, única fuente de verdad | C4, B.4 |
+| 7 | Stamina continua; descanso Classic +25 %, cambio de lado Arena +10 %, tope 100 %, configurable | C6, F.6 |
+| 8 | `Reaction` legado/interno/derivado; no es atributo oficial; no se elimina aún | C5, M |
+| 9 | 12 atributos oficiales; ninguno nuevo | B.3 |
+| 10 | Portero de emergencia con 8 capacidades derivadas en runtime, sin atributos ni cambios en `PlayerDefinition` | F.4 |
+| 11 | Segunda amarilla = roja con el mismo estado de expulsión | F.3 |
+| 12 | <3 activos → fin inmediato, `InsufficientPlayers`, victoria técnica, marcador conservado | F.3 |
+| 13 | Portero expulsado: suplente + cambio disponible → consume 1; sin cambios → jugador de campo; nunca cambio extra | F.3 |
+| 14 | 6 titulares + 4 suplentes (≥1 GK); máx. 3 sustituciones; Arena en momento seguro, Classic en interrupciones | C14, F.5, I |
+| 15 | Coach Boost: ≥80 → +1, <80 → 0, nunca −1; sin tocar atributos ni `BaseOverall`; **el motor no consume `EffectiveOverall` todavía** | C13 |
+| 16 | Controles de ataque y defensa definitivos; C tap = sacar portero; C sin otra función defensiva | H, C10 |
+| 17 | C tap contextual; la IA del portero puede rechazar | C10 |
+| 18 | `FootballActionKind` movido a Core con valores existentes intactos y 7 nuevos al final | C8 🔧 |
+| 19 | Skills: solo contrato `SkillDefinition`/`PlayerSkillSet`; sin catálogo ni asignaciones | C7 |
+| 20 | Formaciones data-driven; ninguna definitiva ni en el motor | C12 |
+| 21 | Duración Arena 2×6 / Classic 2×8, configurable | C15 |
+| 22 | Árbitros: preparados para los 7 parámetros, sin lógica por nombre, relevantes en Classic | B.2 |
 
-### L.2 Siguen abiertas (necesitan decisión antes de la fase que las usa)
-1. **Equipo con menos de 3 jugadores activos (Classic):** el partido termina; ¿qué resultado se registra (marcador actual, derrota por incomparecencia, 3-0)? Recomendación: terminar con victoria del rival conservando el marcador si ya es mayor. *(fase 11)*
-2. **Jugador de campo en la portería:** el portero se evalúa con 8 capacidades propias; un jugador de campo no las tiene y **no se deben crear atributos nuevos**. Recomendación: perfil de portero de emergencia fijo y bajo, definido en datos, o derivado de los 12 atributos con regla documentada. *(fase 7)*
-3. **Amarillas:** ¿2 amarillas = roja? Recomendación: sí, en Classic. *(fase 11)*
-4. **Arena: momento permitido para sustituir** (pausa, tras gol, cambio de lado). Recomendación: tras gol, en el cambio de lado y mediante pausa. *(fase 6)*
-5. **Coach Boost en simulación:** si debe influir en el partido por vía distinta a atributos. Hasta decidirlo, el motor no lo consume. *(antes de la fase 8)*
-6. **Recuperación de stamina** en el descanso de Classic y en el cambio de lado de Arena (valor configurable; sin default decidido). *(fase 3)*
-7. **Empate/prórroga:** hoy `IsDraw`; desempate = futuro.
-8. **C8 y C9:** confirmar mover `FootballActionKind` a un archivo neutro de Core y añadir valores al final. *(fase 4/5)*
+### L.2 Qué queda abierto
+No queda **ninguna decisión de diseño** abierta. Solo quedan valores de configuración sin cifra (⚙), que se fijan al implementar y calibrar, y que están marcados como configurables:
+1. Duración y número de periodos de la prórroga; formato de la tanda (tiradas por equipo, muerte súbita).
+2. Recuperación de stamina entre periodos de prórroga.
+3. Penalización de falta de especialización del portero de emergencia.
+4. Coeficiente de restitución del rebote en las paredes de Arena y valores de la `FatigueCurve`.
+5. Si hacen falta valores nuevos del enum para acciones defensivas (presión/contención, entrada deslizante, disputa física, despeje): se decide en la fase 5.
 
 ---
 
-## M. DEUDA CONOCIDA
+## M. DEUDA CONOCIDA (solo lo que sigue pendiente)
 
-1. **`Reaction` (legado):** campo `PlayerAttributes.Reaction` consumido por `ReactionModel`, `AnticipationModel`, `AiErrorModel`. Marcarlo como legado/interno/derivado en código (aún no hecho: esta fase no toca código) y retirarlo o derivarlo en una fase posterior de IA.
-2. **Dos físicas de balón:** hasta la fase 1, Gameplay usa `Rigidbody`; `Docs/ARCHITECTURE.md` conserva "solo el balón es dinámico" (obsoleto tras C1).
-3. **`DefaultFormations` genéricas:** esqueleto de tests; sin comportamiento. Las formaciones reales y `FormationBehaviorProfile`: fase propia (9).
-4. **Habilidades:** sin catálogo ni asignaciones; el contrato aún no existe en código.
-5. **`TeamDefinition` sin banquillo** y `MatchSettings` de un solo periodo de 180 s: cambios aditivos pendientes de la fase 2.
-6. **`MatchPhase`/`MatchState` mínimos** respecto a lo decidido: ampliación en fase 1.
-7. **`FootballActionKind` dentro del Creator** y sin las acciones nuevas (L.2-8).
-8. **Árbitros:** los 5 son datos que nadie lee; su uso llega en la fase 11.
-9. **Coach Boost:** uso en simulación sin decidir (L.2-5).
+1. **`Reaction` (legado):** `PlayerAttributes.Reaction` sigue consumido por `ReactionModel`, `AnticipationModel` y `AiErrorModel`. Está decidido que es *legacy / internal derived value*, pero la marca en código aún no se escribió (esta fase no tocó `PlayerAttributes`). Migrar la IA y eliminarlo: fase posterior de IA (8).
+2. **Balón en Unity:** `BallPhysics`/`BallController`/`BallInteractor` aún usan `Rigidbody` como verdad; `Docs/ARCHITECTURE.md` conserva "solo el balón es dinámico" (obsoleto). Fase 1.
+3. **`MatchState`/`MatchPhase`/`MatchSettings` mínimos** frente a lo decidido (modo, tipo de competición, `ExtraTime`, `PenaltyShootout`, `HalfTime`, `FullTime`, motivo de finalización, periodos). Fase 1.
+4. **`TeamDefinition` sin banquillo.** Cambio aditivo en la fase 2.
+5. **Habilidades:** contrato aún no escrito en código; sin catálogo ni asignaciones (fase 10).
+6. **Formaciones:** `DefaultFormations` genéricas sin comportamiento; las reales y `FormationBehaviorProfile` en la fase 9.
+7. **Acciones defensivas del enum:** `FootballActionKind` no tiene valores propios para presión/contención, entrada deslizante, disputa física ni despeje (decisión en la fase 5; no se rellenan huecos).
+8. **Perfiles de animación de las 7 acciones nuevas:** solo `Planned`, sin clips ni arte (presentación, fase 13).
+9. **Árbitros:** los 5 son datos que nadie lee todavía (fase 11).
+10. **Coach Boost:** el motor no lo consume; influencia pendiente de balance (fase 14).
