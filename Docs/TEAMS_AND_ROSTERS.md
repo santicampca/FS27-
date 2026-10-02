@@ -5,7 +5,7 @@ Datos y contratos. No hay movimiento, IA, formaciones, skills, gráficos, econom
 ## Flujo
 
 ```
-PlayerLibrary  (global: 156 jugadores, sin club permanente)
+PlayerLibrary  (global: 160 jugadores = 24 porteros + 136 de campo, sin club permanente)
       ↓
 RosterGenerator (seed, library, teams)      ← sorteo determinista
       ↓
