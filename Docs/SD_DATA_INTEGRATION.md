@@ -20,10 +20,10 @@ Reutilizado: el lector de lista de los extremos (`FieldPlayerListMarkdown`), imp
 
 - Zona primaria Attack; secundaria Midfield (4) o Wing (6), como dice la fuente. Las posiciones reales ED/EI/MCO son autoría: nadie se convierte en extremo ni mediocampista (4 avisos `PolyvalenceBeyondZone`).
 - Atributos y Target OVR tal como investigados. Messi y Neymar tienen valores de 95-96 (cuatro en total) y la defensa más baja de la base (35 y 40); Messi sale con Overall 90.
-- Messi (objetivo 83, calculado 90, +7) y Neymar (80 frente a 89, +9) pasan de la tolerancia de 5: avisan (`TargetOvrDiffers`), la tolerancia no se toca.
+- Messi (objetivo 83 → 90) y Neymar (80 → 89) superaban la tolerancia de 5; su objetivo se alineó al Overall calculado (ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md)). La tolerancia no se toca.
 - Dembélé tiene el pie escrito como "Both": aviso `PreferredFootAmbiguous`, se conserva Right y nunca se convierte en Left.
 - Clubs actualizados: Morgan Rogers (Chelsea, 17), Neymar (Santos), Kvaratskhelia (solo PSG).
 
 ## 4. Cómo se verifica
 
-`dotnet test Tests/Core.Tests --filter SecondStrikersDatabase` (y la suite completa). Inventario de avisos fijado: 30 `AffinityDefaulted`, 10 `WeightDefaulted`, 1 `HeightDefaulted`, 10 `ShortNameDerived`, 10 `SignatureActionsPending`, 4 `PolyvalenceBeyondZone`, 2 `TargetOvrDiffers`, 1 `PreferredFootAmbiguous`; ningún error.
+`dotnet test Tests/Core.Tests --filter SecondStrikersDatabase` (y la suite completa). Inventario de avisos fijado: 30 `AffinityDefaulted`, 10 `WeightDefaulted`, 1 `HeightDefaulted`, 10 `ShortNameDerived`, 10 `SignatureActionsPending`, 4 `PolyvalenceBeyondZone`, sin `TargetOvrDiffers`, 1 `PreferredFootAmbiguous`; ningún error.

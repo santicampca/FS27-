@@ -15,6 +15,9 @@ other player databases) and each one only applies if the record still holds the 
 | mo-gilberto-mora | shortName | Gilberto Mora | Mora | Design | FS27 contract: a short name has at most 12 characters | "Gilberto Mora" has 13; without the correction the player cannot be imported |
 | mo-gilberto-mora | shirtNumber | 18 | 10 | Verified | Wikipedia and press: wears number 10 at Tijuana (web search) | The file says "18 (o dorsal formativo en Xolos)"; the reader keeps the leading number, which is not his number |
 | mo-gilberto-mora | heightCm | 172 | 168 | Verified | Wikipedia: 1.68 m (web search) | The file gives an estimate ("Estimado formativo") |
+| mo-isco | targetOvr | 80 | 86 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 86; the design target is only a reference | The target differed from the calculated overall by 6 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
+| mo-kevin-de-bruyne | targetOvr | 82 | 88 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 88; the design target is only a reference | The target differed from the calculated overall by 6 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
+| mo-florian-wirtz | targetOvr | 81 | 87 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 87; the design target is only a reference | The target differed from the calculated overall by 6 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
 
 ## Findings that are NOT changed (documented, nothing is invented)
 

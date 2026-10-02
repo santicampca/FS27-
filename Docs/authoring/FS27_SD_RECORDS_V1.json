@@ -110,7 +110,7 @@
         "HalfSpaceOrbit"
       ],
       "strengths": [],
-      "targetOvr": 83,
+      "targetOvr": 90,
       "weakFootQuality": 88,
       "weaknesses": []
     },
@@ -450,7 +450,7 @@
         "PocketPenetration"
       ],
       "strengths": [],
-      "targetOvr": 80,
+      "targetOvr": 89,
       "weakFootQuality": 90,
       "weaknesses": []
     },

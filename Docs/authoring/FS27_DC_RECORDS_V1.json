@@ -566,7 +566,7 @@
         "CounterAttackSprint"
       ],
       "strengths": [],
-      "targetOvr": 79,
+      "targetOvr": 85,
       "weakFootQuality": 80,
       "weaknesses": []
     },
@@ -1008,7 +1008,7 @@
         "DiagonalRun"
       ],
       "strengths": [],
-      "targetOvr": 80,
+      "targetOvr": 86,
       "weakFootQuality": 80,
       "weaknesses": []
     },
@@ -1064,7 +1064,7 @@
         "DirectShot"
       ],
       "strengths": [],
-      "targetOvr": 80,
+      "targetOvr": 87,
       "weakFootQuality": 82,
       "weaknesses": []
     },

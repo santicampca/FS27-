@@ -18,7 +18,7 @@ Reutilizado: el lector de fichas propiedad/valor (`FieldPlayerPropertyCardMarkdo
 
 - Zona primaria Midfield y secundaria Attack en los diez, tal como la fuente. SD (segundo delantero), RW, LW y LM son solo autoría: nadie se convierte en extremo ni delantero (6 avisos `PolyvalenceBeyondZone`).
 - Atributos, roles y Target OVR tal como investigados; nadie llega a 95 (máximo 94).
-- **Tres Target OVR están 6 por debajo del calculado** (Isco, De Bruyne, Wirtz): fuera de la tolerancia de 5, el importador avisa y la tolerancia no se toca.
+- **(Alineado)** Tres Target OVR estaban 6 por debajo del calculado (Isco, De Bruyne, Wirtz): fuera de la tolerancia de 5, el importador avisa y la tolerancia no se toca.
 - Acciones de firma: etiquetas de autoría; solo "Late box arrival" (4 jugadores) equivale a un comportamiento existente.
 
 ## 4. Correcciones y hallazgos
@@ -27,4 +27,4 @@ Clubes y dorsales desactualizados: De Bruyne (Napoli, 11), Wirtz (Liverpool, 7).
 
 ## 5. Cómo se verifica
 
-`dotnet test Tests/Core.Tests --filter MidfieldersMco` (y la suite completa). Inventario fijado: 10 `SignatureActionsPending`, 6 `PolyvalenceBeyondZone`, 3 `TargetOvrDiffers`, ningún error.
+`dotnet test Tests/Core.Tests --filter MidfieldersMco` (y la suite completa). Inventario fijado: 10 `SignatureActionsPending`, 6 `PolyvalenceBeyondZone`, ningún error y ningún `TargetOvrDiffers` (Isco, De Bruyne y Wirtz tenían el objetivo 6 por debajo del calculado; se alinearon a 86, 88 y 87, ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md)).
