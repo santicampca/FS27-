@@ -33,7 +33,7 @@ ResolvedCharacter ── CharacterAssemblyPlanner ──► CharacterAssemblyPla
 - `SoftwareRenderer` + `PngWriter`: frente, perfil y espalda, con sombreado plano. PNG con zlib (`DeflateStream`).
 - `CharacterPreviewData`: proporciones, partes, triángulos, colores y una nota explícita: *"Procedural mannequin ... not final art, not rigged and not animated."*
 
-Muestras: [previews](previews) (`winger`, `goalkeeper`, `striker`).
+Muestras: [previews](previews) (`winger`, `goalkeeper`, `striker`); los binarios se regeneran con `dotnet run --project Tools/PreviewWriter` (no se suben por ir en Git LFS).
 
 ## 4. Qué es realmente procedural
 Sí: proporciones, ensamblaje, colores, formas simples (elipsoides, segmentos, cajas), pelo/barba/botas/guantes como formas básicas, variación por semilla. **No:** caras con carácter, peinados reales, ropa, texturas, blend shapes, rig, pesos, animación.

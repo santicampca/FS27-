@@ -80,7 +80,7 @@ CreatorResult r = pipeline.Run(new CreatorRequest {
 // r.GenerationPlan (proporciones, firma de movimiento, animaciones de muestra), r.RuntimeData.Json (~1.1 KB), r.DebugReport
 ```
 
-Muestras generadas por el propio motor (maniquí procedural, **no arte final**): [Docs/previews](previews) (`winger`, `goalkeeper`, `striker`: `.png` de frente/perfil/espalda, `.glb`, `.debug.txt`, `.runtime.json`).
+Muestras generadas por el propio motor (maniquí procedural, **no arte final**): [Docs/previews](previews). Se versionan los `.debug.txt` y `.runtime.json`; los `.png` y `.glb` (el repo los guarda en Git LFS) se regeneran con `dotnet run --project Tools/PreviewWriter`.
 
 ## 5. Qué es real, qué es contrato, qué necesita otras cosas
 
