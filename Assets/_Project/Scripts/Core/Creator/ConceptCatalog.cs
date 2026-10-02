@@ -265,7 +265,7 @@ namespace FS27.Core
             d = Add(c, "hairLength", ConceptKind.Scalar, Vis, "Hair length.", "hair.length");
             d.AddSense(Vis, Any, "", ConceptEffect.P("hair.length"));
             Vs(c, "hairVolume", "Hair volume.", "hair.volume");
-            d = Add(c, "skinTone", ConceptKind.Scalar, Vis, "Skin tone (light to dark).", "skin.tone");
+            d = Add(c, "skinTone", ConceptKind.Scalar, Vis, "Skin tone (light to dark).", "skin.tone", "skin.undertone");
             d.AddSense(Vis, Any, "", ConceptEffect.P("skin.tone"));
             d = Add(c, "age", ConceptKind.Scalar, Vis, "Apparent age.");
             d.AddSense(Vis, Any, "", ConceptEffect.U(UnsupportedReason.RequiresAsset, "There is no age parameter or age-specific face assets yet."));
@@ -286,7 +286,7 @@ namespace FS27.Core
             d.RemoveEffects.Add(ConceptEffect.P("hair.length", -1f));
             d = Add(c, "hairTexture", ConceptKind.Choice, Vis, "Straight, wavy, curly...", "hair.texture");
             d.Slot = "hair.texture";
-            d = Add(c, "beard", ConceptKind.Choice, Vis, "Facial hair.", "face.beard");
+            d = Add(c, "beard", ConceptKind.Choice, Vis, "Facial hair.", "face.beard", "facialHair.");
             d.Slot = "face.beard";
             d.RemoveEffects.Add(ConceptEffect.C("face.beard", "none"));
             d = Add(c, "expression", ConceptKind.Choice, Vis, "Default facial expression.", "face.expression");
@@ -303,7 +303,7 @@ namespace FS27.Core
             d.ColorSlot = "kit.primary";
 
             // ---------------- groups (only for keep / replace / remove-whole-area) ----------------
-            Add(c, "face", ConceptKind.Group, Vis, "The whole face (head, eyes, brows, nose, mouth, ears).", "head.", "face.", "eyes.");
+            Add(c, "face", ConceptKind.Group, Vis, "The whole face (head, eyes, brows, nose, mouth, ears).", "head.", "face.", "eyes.", "brows.", "nose.", "mouth.", "ears.", "facialHair.");
             Add(c, "body", ConceptKind.Group, Vis, "The whole body.", "body.");
             Add(c, "hair", ConceptKind.Group, Vis, "The hair (style, length, colour, texture).", "hair.");
             Add(c, "style", ConceptKind.Group, Vis, "The visual style.", "style.");

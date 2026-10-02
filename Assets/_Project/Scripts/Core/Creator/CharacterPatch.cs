@@ -230,9 +230,13 @@ namespace FS27.Core
                 case PatchTarget.Behavior:
                     return ApplyBehavior(spec, o, catalogs, r, who);
                 case PatchTarget.StyleId:
-                    if (!catalogs.Styles.Contains(o.Value)) { r.Skipped.Add(who + ": unknown style"); return false; }
-                    spec.Appearance.StyleId = o.Value;
+                {
+                    var notes = new List<string>();
+                    CharacterSpecification restyled = StyleApplier.Restyle(spec, o.Value, catalogs, notes);
+                    if (restyled == null) { r.Skipped.Add(who + ": unknown style"); return false; }
+                    CopyInto(spec, restyled);
                     return true;
+                }
                 case PatchTarget.StyleAxis:
                 {
                     int dir = o.Kind == PatchOpKind.Decrement ? -1 : 1;
@@ -389,12 +393,13 @@ namespace FS27.Core
             var patch = new CharacterSpecificationPatch { Label = "diff" };
             if (from.Spec != null && to.Spec != null)
             {
+                // the style goes FIRST: swapping a style shifts the parameters it owns, and the exact values that follow must win over that shift
+                if (from.Spec.Appearance.StyleId != to.Spec.Appearance.StyleId)
+                    patch.Operations.Add(new PatchOperation { Kind = PatchOpKind.Replace, Target = PatchTarget.StyleId, Key = "style", Value = to.Spec.Appearance.StyleId, Reason = "diff" });
                 Params(patch, from.Spec.Appearance.Params, to.Spec.Appearance.Params, catalogs, PatchTarget.AppearanceParam);
                 Params(patch, from.Spec.Dna.Params, to.Spec.Dna.Params, catalogs, PatchTarget.DnaParam);
                 Strings(patch, from.Spec.Appearance.Choices, to.Spec.Appearance.Choices, PatchTarget.Choice);
                 Strings(patch, from.Spec.Appearance.Colors, to.Spec.Appearance.Colors, PatchTarget.Color);
-                if (from.Spec.Appearance.StyleId != to.Spec.Appearance.StyleId)
-                    patch.Operations.Add(new PatchOperation { Kind = PatchOpKind.Replace, Target = PatchTarget.StyleId, Key = "style", Value = to.Spec.Appearance.StyleId, Reason = "diff" });
                 foreach (BehaviorEntry b in to.Spec.Dna.Behaviors)
                     if (!from.Spec.Dna.TryGetBehavior(b.Id, out BehaviorEntry old) || Math.Abs(old.Weight - b.Weight) > 1e-4f)
                         patch.Operations.Add(new PatchOperation { Kind = PatchOpKind.Replace, Target = PatchTarget.Behavior, Key = b.Id, Level = b.Weight, Reason = "diff" });

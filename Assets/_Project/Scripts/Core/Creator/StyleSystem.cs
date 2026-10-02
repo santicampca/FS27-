@@ -36,13 +36,39 @@ namespace FS27.Core
         public List<StyleAxisEffect> CartoonAxis = new List<StyleAxisEffect>();
         /// <summary>Factor applied to childlike-risk effects when the request says "not childish".</summary>
         public float ChildlikeGuardFactor = 0.4f;
+        /// <summary>Body proportions of the style, in heads (a realistic adult is about 7.3, a cartoon about 5.5-6.5).</summary>
+        public float HeadHeights = 6.5f;
+        /// <summary>The material family this style renders with (a name a renderer maps to a shader; no shader is defined here).</summary>
+        public string MaterialFamily = "fs27_toon_lit";
+        /// <summary>0..1: how thick the outline is drawn (0 = none).</summary>
+        public float OutlineWidth = 0.5f;
+        /// <summary>0.5..1.5: colour saturation multiplier.</summary>
+        public float Saturation = 1f;
     }
 
     public sealed class StyleCatalog
     {
         private readonly Dictionary<string, StylePreset> byId = new Dictionary<string, StylePreset>();
 
+        private readonly Dictionary<string, string> aliases = new Dictionary<string, string>(StringComparer.Ordinal);
+
         public IEnumerable<StylePreset> All => byId.Values;
+
+        /// <summary>Another name for a style (for example a shorter id used in prompts or older data). Aliases are not listed by <see cref="All"/>.</summary>
+        public bool TryAddAlias(string alias, string styleId)
+        {
+            if (string.IsNullOrEmpty(alias) || !byId.ContainsKey(styleId) || byId.ContainsKey(alias) || aliases.ContainsKey(alias)) return false;
+            aliases[alias] = styleId;
+            return true;
+        }
+
+        /// <summary>The real id behind an id or alias (null if unknown).</summary>
+        public string Canonical(string idOrAlias)
+        {
+            if (idOrAlias == null) return null;
+            if (byId.ContainsKey(idOrAlias)) return idOrAlias;
+            return aliases.TryGetValue(idOrAlias, out string real) ? real : null;
+        }
 
         public bool TryAdd(StylePreset s)
         {
@@ -58,12 +84,12 @@ namespace FS27.Core
                 s = null;
                 return false;
             }
-            return byId.TryGetValue(id, out s);
+            return byId.TryGetValue(Canonical(id) ?? id, out s);
         }
 
         public bool Contains(string id)
         {
-            return id != null && byId.ContainsKey(id);
+            return Canonical(id) != null;
         }
     }
 
@@ -95,6 +121,7 @@ namespace FS27.Core
             s.CartoonAxis.Add(new StyleAxisEffect("body.handScale", 0.2f, true));
             s.CartoonAxis.Add(new StyleAxisEffect("body.footScale", 0.2f, true));
             c.TryAdd(s);
+            StylePresets.AddAll(c);
             return c;
         }
     }

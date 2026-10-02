@@ -177,6 +177,24 @@ namespace FS27.Core
             A(c, "skin", "skin.tone", 0f, 1f, 0.5f, "Position on the skin tone ramp (light .. dark).");
             A(c, "skin", "skin.variation", 0f, 1f, 0f, "Subtle visual variation (freckles, blush...), 0 none.");
 
+            // ---------------- Appearance 2.0: finer body, eyes, brows, nose, mouth, ears, hair line, facial hair, undertone ----------------
+            A(c, "body", "body.neckLength", 0.8f, 1.3f, 1.0f, "Neck length.");
+            A(c, "body", "body.torsoLength", 0.9f, 1.1f, 1.0f, "Torso length (shoulders to hips).");
+            A(c, "body", "body.hipWidth", 0.85f, 1.2f, 1.0f, "Hip width.");
+            A(c, "body", "body.thighThickness", 0.85f, 1.3f, 1.0f, "Thigh thickness.");
+            A(c, "body", "body.calfThickness", 0.85f, 1.25f, 1.0f, "Calf thickness.");
+            A(c, "eyes", "eyes.depth", 0f, 1f, 0.5f, "0 protruding .. 1 deep-set eyes.");
+            A(c, "eyes", "eyes.roundness", 0f, 1f, 0.5f, "0 narrow .. 1 round eyes.");
+            A(c, "brows", "brows.angle", 0f, 1f, 0.5f, "0 drooping .. 1 raised / stern eyebrows.");
+            A(c, "brows", "brows.length", 0.8f, 1.2f, 1.0f, "Eyebrow length.");
+            A(c, "nose", "nose.bridgeHeight", 0f, 1f, 0.5f, "0 flat .. 1 high nose bridge.");
+            A(c, "nose", "nose.tipAngle", 0f, 1f, 0.5f, "0 pointing down .. 1 upturned nose tip.");
+            A(c, "mouth", "mouth.fullness", 0f, 1f, 0.5f, "0 thin .. 1 full lips.");
+            A(c, "ears", "ears.protrusion", 0f, 1f, 0.5f, "0 flat to the head .. 1 sticking out.");
+            A(c, "hair", "hair.hairline", 0f, 1f, 0.5f, "0 low .. 1 high / receding hairline.");
+            A(c, "facialHair", "facialHair.density", 0f, 1f, 0f, "0 none .. 1 full beard coverage.");
+            A(c, "skin", "skin.undertone", 0f, 1f, 0.5f, "0 cool .. 1 warm undertone.");
+
             // ---------------- Appearance: style sliders (see StyleCatalog for how they move together) ----------------
             A(c, "style", "style.realism", 0f, 1f, 0.25f, "0 not realistic .. 1 realistic.");
             A(c, "style", "style.stylization", 0f, 1f, 0.7f, "0 none .. 1 strongly stylised.");

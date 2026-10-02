@@ -59,7 +59,13 @@ namespace FS27.Core
         ConfidenceOutOfRange,
         // ---- observations and research
         ObservationInvalid,
-        ResearchFailed
+        ResearchFailed,
+        // ---- appearance 2.0, content and assembly
+        AppearanceIncoherent,
+        AppearanceIncompatible,
+        ContentIdInvalid,
+        ContentUnresolved,
+        AssemblyInvalid
     }
 
     public enum CreatorSeverity

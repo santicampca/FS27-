@@ -464,11 +464,16 @@ namespace FS27.Core.Tests
             Assert.IsTrue(typeof(ICharacterAppearanceResolver).IsAssignableFrom(typeof(CatalogAppearanceResolver)));
             foreach (Type t in new[] { typeof(IAnimationResolver), typeof(ICharacterGenerator), typeof(BodyCompatibility), typeof(AnimationCompatibility), typeof(RetargetingProfile), typeof(AnimationSetReference) })
                 Assert.IsNotNull(t);
-            // no implementation of the 3D parts exists: they are Creator Engine roadmap phases A-H
-            var implementers = typeof(ICharacterGenerator).Assembly.GetTypes().Where(t => !t.IsInterface && (typeof(ICharacterGenerator).IsAssignableFrom(t) || typeof(IAnimationResolver).IsAssignableFrom(t))).ToArray();
-            Assert.IsEmpty(implementers, "nothing pretends to generate geometry or animation");
-            var assemblerImplementers = typeof(ICharacterGenerator).Assembly.GetTypes().Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICharacterAssembler<>))).ToArray();
-            Assert.IsEmpty(assemblerImplementers);
+            // Intelligence phase: the only implementations are the pure-C# ones below. The procedural generator really builds MANNEQUIN geometry (a
+            // static, unrigged proxy, see CharacterGenerationTests) and the catalog animation resolver only SELECTS animation profiles (no clips exist).
+            // Everything that needs Unity (a GameObject assembler, an Animator adapter) is still not implemented in Core, and must stay out of it.
+            var allowed = new[] { "ProceduralCharacterGenerator", "CatalogAnimationResolver" };
+            var implementers = typeof(ICharacterGenerator).Assembly.GetTypes().Where(t => !t.IsInterface && (typeof(ICharacterGenerator).IsAssignableFrom(t) || typeof(IAnimationResolver).IsAssignableFrom(t))).Select(t => t.Name).ToArray();
+            CollectionAssert.IsSubsetOf(implementers, allowed, "only the known, honest implementations may exist in Core");
+            var assemblerImplementers = typeof(ICharacterGenerator).Assembly.GetTypes().Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICharacterAssembler<>))).Select(t => t.Name).ToArray();
+            CollectionAssert.IsSubsetOf(assemblerImplementers, new[] { "ProceduralCharacterGenerator" });
+            foreach (var asm in typeof(ICharacterGenerator).Assembly.GetReferencedAssemblies())
+                StringAssert.DoesNotContain("UnityEngine", asm.Name, "Core must stay engine-free");
         }
 
         [Test]
