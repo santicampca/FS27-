@@ -196,16 +196,10 @@ namespace FS27.Core
                 }
             }
             bool onlyConstraints = program.Commands.Count == 0 && program.Constraints.Count > 0 && compiled.Unsupported.Count == 0 && program.Ambiguities.Count == 0;
-            if (compiled.Patch.IsEmpty && !creates && !compiled.CreateRequested && onlyConstraints && req.Current != null)
-            {
-                // "keep the face" / "keep everything else" on its own: understood, and honoured by changing nothing
-                res.Warnings.Add("Nothing to change: the character was kept as it is.");
-                res.Specification = req.Current.Spec;
-                res.Draft = req.Current;
-                res.AuthoringData = new AuthoringCharacterRecord { Json = CharacterSpecificationJson.ToJson(req.Current.Spec, true, true), InterpretationText = res.Interpretation != null ? res.Interpretation.ToText() : "" };
-                return true;
-            }
-            if (compiled.Patch.IsEmpty && !creates && !compiled.CreateRequested)
+            // "keep the face" / "keep everything else" on its own: understood, and honoured by changing nothing (the stages below still run, so the result is complete)
+            bool keepAsIs = compiled.Patch.IsEmpty && !creates && !compiled.CreateRequested && onlyConstraints && req.Current != null;
+            if (keepAsIs) res.Warnings.Add("Nothing to change: the character was kept as it is.");
+            if (compiled.Patch.IsEmpty && !creates && !compiled.CreateRequested && !keepAsIs)
             {
                 res.Errors.Add(compiled.Unsupported.Count > 0 ? "The request needs something this build cannot do yet (see 'Not possible yet')." : "The request did not change anything.");
                 res.NeedsClarification = compiled.Unsupported.Count == 0;
@@ -216,7 +210,7 @@ namespace FS27.Core
 
             // ---- 5. apply
             res.Stages.Add("apply patch");
-            PatchResult applied = PatchApplier.Apply(baseDraft, compiled.Patch, catalogs);
+            PatchResult applied = PatchApplier.Apply(baseDraft, compiled.Patch, catalogs);   // an empty patch changes nothing
             foreach (string s in applied.Skipped) res.Warnings.Add("Skipped: " + s);
             foreach (string s in applied.Blocked) res.Warnings.Add("Blocked: " + s);
             foreach (string s in applied.Clamped) res.Warnings.Add("Limited: " + s);

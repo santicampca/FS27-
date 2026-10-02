@@ -182,8 +182,9 @@ namespace FS27.Core.Tests
             AuthoringDraft b = Start();
             CreatorResult r = Run("mantén la cara", b);
             Assert.IsTrue(r.Success, r.DebugReport);
-            Assert.AreEqual(CharacterSpecificationJson.ToJson(b.Spec), CharacterSpecificationJson.ToJson(r.Specification));
+            Assert.AreEqual(CharacterSpecificationJson.ToJson(b.Spec), CharacterSpecificationJson.ToJson(r.Draft.Spec), "the character itself is untouched");
             Assert.IsTrue(r.Warnings.Any(w => w.Contains("kept")));
+            Assert.IsNotNull(r.RuntimeData, "and the result is complete, not a stub");
         }
 
         [Test]
@@ -204,7 +205,8 @@ namespace FS27.Core.Tests
             AuthoringDraft b = Start();
             CreatorResult r = Run("mantén todo lo demás", b);
             Assert.IsTrue(r.Success, r.DebugReport);
-            Assert.AreEqual(CharacterSpecificationJson.ToJson(b.Spec), CharacterSpecificationJson.ToJson(r.Specification));
+            Assert.AreEqual(CharacterSpecificationJson.ToJson(b.Spec), CharacterSpecificationJson.ToJson(r.Draft.Spec));
+            Assert.IsNotNull(r.GenerationPlan);
         }
 
         // ================= conversations =================
