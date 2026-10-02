@@ -10,14 +10,14 @@ namespace FS27.Core.Tests
 {
     /// <summary>
     /// Phase 2: the global player library, the 12 team identities, the deterministic draw and the rosters it produces.
-    /// The real library has 20 goalkeepers, but 12 squads of 2 goalkeepers need 24: the draw tests use the real 156 players plus 4 test-only goalkeepers
-    /// (a fixture built here, never part of the game data) so the algorithm is verified; one test pins down that the REAL library cannot be drawn yet.
+    /// The real library has 160 players: 24 goalkeepers (the 20 of the goalkeeper database + the 4 of its additions) and 136 field players, exactly what 12 squads of
+    /// 2 goalkeepers + 8 field players need. Every draw test runs on that REAL library: there are no fixture players.
     /// </summary>
     public class TeamsAndRostersTests
     {
         private static readonly Dictionary<string, string> FileOf = new Dictionary<string, string>
         {
-            { "goalkeepers", "FS27_GOALKEEPER_DATABASE_V2.md" },
+            { "goalkeepers", "FS27_GOALKEEPER_DATABASE_V2.md" }, { "goalkeepers.additions", "FS27_GOALKEEPER_ADDITIONS_V1.md" },
             { "defenders", "FS27_DEFENDERS_DATABASE_V1.md" }, { "defenders.corrections", "FS27_DEFENDERS_CORRECTIONS_V1.md" },
             { "leftDefenders", "FS27_LEFT_DEFENDERS_DATABASE_V1.md" }, { "leftDefenders.corrections", "FS27_LEFT_DEFENDERS_CORRECTIONS_V1.md" },
             { "fullbacks", "FS27_FULLBACKS_DATABASE_V1.md" }, { "fullbacks.corrections", "FS27_FULLBACKS_CORRECTIONS_V1.md" }, { "fullbacks.additions", "FS27_FULLBACKS_ADDITIONS_V1.md" },
@@ -32,7 +32,6 @@ namespace FS27.Core.Tests
 
         private static string root;
         private static AuthoredPlayerLibraryResult real;
-        private static PlayerLibrary extended;
         private static List<TeamDefinition> teams;
         private static CoachLibrary coaches;
         private static string teamsText;
@@ -44,7 +43,6 @@ namespace FS27.Core.Tests
             if (core == null) Assert.Ignore("Core sources not reachable from the test's working directory.");
             root = new DirectoryInfo(core).Parent.Parent.Parent.Parent.FullName;
             real = LoadReal();
-            extended = Extend(real.Library);
             teamsText = File.ReadAllText(Path.Combine(root, "Docs", "authoring", "FS27_TEAMS_V1.json"));
             Assert.IsTrue(TeamCatalogJson.TryFromJson(teamsText, out teams, out string error), error);
             Assert.IsTrue(CoachJson.TryFromJson(File.ReadAllText(Path.Combine(root, "Docs", "authoring", "FS27_COACHES_V1.json")), out List<CoachDefinition> list, out error), error);
@@ -57,27 +55,9 @@ namespace FS27.Core.Tests
             return AuthoredPlayerLibrary.Load(name => File.ReadAllText(Path.Combine(root, "Docs", "authoring", FileOf[name])));
         }
 
-        /// <summary>The real library plus 4 TEST-ONLY goalkeepers (copies of real keepers' numbers under new ids), so 12 squads of 2 keepers are possible.</summary>
-        private static PlayerLibrary Extend(PlayerLibrary source)
-        {
-            var lib = new PlayerLibrary();
-            foreach (PlayerDefinition p in source.All) { lib.TryAdd(p); if (source.TryGetGoalkeeperProfile(p.Id, out GoalkeeperProfile gk)) lib.TryAddGoalkeeperProfile(gk); }
-            List<PlayerDefinition> keepers = source.All.Where(p => p.Role == PlayerRole.Goalkeeper).ToList();
-            for (int i = 0; i < 4; i++)
-            {
-                PlayerDefinition from = keepers[5 + i];
-                source.TryGetGoalkeeperProfile(from.Id, out GoalkeeperProfile fromProfile);
-                string id = "testgk-" + (i + 1);
-                lib.TryAdd(new PlayerDefinition(id, "Test Keeper " + (i + 1), 1, PlayerRole.Goalkeeper, from.Attributes));
-                lib.TryAddGoalkeeperProfile(new GoalkeeperProfile(id, fromProfile.PrimaryStyle, fromProfile.Reflexes, fromProfile.Handling, fromProfile.Positioning, fromProfile.Diving,
-                    fromProfile.Kicking, fromProfile.Distribution, fromProfile.Command, fromProfile.Recovery));
-            }
-            return lib;
-        }
-
         private static RosterGeneration Draw(int seed, PlayerLibrary lib = null, IReadOnlyList<TeamDefinition> t = null, RosterDrawSettings s = null)
         {
-            return RosterGenerator.Generate(seed, lib ?? extended, real.Profiles, t ?? teams, s);
+            return RosterGenerator.Generate(seed, lib ?? real.Library, real.Profiles, t ?? teams, s);
         }
 
         private static string Fingerprint(RosterGeneration g)
@@ -98,11 +78,42 @@ namespace FS27.Core.Tests
         {
             Assert.IsTrue(real.IsValid, string.Join("\n", real.Problems));
             CollectionAssert.AreEquivalent(AuthoredPlayerLibrary.Sources, FileOf.Keys, "every logical source the loader asks for is provided");
-            Assert.AreEqual(156, real.Library.Count, "the real number of players");
-            Assert.AreEqual(20, real.Library.All.Count(p => p.Role == PlayerRole.Goalkeeper), "goalkeepers");
+            Assert.AreEqual(160, real.Library.Count, "the real number of players");
+            Assert.AreEqual(24, real.Library.All.Count(p => p.Role == PlayerRole.Goalkeeper), "goalkeepers");
             Assert.AreEqual(136, real.Library.All.Count(p => p.Role != PlayerRole.Goalkeeper), "field players");
-            Assert.AreEqual(20, real.Library.GoalkeeperProfiles.Count);
-            Assert.AreEqual(156, real.Library.All.Select(p => p.Id).Distinct().Count());
+            Assert.AreEqual(24, real.Library.GoalkeeperProfiles.Count);
+            Assert.AreEqual(160, real.Library.All.Select(p => p.Id).Distinct().Count());
+            Assert.IsFalse(real.Library.All.Any(p => p.Id.StartsWith("testgk")), "no fixture players in the game data");
+        }
+
+        [Test]
+        public void TheFourNewGoalkeepers_AreRealGameData_WithTheExactTargetRating()
+        {
+            var expected = new Dictionary<string, int> { { "gk-pedro-gallese", 73 }, { "gk-yassine-bounou", 79 }, { "gk-unai-simon", 80 }, { "gk-vozinha", 75 } };
+            var codes = new Dictionary<string, string> { { "gk-pedro-gallese", "PER" }, { "gk-yassine-bounou", "MAR" }, { "gk-unai-simon", "ESP" }, { "gk-vozinha", "CPV" } };
+            foreach (KeyValuePair<string, int> kv in expected)
+            {
+                Assert.IsTrue(real.Library.TryGet(kv.Key, out PlayerDefinition p), kv.Key + " exists");
+                Assert.AreEqual(PlayerRole.Goalkeeper, p.Role, kv.Key);
+                Assert.IsTrue(real.Library.TryGetGoalkeeperProfile(kv.Key, out GoalkeeperProfile gk), kv.Key + " has a goalkeeper profile");
+                Assert.AreEqual(kv.Value, GoalkeeperRatingCalculator.Calculate(gk), kv.Key + " GRL, from the existing calculator");
+                Assert.AreEqual(codes[kv.Key], p.NationalityCode);
+                Assert.IsTrue(string.IsNullOrEmpty(p.TeamId), "no permanent club");
+                Assert.IsTrue(PlayerRules.IsValidNationalityCode(p.NationalityCode));
+                foreach (GoalkeeperCapability c in GoalkeeperInfo.Capabilities) Assert.That(gk.GetValue(c), Is.InRange(1, 99));
+            }
+            Assert.AreEqual("Pedro Gallese", real.Library.All.Single(p => p.Id == "gk-pedro-gallese").Name);
+            Assert.AreEqual("Unai Simón", real.Library.All.Single(p => p.Id == "gk-unai-simon").Name);
+        }
+
+        [Test]
+        public void TheGoalkeeperRatingIsStillTheMeanOfTheEightCapabilities_HalfUp()
+        {
+            foreach (GoalkeeperProfile gk in real.Library.GoalkeeperProfiles)
+            {
+                double mean = GoalkeeperInfo.Capabilities.Average(c => (double)gk.GetValue(c));
+                Assert.AreEqual((int)Math.Floor(mean + 0.5), GoalkeeperRatingCalculator.Calculate(gk), gk.PlayerId);
+            }
         }
 
         [Test]
@@ -196,28 +207,27 @@ namespace FS27.Core.Tests
         // ================= feasibility =================
 
         [Test]
-        public void TheRealLibrary_CannotYetFillTwelveSquadsOfTwoGoalkeepers()
+        public void TheRealLibrary_CanFillTwelveSquadsOfTwoGoalkeepers_WithNoTestPlayers()
         {
             var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             DrawFeasibility f = RosterGenerator.CheckFeasibility(real.Library, quality, teams);
-            Assert.IsFalse(f.IsFeasible);
-            Assert.AreEqual(24, f.GoalkeepersRequired); Assert.AreEqual(20, f.GoalkeepersAvailable);
+            Assert.IsTrue(f.IsFeasible, string.Join(";", f.Problems));
+            Assert.AreEqual(24, f.GoalkeepersRequired); Assert.AreEqual(24, f.GoalkeepersAvailable);
             Assert.AreEqual(96, f.FieldPlayersRequired); Assert.AreEqual(136, f.FieldPlayersAvailable);
-            Assert.IsTrue(f.Problems.Any(p => p.StartsWith("Goalkeeper shortage")));
-            Assert.AreEqual(1, f.Problems.Count, "only the goalkeepers are short");
-
-            RosterGeneration g = RosterGenerator.Generate(1, real.Library, real.Profiles, teams);
-            Assert.IsFalse(g.IsSuccess);
-            Assert.AreEqual(0, g.Rosters.Count, "nothing is generated when the draw is impossible");
         }
 
         [Test]
-        public void WithEnoughPlayers_TheDrawIsFeasible()
+        public void TheFeasibilityCheckStillGuards_AMissingGoalkeeperBlocksTheDraw()
         {
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
-            DrawFeasibility f = RosterGenerator.CheckFeasibility(extended, quality, teams);
-            Assert.IsTrue(f.IsFeasible, string.Join(";", f.Problems));
-            Assert.AreEqual(24, f.GoalkeepersAvailable);
+            var lib = new PlayerLibrary();
+            foreach (PlayerDefinition p in real.Library.All.Where(p => p.Id != "gk-vozinha")) { lib.TryAdd(p); if (real.Library.TryGetGoalkeeperProfile(p.Id, out GoalkeeperProfile gk)) lib.TryAddGoalkeeperProfile(gk); }
+            var quality = new RosterQualityModel(lib, real.Profiles, null);
+            DrawFeasibility f = RosterGenerator.CheckFeasibility(lib, quality, teams);
+            Assert.IsFalse(f.IsFeasible);
+            Assert.AreEqual(24, f.GoalkeepersRequired, "the requirement is still 12 x 2"); Assert.AreEqual(23, f.GoalkeepersAvailable);
+            Assert.IsTrue(f.Problems.Any(p => p.StartsWith("Goalkeeper shortage")));
+            RosterGeneration g = RosterGenerator.Generate(1, lib, real.Profiles, teams);
+            Assert.IsFalse(g.IsSuccess); Assert.AreEqual(0, g.Rosters.Count);
         }
 
         // ================= the draw =================
@@ -231,17 +241,19 @@ namespace FS27.Core.Tests
             var all = g.Rosters.SelectMany(r => r.AllPlayerIds).ToList();
             Assert.AreEqual(120, all.Count);
             Assert.AreEqual(120, all.Distinct().Count(), "nobody is in two teams");
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             Assert.AreEqual(24, all.Count(quality.IsKeeper), "24 goalkeepers, none shared");
             Assert.AreEqual(96, all.Count(id => !quality.IsKeeper(id)));
-            RosterReport report = RosterGenerationValidator.Validate(teams, g.Rosters, extended, quality, new RosterDrawSettings().EliteMargin, new RosterDrawSettings().EliteMeanMargin);
+            Assert.AreEqual(0, real.Library.All.Count(p => quality.IsKeeper(p.Id) && !all.Contains(p.Id)), "every goalkeeper of the library is in a squad");
+            Assert.AreEqual(40, real.Library.All.Count(p => !quality.IsKeeper(p.Id) && !all.Contains(p.Id)), "136 - 96 = 40 field players stay out");
+            RosterReport report = RosterGenerationValidator.Validate(teams, g.Rosters, real.Library, quality, new RosterDrawSettings().EliteMargin, new RosterDrawSettings().EliteMeanMargin);
             Assert.IsTrue(report.IsValid, report.ToString());
         }
 
         [Test]
         public void EveryRoster_HasTenPlayers_TwoKeepers_EightFieldPlayers_SixActive_FourSubstitutes()
         {
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             foreach (TeamRoster r in Draw(777).Rosters)
             {
                 Assert.AreEqual(10, r.AllPlayerIds.Count, r.TeamId);
@@ -253,8 +265,8 @@ namespace FS27.Core.Tests
                 Assert.AreEqual(1, r.ActiveIds.Count(quality.IsKeeper)); Assert.AreEqual(1, r.BenchIds.Count(quality.IsKeeper));
                 Assert.GreaterOrEqual(quality.Of(r.ActiveGoalkeeperId), quality.Of(r.BenchGoalkeeperId), "the better keeper starts");
                 Assert.AreEqual(10, r.AllPlayerIds.Distinct().Count());
-                Assert.IsTrue(r.AllPlayerIds.All(id => extended.Contains(id)));
-                var roles = r.AllPlayerIds.Where(id => !quality.IsKeeper(id)).Select(id => { extended.TryGet(id, out var p); return p.Role; }).ToList();
+                Assert.IsTrue(r.AllPlayerIds.All(id => real.Library.Contains(id)));
+                var roles = r.AllPlayerIds.Where(id => !quality.IsKeeper(id)).Select(id => { real.Library.TryGet(id, out var p); return p.Role; }).ToList();
                 Assert.GreaterOrEqual(roles.Count(x => x == PlayerRole.Defender), 2); Assert.GreaterOrEqual(roles.Count(x => x == PlayerRole.Midfielder), 2); Assert.GreaterOrEqual(roles.Count(x => x == PlayerRole.Forward), 1);
             }
         }
@@ -263,7 +275,7 @@ namespace FS27.Core.Tests
         public void Draw_IsDeterministic_SameSeedSameResult_EvenWithAFreshLibrary()
         {
             Assert.AreEqual(Fingerprint(Draw(12345)), Fingerprint(Draw(12345)));
-            PlayerLibrary again = Extend(LoadReal().Library);
+            PlayerLibrary again = LoadReal().Library;
             Assert.AreEqual(Fingerprint(Draw(12345)), Fingerprint(Draw(12345, again)));
             // the order the teams were listed in does not leak into who gets whom either: same teams, same seed, same rosters per team
             RosterGeneration a = Draw(98765);
@@ -294,12 +306,12 @@ namespace FS27.Core.Tests
         [Test]
         public void ManySeeds_AllProduceValidDraws_WithoutDuplicates()
         {
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             for (int seed = 1; seed <= 40; seed++)
             {
                 RosterGeneration g = Draw(seed);
                 Assert.IsTrue(g.IsSuccess, seed + ": " + string.Join(";", g.Problems));
-                RosterReport rep = RosterGenerationValidator.Validate(teams, g.Rosters, extended, quality, 0.0, 0.0);
+                RosterReport rep = RosterGenerationValidator.Validate(teams, g.Rosters, real.Library, quality, 0.0, 0.0);
                 Assert.IsTrue(rep.IsValid, seed + ": " + rep);
             }
         }
@@ -307,10 +319,49 @@ namespace FS27.Core.Tests
         [Test]
         public void TheDraw_ChangesNoAttribute_NoCapability_AndGivesNoPlayerATeam()
         {
-            string before = AttributeFingerprint(extended);
+            string before = AttributeFingerprint(real.Library);
             for (int seed = 1; seed <= 10; seed++) Draw(seed);
-            Assert.AreEqual(before, AttributeFingerprint(extended), "attributes, keeper capabilities, Reaction and TeamId are exactly as they were");
-            Assert.IsTrue(extended.All.All(p => string.IsNullOrEmpty(p.TeamId)));
+            Assert.AreEqual(before, AttributeFingerprint(real.Library), "attributes, keeper capabilities, Reaction and TeamId are exactly as they were");
+            Assert.IsTrue(real.Library.All.All(p => string.IsNullOrEmpty(p.TeamId)));
+        }
+
+        [Test]
+        public void TheRealDraw_WorksForSeveralSeeds_UsingEveryGoalkeeperAndNoFixtures()
+        {
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
+            string before = AttributeFingerprint(real.Library);
+            Assert.AreEqual(160, real.Library.Count);
+            foreach (int seed in new[] { 1, 42, 12345, 98765, 202627 })
+            {
+                RosterGeneration g = Draw(seed);
+                Assert.IsTrue(g.IsSuccess, seed + ": " + string.Join(";", g.Problems));
+                Assert.AreEqual(12, g.Rosters.Count);
+                Assert.AreEqual(12, g.Rosters.Select(r => r.TeamId).Distinct().Count());
+                var all = g.Rosters.SelectMany(r => r.AllPlayerIds).ToList();
+                Assert.AreEqual(120, all.Distinct().Count(), seed + ": no repeated player");
+                Assert.IsTrue(all.All(id => real.Library.Contains(id)), "every id is in the real library");
+                Assert.AreEqual(24, all.Count(quality.IsKeeper), seed + ": 24 keepers used");
+                CollectionAssert.AreEquivalent(real.Library.All.Where(p => p.Role == PlayerRole.Goalkeeper).Select(p => p.Id), all.Where(quality.IsKeeper), seed + ": every keeper is in a squad, none left over");
+                Assert.AreEqual(96, all.Count(id => !quality.IsKeeper(id)));
+                Assert.IsTrue(g.Rosters.All(r => r.ActiveIds.Count == 6 && r.BenchIds.Count == 4 && r.AllPlayerIds.Count(quality.IsKeeper) == 2 && r.ActiveIds.Count(quality.IsKeeper) == 1 && r.BenchIds.Count(quality.IsKeeper) == 1));
+                Assert.AreEqual(72, g.Rosters.Sum(r => r.ActiveIds.Count), "6 starters in each of 12 teams"); Assert.AreEqual(48, g.Rosters.Sum(r => r.BenchIds.Count));
+                Assert.IsTrue(g.TryGetRoster("team-user", out _));
+                Assert.AreEqual(2, teams.Count(t => t.Kind == TeamKind.Official && t.IsElite));
+                RosterReport rep = RosterGenerationValidator.Validate(teams, g.Rosters, real.Library, quality, new RosterDrawSettings().EliteMargin, new RosterDrawSettings().EliteMeanMargin);
+                Assert.IsTrue(rep.IsValid, seed + ": " + rep);
+                foreach (TeamRoster r in g.Rosters) Assert.IsTrue(r.TryToMatchSquad(real.Library, out _, out string why), r.TeamId + ": " + why);
+            }
+            Assert.AreEqual(before, AttributeFingerprint(real.Library), "no attribute, capability, Reaction or TeamId of the 160 players changed");
+        }
+
+        [Test]
+        public void TheRealDraw_KeepsEveryRatingUnchanged()
+        {
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
+            var before = real.Library.All.ToDictionary(p => p.Id, p => quality.Of(p.Id));
+            foreach (int seed in new[] { 1, 42, 12345 }) Draw(seed);
+            var after = new RosterQualityModel(real.Library, real.Profiles, null);
+            foreach (PlayerDefinition p in real.Library.All) Assert.AreEqual(before[p.Id], after.Of(p.Id), p.Id + ": Overall / GRL unchanged");
         }
 
         // ================= Elite =================
@@ -318,7 +369,7 @@ namespace FS27.Core.Tests
         [Test]
         public void EliteTeams_AreClearlyStronger_ThanEveryOtherTeam_InEverySeed()
         {
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             var settings = new RosterDrawSettings();
             for (int seed = 1; seed <= 40; seed++)
             {
@@ -335,7 +386,7 @@ namespace FS27.Core.Tests
         [Test]
         public void EliteTeams_AreNotMirrorCopies_AndTheOthersAreNotEqualised()
         {
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             RosterGeneration g = Draw(31337);
             var elite = teams.Where(t => t.IsElite).Select(t => { g.TryGetRoster(t.Id, out TeamRoster r); return r; }).ToList();
             Assert.AreEqual(2, elite.Count);
@@ -348,7 +399,7 @@ namespace FS27.Core.Tests
         [Test]
         public void Quality_IsTheExistingRatingSystems_NotANewStat()
         {
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             PlayerRatingCalculator calc = PlayerRatingCalculator.CreateDefault();
             PlayerDefinition field = real.Library.All.First(p => p.Role == PlayerRole.Forward);
             real.Profiles.TryGet(field.Id, out PlayerPlayingProfile profile);
@@ -362,7 +413,7 @@ namespace FS27.Core.Tests
         [Test]
         public void Level_TiltsTheDraw_StrongTeamsBeatModestOnes_OnAverage()
         {
-            var quality = new RosterQualityModel(extended, real.Profiles, null);
+            var quality = new RosterQualityModel(real.Library, real.Profiles, null);
             double strong = 0, modest = 0; int n = 0;
             for (int seed = 1; seed <= 30; seed++)
             {
@@ -401,7 +452,7 @@ namespace FS27.Core.Tests
 
         private static RosterReport Check(List<TeamRoster> rosters, double margin = 0.0)
         {
-            return RosterGenerationValidator.Validate(teams, rosters, extended, new RosterQualityModel(extended, real.Profiles, null), margin, margin);
+            return RosterGenerationValidator.Validate(teams, rosters, real.Library, new RosterQualityModel(real.Library, real.Profiles, null), margin, margin);
         }
 
         [Test]
@@ -427,7 +478,7 @@ namespace FS27.Core.Tests
             Assert.IsTrue(R(r => new TeamRoster(r.TeamId, 9, r.ActiveIds, r.BenchIds.Take(3))).Has(RosterIssueCode.WrongPlayerCount));
             Assert.IsTrue(R(r => new TeamRoster(r.TeamId, 9, r.ActiveIds.Take(5).Concat(new[] { "nobody" }), r.BenchIds)).Has(RosterIssueCode.UnknownPlayer));
             Assert.IsTrue(R(r => new TeamRoster(r.TeamId, 9, r.ActiveIds.Take(5).Concat(new[] { r.ActiveIds[1] }), r.BenchIds)).Has(RosterIssueCode.PlayerRepeatedInRoster));
-            var noKeeper = Draw(9).Rosters.SelectMany(x => x.AllPlayerIds).Where(id => !new RosterQualityModel(extended, real.Profiles, null).IsKeeper(id)).ToList();
+            var noKeeper = Draw(9).Rosters.SelectMany(x => x.AllPlayerIds).Where(id => !new RosterQualityModel(real.Library, real.Profiles, null).IsKeeper(id)).ToList();
             Assert.IsTrue(R(r => new TeamRoster(r.TeamId, 9, r.ActiveIds.Skip(1).Concat(new[] { r.ActiveIds[1] }), r.BenchIds)).Has(RosterIssueCode.ActiveSlotNotAKeeper));
             var l2 = new List<TeamRoster>(rs); l2.RemoveAt(0);
             Assert.IsTrue(Check(l2).Has(RosterIssueCode.TeamWithoutRoster));
@@ -453,7 +504,7 @@ namespace FS27.Core.Tests
         public void IfTheLibraryIsTooSmall_NothingIsGenerated_AndTheShortageIsReported()
         {
             var small = new PlayerLibrary();
-            foreach (PlayerDefinition p in extended.All.Where(p => p.Role != PlayerRole.Goalkeeper || p.Id != "testgk-1")) { small.TryAdd(p); if (extended.TryGetGoalkeeperProfile(p.Id, out GoalkeeperProfile gk)) small.TryAddGoalkeeperProfile(gk); }
+            foreach (PlayerDefinition p in real.Library.All.Where(p => p.Role != PlayerRole.Goalkeeper || p.Id != "gk-vozinha")) { small.TryAdd(p); if (real.Library.TryGetGoalkeeperProfile(p.Id, out GoalkeeperProfile gk)) small.TryAddGoalkeeperProfile(gk); }
             RosterGeneration g = Draw(1, small);
             Assert.IsFalse(g.IsSuccess); Assert.AreEqual(0, g.Rosters.Count);
             Assert.IsTrue(g.Problems.Any(p => p.Contains("Goalkeeper shortage")));
@@ -467,8 +518,8 @@ namespace FS27.Core.Tests
         {
             RosterGeneration g = Draw(2024);
             g.TryGetRoster("team-solaris-meridian", out TeamRoster home); g.TryGetRoster("team-user", out TeamRoster away);
-            Assert.IsTrue(home.TryToMatchSquad(extended, out MatchSquad hs, out string p1), p1);
-            Assert.IsTrue(away.TryToMatchSquad(extended, out MatchSquad aw, out string p2), p2);
+            Assert.IsTrue(home.TryToMatchSquad(real.Library, out MatchSquad hs, out string p1), p1);
+            Assert.IsTrue(away.TryToMatchSquad(real.Library, out MatchSquad aw, out string p2), p2);
             Assert.AreEqual(6, hs.Starters.Length); Assert.AreEqual(4, hs.Bench.Length);
             Assert.IsTrue(hs.Starters[0].IsGoalkeeper); Assert.IsTrue(hs.Bench[0].IsGoalkeeper);
             Assert.IsTrue(hs.IsValid(out _));

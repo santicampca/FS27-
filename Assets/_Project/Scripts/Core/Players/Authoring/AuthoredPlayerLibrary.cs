@@ -25,7 +25,7 @@ namespace FS27.Core
         /// <summary>The logical names the loader asks the host for, in the order it reads them. A "x.corrections" source may be null/empty when a database has no corrections.</summary>
         public static readonly string[] Sources =
         {
-            "goalkeepers", "defenders", "defenders.corrections", "leftDefenders", "leftDefenders.corrections", "fullbacks", "fullbacks.corrections", "fullbacks.additions",
+            "goalkeepers", "goalkeepers.additions", "defenders", "defenders.corrections", "leftDefenders", "leftDefenders.corrections", "fullbacks", "fullbacks.corrections", "fullbacks.additions",
             "hybridMidfielders", "hybridMidfielders.corrections", "defensiveMidfielders", "defensiveMidfielders.corrections", "centralMidfielders", "centralMidfielders.corrections",
             "offensiveMidfielders", "offensiveMidfielders.corrections", "wingers", "wingers.corrections", "secondStrikers", "secondStrikers.corrections", "centreForwards", "centreForwards.corrections"
         };
@@ -35,14 +35,8 @@ namespace FS27.Core
             var result = new AuthoredPlayerLibraryResult();
             PlayerLibrary all = result.Library;
 
-            GoalkeeperLibraryBuilder.Batch keepers = GoalkeeperLibraryBuilder.ImportMarkdown(readFile("goalkeepers"), GoalkeeperBehaviors.CreateCatalog(), GoalkeeperBehaviors.DefaultActionMap());
-            if (keepers.Failed > 0) result.Problems.Add(keepers.Failed + " goalkeepers failed to import.");
-            foreach (string p in keepers.ReaderProblems) result.Notes.Add("goalkeepers: " + p);
-            foreach (PlayerDefinition p in keepers.Library.All)
-            {
-                all.TryAdd(p);
-                if (keepers.Library.TryGetGoalkeeperProfile(p.Id, out GoalkeeperProfile gk)) all.TryAddGoalkeeperProfile(gk);
-            }
+            Keepers(result, "goalkeepers", readFile("goalkeepers"));
+            Keepers(result, "goalkeeper additions", readFile("goalkeepers.additions"));
 
             Field(result, "defenders", FieldPlayerLibraryBuilder.ImportMarkdown(readFile("defenders"), "cb", null, all, readFile("defenders.corrections")));
             Field(result, "left defenders", FieldPlayerLibraryBuilder.ImportCompactMarkdown(readFile("leftDefenders"), "cb", null, all, readFile("leftDefenders.corrections")));
@@ -56,6 +50,19 @@ namespace FS27.Core
             Field(result, "second strikers", FieldPlayerLibraryBuilder.ImportListMarkdown(readFile("secondStrikers"), "sd", FieldPlayerImportOptions.SecondStriker(), all, readFile("secondStrikers.corrections")));
             Field(result, "centre forwards", FieldPlayerLibraryBuilder.ImportListMarkdown(readFile("centreForwards"), "dc", FieldPlayerImportOptions.Striker(), all, readFile("centreForwards.corrections")));
             return result;
+        }
+
+        private static void Keepers(AuthoredPlayerLibraryResult result, string label, string markdown)
+        {
+            if (string.IsNullOrWhiteSpace(markdown)) return;
+            GoalkeeperLibraryBuilder.Batch keepers = GoalkeeperLibraryBuilder.ImportMarkdown(markdown, GoalkeeperBehaviors.CreateCatalog(), GoalkeeperBehaviors.DefaultActionMap());
+            if (keepers.Failed > 0) result.Problems.Add(label + ": " + keepers.Failed + " goalkeepers failed to import.");
+            foreach (string p in keepers.ReaderProblems) result.Notes.Add(label + ": " + p);
+            foreach (PlayerDefinition p in keepers.Library.All)
+            {
+                if (!result.Library.TryAdd(p)) { result.Problems.Add(label + ": player id '" + p.Id + "' is already in the library."); continue; }
+                if (keepers.Library.TryGetGoalkeeperProfile(p.Id, out GoalkeeperProfile gk)) result.Library.TryAddGoalkeeperProfile(gk);
+            }
         }
 
         private static void Field(AuthoredPlayerLibraryResult result, string label, FieldPlayerLibraryBuilder.Batch batch)

@@ -29,14 +29,22 @@ La especificación decía a la vez "exactamente 1 portero entre los 10" y "al me
 
 Las constantes viven en `RosterRules`. La regla de la Fase 1 (`MatchSquad`: 1 portero titular, ≥1 suplente) **no se cambió**.
 
-### ⚠ Consecuencia: la biblioteca real NO se puede sortear todavía
-12 plantillas × 2 porteros = **24 porteros**; hay **20**. `RosterGenerator.CheckFeasibility` lo detecta antes de generar y devuelve `Goalkeeper shortage: 24 needed (2 per team), 20 available`; `Generate` no crea ningún roster (un test lo fija). Los jugadores de campo sobran (96 necesarios, 136 disponibles).
-Para poder sortear con datos reales hay que **autorar 4 porteros más** en la base de datos de porteros (o, si se prefiere, cambiar la regla de plantilla: ver la sección de alternativas). Los tests del sorteo usan la biblioteca real + **4 porteros de prueba** creados en el propio test (copias de números de porteros reales con otro id); no forman parte de los datos del juego.
-Alternativas si no se quieren autorar porteros: 8 plantillas con 2 porteros y 4 con 1 (rompe "exactamente"), o 1 portero por plantilla (exige relajar la regla de banquillo de la Fase 1).
+### Bloqueo de porteros: RESUELTO (Fase 2.1)
+12 plantillas × 2 porteros = **24 porteros**; la base de datos tenía 20. En la Fase 2.1 se añadieron **4 porteros reales** en `Docs/authoring/FS27_GOALKEEPER_ADDITIONS_V1.md` (mismo formato, lector, importador y calculador que los otros 20; precedente: `FS27_FULLBACKS_ADDITIONS_V1.md`), sin tocar la base de datos original ni ningún cálculo:
+
+| Jugador | Id | Nacionalidad | Altura | GRL |
+|---|---|---|---|---|
+| Pedro Gallese | `gk-pedro-gallese` | PER | 1,89 m | 73 |
+| Yassine Bounou | `gk-yassine-bounou` | MAR | 1,92 m | 79 |
+| Unai Simón | `gk-unai-simon` | ESP | 1,90 m | 80 |
+| Vozinha | `gk-vozinha` | CPV | 1,89 m | 75 |
+
+El GRL sale de las 8 capacidades con el calculador existente (media aritmética, .5 hacia arriba): no hay ningún número almacenado que lo contradiga. Identidad y físico se verificaron en fuentes públicas; **las 8 capacidades son una inferencia de autoría** anclada al GRL objetivo (no hay estadísticas por capacidad) y así consta en el archivo. El pie preferido de Gallese y Bounou **no se pudo verificar** (las fuentes se contradicen o no lo confirman): se omite y el importador usa el valor por defecto (derecho) avisando; el de Unai Simón y Vozinha sí está respaldado. Edad, peso, dorsal, pie débil y atributos generales los pone el importador por defecto, igual que a los 20 anteriores. Vozinha es el apodo; su nombre real es Josimar José Évora Dias. Se añadieron los códigos `PER` (Perú) y `CPV` (Cabo Verde) a `NationalityCodes`, que no existían.
+La verificación de factibilidad **no se tocó**: sigue exigiendo 24 porteros (un test comprueba que con uno menos el sorteo se bloquea y no genera nada).
 
 ## Player Library
-- `PlayerLibrary` ya era el registro global (y único) de jugadores; no se creó otra. `AuthoredPlayerLibrary.Load(readText)` construye la biblioteca completa desde las bases de datos con los mismos lectores, correcciones e importadores de siempre. Core no lee archivos ni conoce nombres de archivo: el anfitrión entrega el texto por nombre lógico (`AuthoredPlayerLibrary.Sources`).
-- Números reales: **156 jugadores = 20 porteros + 136 de campo** (52 defensas, 42 mediocampistas, 42 delanteros).
+- `PlayerLibrary` ya era el registro global (y único) de jugadores; no se creó otra. `AuthoredPlayerLibrary.Load(readText)` construye la biblioteca completa (bases de datos + adiciones de porteros) con los mismos lectores, correcciones e importadores de siempre. Core no lee archivos ni conoce nombres de archivo: el anfitrión entrega el texto por nombre lógico (`AuthoredPlayerLibrary.Sources`).
+- Números reales: **160 jugadores = 24 porteros + 136 de campo** (52 defensas, 42 mediocampistas, 42 delanteros). Un sorteo usa los 24 porteros (ninguno queda sin asignar) y 96 de los 136 jugadores de campo (40 quedan fuera).
 - `PlayerDefinition.TeamId`: **marcado `[Obsolete]` (legacy/deprecated), no eliminado**: lo usan las cartas de jugador, `RosterValidator`/`DataValidator` y ~57 usos en tests existentes. Ningún sistema de la Fase 2 lo lee (test sobre el código fuente); los jugadores importados lo tienen vacío; el sorteo no lo escribe. Eliminarlo es una migración futura (junto con `PlayerCardData.TeamId` y `PlayerLibrary.GetByTeam/TryAssignToTeam`, también marcados `[Obsolete]`).
 - `TeamDefinition.PlayerIds` (alineación de 6 del núcleo de datos original) queda como **legacy**: los equipos de la Fase 2 la dejan vacía y el validador lo exige.
 - `PlayerAttributes.Reaction`: marcado `[Obsolete]` como valor legado/interno/derivado; sigue existiendo solo porque la IA lo lee; no es el 13.º atributo (los 12 oficiales no cambian).
@@ -91,7 +99,7 @@ Sin duplicados: cada jugador sale de una lista de restantes al ser elegido, y el
 Derivada, determinista, sin guardarse: calidad de un jugador de campo = su **Overall** oficial (`PlayerRatingCalculator`); de un portero = su **GRL** oficial (media de sus 8 capacidades). **Fuerza de plantilla** = 0,75 × media de los 6 activos + 0,25 × media de los 4 suplentes. No hay `EliteScore` en el jugador.
 
 ### Garantía Elite
-Cada Elite debe superar a **la mejor plantilla restante en ≥ 1,0** y a **la media de las demás en ≥ 3,0** puntos de fuerza. Los jugadores autorados están muy juntos (todos los de campo entre 79 y 92 de Overall, media 83,8; los 16 mejores promedian 88,4), así que las diferencias entre plantillas son de pocos puntos: medido con 60 semillas, el Elite más débil supera a la mejor plantilla restante en 2,8 de media (nunca menos de 1,7) y a la media en 4,0 (nunca menos de 3,6). Ejemplo con la semilla 12345: Elite 88,1 y 87,1; el resto entre 82,3 y 84,4. Ningún atributo se modifica (un test compara todos los atributos, capacidades de portero, `Reaction` y `TeamId` antes y después de 10 sorteos).
+Cada Elite debe superar a **la mejor plantilla restante en ≥ 1,0** y a **la media de las demás en ≥ 3,0** puntos de fuerza. Los jugadores autorados están muy juntos (todos los de campo entre 79 y 92 de Overall, media 83,8; los 16 mejores promedian 88,4), así que las diferencias entre plantillas son de pocos puntos: medido con 60 semillas, el Elite más débil supera a la mejor plantilla restante en 2,8 de media (nunca menos de 1,7) y a la media en 4,0 (nunca menos de 3,6). Con la biblioteca real de 160 y las semillas 1, 42, 12345, 98765 y 202627, el primer intento siempre fue válido: Elite entre 87,4 y 88,2; mejor plantilla restante entre 84,1 y 85,0; media de las demás ≈ 83,3. Ningún atributo se modifica (un test compara todos los atributos, capacidades de portero, `Reaction` y `TeamId` antes y después de 10 sorteos).
 
 ## Lo que NO se hizo (a propósito)
 Movimiento, IA, formaciones, skills (solo contratos), acciones, gameplay 6v6, animaciones, gráficos finales, menús, economía/mercado, restricciones por nacionalidad/edad/club, química, pantalla de creación del equipo del usuario, editor de plantillas, `Match Setup` (solo existe `TeamRoster.TryToMatchSquad`).
