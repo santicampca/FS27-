@@ -243,12 +243,18 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void PlayerIntent_CarriesOnlyMovement_NoBooleanFlags()
+        public void PlayerIntent_HasNoBooleanFlags_AndSprintStillComesOnlyFromTheMoveLength()
         {
+            // Phase 1: the intent was just Move. The Creator Engine phase added ACTION fields (behaviour, action, style, dribble/shot/pass
+            // details) to the SAME struct, so there is still one intent type. What must never appear: a bool flag, or any sprint field/style.
             const BindingFlags inst = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
             var fields = typeof(PlayerIntent).GetFields(inst);
             Assert.IsFalse(fields.Any(f => f.FieldType == typeof(bool)), "no bool field in PlayerIntent");
-            Assert.AreEqual(1, fields.Length, "Phase 1 intent is just Move");
+            CollectionAssert.AreEquivalent(new[] { "Move", "BehaviorId", "Action", "Style", "Dribble", "Shot", "Pass" }, fields.Select(f => f.Name).ToArray());
+            Assert.AreEqual("Move", fields[0].Name, "Move stays the first, core field");
+            Assert.IsFalse(fields.Any(f => f.Name.ToLowerInvariant().Contains("sprint")), "no sprint field");
+            Assert.IsFalse(System.Enum.GetNames(typeof(MovementStyle)).Any(n => n.ToLowerInvariant().Contains("sprint")), "no sprint style: sprint is stick intensity only");
+            Assert.IsFalse(System.Enum.GetNames(typeof(FootballActionKind)).Any(n => n.ToLowerInvariant().Contains("sprint")), "no sprint action");
         }
 
         // ---------- End to end: thumb -> intent -> locomotion ----------

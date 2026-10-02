@@ -54,6 +54,9 @@ namespace FS27.Core
         private readonly ConceptCatalog concepts;
         private readonly MagnitudeTable table;
 
+        /// <summary>The concept id of the visual style group (the one whose "change" swaps the style preset).</summary>
+        public const string StyleConceptId = "style";
+
         public float ConfidenceThreshold = 0.5f;
         /// <summary>Default weight of a behaviour added without an amount.</summary>
         public float DefaultBehaviorWeight = 0.7f;
@@ -558,7 +561,7 @@ namespace FS27.Core
         private void GroupOps(Plan plan, SemanticCommand cmd, ConceptDefinition def, AuthoringDraft cur, CompileResult res, uint seed)
         {
             string why = cmd.Source + " -> " + def.Id;
-            if (def.Id == "style" && (cmd.Operation == SemanticIntent.Replace || cmd.Operation == SemanticIntent.Set))
+            if (def.Id == StyleConceptId && (cmd.Operation == SemanticIntent.Replace || cmd.Operation == SemanticIntent.Set))
             {
                 var styles = new List<string>();
                 foreach (StylePreset s in catalogs.Styles.All) styles.Add(s.Id);

@@ -21,6 +21,9 @@ namespace FS27.Core
             root.Set("characterId", JsonValue.Of(spec.CharacterId));
             if (!string.IsNullOrEmpty(spec.PlayerId)) root.Set("playerId", JsonValue.Of(spec.PlayerId));
             root.Set("baseModelId", JsonValue.Of(spec.BaseModelId));
+            if (spec.GenerationSeed != 0) root.Set("generationSeed", JsonValue.Of((double)spec.GenerationSeed));
+            if (spec.AppearanceSeed != 0) root.Set("appearanceSeed", JsonValue.Of((double)spec.AppearanceSeed));
+            if (spec.BehaviorSeed != 0) root.Set("behaviorSeed", JsonValue.Of((double)spec.BehaviorSeed));
 
             var app = JsonValue.NewObject();
             app.Set("styleId", JsonValue.Of(spec.Appearance.StyleId));
@@ -33,9 +36,25 @@ namespace FS27.Core
             dna.Set("schemaVersion", JsonValue.Of(spec.Dna.SchemaVersion));
             dna.Set("params", Numbers(spec.Dna.Params));
             var behaviors = JsonValue.NewArray();
-            foreach (BehaviorEntry b in spec.Dna.Behaviors)
-                behaviors.Add(JsonValue.NewObject().Set("id", JsonValue.Of(b.Id)).Set("weight", JsonValue.Of(b.Weight)));
+            foreach (BehaviorEntry b in spec.Dna.Behaviors) behaviors.Add(BehaviorToValue(b));
             dna.Set("behaviors", behaviors);
+            if (spec.Dna.Sequences.Count > 0)
+            {
+                var seqs = JsonValue.NewArray();
+                foreach (BehaviorSequence q in spec.Dna.Sequences)
+                {
+                    var steps = JsonValue.NewArray();
+                    foreach (string st in q.Steps) steps.Add(JsonValue.Of(st));
+                    seqs.Add(JsonValue.NewObject().Set("id", JsonValue.Of(q.Id)).Set("steps", steps).Set("maxGap", JsonValue.Of(q.MaxGapSeconds)).Set("weight", JsonValue.Of(q.Weight)));
+                }
+                dna.Set("sequences", seqs);
+            }
+            if (spec.Dna.ParamConfidence.Count > 0)
+            {
+                var pc = JsonValue.NewObject();
+                foreach (KeyValuePair<string, float> kv in spec.Dna.ParamConfidence) pc.Set(kv.Key, JsonValue.Of(kv.Value));
+                dna.Set("paramConfidence", pc);
+            }
             root.Set("footballDna", dna);
 
             if (includeAuthoring && spec.Authoring != null)
@@ -54,6 +73,26 @@ namespace FS27.Core
                 root.Set("authoring", au);
             }
             return root;
+        }
+
+        private static JsonValue BehaviorToValue(BehaviorEntry b)
+        {
+            var o = JsonValue.NewObject().Set("id", JsonValue.Of(b.Id)).Set("weight", JsonValue.Of(b.Weight));
+            if (b.Priority != BehaviorEntry.Unset) o.Set("priority", JsonValue.Of(b.Priority));
+            if (b.Risk != BehaviorEntry.Unset) o.Set("risk", JsonValue.Of(b.Risk));
+            if (b.CooldownSeconds != BehaviorEntry.Unset) o.Set("cooldown", JsonValue.Of(b.CooldownSeconds));
+            if (Math.Abs(b.Confidence - 1f) > 1e-4f) o.Set("confidence", JsonValue.Of(b.Confidence));
+            if (!string.IsNullOrEmpty(b.Origin)) o.Set("origin", JsonValue.Of(b.Origin));
+            if (b.Condition != null && !b.Condition.IsEmpty)
+            {
+                var c = JsonValue.NewObject();
+                if (b.Condition.Requires != BehaviorContext.None) c.Set("requires", JsonValue.Of((double)(int)b.Condition.Requires));
+                if (b.Condition.Forbids != BehaviorContext.None) c.Set("forbids", JsonValue.Of((double)(int)b.Condition.Forbids));
+                if (b.Condition.Prefers != BehaviorContext.None) c.Set("prefers", JsonValue.Of((double)(int)b.Condition.Prefers));
+                if (b.Condition.Threshold > 0f) c.Set("threshold", JsonValue.Of(b.Condition.Threshold));
+                o.Set("condition", c);
+            }
+            return o;
         }
 
         private static JsonValue Numbers(ParameterSet set)
@@ -103,7 +142,8 @@ namespace FS27.Core
                 SchemaVersion = migrated.GetString("schemaVersion", CharacterSpecification.CurrentSchema),
                 CharacterId = migrated.GetString("characterId", null),
                 PlayerId = migrated.GetString("playerId", ""),
-                BaseModelId = migrated.GetString("baseModelId", DefaultAppearanceCatalog.BaseA)
+                BaseModelId = migrated.GetString("baseModelId", DefaultAppearanceCatalog.BaseA),
+                GenerationSeed = ReadSeed(migrated, "generationSeed"), AppearanceSeed = ReadSeed(migrated, "appearanceSeed"), BehaviorSeed = ReadSeed(migrated, "behaviorSeed")
             };
 
             if (migrated.TryGet("appearance", out JsonValue app))
@@ -131,9 +171,23 @@ namespace FS27.Core
                             return false;
                         }
                         // Duplicates are kept as written, so validation can report them.
-                        s.Dna.Behaviors.Add(new BehaviorEntry(item.GetString("id"), (float)item.GetNumber("weight", 0.0)));
+                        s.Dna.Behaviors.Add(ReadBehavior(item));
                     }
                 }
+                if (dna.TryGet("sequences", out JsonValue seqs) && seqs.Kind == JsonKind.Array)
+                {
+                    foreach (JsonValue q in seqs.Items)
+                    {
+                        if (q.Kind != JsonKind.Object) { result.Error(CreatorIssueCode.JsonShapeInvalid, "footballDna.sequences", "Every sequence must be an object."); return false; }
+                        var seq = new BehaviorSequence { Id = q.GetString("id", ""), MaxGapSeconds = (float)q.GetNumber("maxGap", 1.5), Weight = (float)q.GetNumber("weight", 0.5) };
+                        if (q.TryGet("steps", out JsonValue steps) && steps.Kind == JsonKind.Array)
+                            foreach (JsonValue st in steps.Items) if (st.Kind == JsonKind.String) seq.Steps.Add(st.String);
+                        s.Dna.Sequences.Add(seq);
+                    }
+                }
+                if (dna.TryGet("paramConfidence", out JsonValue pcv) && pcv.Kind == JsonKind.Object)
+                    foreach (KeyValuePair<string, JsonValue> kv in pcv.Members)
+                        if (kv.Value.Kind == JsonKind.Number) s.Dna.ParamConfidence[kv.Key] = (float)kv.Value.Number;
             }
 
             if (migrated.TryGet("authoring", out JsonValue au) && au.Kind == JsonKind.Object)
@@ -155,6 +209,31 @@ namespace FS27.Core
 
             spec = s;
             return true;
+        }
+
+        private static uint ReadSeed(JsonValue root, string key)
+        {
+            double d = root.GetNumber(key, 0.0);
+            return d >= 0 && d <= uint.MaxValue ? (uint)d : 0u;
+        }
+
+        private static BehaviorEntry ReadBehavior(JsonValue item)
+        {
+            var b = new BehaviorEntry(item.GetString("id"), (float)item.GetNumber("weight", 0.0));
+            if (item.TryGet("priority", out JsonValue pr) && pr.Kind == JsonKind.Number) b.Priority = (float)pr.Number;
+            if (item.TryGet("risk", out JsonValue rk) && rk.Kind == JsonKind.Number) b.Risk = (float)rk.Number;
+            if (item.TryGet("cooldown", out JsonValue cd) && cd.Kind == JsonKind.Number) b.CooldownSeconds = (float)cd.Number;
+            if (item.TryGet("confidence", out JsonValue cf) && cf.Kind == JsonKind.Number) b.Confidence = (float)cf.Number;
+            b.Origin = item.GetString("origin", "");
+            if (item.TryGet("condition", out JsonValue cond) && cond.Kind == JsonKind.Object)
+            {
+                b.Condition = new BehaviorCondition
+                {
+                    Requires = (BehaviorContext)(int)cond.GetNumber("requires", 0.0), Forbids = (BehaviorContext)(int)cond.GetNumber("forbids", 0.0),
+                    Prefers = (BehaviorContext)(int)cond.GetNumber("prefers", 0.0), Threshold = (float)cond.GetNumber("threshold", 0.0)
+                };
+            }
+            return b;
         }
 
         private static bool ReadNumbers(JsonValue parent, string key, ParameterSet into, CreatorValidationResult result, string where)
@@ -191,6 +270,22 @@ namespace FS27.Core
     {
         private readonly Dictionary<string, KeyValuePair<string, Func<JsonValue, JsonValue>>> steps =
             new Dictionary<string, KeyValuePair<string, Func<JsonValue, JsonValue>>>();
+
+        /// <summary>
+        /// Built-in steps are registered: CharacterSpecification v1 to v2 (v2 adds optional behaviour settings, sequences, tendency confidence and
+        /// seeds; every v1 file is still valid, so the step only stamps the new version on the specification and its football DNA).
+        /// </summary>
+        public SchemaMigrator()
+        {
+            Register(CharacterSpecification.SchemaV1, CharacterSpecification.CurrentSchema, SpecificationV1ToV2);
+        }
+
+        private static JsonValue SpecificationV1ToV2(JsonValue v1)
+        {
+            if (v1.TryGet("footballDna", out JsonValue dna) && dna.Kind == JsonKind.Object && dna.GetString("schemaVersion", FootballDNA.SchemaV1) == FootballDNA.SchemaV1)
+                dna.Set("schemaVersion", JsonValue.Of(FootballDNA.CurrentSchema));
+            return v1;
+        }
 
         /// <summary>Registers a step from one schema id to the next one, e.g. ("FS27.CharacterSpecification.v1", "...v2", f).</summary>
         public void Register(string from, string to, Func<JsonValue, JsonValue> step)

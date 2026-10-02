@@ -51,7 +51,12 @@ namespace FS27.Core
         SemanticFieldInvalid,
         SemanticTargetUnknown,
         SemanticValueOutOfRange,
-        SemanticRelationInvalid
+        SemanticRelationInvalid,
+        // ---- football DNA 2.0
+        BehaviorSettingOutOfRange,
+        BehaviorConditionContradictory,
+        SequenceInvalid,
+        ConfidenceOutOfRange
     }
 
     public enum CreatorSeverity

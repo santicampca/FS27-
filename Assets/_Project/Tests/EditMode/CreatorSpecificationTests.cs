@@ -397,10 +397,12 @@ namespace FS27.Core.Tests
         [Test]
         public void SchemaVersions_AreStableStrings()
         {
-            Assert.AreEqual("FS27.CharacterSpecification.v1", CharacterSpecification.CurrentSchema);
-            Assert.AreEqual("FS27.FootballDNA.v1", FootballDNA.CurrentSchema);
+            // v2 (Creator Engine intelligence phase): optional behaviour settings, sequences, tendency confidence, seeds. v1 files still load (see FootballDna2Tests).
+            Assert.AreEqual("FS27.CharacterSpecification.v2", CharacterSpecification.CurrentSchema);
+            Assert.AreEqual("FS27.CharacterSpecification.v1", CharacterSpecification.SchemaV1);
+            Assert.AreEqual("FS27.FootballDNA.v2", FootballDNA.CurrentSchema);
             Assert.AreEqual(CharacterSpecification.CurrentSchema, catalogs.NewSpecification("c").SchemaVersion);
-            Assert.AreEqual(1, SchemaMigrator.VersionNumber("FS27.CharacterSpecification.v1"));
+            Assert.AreEqual(2, SchemaMigrator.VersionNumber("FS27.CharacterSpecification.v2"));
             Assert.AreEqual(12, SchemaMigrator.VersionNumber("X.v12"));
             Assert.AreEqual(-1, SchemaMigrator.VersionNumber("nonsense"));
         }
@@ -409,7 +411,7 @@ namespace FS27.Core.Tests
         public void ASchemaFromTheFuture_IsRefused_NotGuessed()
         {
             var r = new CreatorValidationResult();
-            Assert.IsFalse(CharacterSpecificationJson.TryFromJson("{\"schemaVersion\":\"FS27.CharacterSpecification.v2\",\"characterId\":\"c\"}", new SchemaMigrator(), out _, r));
+            Assert.IsFalse(CharacterSpecificationJson.TryFromJson("{\"schemaVersion\":\"FS27.CharacterSpecification.v3\",\"characterId\":\"c\"}", new SchemaMigrator(), out _, r));
             Assert.IsTrue(r.Has(CreatorIssueCode.SchemaVersionNewer));
             var s = Valid(); s.SchemaVersion = "FS27.CharacterSpecification.v9";
             Assert.IsTrue(CharacterSpecificationValidator.Validate(s, catalogs).Has(CreatorIssueCode.SchemaVersionNewer));
@@ -452,7 +454,7 @@ namespace FS27.Core.Tests
         public void ABrokenMigrationStep_IsReported()
         {
             var m = new SchemaMigrator();
-            m.Register("X.v0", "FS27.CharacterSpecification.v1", old => null);
+            m.Register("X.v0", "FS27.CharacterSpecification.v2", old => null);
             var r = new CreatorValidationResult();
             Assert.IsFalse(CharacterSpecificationJson.TryFromJson("{\"schemaVersion\":\"X.v0\"}", m, out _, r));
             Assert.IsTrue(r.Has(CreatorIssueCode.JsonShapeInvalid));

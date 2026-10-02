@@ -113,8 +113,42 @@ namespace FS27.Core
                 if (float.IsNaN(b.Weight) || b.Weight < 0f || b.Weight > 1f) r.Error(CreatorIssueCode.BehaviorWeightOutOfRange, where, "Weight " + b.Weight.ToString(CultureInfo.InvariantCulture) + " is outside 0..1.");
                 if (def.Status != BehaviorRuntimeStatus.Implemented)
                     r.Warning(CreatorIssueCode.BehaviorNotExecutableYet, where, "Defined, but gameplay cannot execute it yet (" + def.Status + ").");
+                CheckSetting(r, where, "priority", b.Priority, 0f, 10f);
+                CheckSetting(r, where, "risk", b.Risk, 0f, 1f);
+                CheckSetting(r, where, "cooldown", b.CooldownSeconds, 0f, 120f);
+                if (float.IsNaN(b.Confidence) || b.Confidence < 0f || b.Confidence > 1f) r.Error(CreatorIssueCode.ConfidenceOutOfRange, where, "Confidence must be 0..1.");
+                if (b.Condition != null)
+                {
+                    if ((b.Condition.Requires & b.Condition.Forbids) != BehaviorContext.None)
+                        r.Error(CreatorIssueCode.BehaviorConditionContradictory, where, "A situation cannot be both required and forbidden.");
+                    if (float.IsNaN(b.Condition.Threshold) || b.Condition.Threshold < 0f || b.Condition.Threshold > 1f)
+                        r.Error(CreatorIssueCode.BehaviorSettingOutOfRange, where, "Threshold must be 0..1.");
+                }
+            }
+
+            var seqIds = new HashSet<string>();
+            foreach (BehaviorSequence q in dna.Sequences)
+            {
+                string where = owner + " > sequence '" + q.Id + "'";
+                if (string.IsNullOrEmpty(q.Id) || !seqIds.Add(q.Id)) r.Error(CreatorIssueCode.SequenceInvalid, where, "A sequence needs a unique id.");
+                if (q.Steps.Count < 2 || q.Steps.Count > 6) r.Error(CreatorIssueCode.SequenceInvalid, where, "A sequence needs 2 to 6 steps.");
+                foreach (string step in q.Steps)
+                    if (!catalogs.Behaviors.Contains(step)) r.Error(CreatorIssueCode.BehaviorUnknown, where, "Unknown behaviour '" + step + "'.");
+                if (float.IsNaN(q.MaxGapSeconds) || q.MaxGapSeconds < 0f || q.MaxGapSeconds > 10f) r.Error(CreatorIssueCode.SequenceInvalid, where, "MaxGapSeconds must be 0..10.");
+                if (float.IsNaN(q.Weight) || q.Weight < 0f || q.Weight > 1f) r.Error(CreatorIssueCode.SequenceInvalid, where, "Weight must be 0..1.");
+            }
+            foreach (KeyValuePair<string, float> kv in dna.ParamConfidence)
+            {
+                if (!catalogs.Parameters.TryGet(kv.Key, out ParameterDefinition pd) || pd.Domain != ParameterDomain.FootballDna) r.Error(CreatorIssueCode.ParameterUnknown, owner + " > confidence '" + kv.Key + "'", "Not a football DNA parameter.");
+                else if (float.IsNaN(kv.Value) || kv.Value < 0f || kv.Value > 1f) r.Error(CreatorIssueCode.ConfidenceOutOfRange, owner + " > confidence '" + kv.Key + "'", "Must be 0..1.");
             }
             return r;
+        }
+
+        private static void CheckSetting(CreatorValidationResult r, string where, string name, float value, float min, float max)
+        {
+            if (value == BehaviorEntry.Unset) return;
+            if (float.IsNaN(value) || value < min || value > max) r.Error(CreatorIssueCode.BehaviorSettingOutOfRange, where, name + " " + value.ToString(CultureInfo.InvariantCulture) + " is outside " + min + ".." + max + ".");
         }
 
         /// <summary>Warns when a player's attributes fall well short of what one of their signature behaviours needs.</summary>

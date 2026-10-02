@@ -66,7 +66,8 @@ namespace FS27.Core
     [Serializable]
     public sealed class CharacterSpecification
     {
-        public const string CurrentSchema = "FS27.CharacterSpecification.v1";
+        public const string CurrentSchema = "FS27.CharacterSpecification.v2";
+        public const string SchemaV1 = "FS27.CharacterSpecification.v1";
 
         public string SchemaVersion = CurrentSchema;
         public string CharacterId;
@@ -75,6 +76,10 @@ namespace FS27.Core
         public string BaseModelId = DefaultAppearanceCatalog.BaseA;
         public PlayerAppearance Appearance = new PlayerAppearance();
         public FootballDNA Dna = new FootballDNA();
+        /// <summary>Seeds that make generation reproducible (0 = none was used). Same specification + same seeds = same character, bit for bit.</summary>
+        public uint GenerationSeed;
+        public uint AppearanceSeed;
+        public uint BehaviorSeed;
         /// <summary>Authoring-only information; null in runtime data.</summary>
         public AuthoringData Authoring;
 
@@ -88,6 +93,7 @@ namespace FS27.Core
                 BaseModelId = BaseModelId,
                 Appearance = Appearance.Clone(),
                 Dna = Dna.Clone(),
+                GenerationSeed = GenerationSeed, AppearanceSeed = AppearanceSeed, BehaviorSeed = BehaviorSeed,
                 Authoring = Authoring == null ? null : new AuthoringData
                 {
                     Source = Authoring.Source, Generator = Authoring.Generator, CreatedUtc = Authoring.CreatedUtc, Prompt = Authoring.Prompt, Notes = Authoring.Notes,

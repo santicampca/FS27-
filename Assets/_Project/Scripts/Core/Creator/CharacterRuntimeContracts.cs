@@ -106,6 +106,8 @@ namespace FS27.Core
     /// <summary>The football actions a character will perform. Gameplay requests one; animation shows it; the BALL stays independent.</summary>
     public enum FootballActionKind
     {
+        /// <summary>No action requested (movement only).</summary>
+        None = 0,
         Control,
         Dribble,
         ShortPass,
