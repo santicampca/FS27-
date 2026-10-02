@@ -294,6 +294,14 @@ namespace FS27.Core
             result.Changes = merged;
             AttachProfileCombinationRules(result, baseSpec, creating);
 
+            bool understood = result.Changes.Count > 0 || result.AttributeHints.Count > 0 || result.ProfileHints.Count > 0;
+            if (!understood)
+            {
+                // Nothing usable was found (only unsupported or unknown requests): no draft is invented.
+                result.Intent = PromptIntentKind.Unknown;
+                result.Confidence = 0f;
+                return result;
+            }
             result.Intent = DetermineIntent(creating, result);
             ModificationReport applied = ModificationApplier.Apply(baseSpec, result.Changes, catalogs);
             result.Draft = applied.Result;
@@ -448,11 +456,16 @@ namespace FS27.Core
                 }
             }
 
+            // Whatever came from a contradicted phrase is dropped entirely: a half-applied "tall" next to a refused height would be misleading.
+            var contradictedPhrases = new HashSet<string>();
+            foreach (PromptConflict pc in result.Conflicts) { contradictedPhrases.Add(pc.PhraseA); contradictedPhrases.Add(pc.PhraseB); }
+
             // Two values for the same part slot: keep the first mentioned, and say so.
             var chosen = new Dictionary<string, SpecChange>();
             var merged = new List<SpecChange>();
             foreach (SpecChange c in raw)
             {
+                if (contradictedPhrases.Contains(c.Source)) continue;
                 if (conflictedTargets.Contains(c.Target) && c.Kind != SpecChangeKind.ChoiceSet && c.Kind != SpecChangeKind.ColorSet) continue;
                 if (c.Kind == SpecChangeKind.ChoiceSet || c.Kind == SpecChangeKind.ColorSet)
                 {

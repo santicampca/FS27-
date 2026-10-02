@@ -53,7 +53,9 @@ namespace FS27.Core
         public LexiconEffect[] Default;
         public LexiconEffect[] Visual;
         public LexiconEffect[] Animation;
-        public bool Ambiguous => Visual != null || Animation != null;
+        /// <summary>True when <see cref="Default"/> already covers the visual reading too, so no "which did you mean" warning is needed.</summary>
+        public bool DefaultCoversVisual;
+        public bool Ambiguous => !DefaultCoversVisual && (Visual != null || Animation != null);
     }
 
     /// <summary>
@@ -88,6 +90,7 @@ namespace FS27.Core
                 // gameplay: strong = Strength; visual: strong = a bulkier build
                 Default = E(LexiconEffect.A(PlayerAttributeId.Strength, 0.88f), LexiconEffect.P("body.muscularity", 0.78f), LexiconEffect.P("body.mass", 0.68f), LexiconEffect.C("body.preset", "strong")),
                 Visual = E(LexiconEffect.P("body.muscularity", 0.78f), LexiconEffect.P("body.mass", 0.68f), LexiconEffect.P("body.shoulderWidth", 0.72f), LexiconEffect.C("body.preset", "strong")),
+                DefaultCoversVisual = true,
                 Animation = null
             });
 
