@@ -153,6 +153,9 @@ namespace FS27.Core
             };
         }
 
+        /// <summary>Defensive midfielders (the MCD database): the same contract as <see cref="HybridMidfielder"/> (Midfield primary, Defense or Wing secondary, any of the 12 roles).</summary>
+        public static FieldPlayerImportOptions DefensiveMidfielder() { return HybridMidfielder(); }
+
         public static FieldPlayerImportOptions Defender()
         {
             return new FieldPlayerImportOptions

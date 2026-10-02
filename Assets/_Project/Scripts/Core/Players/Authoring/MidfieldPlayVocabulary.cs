@@ -20,13 +20,21 @@ namespace FS27.Core
             new[] { "Counterpressing", "Counterpressing" },
             new[] { "Pressing", "Pressing" },
             new[] { "DefensiveCover", "Defensive Cover" },
-            new[] { "BoxToBoxRun", "Box-to-Box Run" }
+            new[] { "BoxToBoxRun", "Box-to-Box Run" },
+            new[] { "DeepBuildUp", "DeepBuildUp", "Deep Build-Up" },
+            new[] { "Interception", "Interception" },
+            new[] { "DefensiveScreen", "DefensiveScreen", "Defensive Screen" },
+            new[] { "LineBreakingPass", "LineBreakingPass", "Line-Breaking Pass" },
+            new[] { "BallRecovery", "BallRecovery", "Ball Recovery" },
+            new[] { "TacticalFoul", "TacticalFoul", "Tactical Foul" }
         };
 
         // a hybrid midfielder's spelling of a tag the wing vocabulary already has
         private static readonly string[][] Aliases =
         {
-            new[] { "OverlappingRun", "Overlap" }
+            new[] { "OverlappingRun", "Overlap" },
+            new[] { "Counterpressing", "CounterPress" },
+            new[] { "SwitchOfPlay", "LongSwitch" }
         };
 
         public static IReadOnlyDictionary<string, string> Create()
