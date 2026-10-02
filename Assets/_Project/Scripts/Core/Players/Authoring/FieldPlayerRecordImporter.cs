@@ -170,6 +170,15 @@ namespace FS27.Core
             return o;
         }
 
+        /// <summary>Second strikers (the SD database): Attack primary, Midfield or Wing as the one optional secondary zone, any of the 12 roles; same vocabulary and default affinities as <see cref="Winger"/>.</summary>
+        public static FieldPlayerImportOptions SecondStriker()
+        {
+            FieldPlayerImportOptions o = Winger();
+            o.AllowedPrimaryZones = new HashSet<PitchZone> { PitchZone.Attack };
+            o.AllowedSecondaryZones = new HashSet<PitchZone> { PitchZone.Midfield, PitchZone.Wing };
+            return o;
+        }
+
         /// <summary>Defensive midfielders (the MCD database): the same contract as <see cref="HybridMidfielder"/> (Midfield primary, Defense or Wing secondary, any of the 12 roles).</summary>
         public static FieldPlayerImportOptions DefensiveMidfielder() { return HybridMidfielder(); }
 
@@ -389,9 +398,9 @@ namespace FS27.Core
                 case "CB": zone = PitchZone.Defense; return true;
                 case "RB": case "LB": case "RWB": case "LWB": case "RW": case "LW": zone = PitchZone.Wing; return true;
                 case "CDM": case "CM": case "CAM": case "RM": case "LM": zone = PitchZone.Midfield; return true;
-                case "ST": case "CF": case "SD": zone = PitchZone.Attack; return true;
+                case "ST": case "CF": case "SD": case "DC": zone = PitchZone.Attack; return true;
                 case "ED": case "EI": zone = PitchZone.Wing; return true;
-                case "MCO": zone = PitchZone.Midfield; return true;
+                case "MCO": case "MC": case "MCD": zone = PitchZone.Midfield; return true;
                 default: return false;
             }
         }

@@ -35,13 +35,47 @@ namespace FS27.Core
             new[] { "OutsideWingerCarry", "OutsideWingerCarry" },
             new[] { "HighIntensityPress", "HighIntensityPress", "HighPressuring", "HighWorkratePress" },
             new[] { "DefensiveTracking", "DefensiveTracking" },
-            new[] { "SidelineWorkrate", "SidelineWorkrate" }
+            new[] { "SidelineWorkrate", "SidelineWorkrate" },
+            new[] { "PocketReceive", "PocketReceive" },
+            new[] { "CurlFinesseShot", "CurlFinesseShot", "PrecisionCurler", "CurvedShot" },
+            new[] { "BetweenLinesTurn", "BetweenLinesTurn" },
+            new[] { "VisionaryThroughBall", "VisionaryThroughBall" },
+            new[] { "CloseControlSlalom", "CloseControlSlalom" },
+            new[] { "FinessePlacement", "FinessePlacement" },
+            new[] { "HalfSpaceOrbit", "HalfSpaceOrbit" },
+            new[] { "InvertedCutInsidePass", "InvertedCutInsidePass" },
+            new[] { "HalfSpaceOrchestration", "HalfSpaceOrchestration" },
+            new[] { "ElusivePocketDribble", "ElusivePocketDribble" },
+            new[] { "LateRunsIntoBox", "LateRunsIntoBox" },
+            new[] { "LateBoxCrash", "LateBoxCrash" },
+            new[] { "PowerCarryThroughCenter", "PowerCarryThroughCenter" },
+            new[] { "DrivingRun", "DrivingRun" },
+            new[] { "DirectAssistance", "DirectAssistance" },
+            new[] { "CreativeAssistance", "CreativeAssistance" },
+            new[] { "FinalThirdAssistance", "FinalThirdAssistance" },
+            new[] { "HighPressSurge", "HighPressSurge" },
+            new[] { "OffBallPenetration", "OffBallPenetration" },
+            new[] { "DiagonalPenetration", "DiagonalPenetration" },
+            new[] { "PocketPenetration", "PocketPenetration" },
+            new[] { "ExplosiveTransition", "ExplosiveTransition" },
+            new[] { "RainbowFlickDribble", "RainbowFlickDribble" },
+            new[] { "NoLookPass", "NoLookPass" },
+            new[] { "CloseQuarterSkill", "CloseQuarterSkill" },
+            new[] { "ZonalSlalomDribble", "ZonalSlalomDribble" },
+            new[] { "ProgressiveDrive", "ProgressiveDrive" },
+            new[] { "AmbidextrousBurst", "AmbidextrousBurst" },
+            new[] { "SuddenChangeOfPace", "SuddenChangeOfPace" },
+            new[] { "InsideSlash", "InsideSlash" }
         };
 
         // wingers' spellings of tags the midfield vocabulary already has
         private static readonly string[][] Aliases =
         {
-            new[] { "CloseControlDribble", "TightSpaceDribble", "ElusiveDribble" }
+            new[] { "CloseControlDribble", "TightSpaceDribble", "ElusiveDribble" },
+            new[] { "ProgressivePass", "ProgressivePassing" },
+            new[] { "CutInsideAndShoot", "CutInsideAndStrike" },
+            new[] { "HighIntensityPress", "HighIntensityPressRun" },
+            new[] { "LongRangeStrike", "StrikingFromDistance" }
         };
 
         public static IReadOnlyDictionary<string, string> Create()
