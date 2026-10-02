@@ -1,0 +1,75 @@
+== REQUEST ==
+Crea un delantero pequeño, delgado, calvo, con ojos azules y muy rápido   [seed 7, new character]
+== RESULT == SUCCESS
+stages: interpret (FS27.SemanticParser.v1) > validate semantic model > compile to patch > apply patch > normalise appearance > validate specification > football DNA and behaviours > assembly plan, movement and animation > preview > export
+== SEMANTIC MODEL (es) ==
+#1 Create
+#2 Add role.striker [Gameplay]
+#3 Set overallSize (-)
+#4 Set mass (-) [Visual]
+#5 Remove hairStyle [Visual]
+#6 Set eyeColor [Visual] =#1E56C8
+#7 Set speed Much
+== INTERPRETATION ==
+Text: Crea un delantero pequeño, delgado, calvo, con ojos azules y muy rápido  [es, FS27.SemanticParser.v1, confidence 1.00]
+Understood:
+  - create a new character
+  - Add role.striker [Gameplay]
+  - Set overallSize (low)
+  - Set mass (low) [Visual]
+  - Remove hairStyle [Visual]
+  - Set eyeColor [Visual] = #1E56C8
+  - Set speed Much
+Applied:
+  - Add Profile Role=GoalHunter L0.8  <- delantero -> role.striker
+  - Replace Profile PrimaryZone=Attack  <- delantero -> role.striker
+  - Modify DnaParam shooting.frequency L0.65 (side effect)  <- delantero -> role.striker (side effect)
+  - Modify DnaParam positioning.boxPresence L0.65 (side effect)  <- delantero -> role.striker (side effect)
+  - Modify AppearanceParam body.height L0.25  <- pequeno -> overallSize
+  - Modify AppearanceParam body.mass L0.281 (side effect)  <- pequeno -> overallSize (side effect)
+  - Modify AppearanceParam body.shoulderWidth L0.364 (side effect)  <- pequeno -> overallSize (side effect)
+  - Modify AppearanceParam body.mass L0.188  <- delgado -> mass
+  - Modify AppearanceParam body.torsoWidth L0.321 (side effect)  <- delgado -> mass (side effect)
+  - Replace Choice hair.style=buzz_02  <- calvo -> hairStyle
+  - Modify AppearanceParam hair.length L0  <- calvo -> hairStyle
+  - Replace Color eyes.color=#1E56C8  <- azules -> eyeColor
+  - Modify Attribute Speed L0.875  <- rapido -> speed
+  - Modify Attribute Acceleration L0.688 (side effect)  <- rapido -> speed (side effect)
+  - Modify DnaParam movement.accelerationTendency L0.613 (side effect)  <- rapido -> speed (side effect)
+== PATCH ==
+  Add Profile Role=GoalHunter L0.8
+  Replace Profile PrimaryZone=Attack
+  Modify DnaParam shooting.frequency L0.65  (side effect)
+  Modify DnaParam positioning.boxPresence L0.65  (side effect)
+  Modify AppearanceParam body.height L0.25
+  Modify AppearanceParam body.mass L0.281  (side effect)
+  Modify AppearanceParam body.shoulderWidth L0.364  (side effect)
+  Modify AppearanceParam body.mass L0.188
+  Modify AppearanceParam body.torsoWidth L0.321  (side effect)
+  Replace Choice hair.style=buzz_02
+  Modify AppearanceParam hair.length L0
+  Replace Color eyes.color=#1E56C8
+  Modify Attribute Speed L0.875
+  Modify Attribute Acceleration L0.688  (side effect)
+  Modify DnaParam movement.accelerationTendency L0.613  (side effect)
+== SPECIFICATION ==
+{"appearance":{"choices":{"body.preset":"athletic","face.expression":"determined","hair.style":"buzz_02"},"colors":{"eyes.color":"#1E56C8"},"params":{"body.footScale":1.1,"body.handScale":1.1,"body.height":0.925,"body.mass":0.925,"body.shoulderWidth":0.9775,"body.torsoWidth":0.9625,"face.expressiveness":0.65,"hair.length":0,"head.scale":1.08},"styleId":"FS27_CARTOON_SPORTS"},"baseModelId":"fs27_base_a","characterId":"striker","footballDna":{"behaviors":[],"params":{"defending.aggression":0.5518,"defending.interception":0.6035,"defending.marking":0.6035,"defending.pressing":0.5725,"dribbling.bodyFeint":0.5621,"dribbling.changeOfPace":0.6217,"dribbling.closeControl":0.6035,"dribbling.takeOn":0.6035,"movement.accelerationTendency":0.6125,"movement.spaceSeeking":0.649,"movement.turningTendency":0.6035,"passing.progressive":0.6035,"passing.short":0.6035,"passing.throughBall":0.5621,"positioning.attackingRuns":0.649,"positioning.boxPresence":0.65,"possession.holdUp":0.6035,"possession.shielding":0.6035,"shooting.finesse":0.6035,"shooting.firstTime":0.596,"shooting.frequency":0.65,"shooting.insideBox":0.6978,"shooting.longShot":0.6035,"shooting.power":0.6035},"schemaVersion":"FS27.FootballDNA.v2"},"schemaVersion":"FS27.CharacterSpecification.v2"}
+attribute wish Acceleration 0.69
+attribute wish Speed 0.88
+profile wish Role GoalHunter 0.80
+profile wish PrimaryZone Attack 1.00
+== BEHAVIOUR CANDIDATES ==
+  1v1 facing a defender in open space: ExplosiveExit 0.41, BodyFeint 0.38, StopAndGo 0.37
+  carrying the ball out wide: OutsideCut 0.37, InsideCut 0.36, BodyFeint 0.24
+  receiving near the box: LateBoxArrival 0.32, DelayedRun 0.29, FirstTimeFinish 0.27
+  teammate on the ball, space behind the line: BlindSideRun 0.38, DelayedRun 0.36, LateBoxArrival 0.32
+  defending against the ball carrier: AggressivePress 0.24
+== GENERATION PLAN ==
+height 1.65 m, 6.4 heads, shoulders 0.40 m, legs 0.75 m; 38 procedural parts; style FS27_CARTOON_SPORTS
+movement signature: stride 0.97, cadence 1.06, lean 0.67
+  animation standing: idle (no clip yet)
+  animation jogging: jog_loop (no clip yet)
+  animation sprinting: sprint_loop (no clip yet)
+  animation shooting: shot_instep (no clip yet)
+  animation feinting: dribble_feint (no clip yet)
+runtime record: 1137 bytes, 4 content references

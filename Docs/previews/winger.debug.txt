@@ -1,0 +1,70 @@
+== REQUEST ==
+Crea un extremo rápido, alto, con pelo negro rizado y barba corta   [seed 7, new character]
+== RESULT == SUCCESS
+stages: interpret (FS27.SemanticParser.v1) > validate semantic model > compile to patch > apply patch > normalise appearance > validate specification > football DNA and behaviours > assembly plan, movement and animation > preview > export
+== SEMANTIC MODEL (es) ==
+#1 Create
+#2 Add role.winger [Gameplay]
+#3 Set speed
+#4 Set height [Visual]
+#5 Set hairColor [Visual] =#1A1A1A
+#6 Set hairStyle [Visual] =short_curly_07
+#7 Set beard [Visual] =short_beard
+== INTERPRETATION ==
+Text: Crea un extremo rápido, alto, con pelo negro rizado y barba corta  [es, FS27.SemanticParser.v1, confidence 1.00]
+Understood:
+  - create a new character
+  - Add role.winger [Gameplay]
+  - Set speed
+  - Set height [Visual]
+  - Set hairColor [Visual] = #1A1A1A
+  - Set hairStyle [Visual] = short_curly_07
+  - Set beard [Visual] = short_beard
+Applied:
+  - Add Profile Role=Winger L0.8  <- extremo -> role.winger
+  - Replace Profile PrimaryZone=Wing  <- extremo -> role.winger
+  - Modify DnaParam positioning.width L0.65 (side effect)  <- extremo -> role.winger (side effect)
+  - Modify DnaParam dribbling.outsideCut L0.65 (side effect)  <- extremo -> role.winger (side effect)
+  - Modify Attribute Speed L0.75  <- rapido -> speed
+  - Modify Attribute Acceleration L0.625 (side effect)  <- rapido -> speed (side effect)
+  - Modify DnaParam movement.accelerationTendency L0.575 (side effect)  <- rapido -> speed (side effect)
+  - Modify AppearanceParam body.height L0.75  <- alto -> height
+  - Modify AppearanceParam body.legLength L0.6 (side effect)  <- alto -> height (side effect)
+  - Replace Color hair.color=#1A1A1A  <- negro -> hairColor
+  - Replace Choice hair.style=short_curly_07  <- rizado -> hairStyle
+  - Replace Choice face.beard=short_beard  <- barba corta -> beard
+== PATCH ==
+  Add Profile Role=Winger L0.8
+  Replace Profile PrimaryZone=Wing
+  Modify DnaParam positioning.width L0.65  (side effect)
+  Modify DnaParam dribbling.outsideCut L0.65  (side effect)
+  Modify Attribute Speed L0.75
+  Modify Attribute Acceleration L0.625  (side effect)
+  Modify DnaParam movement.accelerationTendency L0.575  (side effect)
+  Modify AppearanceParam body.height L0.75
+  Modify AppearanceParam body.legLength L0.6  (side effect)
+  Replace Color hair.color=#1A1A1A
+  Replace Choice hair.style=short_curly_07
+  Replace Choice face.beard=short_beard
+warning: Adjusted for coherence: beard.short: facialHair.density 0.00 -> 0.50 (A beard is full coverage.)
+== SPECIFICATION ==
+{"appearance":{"choices":{"body.preset":"athletic","face.beard":"short_beard","face.expression":"determined","hair.style":"short_curly_07"},"colors":{"hair.color":"#1A1A1A"},"params":{"body.footScale":1.1,"body.handScale":1.1,"body.height":1.075,"body.legLength":1.02,"face.expressiveness":0.65,"facialHair.density":0.5,"head.scale":1.08},"styleId":"FS27_CARTOON_SPORTS"},"baseModelId":"fs27_base_a","characterId":"winger","footballDna":{"behaviors":[],"params":{"defending.aggression":0.5518,"defending.interception":0.6035,"defending.marking":0.6035,"defending.pressing":0.5725,"dribbling.bodyFeint":0.5621,"dribbling.changeOfPace":0.6096,"dribbling.closeControl":0.6035,"dribbling.outsideCut":0.65,"dribbling.takeOn":0.6498,"movement.accelerationTendency":0.575,"movement.spaceSeeking":0.6288,"movement.turningTendency":0.6035,"passing.cross":0.572,"passing.progressive":0.6035,"passing.short":0.6035,"passing.throughBall":0.5621,"positioning.attackingRuns":0.6288,"positioning.width":0.65,"possession.holdUp":0.6035,"possession.shielding":0.6035,"shooting.finesse":0.6035,"shooting.frequency":0.6035,"shooting.insideBox":0.6035,"shooting.longShot":0.6035,"shooting.power":0.6035},"schemaVersion":"FS27.FootballDNA.v2"},"schemaVersion":"FS27.CharacterSpecification.v2"}
+attribute wish Acceleration 0.63
+attribute wish Speed 0.75
+profile wish Role Winger 0.80
+profile wish PrimaryZone Wing 1.00
+== BEHAVIOUR CANDIDATES ==
+  1v1 facing a defender in open space: ExplosiveExit 0.40, BodyFeint 0.39, StopAndGo 0.38
+  carrying the ball out wide: OutsideCut 0.42, InsideCut 0.36, BodyFeint 0.25
+  receiving near the box: LateBoxArrival 0.30, DelayedRun 0.29, FirstTimeFinish 0.23
+  teammate on the ball, space behind the line: BlindSideRun 0.38, DelayedRun 0.36, LateBoxArrival 0.30
+  defending against the ball carrier: AggressivePress 0.24
+== GENERATION PLAN ==
+height 1.91 m, 6.4 heads, shoulders 0.47 m, legs 0.88 m; 40 procedural parts; style FS27_CARTOON_SPORTS
+movement signature: stride 1.04, cadence 0.99, lean 0.65
+  animation standing: idle (no clip yet)
+  animation jogging: jog_loop (no clip yet)
+  animation sprinting: sprint_loop (no clip yet)
+  animation shooting: shot_instep (no clip yet)
+  animation feinting: dribble_feint (no clip yet)
+runtime record: 1143 bytes, 5 content references

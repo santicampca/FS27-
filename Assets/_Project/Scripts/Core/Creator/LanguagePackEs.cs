@@ -118,6 +118,7 @@ namespace FS27.Core
             p.Noun("camiseta|camisetas|equipo|uniforme|kit|jersey|casaca|equipacion|indumentaria", "kitColor", "kitColor", "kit");
 
             // ---------- hair, face and kit choices ----------
+            p.Value("calvo|calva|calvos|pelon|pelona|sin cabello|cabeza afeitada|rapado total", "hairStyle", "", SemanticIntent.Remove);
             p.Value("rizado|rizada|rizados|rizos|chino|chinos|crespo|crespa|ensortijado", "hairStyle", "short_curly_07");
             p.Value("afro|afros", "hairStyle", "afro_08");
             p.Value("rapado|rapada|al ras|a cero|cero|pelado|pelada|buzz", "hairStyle", "buzz_02");

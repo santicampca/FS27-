@@ -445,7 +445,7 @@ namespace FS27.Core
         private static byte To8(float v) { return (byte)Math.Max(0, Math.Min(255, (int)Math.Round(v * 255f))); }
     }
 
-    /// <summary>Writes a PNG with no compression (stored deflate blocks): pure C#, dependency-free, valid in every viewer.</summary>
+    /// <summary>Writes a PNG (zlib-compressed with the platform's DeflateStream, which Unity also has): pure C#, no other dependency, valid in every viewer.</summary>
     public static class PngWriter
     {
         public static byte[] Write(byte[] rgb, int width, int height)
@@ -457,18 +457,9 @@ namespace FS27.Core
                 Buffer.BlockCopy(rgb, y * width * 3, raw, y * (width * 3 + 1) + 1, width * 3);
             }
             var z = new MemoryStream();
-            z.WriteByte(0x78); z.WriteByte(0x01);
-            int pos = 0;
-            while (pos < raw.Length)
-            {
-                int n = Math.Min(65535, raw.Length - pos);
-                bool last = pos + n >= raw.Length;
-                z.WriteByte(last ? (byte)1 : (byte)0);
-                z.WriteByte((byte)(n & 0xFF)); z.WriteByte((byte)(n >> 8));
-                z.WriteByte((byte)(~n & 0xFF)); z.WriteByte((byte)((~n >> 8) & 0xFF));
-                z.Write(raw, pos, n);
-                pos += n;
-            }
+            z.WriteByte(0x78); z.WriteByte(0x9C);   // zlib header: deflate, default compression
+            using (var deflate = new System.IO.Compression.DeflateStream(z, System.IO.Compression.CompressionLevel.Optimal, true))
+                deflate.Write(raw, 0, raw.Length);
             uint adler = Adler32(raw);
             z.WriteByte((byte)(adler >> 24)); z.WriteByte((byte)(adler >> 16)); z.WriteByte((byte)(adler >> 8)); z.WriteByte((byte)adler);
 

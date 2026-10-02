@@ -414,6 +414,7 @@ namespace FS27.Core
                 Vec3 radii = new Vec3(headW * 0.5f, HeadH * 0.5f, headD * 0.5f);
                 string mat = "material.hair_toon";
                 Vec3 center = new Vec3(0f, headCy + HeadH * 0.02f, -headD * 0.02f);
+                if (style == "buzz_02" && length <= 0.02f) return;   // a shaved head: no hair at all
                 switch (style)
                 {
                     case "buzz_02":

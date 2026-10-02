@@ -1,0 +1,84 @@
+== REQUEST ==
+Crea un portero muy alto, ágil, con buenos reflejos, estiradas espectaculares y buen juego con los pies, seguro y tranquilo   [seed 7, new character]
+== RESULT == SUCCESS
+stages: interpret (FS27.SemanticParser.v1) > validate semantic model > compile to patch > apply patch > normalise appearance > validate specification > football DNA and behaviours > assembly plan, movement and animation > preview > export
+== SEMANTIC MODEL (es) ==
+#1 Create
+#2 Add role.goalkeeper Much [Gameplay]
+#3 Set height [Visual]
+#4 Set agility
+#5 Set gk.reflexes [Gameplay]
+#6 Set gk.diving [Gameplay]
+#7 Set gk.distribution [Gameplay]
+#8 Set risk (-)
+#9 Set aggression (-)
+unparsed: espectaculares
+== INTERPRETATION ==
+Text: Crea un portero muy alto, ágil, con buenos reflejos, estiradas espectaculares y buen juego con los pies, seguro y tranquilo  [es, FS27.SemanticParser.v1, confidence 0.60]
+Understood:
+  - create a new character
+  - Add role.goalkeeper Much [Gameplay]
+  - Set height [Visual]
+  - Set agility
+  - Set gk.reflexes [Gameplay]
+  - Set gk.diving [Gameplay]
+  - Set gk.distribution [Gameplay]
+  - Set risk (low)
+  - Set aggression (low)
+Applied:
+  - Add Profile Role=Guardian L0.8  <- portero -> role.goalkeeper
+  - Replace Profile PrimaryZone=Goal  <- portero -> role.goalkeeper
+  - Modify AppearanceParam body.height L0.75  <- alto -> height
+  - Modify AppearanceParam body.legLength L0.6 (side effect)  <- alto -> height (side effect)
+  - Modify Attribute Agility L0.75  <- agil -> agility
+  - Modify DnaParam movement.turningTendency L0.6 (side effect)  <- agil -> agility (side effect)
+  - Modify Goalkeeper Reflexes L0.75  <- buenos reflejos -> gk.reflexes
+  - Modify Goalkeeper Diving L0.75  <- estiradas -> gk.diving
+  - Modify Goalkeeper Distribution L0.75  <- buen juego con los pies -> gk.distribution
+  - Modify Profile Risk L0.25  <- seguro -> risk
+  - Modify DnaParam passing.risky L0.375 (side effect)  <- seguro -> risk (side effect)
+  - Modify DnaParam dribbling.takeOnRisk L0.375 (side effect)  <- seguro -> risk (side effect)
+  - Modify Profile Aggression L0.25  <- tranquilo -> aggression
+  - Modify DnaParam defending.aggression L0.375 (side effect)  <- tranquilo -> aggression (side effect)
+  - Modify DnaParam movement.aggression L0.4 (side effect)  <- tranquilo -> aggression (side effect)
+Not understood:
+  - espectaculares
+== PATCH ==
+  Add Profile Role=Guardian L0.8
+  Replace Profile PrimaryZone=Goal
+  Modify AppearanceParam body.height L0.75
+  Modify AppearanceParam body.legLength L0.6  (side effect)
+  Modify Attribute Agility L0.75
+  Modify DnaParam movement.turningTendency L0.6  (side effect)
+  Modify Goalkeeper Reflexes L0.75
+  Modify Goalkeeper Diving L0.75
+  Modify Goalkeeper Distribution L0.75
+  Modify Profile Risk L0.25
+  Modify DnaParam passing.risky L0.375  (side effect)
+  Modify DnaParam dribbling.takeOnRisk L0.375  (side effect)
+  Modify Profile Aggression L0.25
+  Modify DnaParam defending.aggression L0.375  (side effect)
+  Modify DnaParam movement.aggression L0.4  (side effect)
+warning: Assumed: a goalkeeper wears goalkeeper gloves.
+== SPECIFICATION ==
+{"appearance":{"choices":{"body.preset":"athletic","face.expression":"determined","kit.gloves":"gk_standard"},"colors":{},"params":{"body.footScale":1.1,"body.handScale":1.1,"body.height":1.075,"body.legLength":1.02,"face.expressiveness":0.65,"head.scale":1.08},"styleId":"FS27_CARTOON_SPORTS"},"baseModelId":"fs27_base_a","characterId":"goalkeeper","footballDna":{"behaviors":[],"params":{"decision.patience":0.572,"defending.aggression":0.375,"defending.interception":0.6035,"defending.marking":0.6035,"defending.pressing":0.4975,"defending.retreat":0.596,"dribbling.bodyFeint":0.5742,"dribbling.changeOfPace":0.6035,"dribbling.closeControl":0.6035,"dribbling.takeOn":0.6237,"dribbling.takeOnRisk":0.375,"movement.accelerationTendency":0.6035,"movement.aggression":0.4,"movement.spaceSeeking":0.6035,"movement.turningTendency":0.6,"passing.progressive":0.6035,"passing.risky":0.375,"passing.short":0.6035,"passing.throughBall":0.5621,"positioning.attackingRuns":0.6035,"positioning.defensive":0.668,"possession.holdUp":0.6035,"possession.shielding":0.6035,"shooting.finesse":0.6035,"shooting.frequency":0.6035,"shooting.insideBox":0.6035,"shooting.longShot":0.6035,"shooting.power":0.6035},"schemaVersion":"FS27.FootballDNA.v2"},"schemaVersion":"FS27.CharacterSpecification.v2"}
+attribute wish Agility 0.75
+profile wish Aggression 0.25
+profile wish Risk 0.25
+profile wish Role Guardian 0.80
+profile wish PrimaryZone Goal 1.00
+== BEHAVIOUR CANDIDATES ==
+  1v1 facing a defender in open space: ExplosiveExit 0.40, BodyFeint 0.39, StopAndGo 0.37
+  carrying the ball out wide: OutsideCut 0.37, InsideCut 0.36, BodyFeint 0.25
+  receiving near the box: LateBoxArrival 0.30, DelayedRun 0.29, FirstTimeFinish 0.23
+  teammate on the ball, space behind the line: BlindSideRun 0.37, DelayedRun 0.36, LateBoxArrival 0.30
+  defending against the ball carrier: AggressivePress 0.19
+== GENERATION PLAN ==
+height 1.91 m, 6.4 heads, shoulders 0.47 m, legs 0.88 m; 39 procedural parts; style FS27_CARTOON_SPORTS
+movement signature: stride 1.04, cadence 1.00, lean 0.65
+  animation standing: idle (no clip yet)
+  animation jogging: jog_loop (no clip yet)
+  animation sprinting: sprint_loop (no clip yet)
+  animation shooting: shot_instep (no clip yet)
+  animation feinting: dribble_feint (no clip yet)
+runtime record: 1160 bytes, 4 content references

@@ -495,7 +495,7 @@ namespace FS27.Core
                 foreach (ValueWord v in pack.Values)
                 {
                     if (!concepts.TryGet(v.Concept, out ConceptDefinition def)) { r.Error(CreatorIssueCode.SemanticTargetUnknown, pack.Id + " value '" + v.Phrase.Text + "'", "Unknown concept '" + v.Concept + "'."); continue; }
-                    if (def.Kind == ConceptKind.Choice && !catalogs.Appearance.TryGetPart(def.Slot, v.Value, out PartDefinition _)) r.Error(CreatorIssueCode.ChoicePartUnknown, pack.Id + " value '" + v.Phrase.Text + "'", "'" + v.Value + "' is not a part of '" + def.Slot + "'.");
+                    if (def.Kind == ConceptKind.Choice && !(v.Operation == SemanticIntent.Remove && v.Value.Length == 0) && !catalogs.Appearance.TryGetPart(def.Slot, v.Value, out PartDefinition _)) r.Error(CreatorIssueCode.ChoicePartUnknown, pack.Id + " value '" + v.Phrase.Text + "'", "'" + v.Value + "' is not a part of '" + def.Slot + "'.");
                 }
                 foreach (ColorWord c in pack.Colors) if (!CharacterSpecificationValidator.IsHexColor(c.Hex)) r.Error(CreatorIssueCode.ColorInvalid, pack.Id + " colour '" + c.Phrase.Text + "'", "Invalid colour '" + c.Hex + "'.");
             }

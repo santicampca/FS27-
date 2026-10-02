@@ -65,6 +65,17 @@ namespace FS27.Core.Tests
             Assert.AreEqual("none", c.Value);
         }
 
+        [TestCase("calvo")]
+        [TestCase("hazlo calvo")]
+        [TestCase("bald")]
+        [TestCase("make him bald")]
+        public void Calvo_RemovesTheHair_InBothLanguages(string text)
+        {
+            SemanticCommand c = Cmd(P(text), "hairStyle");
+            Assert.AreEqual(SemanticIntent.Remove, c.Operation);
+            Assert.AreEqual("", c.Value);
+        }
+
         [Test]
         public void QuitaLaBarba_IsARemoval()
         {
@@ -263,6 +274,7 @@ namespace FS27.Core.Tests
             foreach (LanguagePack pack in new[] { LanguagePackEs.Create(), LanguagePackEn.Create() })
                 foreach (ValueWord v in pack.Values)
                 {
+                    if (v.Operation == SemanticIntent.Remove && v.Value.Length == 0) continue;   // "bald": removes the whole choice, names no part
                     concepts.TryGet(v.Concept, out ConceptDefinition def);
                     Assert.IsTrue(cat.Appearance.TryGetPart(def.Slot, v.Value, out PartDefinition _), pack.Id + " '" + v.Phrase.Text + "' -> " + def.Slot + "/" + v.Value);
                 }

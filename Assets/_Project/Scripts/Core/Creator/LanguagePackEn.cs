@@ -111,7 +111,8 @@ namespace FS27.Core
 
             p.Value("curly|curls|frizzy|kinky", "hairStyle", "short_curly_07");
             p.Value("afro|afros", "hairStyle", "afro_08");
-            p.Value("buzz|buzzcut|buzz cut|shaved head|clean shaven head|bald|baldy", "hairStyle", "buzz_02");
+            p.Value("buzz|buzzcut|buzz cut", "hairStyle", "buzz_02");
+            p.Value("bald|baldy|hairless|shaved head|clean shaven head|bald headed|bald-headed", "hairStyle", "", SemanticIntent.Remove);
             p.Value("fade|faded|skin fade", "hairStyle", "fade_06");
             p.Value("wavy|waves", "hairStyle", "medium_wavy_03");
             p.Value("ponytail|tied|tied up|bun|braided|braids|braid|pigtails|man bun", "hairStyle", "long_tied_05");

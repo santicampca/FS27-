@@ -335,6 +335,16 @@ namespace FS27.Core.Tests
         }
 
         [Test]
+        public void ABaldCharacter_HasNoHairParts_AtAll()
+        {
+            var pipe = CreatorPipeline.CreateDefault();
+            CreatorResult r = pipe.Run(new CreatorRequest { Text = "Crea un delantero calvo" });
+            Assert.IsTrue(r.Success, r.DebugReport);
+            Assert.IsFalse(r.GenerationPlan.Assembly.Parts.Any(p => p.Kind == PartKind.Hair));
+            Assert.IsNotNull(r.GenerationPlan.Assembly.Find("head.skull"));
+        }
+
+        [Test]
         public void ABeardAppears_OnlyWhenChosen_AndStubbleIsAMixOfSkinAndHair()
         {
             Assert.IsNull(Plan(Spec()).Find("facial.beard"));
