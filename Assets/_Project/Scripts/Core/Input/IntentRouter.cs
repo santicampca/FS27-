@@ -26,7 +26,10 @@ namespace FS27.Core
             float x = intent.Move.X, y = intent.Move.Y;
             if (float.IsNaN(x) || float.IsNaN(y) || float.IsInfinity(x) || float.IsInfinity(y))
                 return PlayerIntent.None;
-            return new PlayerIntent(intent.Move);
+            // only the movement is normalised; behaviour, action, style and the dribble/shot/pass details pass through untouched
+            PlayerIntent clean = intent;
+            clean.Move = new PlayerIntent(intent.Move).Move;
+            return clean;
         }
 
         /// <summary>The intent with the larger stick deflection.</summary>

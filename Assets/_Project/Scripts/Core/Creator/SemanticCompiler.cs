@@ -107,6 +107,8 @@ namespace FS27.Core
                         res.Understood.Add(cmd.Reference == EntityReference.Previous ? "start from the previous character" : "create a new character");
                         continue;
                 }
+                if (cmd.Reference == EntityReference.Named)
+                    res.Warnings.Add("Named references ('" + cmd.ReferenceName + "') are not supported yet; the current character was used.");
                 if (string.IsNullOrEmpty(cmd.Target) || !concepts.TryGet(cmd.Target, out ConceptDefinition def)) continue;
                 if (cmd.Confidence < ConfidenceThreshold)
                 {

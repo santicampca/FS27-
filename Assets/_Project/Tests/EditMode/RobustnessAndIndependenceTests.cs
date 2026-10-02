@@ -192,6 +192,97 @@ namespace FS27.Core.Tests
             Assert.AreEqual(10f, IntentAssist.SnapAim(origin, new Vec2(10f, 1f), null, 15f).X);
         }
 
+        // ================= the AI flow, end to end: AI -> decision -> DNA influence -> PlayerIntent -> movement / action =================
+
+        private sealed class DnaDrivenSource : IIntentSource
+        {
+            private readonly CreatorCatalogs catalogs;
+            private readonly FootballDNA dna;
+            private readonly PlayerAttributes attributes;
+            private readonly BehaviorMemory memory = new BehaviorMemory();
+            public FootballContext Context = new FootballContext();
+            public Vec2 Move;
+            public bool Human;
+            public ActionSelection LastSelection;
+
+            public DnaDrivenSource(CreatorCatalogs c, FootballDNA d, PlayerAttributes a) { catalogs = c; dna = d; attributes = a; }
+
+            public PlayerIntent ReadIntent()
+            {
+                ContextAnalysis analysis = FootballContextAnalyzer.Analyze(Context, new FieldDimensions());
+                BehaviorDecision decision = BehaviorDecisionEngine.Decide(dna, attributes, analysis, memory, catalogs);
+                PlayerIntent intent = new PlayerIntent(Move);
+                LastSelection = FootballActionResolver.Resolve(intent, dna, catalogs.Parameters, decision, analysis, Human);
+                if (LastSelection.FromBehavior) memory.Record(LastSelection.BehaviorId, 3f);
+                return FootballActionResolver.ApplyTo(intent, LastSelection);
+            }
+        }
+
+        [Test]
+        public void TheWholeAiFlow_ProducesAnIntentThatSurvivesTheInputPipeline_AndKeepsTheStickInChargeOfSpeed()
+        {
+            CreatorCatalogs cat = pipeline.Catalogs;
+            var dna = new FootballDNA();
+            dna.Params.Set(cat.Parameters, "dribbling.stopAndGo", 0.95f); dna.Params.Set(cat.Parameters, "dribbling.takeOn", 0.9f); dna.Params.Set(cat.Parameters, "dribbling.takeOnRisk", 0.9f);
+            dna.SetBehavior("StopAndGo", 0.9f);
+            var attrs = PlayerAttributes.CreateDefault().With(PlayerAttributeId.Agility, 90).With(PlayerAttributeId.Control, 85);
+            var src = new DnaDrivenSource(cat, dna, attrs) { Move = new Vec2(0.4f, 0f) };
+            src.Context.PlayerPosition = new Vec2(0f, 0f); src.Context.PlayerHasBall = true; src.Context.Possession = PossessionState.Own;
+            src.Context.Opponents.Add(new Vec2(3f, 0f));
+            src.Context.BallPosition = src.Context.PlayerPosition;
+
+            PlayerIntent raw = src.ReadIntent();
+            Assert.AreEqual(FootballActionKind.Dribble, raw.Action);
+            Assert.AreEqual("StopAndGo", raw.BehaviorId);
+
+            // through the existing input pipeline: nothing about the action is lost, and the movement is still just the stick
+            PlayerIntent clean = IntentMixer.Sanitize(raw);
+            Assert.AreEqual(raw.Action, clean.Action);
+            Assert.AreEqual(raw.Style, clean.Style);
+            Assert.AreEqual(raw.BehaviorId, clean.BehaviorId);
+            Assert.AreEqual(0.4f, clean.MoveMagnitude, 1e-5f);
+
+            // the movement code sees the same speed with or without the action fields: the DNA never changes how fast the player goes
+            var tuning = new MovementTuning();
+            var stats = PlayerStats.Resolve(attrs, tuning);
+            var a = new PlayerRuntimeState(); a.Reset(stats, 0f);
+            var b = new PlayerRuntimeState(); b.Reset(stats, 0f);
+            for (int i = 0; i < 60; i++) { PlayerLocomotion.Step(a, stats, tuning, clean, 1f / 60f); PlayerLocomotion.Step(b, stats, tuning, new PlayerIntent(new Vec2(0.4f, 0f)), 1f / 60f); }
+            Assert.AreEqual(b.Speed, a.Speed, 1e-5f);
+            Assert.AreEqual(b.Heading, a.Heading, 1e-5f);
+            Assert.AreEqual(b.Stamina, a.Stamina, 1e-5f);
+
+            // a cooldown follows: asked again straight away, the same behaviour is not repeated
+            Assert.AreNotEqual("StopAndGo", src.ReadIntent().BehaviorId);
+        }
+
+        [Test]
+        public void ForAHumanPlayer_TheSameFlowNeverInventsAnAction()
+        {
+            var src = new DnaDrivenSource(pipeline.Catalogs, new FootballDNA(), PlayerAttributes.CreateDefault()) { Human = true, Move = new Vec2(1f, 0f) };
+            src.Context.PlayerHasBall = true;
+            PlayerIntent i = src.ReadIntent();
+            Assert.AreEqual(FootballActionKind.None, i.Action);
+            Assert.AreEqual(1f, i.MoveMagnitude, 1e-5f);
+        }
+
+        [Test]
+        public void SanitisingAnIntent_StillRemovesNonFiniteMovement()
+        {
+            var bad = new PlayerIntent { Move = new Vec2(float.NaN, 0f), Action = FootballActionKind.Shot };
+            Assert.AreEqual(FootballActionKind.None, IntentMixer.Sanitize(bad).Action, "a corrupt intent becomes 'no input' entirely");
+            Assert.AreEqual(0f, IntentMixer.Sanitize(bad).MoveMagnitude);
+        }
+
+        [Test]
+        public void ANamedReference_IsNotSilentlyPretendedTo_BeSupported()
+        {
+            var p = new SemanticProgram();
+            p.Commands.Add(new SemanticCommand { Id = 1, Intent = SemanticIntent.Increase, Operation = SemanticIntent.Increase, Target = "height", Reference = EntityReference.Named, ReferenceName = "the captain" });
+            CompileResult r = new SemanticCompiler(pipeline.Catalogs, DefaultConcepts.Create()).Compile(p, new AuthoringDraft(pipeline.Catalogs.NewSpecification("x")));
+            Assert.IsTrue(r.Warnings.Any(w => w.Contains("Named references")));
+        }
+
         [Test]
         public void TheCreatorEngine_NeverReadsTheClock_OrAnUnseededRandom()
         {
