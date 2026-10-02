@@ -31,7 +31,9 @@ namespace FS27.Core
         /// <summary>A wish about one of the 12 attributes (Key = attribute name). A hint: attributes belong to the player, not to the specification.</summary>
         Attribute,
         /// <summary>A wish about the playing profile: Risk / Creativity / Aggression (Key), a Role or the primary zone.</summary>
-        Profile
+        Profile,
+        /// <summary>A wish about a goalkeeper capability (Key = capability name).</summary>
+        Goalkeeper
     }
 
     /// <summary>For <see cref="PatchOpKind.Modify"/>: only lower it if it is above the level (a "not too much" limit), or only raise it if below.</summary>
@@ -115,6 +117,8 @@ namespace FS27.Core
         /// <summary>Role affinities by <see cref="PlayerArchetype"/> name.</summary>
         public SortedDictionary<string, float> Roles = new SortedDictionary<string, float>(StringComparer.Ordinal);
         public string PrimaryZone = "";
+        /// <summary>Goalkeeper capability wishes by name (0..1; absent = no wish).</summary>
+        public SortedDictionary<string, float> Goalkeeper = new SortedDictionary<string, float>(StringComparer.Ordinal);
 
         public AuthoringDraft() { }
 
@@ -131,7 +135,8 @@ namespace FS27.Core
                 Attributes = new SortedDictionary<string, float>(Attributes, StringComparer.Ordinal),
                 ProfileLevels = new SortedDictionary<string, float>(ProfileLevels, StringComparer.Ordinal),
                 Roles = new SortedDictionary<string, float>(Roles, StringComparer.Ordinal),
-                PrimaryZone = PrimaryZone
+                PrimaryZone = PrimaryZone,
+                Goalkeeper = new SortedDictionary<string, float>(Goalkeeper, StringComparer.Ordinal)
             };
         }
 
@@ -251,6 +256,8 @@ namespace FS27.Core
                     return ApplyWish(d.Attributes, o, r, who, 0.5f);
                 case PatchTarget.Profile:
                     return ApplyProfile(d, o, r, who);
+                case PatchTarget.Goalkeeper:
+                    return ApplyWish(d.Goalkeeper, o, r, who, 0.5f);
             }
             r.Skipped.Add(who + ": unknown target");
             return false;
@@ -409,6 +416,7 @@ namespace FS27.Core
             }
             Wishes(patch, from.Attributes, to.Attributes, PatchTarget.Attribute, "");
             Wishes(patch, from.ProfileLevels, to.ProfileLevels, PatchTarget.Profile, "");
+            Wishes(patch, from.Goalkeeper, to.Goalkeeper, PatchTarget.Goalkeeper, "");
             RoleWishes(patch, from.Roles, to.Roles);
             if (from.PrimaryZone != to.PrimaryZone)
                 patch.Operations.Add(string.IsNullOrEmpty(to.PrimaryZone)

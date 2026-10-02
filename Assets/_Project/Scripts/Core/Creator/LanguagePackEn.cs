@@ -175,6 +175,15 @@ namespace FS27.Core
             p.Word("cross|crosses|crossing|whip in|whips in|deliver crosses|delivers crosses|deliveries|delivery from wide|put the ball in the box|puts the ball in the box|float|floats|lofted balls|aerial balls|swing|swings|cut back|cut-back|cutbacks", "crossing", 1, verb: true);
             p.Word("support|supports|supporting|offer|offers|offering|show for the ball|shows for the ball|available|makes himself available|makes herself available|overlap*|underlap*|make runs|makes runs|arrives|arriving|joins in|joins the attack|get forward|gets forward|links|link", "supportRuns", 1, verb: true);
 
+            p.Word("reflexes|great reflexes|quick reflexes|cat like reflexes|cat-like reflexes|reflex saves|reactive|lightning reflexes|sharp reflexes", "gk.reflexes", 1, Gam);
+            p.Word("safe hands|secure hands|good hands|handling|strong hands|catches well|holds on to the ball|holds the ball|no rebounds|few rebounds|sticky hands", "gk.handling", 1, Gam);
+            p.Word("positioning|good positioning|well positioned|reads the game|reads the play|narrows the angle|narrows the angles|cuts the angles|angles|positional sense", "gk.positioning", 1, Gam);
+            p.Word("diving|dives|dives well|acrobatic|athletic saves|stretches|full stretch|spectacular saves|diving saves|lateral saves|flexible keeper", "gk.diving", 1, Gam);
+            p.Word("long kicks|long kicking|powerful kicks|long goal kicks|punts|big kick|big kicks|long distribution|booming kicks", "gk.kicking", 1, Gam);
+            p.Word("plays with his feet|plays with her feet|good with his feet|good with her feet|footwork|good distribution|builds from the back|plays out from the back|short distribution|accurate throws|starts attacks|starts the attack", "gk.distribution", 1, Gam);
+            p.Word("commands the box|commands the area|commands his area|commands her area|organises the defence|organizes the defense|organises the defense|vocal|vocal keeper|comes out to claim|claims crosses|dominant in the air|communicates|communication|presence in the box|aerial command|commanding", "gk.command", 1, Gam);
+            p.Word("recovers quickly|quick recovery|gets up quickly|bounces back|back on his feet|back on her feet|fast recovery|quick to recover", "gk.recovery", 1, Gam);
+
             p.Word("stop and go|stop-and-go|stops and starts|stops and restarts|stops then goes|stutter step|stutter-step|hesitation move|hesitation|pause and burst|stops the ball and goes", "behavior.stopAndGo", 1, implied: SemanticIntent.Add);
             p.Word("feint|feints|body feint|fake|fakes|shimmy|shimmies|step over|step overs|stepovers|step-over|dummy|dummies|drop of the shoulder|sells a dummy|sells the dummy|jink|bicycle|elastico|scissors|double touch", "behavior.bodyFeint", 1, implied: SemanticIntent.Add);
             p.Word("explosive exit|burst away|bursts away|bursts clear|accelerates away|speeds away|sprint away|sprints away|leaves them for dead|burst of pace after|jet away|bolts away", "behavior.explosiveExit", 1, implied: SemanticIntent.Add);

@@ -187,6 +187,16 @@ namespace FS27.Core
             p.Word("centra*|cruz*|centro|centros|cruce|cruces|pase al area|balones al area|colgar|cuelgue|cuelga|bombee|bombea|bombeo", "crossing", 1, verb: true);
             p.Word("apoyo|apoya*|ofrece*|ofrezca|se ofrezca|se ofrece|desmarque|desmarques|se desmarque|se desmarca|asoma*|asome|asoma|acompana*|acompanante|acompanar|llegada|llegadas|llega*|llegue", "supportRuns", 1, verb: true);
 
+            // ---------- goalkeeper capabilities ----------
+            p.Word("reflejos|buenos reflejos|reflejos de gato|reflejo|reactivo bajo palos|reaccion*", "gk.reflexes", 1, Gam);
+            p.Word("manos seguras|seguro con las manos|blocaje|bloca bien|blocar|atrapa bien|buen blocaje|pocos rebotes|sin rebotes|buenas manos|manos de mantequilla", "gk.handling", 1, Gam);
+            p.Word("colocacion|se coloca bien|buena colocacion|bien colocado|posicionamiento|lectura del juego|lee el juego|angulos|cierra los angulos|cierra angulos", "gk.positioning", 1, Gam);
+            p.Word("estirada|estiradas|se estira|se tira|se lanza|se tira bien|vuelo bajo palos|paradas dificiles|elasticidad|salto lateral|plasticidad|ataja*|atajad*", "gk.diving", 1, Gam);
+            p.Word("pegada de portero|saque largo|saques largos|golpeo largo|despeje largo|despeja largo|saca de puerta fuerte|buen saque de puerta|patada larga", "gk.kicking", 1, Gam);
+            p.Word("juego con los pies|buen juego con los pies|sale jugando|salida de balon|sale con el balon|distribuye bien|saca jugando|saque corto|saca de mano|saque preciso|construye desde atras|inicia el juego", "gk.distribution", 1, Gam);
+            p.Word("manda en el area|dominio del area|domina el area|comanda la defensa|organiza la defensa|lider|lider atras|sale a por los balones|sale bien|salidas|buenas salidas|voz de mando|comunica|comunicacion", "gk.command", 1, Gam);
+            p.Word("se recupera rapido|recuperacion|se levanta rapido|se incorpora rapido|rearme|se rearma|rapida recuperacion|repone rapido", "gk.recovery", 1, Gam);
+
             // ---------- signature behaviours ----------
             p.Word("frena y arranca|frenada y arranque|frena y sigue|se frena y|stop and go|parada y arranque|se detiene y arranca|parar y arrancar|frenazo", "behavior.stopAndGo", 1, implied: SemanticIntent.Add);
             p.Word("finta|fintas|amague|amagues|amagar|amaga|amaga*|enganos|enganar|engana|enganche|enganches|bicicleta|bicicletas|elastico|tijera|cambio de ritmo falso|paso doble", "behavior.bodyFeint", 1, implied: SemanticIntent.Add);

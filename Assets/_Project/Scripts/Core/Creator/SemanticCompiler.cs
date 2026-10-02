@@ -288,6 +288,7 @@ namespace FS27.Core
                     return true;
                 case EffectKind.Attribute: target = PatchTarget.Attribute; key = e.Attribute.ToString(); return true;
                 case EffectKind.Profile: target = PatchTarget.Profile; key = e.ProfileKind.ToString(); return true;
+                case EffectKind.Goalkeeper: target = PatchTarget.Goalkeeper; key = e.Capability.ToString(); return true;
                 case EffectKind.Behavior: target = PatchTarget.Behavior; return true;
                 case EffectKind.Choice: target = PatchTarget.Choice; return true;
                 case EffectKind.StyleAxis: target = PatchTarget.StyleAxis; return true;
@@ -394,6 +395,7 @@ namespace FS27.Core
                 case PatchTarget.DnaParam: return cur.Spec != null ? cur.Spec.Dna.Params.GetLevel(catalogs.Parameters, key) : NeutralLevel(t, key);
                 case PatchTarget.Attribute: return cur.Attributes.TryGetValue(key, out float a) ? a : 0.5f;
                 case PatchTarget.Profile: return cur.ProfileLevels.TryGetValue(key, out float p) ? p : 0.5f;
+                case PatchTarget.Goalkeeper: return cur.Goalkeeper.TryGetValue(key, out float g) ? g : 0.5f;
             }
             return 0.5f;
         }
@@ -717,6 +719,7 @@ namespace FS27.Core
                         if (!e.Primary) continue;
                         if (e.Kind == EffectKind.Attribute) exact.Add(PatchTarget.Attribute + "|" + e.Attribute);
                         else if (e.Kind == EffectKind.Profile) exact.Add(PatchTarget.Profile + "|" + e.ProfileKind);
+                        else if (e.Kind == EffectKind.Goalkeeper) exact.Add(PatchTarget.Goalkeeper + "|" + e.Capability);
                         else if (e.Kind == EffectKind.Param || e.Kind == EffectKind.Choice) prefixes.Add(e.Key);
                     }
             }
@@ -724,7 +727,7 @@ namespace FS27.Core
             public bool Covers(PatchOperation o)
             {
                 if (exact.Contains(o.Target + "|" + o.Key)) return true;
-                if (o.Target == PatchTarget.Attribute || o.Target == PatchTarget.Profile || o.Target == PatchTarget.StyleAxis) return false;
+                if (o.Target == PatchTarget.Attribute || o.Target == PatchTarget.Profile || o.Target == PatchTarget.StyleAxis || o.Target == PatchTarget.Goalkeeper) return false;
                 foreach (string p in prefixes)
                     if (o.Key == p || (p.EndsWith(".", StringComparison.Ordinal) && o.Key.StartsWith(p, StringComparison.Ordinal))) return true;
                 return false;

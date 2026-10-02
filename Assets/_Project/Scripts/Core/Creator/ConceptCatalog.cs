@@ -26,7 +26,9 @@ namespace FS27.Core
         Color,
         Behavior,
         StyleAxis,
-        Unsupported
+        Unsupported,
+        /// <summary>A goalkeeper capability wish (reflexes, handling...). Only meaningful for a goalkeeper.</summary>
+        Goalkeeper
     }
 
     /// <summary>
@@ -42,6 +44,7 @@ namespace FS27.Core
         public string Key = "";
         public PlayerAttributeId Attribute;
         public ProfileHintKind ProfileKind;
+        public GoalkeeperCapability Capability;
         public PitchZone Zone;
         public PlayerArchetype Role;
         public float Weight = 1f;
@@ -53,6 +56,7 @@ namespace FS27.Core
 
         public static ConceptEffect P(string param, float w = 1f, bool primary = true) { return new ConceptEffect { Kind = EffectKind.Param, Key = param, Weight = w, Primary = primary }; }
         public static ConceptEffect A(PlayerAttributeId a, float w = 1f, bool primary = true) { return new ConceptEffect { Kind = EffectKind.Attribute, Attribute = a, Key = a.ToString(), Weight = w, Primary = primary }; }
+        public static ConceptEffect GK(GoalkeeperCapability c, float w = 1f, bool primary = true) { return new ConceptEffect { Kind = EffectKind.Goalkeeper, Capability = c, Key = c.ToString(), Weight = w, Primary = primary }; }
         public static ConceptEffect Prof(ProfileHintKind k, float w = 1f, bool primary = true) { return new ConceptEffect { Kind = EffectKind.Profile, ProfileKind = k, Key = k.ToString(), Weight = w, Primary = primary }; }
         public static ConceptEffect C(string slot, string part, float w = 1f, bool primary = true) { return new ConceptEffect { Kind = EffectKind.Choice, Key = slot, Value = part, Weight = w, Primary = primary }; }
         public static ConceptEffect Beh(string id, float w = 1f, bool primary = true) { return new ConceptEffect { Kind = EffectKind.Behavior, Key = id, Weight = w, Primary = primary }; }
@@ -390,6 +394,16 @@ namespace FS27.Core
             Behavior(c, "behavior.press", DefaultBehaviors.AggressivePress);
             Behavior(c, "behavior.lateBoxArrival", DefaultBehaviors.LateBoxArrival);
 
+            // ---------------- goalkeeper capabilities (only a goalkeeper has them) ----------------
+            GkConcept(c, "gk.reflexes", GoalkeeperCapability.Reflexes);
+            GkConcept(c, "gk.handling", GoalkeeperCapability.Handling);
+            GkConcept(c, "gk.positioning", GoalkeeperCapability.Positioning);
+            GkConcept(c, "gk.diving", GoalkeeperCapability.Diving);
+            GkConcept(c, "gk.kicking", GoalkeeperCapability.Kicking);
+            GkConcept(c, "gk.distribution", GoalkeeperCapability.Distribution);
+            GkConcept(c, "gk.command", GoalkeeperCapability.Command);
+            GkConcept(c, "gk.recovery", GoalkeeperCapability.Recovery);
+
             // ---------------- roles ----------------
             Role(c, "role.winger", PlayerArchetype.Winger, PitchZone.Wing, "positioning.width", "dribbling.outsideCut");
             Role(c, "role.striker", PlayerArchetype.GoalHunter, PitchZone.Attack, "shooting.frequency", "positioning.boxPresence");
@@ -399,6 +413,12 @@ namespace FS27.Core
             Role(c, "role.goalkeeper", PlayerArchetype.Guardian, PitchZone.Goal);
             Role(c, "role.targetMan", PlayerArchetype.Target, PitchZone.Attack, "possession.holdUp", "positioning.boxPresence");
             return c;
+        }
+
+        private static void GkConcept(ConceptCatalog c, string id, GoalkeeperCapability capability)
+        {
+            ConceptDefinition d = Add(c, id, ConceptKind.Scalar, Gam, "Goalkeeper capability: " + capability + ".");
+            d.AddSense(Gam, Any, "", ConceptEffect.GK(capability));
         }
 
         private static void Behavior(ConceptCatalog c, string id, string behaviorId)

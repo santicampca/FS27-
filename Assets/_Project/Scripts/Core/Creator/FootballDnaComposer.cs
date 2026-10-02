@@ -95,6 +95,7 @@ namespace FS27.Core
             { PlayerArchetype.Anchor, T("positioning.defensive", 0.75f, "defending.interception", 0.7f) },
             { PlayerArchetype.Explosive, T("movement.accelerationTendency", 0.8f, "dribbling.changeOfPace", 0.7f) },
             { PlayerArchetype.Target, T("possession.holdUp", 0.8f, "positioning.boxPresence", 0.7f) },
+            { PlayerArchetype.Guardian, T("positioning.defensive", 0.85f, "decision.patience", 0.65f, "defending.retreat", 0.7f) },
             { PlayerArchetype.Builder, T("passing.short", 0.7f, "decision.patience", 0.65f) }
         };
 
