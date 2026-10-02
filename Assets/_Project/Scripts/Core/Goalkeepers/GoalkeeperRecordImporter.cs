@@ -141,8 +141,6 @@ namespace FS27.Core
         /// <summary>The football-DNA weight a signature action gets (it is listed as a full signature).</summary>
         public const float SignatureWeight = 1f;
 
-        private static readonly Dictionary<string, string> NationalityCodes = BuildNationalities();
-
         /// <param name="actionMap">Source action name (normalised) -> behaviour id (see <see cref="GoalkeeperBehaviors.DefaultActionMap"/>). May be null.</param>
         public static GoalkeeperImportResult Import(GoalkeeperDataRecord rec, SignatureBehaviorCatalog behaviors, IReadOnlyDictionary<string, string> actionMap = null,
                                                     GoalkeeperImportDefaults defaults = null)
@@ -274,7 +272,7 @@ namespace FS27.Core
 
             if (!string.IsNullOrEmpty(rec.Nationality))
             {
-                if (NationalityCodes.TryGetValue(Normalize(rec.Nationality), out string code)) p.NationalityCode = code;
+                if (FS27.Core.NationalityCodes.TryGet(rec.Nationality, out string code)) p.NationalityCode = code;
                 else Add(res, GoalkeeperImportCode.NationalityUnknown, false, "nationality", rec.Nationality, "No code for '" + rec.Nationality + "'; left empty.");
             }
             return p;
@@ -321,15 +319,6 @@ namespace FS27.Core
         }
 
         private static string Inv(int v) { return v.ToString(CultureInfo.InvariantCulture); }
-
-        private static Dictionary<string, string> BuildNationalities()
-        {
-            var d = new Dictionary<string, string>();
-            string[] pairs = { "Argentina|ARG", "Australia|AUS", "Alemania|GER", "Bélgica|BEL", "Brasil|BRA", "Camerún|CMR", "Eslovenia|SVN", "España|ESP", "Francia|FRA",
-                               "Inglaterra|ENG", "Italia|ITA", "Japón|JPN", "Rusia|RUS", "Suiza|SUI" };
-            foreach (string pair in pairs) { string[] kv = pair.Split('|'); d[Normalize(kv[0])] = kv[1]; }
-            return d;
-        }
 
         private static void Defaulted(GoalkeeperImportResult res, GoalkeeperImportCode code, string field, string value, string reason)
         {

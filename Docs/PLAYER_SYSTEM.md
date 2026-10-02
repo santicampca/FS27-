@@ -255,3 +255,8 @@ Pendientes:
 ## 23. Qué NO se implementó (a propósito)
 
 Pase, tiro, IA completa, portero completo (el Goalkeeper System V1 solo aporta datos, rating y perfil), UI, integración con Unity, modelos 3D, mercado, sobres, economía, monedas, tienda, online, cuentas, backend, jugadores/clubes/ligas reales y cualquier botón de sprint (el sprint sigue dependiendo solo de la intensidad del joystick).
+
+
+## Datos de autoría de jugadores de campo
+
+Los jugadores de campo se importan desde un archivo de autoría con `FieldPlayerRecordImporter` (contrato `FieldPlayerDataRecord`): ver [DEFENDERS_DATA_INTEGRATION.md](DEFENDERS_DATA_INTEGRATION.md). El Overall oficial sigue siendo el que calcula `PlayerRatingCalculator`; un "Target OVR" de autoría solo se compara y nunca se usa como autoridad.

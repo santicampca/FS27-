@@ -131,18 +131,7 @@ namespace FS27.Core
             return (int)Math.Round(metres * 100.0);
         }
 
-        /// <summary>ASCII id fragment from a name: accents removed, lower case, other characters become single dashes.</summary>
-        public static string Slug(string name)
-        {
-            var sb = new StringBuilder();
-            bool dash = false;
-            foreach (char ch in (name ?? "").Normalize(NormalizationForm.FormD))
-            {
-                if (CharUnicodeInfo.GetUnicodeCategory(ch) == UnicodeCategory.NonSpacingMark) continue;
-                if (ch < 128 && char.IsLetterOrDigit(ch)) { sb.Append(char.ToLowerInvariant(ch)); dash = false; }
-                else if (!dash && sb.Length > 0) { sb.Append('-'); dash = true; }
-            }
-            return sb.ToString().TrimEnd('-');
-        }
+        /// <summary>ASCII id fragment from a name (see <see cref="AuthoringIds.Slug"/>).</summary>
+        public static string Slug(string name) { return AuthoringIds.Slug(name); }
     }
 }

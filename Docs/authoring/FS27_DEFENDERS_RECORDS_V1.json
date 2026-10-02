@@ -1,0 +1,1371 @@
+{
+  "players": [
+    {
+      "ageAsWritten": 26,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 84,
+        "BallControl": 78,
+        "Defense": 81,
+        "Dribbling": 75,
+        "Finishing": 50,
+        "Passing": 76,
+        "Shooting": 52,
+        "Speed": 86,
+        "Stamina": 82,
+        "Strength": 73,
+        "Technique": 77
+      },
+      "bodyTypeLabel": "Lean / Agile",
+      "club": "Juventus",
+      "confidence": "High",
+      "creativity": 60,
+      "dateOfBirth": "2000-06-05",
+      "fullName": "Pierre Kazeye Rommel Kalulu Kyatengwa",
+      "gameplayFeel": "Rápido, reactivo y móvil. Ideal para líneas adelantadas.",
+      "heightCm": 182,
+      "identity": "Defensa central sumamente ágil, versátil y de perfil moderno, caracterizado por su gran velocidad de reacción en campo abierto, capacidad para corregir errores a la espalda y notable facilidad para adaptarse a la banda derecha.",
+      "name": "Pierre Kalulu",
+      "nationality": "France",
+      "naturalPosition": "CB",
+      "playerId": "cb-pierre-kalulu",
+      "polyvalenceNote": "CB (Primary), RB (Secondary). Funcionalidad alta para alternar eje y lateral. Versatility Level: High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 74,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 68,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "RB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 15,
+      "shortName": "Kalulu",
+      "signatureActions": [
+        "Recovery Run",
+        "Front-Foot Defending",
+        "Wide Cover"
+      ],
+      "strengths": [
+        "Velocidad, polivalencia CB/RB, anticipación a la espalda, agilidad en 1v1."
+      ],
+      "targetOvr": 76,
+      "versatilityLevel": "High",
+      "weakFootQuality": 72,
+      "weaknesses": [
+        "Menor corpulencia y juego aéreo ante delanteros tanque."
+      ],
+      "weightKg": 68
+    },
+    {
+      "ageAsWritten": 30,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 68,
+        "Agility": 64,
+        "BallControl": 75,
+        "Defense": 86,
+        "Dribbling": 65,
+        "Finishing": 52,
+        "Passing": 77,
+        "Shooting": 48,
+        "Speed": 72,
+        "Stamina": 79,
+        "Strength": 93,
+        "Technique": 73
+      },
+      "bodyTypeLabel": "Heavy / Robust Tank",
+      "club": "Bayern Munich",
+      "confidence": "High",
+      "creativity": 55,
+      "dateOfBirth": "1996-02-11",
+      "fullName": "Jonathan Glao Tah",
+      "gameplayFeel": "Muro físico impenetrable en el juego aéreo y área propia.",
+      "heightCm": 195,
+      "identity": "Defensa central imponente, de perfil físico dominante, fuerza colosal en el juego aéreo y gran jerarquía para mandar en el eje de la zaga en bloques consolidados.",
+      "name": "Jonathan Tah",
+      "nationality": "Germany",
+      "naturalPosition": "CB",
+      "playerId": "cb-jonathan-tah",
+      "polyvalenceNote": "CB puro. Sin recorrido real en bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 35,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Wall"
+        },
+        {
+          "affinity": 84,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 78,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 4,
+      "shortName": "Tah",
+      "signatureActions": [
+        "Aerial Dominance",
+        "Defensive Block",
+        "Physical Shielding"
+      ],
+      "strengths": [
+        "Dominio aéreo absoluto, fuerza física imponente, liderazgo en bloque bajo."
+      ],
+      "targetOvr": 81,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 68,
+      "weaknesses": [
+        "Agilidad y giro lentos ante atacantes móviles; sufre en grandes espacios."
+      ],
+      "weightKg": 94
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 76,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 87,
+        "BallControl": 84,
+        "Defense": 87,
+        "Dribbling": 80,
+        "Finishing": 60,
+        "Passing": 83,
+        "Shooting": 58,
+        "Speed": 85,
+        "Stamina": 85,
+        "Strength": 78,
+        "Technique": 85
+      },
+      "bodyTypeLabel": "Athletic / Compact",
+      "club": "FC Barcelona",
+      "confidence": "High",
+      "creativity": 72,
+      "dateOfBirth": "1998-11-12",
+      "fullName": "Jules Olivier Koundé",
+      "gameplayFeel": "Ágil, inteligente y técnico. Resuelve con solvencia tanto en el eje como en banda.",
+      "heightCm": 180,
+      "identity": "Defensor moderno de élite mundial con inteligencia táctica sobresaliente, anticipación, excelente lectura defensiva y polivalencia absoluta entre el eje central y el lateral derecho.",
+      "name": "Jules Koundé",
+      "nationality": "France",
+      "naturalPosition": "CB",
+      "playerId": "cb-jules-kounde",
+      "polyvalenceNote": "CB (Primary), RB (Secondary). Polivalencia real y contrastada al máximo nivel. Versatility Level: High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 58,
+      "roles": [
+        {
+          "affinity": 91,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 83,
+          "role": "Wall"
+        },
+        {
+          "affinity": 80,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "RB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 23,
+      "shortName": "Koundé",
+      "signatureActions": [
+        "Front-Foot Anticipation",
+        "Vertical Aerial Leap",
+        "Progressive Carry / Pass"
+      ],
+      "strengths": [
+        "Anticipación táctica, calidad técnica en salida, agilidad en 1v1, salto vertical."
+      ],
+      "targetOvr": 83,
+      "versatilityLevel": "High",
+      "weakFootQuality": 78,
+      "weaknesses": [
+        "Desventaja física en duelos aéreos frontales prolongados ante delanteros tanque."
+      ],
+      "weightKg": 70
+    },
+    {
+      "ageAsWritten": 23,
+      "aggression": 76,
+      "attributes": {
+        "Acceleration": 75,
+        "Agility": 72,
+        "BallControl": 76,
+        "Defense": 80,
+        "Dribbling": 71,
+        "Finishing": 55,
+        "Passing": 76,
+        "Shooting": 52,
+        "Speed": 78,
+        "Stamina": 82,
+        "Strength": 85,
+        "Technique": 74
+      },
+      "bodyTypeLabel": "Robust / Athletic",
+      "club": "Atlético de Madrid",
+      "confidence": "High",
+      "creativity": 62,
+      "dateOfBirth": "2003-06-20",
+      "fullName": "Marc Pubill Pagès",
+      "gameplayFeel": "Robusto, físico y muy fiable en el juego aéreo y coberturas de banda.",
+      "heightCm": 190,
+      "identity": "Defensor moderno de imponente planta física (1.90 m) que destaca por su polivalencia, capacidad atlética y recorrido para desenvolverse en el eje central o en el lateral derecho.",
+      "name": "Marc Pubill",
+      "nationality": "Spain",
+      "naturalPosition": "CB",
+      "playerId": "cb-marc-pubill",
+      "polyvalenceNote": "CB (Primary), RB (Secondary). Versatilidad real demostrada para alternar centro y banda. Versatility Level: High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 55,
+      "roles": [
+        {
+          "affinity": 84,
+          "role": "Wall"
+        },
+        {
+          "affinity": 82,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 75,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "RB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 18,
+      "shortName": "Pubill",
+      "signatureActions": [
+        "Aerial Clearances",
+        "Wide Cover",
+        "Physical Shielding"
+      ],
+      "strengths": [
+        "Envergadura y juego aéreo, polivalencia CB/RB, fuerza en duelos individuales."
+      ],
+      "targetOvr": 80,
+      "versatilityLevel": "High",
+      "weakFootQuality": 70,
+      "weaknesses": [
+        "Menor agilidad ante atacantes explosivos; tranco largo en espacios reducidos."
+      ],
+      "weightKg": 86
+    },
+    {
+      "ageAsWritten": 33,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 65,
+        "Agility": 63,
+        "BallControl": 75,
+        "Defense": 82,
+        "Dribbling": 68,
+        "Finishing": 55,
+        "Passing": 78,
+        "Shooting": 50,
+        "Speed": 67,
+        "Stamina": 78,
+        "Strength": 90,
+        "Technique": 74
+      },
+      "bodyTypeLabel": "Heavy / Robust Tank",
+      "club": "Manchester United",
+      "confidence": "High",
+      "creativity": 60,
+      "dateOfBirth": "1993-03-05",
+      "fullName": "Jacob Harry Maguire",
+      "gameplayFeel": "Muro aéreo clásico que protege el área chica con máxima autoridad.",
+      "heightCm": 194,
+      "identity": "Defensa central clásico de perfil físico imponente, altamente dominante en el juego aéreo y con gran jerarquía en bloques bajos o medios y buen desplazamiento en largo.",
+      "name": "Harry Maguire",
+      "nationality": "England",
+      "naturalPosition": "CB",
+      "playerId": "cb-harry-maguire",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 40,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Wall"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 75,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 5,
+      "shortName": "Maguire",
+      "signatureActions": [
+        "Aerial Dominance",
+        "Progressive Carry",
+        "Physical Blocking"
+      ],
+      "strengths": [
+        "Dominio absoluto del juego aéreo, fuerza física, desplazamiento largo preciso."
+      ],
+      "targetOvr": 79,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 70,
+      "weaknesses": [
+        "Velocidad punta reducida; sufre a campo abierto con líneas adelantadas."
+      ],
+      "weightKg": 90
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 85,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 78,
+        "BallControl": 81,
+        "Defense": 85,
+        "Dribbling": 79,
+        "Finishing": 56,
+        "Passing": 80,
+        "Shooting": 54,
+        "Speed": 87,
+        "Stamina": 83,
+        "Strength": 92,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic / Robust Power",
+      "club": "Bayern Munich",
+      "confidence": "High",
+      "creativity": 68,
+      "dateOfBirth": "1998-10-27",
+      "fullName": "Dayot Upamecano",
+      "gameplayFeel": "Rápido, físico y dominante. Perfecto para presiones altas y líneas adelantadas.",
+      "heightCm": 186,
+      "identity": "Defensa central de élite mundial dotado de condiciones físicas prodigiosas (explosividad y velocidad) y gran capacidad para defender hacia adelante en líneas muy adelantadas.",
+      "name": "Dayot Upamecano",
+      "nationality": "France",
+      "naturalPosition": "CB",
+      "playerId": "cb-dayot-upamecano",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 72,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 84,
+          "role": "Wall"
+        },
+        {
+          "affinity": 78,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 2,
+      "shortName": "Upamecano",
+      "signatureActions": [
+        "Aggressive Interception",
+        "Recovery Run Sprint",
+        "Progressive Power Carry"
+      ],
+      "strengths": [
+        "Velocidad y corrección a campo abierto, potencia física, conducciones progresivas."
+      ],
+      "targetOvr": 82,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 72,
+      "weaknesses": [
+        "Tendencia ocasional a arriesgar en exceso por su elevada agresividad."
+      ],
+      "weightKg": 90
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 70,
+        "Agility": 68,
+        "BallControl": 76,
+        "Defense": 83,
+        "Dribbling": 66,
+        "Finishing": 58,
+        "Passing": 78,
+        "Shooting": 52,
+        "Speed": 73,
+        "Stamina": 80,
+        "Strength": 91,
+        "Technique": 75
+      },
+      "bodyTypeLabel": "Robust / Heavy Power",
+      "club": "Manchester United",
+      "confidence": "High",
+      "creativity": 58,
+      "dateOfBirth": "1999-08-12",
+      "fullName": "Matthijs de Ligt",
+      "gameplayFeel": "Fuerte, jerárquico y muy seguro en la protección del área estática.",
+      "heightCm": 189,
+      "identity": "Defensa central de jerarquía internacional, imponente en el plano físico, con notable liderazgo, marcaje férreo y agresivo, y gran contundencia en los duelos individuales y aéreos.",
+      "name": "Matthijs de Ligt",
+      "nationality": "Netherlands",
+      "naturalPosition": "CB",
+      "playerId": "cb-matthijs-de-ligt",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 50,
+      "roles": [
+        {
+          "affinity": 85,
+          "role": "Wall"
+        },
+        {
+          "affinity": 80,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 76,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 4,
+      "shortName": "De Ligt",
+      "signatureActions": [
+        "Physical Block",
+        "Aerial Clearance",
+        "Aggressive Tackle"
+      ],
+      "strengths": [
+        "Fortaleza física en el cuerpo a cuerpo, dominio aéreo, liderazgo defensivo."
+      ],
+      "targetOvr": 78,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Agilidad y velocidad de giro limitadas ante delanteros muy móviles."
+      ],
+      "weightKg": 89
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 88,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 86,
+        "BallControl": 76,
+        "Defense": 81,
+        "Dribbling": 74,
+        "Finishing": 55,
+        "Passing": 75,
+        "Shooting": 54,
+        "Speed": 82,
+        "Stamina": 86,
+        "Strength": 74,
+        "Technique": 76
+      },
+      "bodyTypeLabel": "Lean / Agile Compact",
+      "club": "Real Sociedad",
+      "confidence": "High",
+      "creativity": 62,
+      "dateOfBirth": "2002-07-23",
+      "fullName": "Jon Mikel Aramburu Mejías",
+      "gameplayFeel": "Eléctrico, intenso y muy rápido en coberturas de banda.",
+      "heightCm": 176,
+      "identity": "Defensor dinámico, agresivo en la marca y dotado de una intensidad competitiva sobresaliente, capaz de rendir con gran eficacia tanto en el eje como cubriendo el carril derecho.",
+      "name": "Jon Aramburu",
+      "nationality": "Venezuela",
+      "naturalPosition": "CB",
+      "playerId": "cb-jon-aramburu",
+      "polyvalenceNote": "CB (Primary), RB (Secondary). Alta polivalencia real para actuar de lateral o central. Versatility Level: High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 85,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 76,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 65,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "RB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 2,
+      "shortName": "Aramburu",
+      "signatureActions": [
+        "Aggressive 1v1 Duel",
+        "Wide Recovery Run",
+        "High Pressing"
+      ],
+      "strengths": [
+        "Agilidad y velocidad en 1v1, despliegue incansable, agresividad defensiva."
+      ],
+      "targetOvr": 80,
+      "versatilityLevel": "High",
+      "weakFootQuality": 72,
+      "weaknesses": [
+        "Estatura baja (1.76 m) que limita el juego aéreo puro frente a tanques."
+      ],
+      "weightKg": 70
+    },
+    {
+      "ageAsWritten": 35,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 69,
+        "Agility": 67,
+        "BallControl": 78,
+        "Defense": 82,
+        "Dribbling": 70,
+        "Finishing": 54,
+        "Passing": 80,
+        "Shooting": 50,
+        "Speed": 74,
+        "Stamina": 76,
+        "Strength": 92,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Robust / Tank Elite",
+      "club": "Al-Hilal",
+      "confidence": "High",
+      "creativity": 65,
+      "dateOfBirth": "1991-06-20",
+      "fullName": "Kalidou Koulibaly",
+      "gameplayFeel": "Veterano imponente, seguro en la distribución y dominador aéreo.",
+      "heightCm": 186,
+      "identity": "Defensa central de físico imponente (1.96 m), autoridad en duelos individuales, contundencia aérea y gran capacidad técnica para iniciar la salida de balón con calma.",
+      "name": "Kalidou Koulibaly",
+      "nationality": "Senegal",
+      "naturalPosition": "CB",
+      "playerId": "cb-kalidou-koulibaly",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 45,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Wall"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 78,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 3,
+      "shortName": "Koulibaly",
+      "signatureActions": [
+        "Dominant Aerial Clearance",
+        "Calm Progressive Pass",
+        "Physical Shielding"
+      ],
+      "strengths": [
+        "Dominio aéreo absoluto, fuerza física colosal, calidad técnica en pase largo."
+      ],
+      "targetOvr": 76,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 72,
+      "weaknesses": [
+        "Velocidad punta reducida por la veteranía; agilidad limitada en giros cortos."
+      ],
+      "weightKg": 89
+    },
+    {
+      "ageAsWritten": 29,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 73,
+        "Agility": 72,
+        "BallControl": 80,
+        "Defense": 87,
+        "Dribbling": 68,
+        "Finishing": 55,
+        "Passing": 82,
+        "Shooting": 48,
+        "Speed": 75,
+        "Stamina": 84,
+        "Strength": 89,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic / Robust",
+      "club": "Manchester City",
+      "confidence": "High",
+      "creativity": 62,
+      "dateOfBirth": "1997-05-14",
+      "fullName": "Rúben dos Santos Gato Alves Dias",
+      "gameplayFeel": "El mariscal de campo defensivo; aporta orden absoluto y seguridad en salida.",
+      "heightCm": 187,
+      "identity": "Defensa central de jerarquía mundial reconocido por su liderazgo innato, inteligencia táctica y capacidad organizativa milimétrica en la línea defensiva.",
+      "name": "Rúben Dias",
+      "nationality": "Portugal",
+      "naturalPosition": "CB",
+      "playerId": "cb-ruben-dias",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 42,
+      "roles": [
+        {
+          "affinity": 91,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 86,
+          "role": "Wall"
+        },
+        {
+          "affinity": 82,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 3,
+      "shortName": "Rúben Dias",
+      "signatureActions": [
+        "Back-Line Command",
+        "Tactical Interception",
+        "Clean Progressive Pass"
+      ],
+      "strengths": [
+        "Liderazgo defensivo y organización, inteligencia táctica, precisión en salida."
+      ],
+      "targetOvr": 81,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 74,
+      "weaknesses": [
+        "Velocidad punta justa ante delanteros ultra-explosivos a campo abierto."
+      ],
+      "weightKg": 82
+    },
+    {
+      "ageAsWritten": 19,
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 82,
+        "BallControl": 87,
+        "Defense": 85,
+        "Dribbling": 78,
+        "Finishing": 50,
+        "Passing": 92,
+        "Shooting": 46,
+        "Speed": 76,
+        "Stamina": 82,
+        "Strength": 73,
+        "Technique": 90
+      },
+      "bodyTypeLabel": "Lean / Agile Technical",
+      "club": "FC Barcelona",
+      "confidence": "High",
+      "creativity": 88,
+      "dateOfBirth": "2007-01-22",
+      "fullName": "Pau Cubarsí Paredes",
+      "gameplayFeel": "Elegante, cerebral y un auténtico organizador desde la cueva.",
+      "heightCm": 184,
+      "identity": "Prodigio defensivo de perfil técnico extraordinario con visión de juego quirúrgica, precisión en el pase largo y una madurez táctica asombrosa basada en la anticipación limpia.",
+      "name": "Pau Cubarsí",
+      "nationality": "Spain",
+      "naturalPosition": "CB",
+      "playerId": "cb-pau-cubarsi",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 68,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 85,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 74,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 5,
+      "shortName": "Cubarsí",
+      "signatureActions": [
+        "Surgery Long Pass",
+        "Clean Anticipation",
+        "Calm Pressure Escape"
+      ],
+      "strengths": [
+        "Pase quirúrgico y visión de juego, anticipación inteligente, calidad técnica de élite."
+      ],
+      "targetOvr": 86,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Desventaja física en duelos aéreos frontales contra delanteros tanque."
+      ],
+      "weightKg": 78
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 95,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 80,
+        "BallControl": 80,
+        "Defense": 86,
+        "Dribbling": 74,
+        "Finishing": 58,
+        "Passing": 81,
+        "Shooting": 52,
+        "Speed": 82,
+        "Stamina": 85,
+        "Strength": 88,
+        "Technique": 82
+      },
+      "bodyTypeLabel": "Athletic / Agile Power",
+      "club": "Atlético de Madrid",
+      "confidence": "High",
+      "creativity": 68,
+      "dateOfBirth": "1998-04-27",
+      "fullName": "Cristian Gabriel Romero",
+      "gameplayFeel": "Intenso, eléctrico y sumamente intimidante en la presión hacia adelante.",
+      "heightCm": 185,
+      "identity": "Defensa central de carácter feroz, máxima agresividad en los duelos individuales y estilo de defensa extremadamente proactivo hacia adelante para cazar al rival.",
+      "name": "Cristian Romero",
+      "nationality": "Argentina",
+      "naturalPosition": "CB",
+      "playerId": "cb-cristian-romero",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 85,
+      "roles": [
+        {
+          "affinity": 91,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 83,
+          "role": "Wall"
+        },
+        {
+          "affinity": 75,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 21,
+      "shortName": "Cuti Romero",
+      "signatureActions": [
+        "Front-Foot Aggressive Tackle",
+        "Fierce 1v1 Shielding",
+        "Accurate Long Diagonal"
+      ],
+      "strengths": [
+        "Anticipación agresiva y robo en campo rival, intensidad competitiva, técnica de pase."
+      ],
+      "targetOvr": 82,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Tendencia a cometer faltas o tarjetas por exceso de agresividad y riesgo."
+      ],
+      "weightKg": 78
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 88,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 76,
+        "BallControl": 76,
+        "Defense": 84,
+        "Dribbling": 71,
+        "Finishing": 56,
+        "Passing": 75,
+        "Shooting": 52,
+        "Speed": 86,
+        "Stamina": 83,
+        "Strength": 90,
+        "Technique": 76
+      },
+      "bodyTypeLabel": "Athletic / Robust Power",
+      "club": "FC Barcelona",
+      "confidence": "High",
+      "creativity": 62,
+      "dateOfBirth": "1999-03-18",
+      "fullName": "Ronald Federico Araújo da Silva",
+      "gameplayFeel": "Imponente, rapidísimo y un muro infranqueable en el uno contra uno.",
+      "heightCm": 188,
+      "identity": "Defensa central de perfil físico sobresaliente, imponente en el uno contra uno y dotado de velocidad y potencia colosales para corregir espacios a la espalda y cubrir el lateral.",
+      "name": "Ronald Araújo",
+      "nationality": "Uruguay",
+      "naturalPosition": "CB",
+      "playerId": "cb-ronald-araujo",
+      "polyvalenceNote": "CB (Primary), RB (Secondary). Alta polivalencia real para partidos de máxima exigencia. Versatility Level: High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 89,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 86,
+          "role": "Wall"
+        },
+        {
+          "affinity": 78,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "RB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 4,
+      "shortName": "R. Araújo",
+      "signatureActions": [
+        "Open-Field Recovery Sprint",
+        "Dominant 1v1 Lockdown",
+        "Aerial Clearance"
+      ],
+      "strengths": [
+        "Velocidad de corrección a campo abierto, dominio en 1v1 y juego aéreo, polivalencia."
+      ],
+      "targetOvr": 80,
+      "versatilityLevel": "High",
+      "weakFootQuality": 70,
+      "weaknesses": [
+        "Menor finura técnica en la salida de balón comparado con pasadores puros."
+      ],
+      "weightKg": 79
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 82,
+        "BallControl": 85,
+        "Defense": 86,
+        "Dribbling": 78,
+        "Finishing": 60,
+        "Passing": 84,
+        "Shooting": 56,
+        "Speed": 78,
+        "Stamina": 84,
+        "Strength": 77,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Agile / Balanced Technical",
+      "club": "Paris Saint-Germain",
+      "confidence": "Elite High",
+      "creativity": 72,
+      "dateOfBirth": "1994-05-14",
+      "fullName": "Marcos Aoás Corrêa",
+      "gameplayFeel": "Comodín táctico de lujo con calidad de mediocampista organizador.",
+      "heightCm": 183,
+      "identity": "Defensa central de élite mundial con inteligencia táctica sobresaliente, elegancia en la lectura y polivalencia excepcional para actuar con solvencia como pivote (CDM) o lateral.",
+      "name": "Marquinhos",
+      "nationality": "Brazil",
+      "naturalPosition": "CB",
+      "playerId": "cb-marquinhos",
+      "polyvalenceNote": "CB (Primary), CDM (Secondary), RB (Tertiary). Versatilidad excepcional en múltiples demarcaciones. Versatility Level: Elite High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 45,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 86,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 78,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "CDM",
+        "RB"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 5,
+      "shortName": "Marquinhos",
+      "signatureActions": [
+        "Clean Positional Interception",
+        "Midfield Distribution (CDM)",
+        "Set-Piece Header"
+      ],
+      "strengths": [
+        "Polivalencia de élite (CB/CDM/RB), anticipación limpia, técnica depurada, liderazgo."
+      ],
+      "targetOvr": 84,
+      "versatilityLevel": "Elite High",
+      "weakFootQuality": 78,
+      "weaknesses": [
+        "Menor corpulencia en duelos físicos pesados de fuerza pura."
+      ],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 81,
+        "BallControl": 80,
+        "Defense": 82,
+        "Dribbling": 74,
+        "Finishing": 52,
+        "Passing": 79,
+        "Shooting": 50,
+        "Speed": 81,
+        "Stamina": 83,
+        "Strength": 78,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic / Agile Balanced",
+      "club": "Aston Villa",
+      "confidence": "High",
+      "creativity": 65,
+      "dateOfBirth": "1997-11-23",
+      "fullName": "Ezri Konsa Ngoyo",
+      "gameplayFeel": "Ordenado, inteligente y muy solvente tanto de central como en banda.",
+      "heightCm": 183,
+      "identity": "Defensa central fiable, inteligente y versátil, caracterizado por su excelente lectura, compostura con el balón y notable polivalencia para ocupar el lateral derecho.",
+      "name": "Ezri Konsa",
+      "nationality": "England",
+      "naturalPosition": "CB",
+      "playerId": "cb-ezri-konsa",
+      "polyvalenceNote": "CB (Primary), RB (Secondary). Polivalencia real contrastada en Premier League. Versatility Level: High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 45,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 80,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 75,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "RB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 4,
+      "shortName": "Konsa",
+      "signatureActions": [
+        "Clean 1v1 Interception",
+        "Wide Defensive Cover",
+        "Composed Pressure Escape"
+      ],
+      "strengths": [
+        "Polivalencia CB/RB, lectura y anticipación limpia, agilidad para corregir espacios."
+      ],
+      "targetOvr": 80,
+      "versatilityLevel": "High",
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Menor poderío en juego aéreo puro frente a delanteros muy altos."
+      ],
+      "weightKg": 78
+    },
+    {
+      "ageAsWritten": 35,
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 74,
+        "Agility": 75,
+        "BallControl": 86,
+        "Defense": 88,
+        "Dribbling": 72,
+        "Finishing": 62,
+        "Passing": 87,
+        "Shooting": 55,
+        "Speed": 79,
+        "Stamina": 82,
+        "Strength": 94,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Robust / Elite Tank",
+      "club": "Liverpool",
+      "confidence": "High",
+      "creativity": 75,
+      "dateOfBirth": "1991-07-08",
+      "fullName": "Virgil van Dijk",
+      "gameplayFeel": "Un seguro de vida absoluto; manda con calma milimétrica y autoridad soberana.",
+      "heightCm": 195,
+      "identity": "Uno de los centrales más dominantes, elegantes y respetados de la historia reciente, famoso por su imponente envergadura, lectura táctica, juego aéreo y maestría temporizando en el 1v1.",
+      "name": "Virgil van Dijk",
+      "nationality": "Netherlands",
+      "naturalPosition": "CB",
+      "playerId": "cb-virgil-van-dijk",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 35,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Wall"
+        },
+        {
+          "affinity": 92,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 4,
+      "shortName": "Van Dijk",
+      "signatureActions": [
+        "Masterclass 1v1 Containment",
+        "Surgical Long Diagonal",
+        "Dominant Aerial Clearance"
+      ],
+      "strengths": [
+        "Dominio aéreo y físico total, maestría en temporización 1v1, pase largo quirúrgico, liderazgo."
+      ],
+      "targetOvr": 83,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 76,
+      "weaknesses": [
+        "Menor aceleración explosiva ante extremos ultrarrápidos en grandes espacios aislados."
+      ],
+      "weightKg": 92
+    },
+    {
+      "ageAsWritten": 25,
+      "aggression": 76,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 89,
+        "BallControl": 88,
+        "Defense": 84,
+        "Dribbling": 82,
+        "Finishing": 58,
+        "Passing": 85,
+        "Shooting": 56,
+        "Speed": 84,
+        "Stamina": 85,
+        "Strength": 76,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Lean / Agile Technical",
+      "club": "Arsenal",
+      "confidence": "Elite High",
+      "creativity": 78,
+      "dateOfBirth": "2001-06-17",
+      "fullName": "Jurriën David Norman Timber",
+      "gameplayFeel": "Ultrarrápido, técnico y un comodín defensivo absoluto para cualquier sistema.",
+      "heightCm": 179,
+      "identity": "Defensor moderno de extraordinaria polivalencia, agilidad mental y calidad técnica sobresaliente, capaz de rendir con idéntica solvencia como central o en ambos laterales.",
+      "name": "Jurriën Timber",
+      "nationality": "Netherlands",
+      "naturalPosition": "CB",
+      "playerId": "cb-jurrien-timber",
+      "polyvalenceNote": "CB (Primary), RB (Secondary), LB (Tertiary). Polivalencia táctica total en defensa. Versatility Level: Elite High.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 62,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 84,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 72,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "RB",
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 12,
+      "shortName": "Timber",
+      "signatureActions": [
+        "Clean Anticipation Tackle",
+        "Inverted Play Progression",
+        "Wide Defensive Recovery"
+      ],
+      "strengths": [
+        "Polivalencia de élite (CB/RB/LB), agilidad y velocidad, calidad técnica superior en salida."
+      ],
+      "targetOvr": 82,
+      "versatilityLevel": "Elite High",
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Desventaja física en duelos aéreos frontales prolongados contra delanteros centro altos."
+      ],
+      "weightKg": 79
+    },
+    {
+      "ageAsWritten": 33,
+      "aggression": 96,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 76,
+        "BallControl": 77,
+        "Defense": 86,
+        "Dribbling": 76,
+        "Finishing": 60,
+        "Passing": 79,
+        "Shooting": 58,
+        "Speed": 88,
+        "Stamina": 86,
+        "Strength": 92,
+        "Technique": 80
+      },
+      "bodyTypeLabel": "Athletic / Power Elite",
+      "club": "Real Madrid",
+      "confidence": "High",
+      "creativity": 64,
+      "dateOfBirth": "1993-03-03",
+      "fullName": "Antonio Rüdiger",
+      "gameplayFeel": "Eléctrico, rapidísimo y de una agresividad brutal para apagar incendios.",
+      "heightCm": 190,
+      "identity": "Defensa central de carácter feroz, intensidad competitiva arrolladora y perfil físico imponente, famoso por su agresividad hacia adelante, velocidad punta y enorme energía intimidante.",
+      "name": "Antonio Rüdiger",
+      "nationality": "Germany",
+      "naturalPosition": "CB",
+      "playerId": "cb-antonio-rudiger",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 86,
+          "role": "Wall"
+        },
+        {
+          "affinity": 78,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 22,
+      "shortName": "Rüdiger",
+      "signatureActions": [
+        "Aggressive Forward Charge",
+        "Open-Field Recovery Sprint",
+        "Power Header Goal"
+      ],
+      "strengths": [
+        "Velocidad punta letal a campo abierto, fuerza física colosal, agresividad e intimidación."
+      ],
+      "targetOvr": 81,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Tendencia a abandonar la posición o arriesgar por exceso de agresividad."
+      ],
+      "weightKg": 85
+    },
+    {
+      "ageAsWritten": 25,
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 85,
+        "BallControl": 89,
+        "Defense": 90,
+        "Dribbling": 81,
+        "Finishing": 56,
+        "Passing": 88,
+        "Shooting": 50,
+        "Speed": 85,
+        "Stamina": 85,
+        "Strength": 88,
+        "Technique": 90
+      },
+      "bodyTypeLabel": "Athletic / Elegant Tall",
+      "club": "Arsenal",
+      "confidence": "High",
+      "creativity": 78,
+      "dateOfBirth": "2001-03-24",
+      "fullName": "William Alain André Saliba",
+      "gameplayFeel": "Infranqueable, sumamente elegante y un placer absoluto de controlar en salida.",
+      "heightCm": 192,
+      "identity": "Defensa central de élite mundial caracterizado por elegancia sublime, calma pasmosa bajo presión, lectura magistral del 1v1 y calidad técnica superior para la salida limpia.",
+      "name": "William Saliba",
+      "nationality": "France",
+      "naturalPosition": "CB",
+      "playerId": "cb-william-saliba",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 40,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 90,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 85,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 2,
+      "shortName": "Saliba",
+      "signatureActions": [
+        "Immaculate 1v1 Containment",
+        "Calm Pressure Escape",
+        "Open-Field Recovery Sprint"
+      ],
+      "strengths": [
+        "Elegancia y calma absoluta bajo presión, temporización 1v1 impecable, calidad técnica."
+      ],
+      "targetOvr": 87,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 78,
+      "weaknesses": [
+        "Menor agresividad física punzante en choques desmedidos (prefiere el timing)."
+      ],
+      "weightKg": 83
+    },
+    {
+      "ageAsWritten": 29,
+      "aggression": 90,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 77,
+        "BallControl": 77,
+        "Defense": 81,
+        "Dribbling": 74,
+        "Finishing": 56,
+        "Passing": 78,
+        "Shooting": 52,
+        "Speed": 86,
+        "Stamina": 84,
+        "Strength": 90,
+        "Technique": 79
+      },
+      "bodyTypeLabel": "Athletic / Power Tank",
+      "club": "Bayern Munich",
+      "confidence": "High",
+      "creativity": 62,
+      "dateOfBirth": "1996-11-15",
+      "fullName": "Kim Min-jae",
+      "gameplayFeel": "Rapidísimo, imponente y muy agresivo para sistemas de presión asfixiante.",
+      "heightCm": 190,
+      "identity": "Defensa central de perfil físico imponente y mentalidad ultracompetitiva, famoso por defender hacia adelante con extrema agresividad, gran velocidad y poderío aéreo abrumador.",
+      "name": "Kim Min-jae",
+      "nationality": "South Korea",
+      "naturalPosition": "CB",
+      "playerId": "cb-kim-min-jae",
+      "polyvalenceNote": "CB puro. Sin polivalencia hacia las bandas. Versatility Level: Low.",
+      "preferredFoot": "Right",
+      "primaryZone": "Defense",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 84,
+          "role": "Wall"
+        },
+        {
+          "affinity": 76,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 3,
+      "shortName": "Kim Min-jae",
+      "signatureActions": [
+        "Aggressive Forward Interception",
+        "Open-Field Recovery Sprint",
+        "Aerial Power Clearance"
+      ],
+      "strengths": [
+        "Velocidad punta y corrección a campo abierto, fuerza física y juego aéreo, presión alta."
+      ],
+      "targetOvr": 79,
+      "versatilityLevel": "Low",
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Tendencia ocasional a desajustar la línea por salir a presionar con exceso de ímpetu."
+      ],
+      "weightKg": 88
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}
