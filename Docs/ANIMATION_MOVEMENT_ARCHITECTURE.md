@@ -1,3 +1,5 @@
+> Ampliado por [ANIMATION_ARCHITECTURE](ANIMATION_ARCHITECTURE.md) (selección de animación y personalidad de movimiento); lo de aquí sigue siendo válido.
+
 # Animación y movimiento
 
 Esta fase **no cambia** el movimiento (`PlayerLocomotion`, `MovementTuning`, stamina) ni `PlayerIntent`. Fija cómo se conectará la animación.

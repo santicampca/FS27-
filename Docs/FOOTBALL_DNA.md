@@ -1,19 +1,47 @@
-# FootballDNA
+# FootballDNA 2.0
 
 Cómo **tiende a jugar** un jugador: tendencias, preferencias y comportamientos de firma. Complementa lo que ya existe y **no lo duplica**:
 
 | Pregunta | Dónde vive |
 |---|---|
-| ¿Qué *puede* hacer? | los 12 atributos (`PlayerDefinition`) |
+| ¿Qué *puede* hacer? | los 12 atributos (`PlayerDefinition`; el DNA **no** los guarda) |
 | ¿Cuánto arriesga, cuánto crea, cuánta agresividad? | `PlayerPlayingProfile` (`RiskPreference`, `Creativity`, `Aggression`) |
-| ¿Dónde y con qué rol juega? | `PlayerPlayingProfile` (zonas, 12 roles) |
+| ¿Dónde y con qué rol juega? | `PlayerPlayingProfile` (zonas, roles) |
 | ¿Cómo *suele* hacerlo (cuándo regatea, cuándo corta hacia dentro, cuándo ataca el área)? | **FootballDNA** |
 
-Tests por reflexión garantizan que el DNA no tiene campos enteros, atributos ni nombres como `risk` o `creativity`.
+Pruebas por reflexión garantizan que el DNA no tiene campos enteros, atributos ni nombres como `risk` o `creativity`.
 
-## 1. Datos
+## 1. Qué añade la versión 2 (`FS27.FootballDNA.v2`)
 
-`FootballDNA` = `schemaVersion` + parámetros 0–1 (neutro 0,5) + lista de comportamientos con peso. Solo se guarda lo que difiere del neutro. Un DNA típico son unos cientos de bytes.
+| Novedad | Detalle |
+|---|---|
+| **Entrada de comportamiento rica** (`BehaviorEntry`, ahora clase) | `Weight` (probabilidad/preferencia 0..1), `Priority` (0..10), `Risk`, `CooldownSeconds`, `Confidence`, `Origin` (manual/prompt/observed/derived), `Condition` |
+| **Condición propia** (`BehaviorCondition`) | situaciones que exige, que prohíbe, que prefiere y umbral mínimo de puntuación: "solo corta hacia dentro si no está presionado" |
+| **Valores por defecto en la definición** | cada `SignatureBehaviorDefinition` trae `DefaultPriority`, `DefaultRisk`, `DefaultCooldownSeconds`, `Forbids`, `Action`, `Style`; el jugador solo guarda lo que **cambia** (`Unset` = usar el de la definición) |
+| **Secuencias** (`BehaviorSequence`) | cadenas con ventana de tiempo (`stop_go_burst`, `feint_cut_inside`, `one_two_late_arrival` como plantillas del catálogo) |
+| **Confianza por tendencia** (`ParamConfidence`) | cuánto nos fiamos de un valor inferido de observaciones (ausente = 1) |
+| **Semillas** en `CharacterSpecification` v2 | `GenerationSeed`, `AppearanceSeed`, `BehaviorSeed` |
+
+Todo lo nuevo es **opcional y no se serializa si es el valor por defecto**: un comportamiento simple sigue siendo `{"id":"StopAndGo","weight":0.8}`.
+
+## 2. Migración
+
+`CharacterSpecification` pasa de `v1` a `v2`. Los ficheros `v1` **siguen cargando**: el `SchemaMigrator` trae registrado el paso v1→v2 (sellar la versión de la especificación y del DNA; todo lo nuevo es opcional, no hay nada que reescribir). Un esquema **más nuevo** que el que entiende el motor se rechaza, nunca se adivina. Pruebas: carga de un v1, ida y vuelta exacta de un v2 rico, v2 sin campos extra, copia de runtime sin autoría.
+
+## 3. Validación (`FootballDNAValidator`)
+Comportamiento desconocido o duplicado; peso, prioridad, riesgo, enfriamiento, confianza y umbral dentro de rango; condición **no contradictoria** (una situación no puede ser requerida y prohibida); secuencias de 2 a 6 pasos con comportamientos existentes y ventana/peso válidos; confianza solo sobre parámetros de DNA. Los comportamientos aún no ejecutables dan un aviso, no un error.
+
+## 4. Quién lo produce y quién lo usa
+- **Produce:** el compilador semántico (por prompt), `FootballDnaComposer` (roles + perfil + atributos + observaciones + preferencias manuales), `CharacterVariationGenerator` (pequeñas variaciones con semilla).
+- **Usa:** `BehaviorDecisionEngine` (ver [BEHAVIOR_ENGINE](BEHAVIOR_ENGINE.md)) y `MovementPersonality` (solo presentación). **Nada del DNA toca la simulación de movimiento** ni la dificultad.
+
+### Composición (`FootballDnaComposer`), determinista y explicable
+1. Los **atributos empujan** (un jugador rápido no es por eso uno que regatea): como mucho ±0,25 sobre el 0,5.
+2. El **perfil y los roles tiran** hacia lo que hace ese tipo de jugador (extremo: ancho, recorte por fuera, centros; guardián: posicionamiento defensivo...).
+3. Las **observaciones tiran** hacia lo visto, en proporción a la confianza (máx. 0,85).
+4. Las **preferencias manuales** fijan valores exactos y ganan siempre.
+5. Se **derivan** hasta 4 comportamientos de firma si el impulso es ≥ 0,72 y los atributos los sostienen (≥ 70 % de lo que exigen); se añaden las secuencias cuyos pasos están todos presentes.
+Con una `VariationSeed` se añade una variación reproducible (±0,04) solo a lo *inferido* (no a lo observado ni a lo manual). La explicación paso a paso de cada valor queda en `ComposerResult.Explanation`.
 
 ## 2. Parámetros (52)
 
@@ -74,50 +102,5 @@ Tests por reflexión garantizan que el DNA no tiene campos enteros, atributos ni
 
 Añadir una tendencia nueva es **una fila** en `DefaultParameters`: funciona de inmediato en JSON, validación y modificación incremental.
 
-## 3. Comportamientos de firma (15)
-
-`SignatureBehaviorDefinition` es **datos**, no código: no hay un `if` por comportamiento ni por jugador.
-
-| Id | Categoría | Se necesita | Lo impulsa |
-|---|---|---|---|
-| `StopAndGo` | Dribbling | balón + defensor delante | `stopAndGo`, `takeOn`, `decelerationTendency` |
-| `BodyFeint` | Dribbling | balón + defensor delante | `bodyFeint`, `takeOn`, `directionChange` |
-| `ExplosiveExit` | Dribbling | balón + espacio delante | `changeOfPace`, `accelerationTendency` |
-| `InsideCut` | Dribbling | balón + banda | `insideCut`, `halfSpace`, `directionChange` |
-| `OutsideCut` | Dribbling | balón + banda | `outsideCut`, `width`, `changeOfPace` |
-| `DelayedRun` | Movement | compañero con balón | `delayedRuns`, `runTiming` |
-| `BlindSideRun` | Movement | compañero con balón | `blindSideRuns`, `spaceSeeking` |
-| `LateBoxArrival` | Positioning | compañero con balón | `delayedRuns`, `boxPresence`, `attackingRuns` |
-| `HoldUpPlay` | Possession | balón + de espaldas | `holdUp`, `shielding` |
-| `FirstTimeFinish` | Shooting | recibiendo + rango de tiro | `firstTime`, `insideBox`, `frequency` |
-| `LongRangeShot` | Shooting | balón + larga distancia | `longShot`, `power`, `frequency` |
-| `CreativePass` | Passing | balón | `progressive`, `risky`, `directness` |
-| `RiskyThroughBall` | Passing | balón | `throughBall`, `risky` |
-| `OneTouchCombination` | Passing | recibiendo | `oneTouch`, `short` |
-| `AggressivePress` | Defending | el rival tiene el balón | `pressing`, `defending.aggression`, `movement.aggression` |
-
-Cada definición también lleva atributos "suficientes" (`Needs`), situaciones preferidas (`Prefers`) y etiquetas de animación que haría falta (`AnimationTags`).
-
-**Estado de todos: `Planned`.** Nada puede ejecutarse todavía; el validador lo avisa (aviso, no error). Cuando un comportamiento pase a `Implemented`, el aviso desaparece sin más cambios.
-
-## 4. BehaviorResolver: DNA + atributos + contexto → candidatos
-
-Puro y determinista. Para cada comportamiento cuyo contexto obligatorio se cumple:
-
-```
-impulso    = media ponderada de sus parámetros del DNA
-fuerte     = peso del comportamiento si el jugador lo declara como firma (0 si no)
-preferido  = fracción de sus situaciones preferidas presentes
-base       = 0,45 × impulso + 0,40 × fuerte + 0,15 × preferido
-encaje     = media de min(1, atributo / "suficiente")
-puntuación = base × (0,5 + 0,5 × encaje)               → 0..1, ordenada de mayor a menor
-```
-
-- El **DNA decide qué se quiere**; los **atributos, cómo de bien se puede hacer**; el **contexto, si es posible**.
-- Fuera de contexto, el comportamiento ni aparece.
-- No conoce nombres ni ids de jugador (un test escanea las fuentes).
-- Convertir un candidato en `PlayerIntent` y ejecutarlo es trabajo de la **IA futura**; la dificultad decidirá con qué calidad. **No está implementado.**
-
-## 5. Referencias de jugadores reales (futuro, solo autoría)
-
-Una `ReferenceProfile` (descripción de la fuente, notas de análisis, procedencia, confianza, fecha) puede acompañar a un personaje **durante la creación**. No se copia identidad ni apariencia, no hay vídeos ni páginas y **no entra en el build** (`ForRuntime()`). El resultado es solo el DNA estructurado. Aún no existe ninguna herramienta de análisis: el contrato está listo.
+## 5. Estado honesto
+Los 15 comportamientos son datos con estado `Planned`: ninguno se ejecuta en partido todavía. Los pesos de composición, umbrales y valores de prioridad/riesgo/enfriamiento son **valores de partida** a calibrar con juego real.

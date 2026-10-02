@@ -22,13 +22,13 @@ personaje en pantalla
 | `ResolvedCharacter` (piezas por ranura, escalas con **todos** los valores finales, colores, avisos) | ✅ |
 | `CatalogAppearanceResolver` (valida ids y ajuste al modelo base; las piezas inválidas quedan vacías con aviso, no hay excepción) | ✅ |
 | `ICharacterRigResolver` → `BaseModelDefinition.RigId` | ✅ (un rig común: `fs27_humanoid_v1`) |
-| `IAnimationResolver`, `AnimationSetReference` | contrato (sin implementación) |
-| `ICharacterGenerator` (geometría procedural por ranura) | contrato (sin implementación) |
-| `ICharacterAssembler<TRuntime>` | contrato (sin implementación) |
+| `IAnimationResolver`, `AnimationSetReference` | ✅ implementado en Core: `CatalogAnimationResolver` (**selecciona** perfiles; no existe ningún clip) |
+| `ICharacterGenerator` (geometría procedural por ranura) | contrato; la generación completa la hace `ProceduralCharacterGenerator` (maniquí) |
+| `ICharacterAssembler<TRuntime>` | ✅ `ProceduralCharacterGenerator : ICharacterAssembler<ProceduralCharacterMesh>` en Core; `UnityCharacterAssembler` (GameObject) **sin verificar en Unity** |
 | `BodyCompatibility`, `AnimationCompatibility`, `RetargetingProfile` | datos (sin uso aún) |
 | `MovementSignature` + `MovementSignatureResolver` | ✅ |
 
-Un test verifica que **no existe ninguna implementación** de generador, de resolutor de animación ni de ensamblador: nada finge generar geometría.
+> **Actualización (fase Intelligence):** el test que decía "no existe ninguna implementación" se cambió **a propósito**: ahora solo pueden existir `ProceduralCharacterGenerator` (maniquí real, estático, sin rig) y `CatalogAnimationResolver` (selección, sin clips), ambos en C# puro; Core no puede referenciar UnityEngine. Ver [CHARACTER_GENERATION](CHARACTER_GENERATION.md) y [ANIMATION_ARCHITECTURE](ANIMATION_ARCHITECTURE.md).
 
 ## 3. MovementSignature
 

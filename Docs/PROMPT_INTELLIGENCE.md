@@ -1,3 +1,5 @@
+> ⚠️ **Documento histórico (primer 50 %).** El intérprete de este documento (`DeterministicPromptInterpreter`, basado en léxico) **sigue existiendo y probándose**, pero el camino principal ahora es la capa semántica: ver [SEMANTIC_PROMPT_ENGINE](SEMANTIC_PROMPT_ENGINE.md).
+
 # Prompt Intelligence
 
 Convierte lenguaje natural en **datos estructurados**. Nunca en código y nunca directamente en un objeto 3D:

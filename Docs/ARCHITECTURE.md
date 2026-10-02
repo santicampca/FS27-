@@ -8,7 +8,7 @@ Dificultad e infraestructura de IA (sin IA todavía): [DIFFICULTY_SYSTEM.md](DIF
 **FS27 es 6v6: cada equipo tiene 1 portero + 5 jugadores de campo (6 en total).** Los equipos referencian jugadores por id (`TeamDefinition.PlayerIds` → `PlayerLibrary`).
 Sistema de jugadores V2 (identidad, 12 atributos, polivalencia, overall, carta): [PLAYER_SYSTEM.md](PLAYER_SYSTEM.md).
 Sistema de portero V1 (perfil con 8 capacidades, rating propio, estilos; solo datos, sin IA): [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md).
-Creator Engine (apariencia + FootballDNA + prompts → datos; **primer 50 %**, sin 3D ni animación todavía): [CREATOR_ENGINE.md](CREATOR_ENGINE.md).
+Creator Engine (prompts semánticos → parches → especificación + FootballDNA 2.0 + comportamientos + plan de ensamblaje, malla procedural y exportación; **sin arte final, sin clips, sin verificar en Unity**): [CREATOR_ENGINE.md](CREATOR_ENGINE.md).
 
 ## Capas (assembly definitions)
 

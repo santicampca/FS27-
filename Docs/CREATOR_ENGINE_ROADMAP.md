@@ -1,3 +1,5 @@
+> ⚠️ **Documento histórico (hoja de ruta del primer 50 %).** La hoja de ruta vigente es [CREATOR_ROADMAP](CREATOR_ROADMAP.md).
+
 # Creator Engine: hoja de ruta del 50 % restante
 
 Sin fechas ni horas: solo orden y dependencias. Cada fase necesita **Unity y/o assets** salvo donde se indica. Lo hecho (datos, validación, intérprete determinista, DNA, contratos) es la base de todas.

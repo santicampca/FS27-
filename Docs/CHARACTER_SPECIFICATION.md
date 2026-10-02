@@ -126,9 +126,11 @@ Un personaje recién creado ocupa 402 bytes; con los datos de autoría, 1.036. U
 
 ## 6. Versionado y migración
 
-- `FS27.CharacterSpecification.v1`, `FS27.FootballDNA.v1`.
+> **Actualización (fase Intelligence):** el esquema vigente es `FS27.CharacterSpecification.v2` / `FS27.FootballDNA.v2` (comportamientos con prioridad/riesgo/enfriamiento/condición, secuencias, confianza por tendencia y tres semillas). Los ficheros v1 **siguen cargando**: el migrador trae registrado el paso v1→v2. El ejemplo JSON de arriba es de v1. Ver [FOOTBALL_DNA](FOOTBALL_DNA.md) y [RUNTIME_PIPELINE](RUNTIME_PIPELINE.md). El catálogo tiene ahora 51 parámetros de apariencia (en 12 grupos).
+
+- Historia: `FS27.CharacterSpecification.v1`, `FS27.FootballDNA.v1`.
 - `SchemaMigrator`: pasos registrados `vN → vN+1` sobre el JSON bruto, encadenados. Un archivo viejo sin migración registrada se **rechaza con un mensaje claro**; uno de una versión **más nueva** que la que conoce el build también (`SchemaVersionNewer`): nunca se adivina.
-- Hoy solo existe v1: el mecanismo está probado con un paso inventado en un test, no con un formato antiguo real.
+- Ahora existe un paso real v1→v2 (probado con un fichero v1 verdadero) además del paso inventado de los tests del mecanismo.
 
 ## 7. Validación
 

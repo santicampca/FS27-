@@ -1,3 +1,5 @@
+> Ampliado por [AUTHORING_PIPELINE](AUTHORING_PIPELINE.md) y [RUNTIME_PIPELINE](RUNTIME_PIPELINE.md); esta tabla sigue siendo válida.
+
 # Authoring vs. Runtime
 
 El juego **no usa internet ni IA durante la partida**. Todo lo que necesita Internet o un modelo ocurre al **crear** contenido; el juego solo recibe datos ya compactos.
