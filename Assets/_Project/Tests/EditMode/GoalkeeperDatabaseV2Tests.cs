@@ -61,7 +61,7 @@ namespace FS27.Core.Tests
         public void TheFile_HasExactlyTheTwentyGoalkeepers_InOrder_AndReadsWithoutProblems()
         {
             CollectionAssert.IsEmpty(parsed.Problems, string.Join("\n", parsed.Problems));
-            CollectionAssert.AreEqual(ExpectedNames, parsed.Records.Select(r => r.DisplayName).ToArray());
+            CollectionAssert.AreEqual(ExpectedNames, parsed.Records.Select(r => r.Name).ToArray());
         }
 
         // TEST 8
@@ -70,7 +70,7 @@ namespace FS27.Core.Tests
         {
             string[] names = GoalkeeperInfo.Capabilities.Select(c => c.ToString()).OrderBy(n => n).ToArray();
             foreach (GoalkeeperDataRecord r in parsed.Records)
-                CollectionAssert.AreEqual(names, r.Capabilities.Keys.OrderBy(n => n).ToArray(), r.DisplayName);
+                CollectionAssert.AreEqual(names, r.Capabilities.Keys.OrderBy(n => n).ToArray(), r.Name);
             foreach (GoalkeeperImportResult res in batch.Results) Assert.AreEqual(8, GoalkeeperInfo.Capabilities.Length);
         }
 
@@ -79,7 +79,7 @@ namespace FS27.Core.Tests
         public void EveryAttributeOfEveryKeeper_IsBetweenOneAnd99()
         {
             foreach (GoalkeeperDataRecord r in parsed.Records)
-                foreach (KeyValuePair<string, int> kv in r.Capabilities) Assert.That(kv.Value, Is.InRange(1, 99), r.DisplayName + " " + kv.Key);
+                foreach (KeyValuePair<string, int> kv in r.Capabilities) Assert.That(kv.Value, Is.InRange(1, 99), r.Name + " " + kv.Key);
         }
 
         // TEST 9
@@ -88,7 +88,7 @@ namespace FS27.Core.Tests
         {
             foreach (GoalkeeperImportResult res in batch.Results)
             {
-                Assert.IsFalse(res.Has(GoalkeeperImportCode.StyleInvalid));
+                Assert.IsFalse(res.Has(GoalkeeperImportCode.PrimaryProfileInvalid));
                 Assert.IsTrue(Enum.IsDefined(typeof(GoalkeeperStyle), res.Profile.PrimaryStyle));
             }
             Assert.AreEqual(GoalkeeperStyle.Distributor, ResultOf("Marc-André ter Stegen").Profile.PrimaryStyle);
@@ -104,10 +104,10 @@ namespace FS27.Core.Tests
                 Assert.IsTrue(res.Profile.SecondaryStyles.All(s => Enum.IsDefined(typeof(GoalkeeperStyle), s)));
                 Assert.IsFalse(res.Profile.SecondaryStyles.Contains(res.Profile.PrimaryStyle));
             }
-            var dropped = batch.Results.Where(r => r.DroppedStyles.Count > 0).ToDictionary(r => r.Profile.PlayerId, r => r.DroppedStyles.ToArray());
+            var dropped = batch.Results.Where(r => r.NonOfficialProfiles.Count > 0).ToDictionary(r => r.Profile.PlayerId, r => r.NonOfficialProfiles.ToArray());
             CollectionAssert.AreEquivalent(new[] { "gk-zion-suzuki", "gk-david-de-gea" }, dropped.Keys);
             foreach (string[] labels in dropped.Values) CollectionAssert.AreEqual(new[] { "Diving" }, labels, "'Diving' is a trait, not a profile");
-            foreach (GoalkeeperImportResult res in batch.Results.Where(r => r.DroppedStyles.Count > 0)) Assert.IsTrue(res.Has(GoalkeeperImportCode.StyleDropped));
+            foreach (GoalkeeperImportResult res in batch.Results.Where(r => r.NonOfficialProfiles.Count > 0)) Assert.IsTrue(res.Has(GoalkeeperImportCode.ProfileNotOfficial));
         }
 
         // TEST 11
@@ -179,9 +179,9 @@ namespace FS27.Core.Tests
             Assert.AreEqual(PreferredFoot.Right, maignan.PreferredFoot);
             Assert.AreEqual("", maignan.TeamId, "a keeper is not in a team until a roster lists them");
             Assert.AreEqual(1, batch.Library.All.Count(p => p.PreferredFoot == PreferredFoot.Left), "one keeper is written as left-footed");
-            Assert.AreEqual(1, batch.Results.Count(r => r.Has(GoalkeeperImportCode.FootUnclear)), "the one keeper written as 'left / right' is reported, not guessed");
-            Assert.IsTrue(batch.Results.All(r => r.Has(GoalkeeperImportCode.GeneralDefaulted) && !r.GeneralAttributesAuthored), "the file has no general attributes: said, not hidden");
-            Assert.IsTrue(batch.Results.All(r => r.Has(GoalkeeperImportCode.NumberDefaulted)));
+            Assert.AreEqual(1, batch.Results.Count(r => r.Has(GoalkeeperImportCode.PreferredFootAmbiguous)), "the one keeper written as 'left / right' is reported, not guessed");
+            Assert.IsTrue(batch.Results.All(r => r.Has(GoalkeeperImportCode.MissingGeneralAttributeDefaulted)), "the file has no general attributes: said, not hidden");
+            Assert.IsTrue(batch.Results.All(r => r.Has(GoalkeeperImportCode.ShirtNumberDefaulted)));
         }
 
         // TEST 13 + the honest report of the discrepancies
@@ -193,9 +193,9 @@ namespace FS27.Core.Tests
                 int sum = rec.Capabilities.Values.Sum();
                 int expected = (int)Math.Floor(sum / 8.0 + 0.5);
                 GoalkeeperImportResult res = batch.Results[parsed.Records.IndexOf(rec)];
-                Assert.AreEqual(expected, res.ComputedGrl, rec.DisplayName);
-                Assert.AreEqual(expected, GoalkeeperRatingCalculator.Calculate(res.Profile), rec.DisplayName);
-                Assert.AreEqual(expected, new PlayerCardBuilder(PlayerRatingCalculator.CreateDefault(), null, null, null, batch.Library).Build(res.Player).GoalkeeperRating, rec.DisplayName);
+                Assert.AreEqual(expected, res.CalculatedGrl, rec.Name);
+                Assert.AreEqual(expected, GoalkeeperRatingCalculator.Calculate(res.Profile), rec.Name);
+                Assert.AreEqual(expected, new PlayerCardBuilder(PlayerRatingCalculator.CreateDefault(), null, null, null, batch.Library).Build(res.Player).GoalkeeperRating, rec.Name);
             }
         }
 
@@ -205,36 +205,88 @@ namespace FS27.Core.Tests
             foreach (GoalkeeperDataRecord rec in parsed.Records)
             {
                 GoalkeeperImportResult res = batch.Results[parsed.Records.IndexOf(rec)];
-                if (KnownRatingDiscrepancies.TryGetValue(rec.DisplayName, out KeyValuePair<int, int> d))
+                if (KnownRatingDiscrepancies.TryGetValue(rec.Name, out KeyValuePair<int, int> d))
                 {
-                    Assert.IsTrue(res.Has(GoalkeeperImportCode.GrlDiffers), rec.DisplayName + " must be reported");
-                    Assert.AreEqual(d.Key, rec.ReportedGrl, rec.DisplayName);
-                    Assert.AreEqual(d.Value, res.ComputedGrl, rec.DisplayName);
+                    Assert.IsTrue(res.Has(GoalkeeperImportCode.ExternalGrlDiffers), rec.Name + " must be reported");
+                    Assert.AreEqual(d.Key, rec.ExternalGrl, rec.Name);
+                    Assert.AreEqual(d.Value, res.CalculatedGrl, rec.Name);
                 }
                 else
                 {
-                    Assert.IsFalse(res.Has(GoalkeeperImportCode.GrlDiffers), rec.DisplayName);
-                    Assert.AreEqual(rec.ReportedGrl, res.ComputedGrl, rec.DisplayName);
+                    Assert.IsFalse(res.Has(GoalkeeperImportCode.ExternalGrlDiffers), rec.Name);
+                    Assert.AreEqual(rec.ExternalGrl, res.CalculatedGrl, rec.Name);
                 }
             }
-            Assert.AreEqual(10, batch.Results.Count(r => r.Has(GoalkeeperImportCode.GrlDiffers)));
+            Assert.AreEqual(10, batch.Results.Count(r => r.Has(GoalkeeperImportCode.ExternalGrlDiffers)));
         }
 
         [Test]
         public void TheAuthoredRating_IsNeverStoredOrUsed_ChangingItChangesNothingButTheWarning()
         {
             GoalkeeperDataRecord rec = parsed.Records[0];
-            int reported = rec.ReportedGrl;
+            int? reported = rec.ExternalGrl;
             try
             {
-                rec.ReportedGrl = 99;
+                rec.ExternalGrl = 99;
                 GoalkeeperImportResult a = GoalkeeperRecordImporter.Import(rec, behaviors, GoalkeeperBehaviors.DefaultActionMap());
-                rec.ReportedGrl = 1;
+                rec.ExternalGrl = 1;
                 GoalkeeperImportResult b = GoalkeeperRecordImporter.Import(rec, behaviors, GoalkeeperBehaviors.DefaultActionMap());
-                Assert.AreEqual(a.ComputedGrl, b.ComputedGrl);
-                Assert.AreEqual(82, a.ComputedGrl);
+                Assert.AreEqual(a.CalculatedGrl, b.CalculatedGrl);
+                Assert.AreEqual(82, a.CalculatedGrl);
             }
-            finally { rec.ReportedGrl = reported; }
+            finally { rec.ExternalGrl = reported; }
+        }
+
+        [Test]
+        public void TheRealWarningInventory_OfTheTwentyKeepers_IsPinned_AndThereAreNoErrors()
+        {
+            Assert.AreEqual(0, batch.Results.Sum(r => r.Issues.Count(i => i.IsError)), "no error in the real base");
+            var expected = new Dictionary<GoalkeeperImportCode, int>
+            {
+                { GoalkeeperImportCode.ExternalGrlDiffers, 10 }, { GoalkeeperImportCode.ProfileNotOfficial, 2 }, { GoalkeeperImportCode.ActionUnmapped, 4 },
+                { GoalkeeperImportCode.PreferredFootAmbiguous, 1 }, { GoalkeeperImportCode.MissingGeneralAttributeDefaulted, 12 * 20 }, { GoalkeeperImportCode.ShirtNumberDefaulted, 20 },
+                { GoalkeeperImportCode.AgeDefaulted, 20 }, { GoalkeeperImportCode.WeightDefaulted, 20 }, { GoalkeeperImportCode.WeakFootDefaulted, 20 }
+            };
+            foreach (GoalkeeperImportCode code in Enum.GetValues(typeof(GoalkeeperImportCode)).Cast<GoalkeeperImportCode>())
+                Assert.AreEqual(expected.TryGetValue(code, out int n) ? n : 0, batch.Results.Sum(r => r.Count(code)), code.ToString());
+            CollectionAssert.IsEmpty(batch.ReaderProblems);
+        }
+
+        [Test]
+        public void ImportingTheFileText_GivesTheSameBatch_AndCarriesTheReaderProblems()
+        {
+            string text = File.ReadAllText(Path.Combine(repoRoot, "Docs", "authoring", "FS27_GOALKEEPER_DATABASE_V2.md"));
+            GoalkeeperLibraryBuilder.Batch direct = GoalkeeperLibraryBuilder.ImportMarkdown(text, behaviors, GoalkeeperBehaviors.DefaultActionMap());
+            Assert.AreEqual(20, direct.Added);
+            CollectionAssert.AreEqual(batch.Results.Select(r => r.CalculatedGrl), direct.Results.Select(r => r.CalculatedGrl));
+            Assert.AreEqual(10, direct.RatingChecks.Count(c => !c.Matches));
+            Assert.AreEqual(20, direct.RatingChecks.Count(c => c.HasExternal));
+            GoalkeeperLibraryBuilder.Batch broken = GoalkeeperLibraryBuilder.ImportMarkdown(ReplaceFirst(text, "| Recovery | 81 |", "| Recovery | abc |"), behaviors, GoalkeeperBehaviors.DefaultActionMap());
+            Assert.IsNotEmpty(broken.ReaderProblems);
+            Assert.AreEqual(1, broken.Failed, "the keeper whose attribute could not be read is not imported");
+            Assert.AreEqual(19, broken.Added);
+        }
+
+        private static string ReplaceFirst(string text, string old, string with)
+        {
+            int i = text.IndexOf(old, StringComparison.Ordinal);
+            Assert.GreaterOrEqual(i, 0);
+            return text.Substring(0, i) + with + text.Substring(i + old.Length);
+        }
+
+        [Test]
+        public void TheImporterFiles_HoldNoPlayerNames_AndNoSecondRatingFormula()
+        {
+            string dir = Path.Combine(DifficultyGuardTests.FindCoreSourceDirectory(), "Goalkeepers");
+            foreach (string file in Directory.GetFiles(dir, "*.cs"))
+            {
+                string text = File.ReadAllText(file);
+                foreach (string name in ExpectedNames)
+                    foreach (string part in name.Split(' ').Where(w => w.Length > 3)) Assert.IsFalse(text.Contains(part), Path.GetFileName(file) + " mentions '" + part + "'");
+                if (file.EndsWith("GoalkeeperRatingCalculator.cs") || file.EndsWith("GoalkeeperProfile.cs") || file.EndsWith("GoalkeeperDatabaseMarkdown.cs")) continue;
+                Assert.IsFalse(text.Contains("CapabilityCount") || text.Contains("/ 8") || text.Contains("Math.Round") || text.Contains("MidpointRounding"), Path.GetFileName(file) + " must not compute the rating");
+                Assert.IsFalse(text.Contains("Tuning"), Path.GetFileName(file) + " must not use rating tuning");
+            }
         }
 
         // ------------------------------------------------------------ validation of broken input
@@ -245,13 +297,13 @@ namespace FS27.Core.Tests
             var records = parsed.Records.Select(Copy).ToList();
             records[1].Capabilities.Remove("Recovery");
             records[2].Capabilities["Diving"] = 100;
-            records[3].PrimaryStyle = "Acrobat";
+            records[3].PrimaryProfile = "Acrobat";
             records.Add(Copy(records[0]));
             GoalkeeperLibraryBuilder.Batch b = GoalkeeperLibraryBuilder.Import(records, behaviors, GoalkeeperBehaviors.DefaultActionMap());
-            Assert.IsTrue(b.Results[1].Has(GoalkeeperImportCode.CapabilityMissing));
-            Assert.IsTrue(b.Results[2].Has(GoalkeeperImportCode.CapabilityOutOfRange));
-            Assert.IsTrue(b.Results[3].Has(GoalkeeperImportCode.StyleInvalid));
-            Assert.IsTrue(b.Results[20].Has(GoalkeeperImportCode.DuplicateId));
+            Assert.IsTrue(b.Results[1].Has(GoalkeeperImportCode.AttributeMissing));
+            Assert.IsTrue(b.Results[2].Has(GoalkeeperImportCode.AttributeOutOfRange));
+            Assert.IsTrue(b.Results[3].Has(GoalkeeperImportCode.PrimaryProfileInvalid));
+            Assert.IsTrue(b.Results[20].Has(GoalkeeperImportCode.DuplicatePlayerId));
             Assert.AreEqual(4, b.Failed);
             Assert.AreEqual(17, b.Added);
             Assert.IsFalse(b.Library.Contains("gk-joan-garcia"));
@@ -286,7 +338,7 @@ namespace FS27.Core.Tests
             {
                 string text = File.ReadAllText(file);
                 Assert.IsFalse(text.Contains("GOALKEEPER_DATABASE") && !file.EndsWith("GoalkeeperDatabaseMarkdown.cs"), Path.GetFileName(file));
-                Assert.IsFalse(text.Contains("GoalkeeperDatabaseMarkdown") && !file.EndsWith("GoalkeeperDatabaseMarkdown.cs"), Path.GetFileName(file) + " uses the authoring reader");
+                Assert.IsFalse(text.Contains("GoalkeeperDatabaseMarkdown") && !file.EndsWith("GoalkeeperDatabaseMarkdown.cs") && !file.EndsWith("GoalkeeperLibraryBuilder.cs"), Path.GetFileName(file) + " uses the authoring reader");
             }
             Assert.IsFalse(File.ReadAllText(Path.Combine(core, "Goalkeepers", "GoalkeeperDatabaseMarkdown.cs")).Contains("System.IO"), "the reader takes text, never touches files");
             Assert.IsFalse(Directory.GetFiles(Path.Combine(repoRoot, "Assets", "_Project", "Scripts", "Gameplay"), "*.cs", SearchOption.AllDirectories)

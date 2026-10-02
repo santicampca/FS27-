@@ -55,11 +55,11 @@ namespace FS27.Core
                     case "Identity":
                         if (Field(line, out string key, out string value))
                         {
-                            if (key == "Full Name") { rec.DisplayName = value; rec.Id = "gk-" + Slug(value); sawName = true; }
+                            if (key == "Full Name") { rec.Name = value; rec.PlayerId = "gk-" + Slug(value); sawName = true; }
                             else if (key == "Nationality") rec.Nationality = value;
                             else if (key == "Preferred Foot") rec.PreferredFoot = value;
-                            else if (key == "Height") rec.HeightCm = ParseHeight(value, heading, result);
-                            else if (key == "Target GRL") rec.ReportedGrl = ParseInt(value, heading + " Target GRL", result);
+                            else if (key == "Height") { int h = ParseHeight(value, heading, result); if (h > 0) rec.HeightCm = h; }
+                            else if (key == "Target GRL") { int g = ParseInt(value, heading + " Target GRL", result); if (g != 0) rec.ExternalGrl = g; }
                         }
                         break;
                     case "Football Identity":
@@ -68,8 +68,8 @@ namespace FS27.Core
                     case "FS27 Goalkeeper Profiles":
                         if (Field(line, out key, out value))
                         {
-                            if (key == "Primary Profile") rec.PrimaryStyle = value;
-                            else if (key == "Secondary Profile" || key == "Tertiary Profile") rec.SecondaryStyles.Add(value);
+                            if (key == "Primary Profile") rec.PrimaryProfile = value;
+                            else if (key == "Secondary Profile" || key == "Tertiary Profile") rec.SecondaryProfiles.Add(value);
                         }
                         break;
                     case "Goalkeeper Attributes":

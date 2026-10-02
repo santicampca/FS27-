@@ -64,7 +64,7 @@ GRL = redondeo al entero más cercano de (Reflexes + Handling + Positioning + Di
 
 - Un único cálculo: `GoalkeeperRatingCalculator` (clase estática, sin estado, sin ajustes). Solo recibe un `GoalkeeperProfile`, así que no puede depender de estilos, atributos generales, Overall, altura, nombre, nacionalidad, potencial ni dificultad. Un empate .5 sube (aritmética entera exacta: `(suma + 4) / 8`).
 - **Cambio de esta fase:** antes era una media ponderada por estilo que mezclaba capacidades con atributos generales (con `GoalkeeperRatingTuning`, `GoalkeeperWeights`, rating y idoneidad por estilo y por área). Se **eliminó entera** por decisión oficial; no quedan pesos en el código ni en las pruebas. Los cuatro estilos siguen existiendo como perfil/identidad, **no afectan al GRL**.
-- El GRL **no se almacena**: se calcula siempre desde los 8 atributos. Un GRL que venga en datos de autoría es solo una referencia que se compara (aviso `GrlDiffers`).
+- El GRL **no se almacena**: se calcula siempre desde los 8 atributos. Un GRL que venga en datos de autoría es solo una referencia que se compara (aviso `ExternalGrlDiffers`).
 - Independiente del Overall: el Overall sigue usando los 12 atributos generales y no sabe de las capacidades de portero (un test comprueba que `PlayerRatingCalculator` no recibe un `GoalkeeperProfile`).
 
 ## 6. Perfiles (estilos) de portero
@@ -148,7 +148,7 @@ Auditoría hecha sobre el repositorio real, antes de tocar nada. (Esta sección 
 | Dificultad | `DifficultyDefinition` | solo cambia cómo se *usan* las capacidades |
 
 ### GRL: cómo funcionaba y cómo funciona
-Antes de la fase de datos era una media ponderada por estilo (se auditó y documentó antes de cambiarla). Ahora es la media simple de las 8 capacidades (sección 5). El GRL de una fuente externa es solo una **referencia** (`ReportedGrl`) que se compara con el calculado.
+Antes de la fase de datos era una media ponderada por estilo (se auditó y documentó antes de cambiarla). Ahora es la media simple de las 8 capacidades (sección 5). El GRL de una fuente externa es solo una **referencia** (`ExternalGrl`) que se compara con el calculado.
 
 ### Hallazgos
 1. **`PlayerDefinition.TeamId` + `TeamDefinition.PlayerIds` = dos fuentes de verdad de la plantilla (real).** Hoy `PlayerLibrary.TryAssignToTeam` cambia el `TeamId` del jugador pero no reconstruye ningún roster (el comentario de la clase lo promete), y el validador solo detectaba el desacuerdo desde el lado del equipo. Un jugador con `TeamId = "red"` que ningún roster lista, o listado en dos equipos, pasaba sin aviso. **Decisión (mantenida en la fase de datos):** no se elimina `TeamId` (lo usan `PlayerCardData`, `PlayerLibrary.GetByTeam` y ~40 pruebas; quitarlo sería destructivo). Se declara **`TeamDefinition.PlayerIds` la única verdad** y `TeamId` una pista desnormalizada, y se añade `RosterValidator` (solo lectura) que detecta jugador en dos equipos y `TeamId` que el roster no confirma. Migración segura pendiente (fase posterior, con tu visto bueno): derivar `PlayerCardData.TeamId` del roster, deprecar `TeamId` y, al final, eliminarlo; los datos importados **no** deben traer `TeamId`.
