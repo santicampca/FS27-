@@ -225,19 +225,20 @@ namespace FS27.Core.Tests
         // ============================================================ corrections
 
         [Test]
-        public void TheFiftyFourDocumentedCorrections_AllApply_EachWithClassSourceAndReason_NoAttributeIsChanged()
+        public void TheSixtySixDocumentedCorrections_AllApply_EachWithClassSourceAndReason_OnlyOnePlayerHadAttributesLowered()
         {
-            Assert.AreEqual(54, batch.Corrections.Applied.Count);
+            Assert.AreEqual(66, batch.Corrections.Applied.Count);
             CollectionAssert.IsEmpty(batch.Corrections.Problems);
             foreach (AuthoringCorrection c in batch.Corrections.Applied)
             {
                 Assert.IsFalse(string.IsNullOrWhiteSpace(c.Reason), c.PlayerId + " " + c.Field);
                 Assert.IsFalse(string.IsNullOrWhiteSpace(c.Source), c.PlayerId + " " + c.Field);
-                Assert.IsFalse(c.Field.StartsWith("attr."), "no attribute value was changed");
+                Assert.IsTrue(!c.Field.StartsWith("attr.") || (c.PlayerId == "cb-calvin-bassey" && c.Class == CorrectionClass.Design), "only the player above the tolerance had attributes lowered");
                 CollectionAssert.DoesNotContain(new[] { "targetOvr", "riskPreference", "creativity", "aggression", "heightCm", "weightKg" }, c.Field);
             }
             Assert.AreEqual(6, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Verified));
-            Assert.AreEqual(5, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Design));
+            Assert.AreEqual(17, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Design));
+            Assert.AreEqual(12, batch.Corrections.Applied.Count(c => c.Field.StartsWith("attr.")), "the 12 attributes of the one player above the tolerance");
             Assert.AreEqual(43, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Inference));
             Assert.AreEqual(20, batch.Corrections.Applied.Count(c => c.Field == "nationality"));
             Assert.AreEqual(19, batch.Corrections.Applied.Count(c => c.Field == "signatureActions"));
@@ -264,7 +265,7 @@ namespace FS27.Core.Tests
             for (int i = 0; i < 20; i++)
             {
                 if (i == 16) continue;
-                foreach (PlayerAttributeId id in PlayerAttributeInfo.All) Assert.AreEqual(raw.Results[i].Player.Attributes.GetValue(id), batch.Results[i].Player.Attributes.GetValue(id), Names[i] + " " + id);
+                if (Names[i] != "Calvin Bassey") foreach (PlayerAttributeId id in PlayerAttributeInfo.All) Assert.AreEqual(raw.Results[i].Player.Attributes.GetValue(id), batch.Results[i].Player.Attributes.GetValue(id), Names[i] + " " + id);
                 Assert.AreEqual(raw.Results[i].Overall.TargetOvr, batch.Results[i].Overall.TargetOvr);
             }
             Assert.AreEqual(PreferredFoot.Left, raw.Results[15].Player.PreferredFoot, "uncorrected, the file's claim about Guéhi would have been imported as Left");
@@ -283,12 +284,11 @@ namespace FS27.Core.Tests
                 FieldPlayerImportResult r = batch.Results[i];
                 Assert.AreEqual(records[i].TargetOvr.Value, r.Overall.TargetOvr, Names[i]);
                 Assert.AreEqual(calc.GetOverall(r.Player, r.Profile), r.Overall.CalculatedOverall, Names[i]);
-                Assert.LessOrEqual(Math.Abs(r.Overall.Difference), 6, Names[i]);
+                Assert.LessOrEqual(Math.Abs(r.Overall.Difference), 5, Names[i]);
             }
-            Assert.AreEqual(1, batch.Results.Count(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)));
-            Assert.IsTrue(Of("Calvin Bassey").Has(FieldPlayerImportCode.TargetOvrDiffers), "target 76 against a calculated 82: both are shown, the attributes were not moved");
+            Assert.AreEqual(0, batch.Results.Count(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)));
             Assert.AreEqual(76, Of("Calvin Bassey").Overall.TargetOvr);
-            Assert.AreEqual(82, Of("Calvin Bassey").Overall.CalculatedOverall);
+            Assert.AreEqual(79, Of("Calvin Bassey").Overall.CalculatedOverall, "the attributes were lowered by 3 (they gave 82)");
             var builder = new PlayerCardBuilder(calc, batch.Profiles, null, null, batch.Library);
             Assert.AreEqual(Of("Alessandro Bastoni").Overall.CalculatedOverall, builder.Build(Of("Alessandro Bastoni").Player).Overall);
             string[] banned = { "TargetOvr", "Club", "Confidence", "SecondaryPositions", "NaturalPosition", "SignatureActions" };
@@ -324,7 +324,7 @@ namespace FS27.Core.Tests
             Assert.AreEqual(0, batch.Results.Sum(r => r.Issues.Count(i => i.IsError)));
             var expected = new Dictionary<FieldPlayerImportCode, int>
             {
-                { FieldPlayerImportCode.TargetOvrDiffers, 1 }, { FieldPlayerImportCode.PolyvalenceBeyondZone, 3 }, { FieldPlayerImportCode.ShirtNumberDefaulted, 20 },
+                { FieldPlayerImportCode.PolyvalenceBeyondZone, 3 }, { FieldPlayerImportCode.ShirtNumberDefaulted, 20 },
                 { FieldPlayerImportCode.WeakFootDefaulted, 20 }, { FieldPlayerImportCode.PreferredFootAmbiguous, 1 }, { FieldPlayerImportCode.ShortNameDerived, 20 },
                 { FieldPlayerImportCode.SignatureActionsAbsent, 1 }, { FieldPlayerImportCode.BodyTypeDerivedFromMeasurements, 20 }, { FieldPlayerImportCode.SignatureActionsPending, 19 }
             };

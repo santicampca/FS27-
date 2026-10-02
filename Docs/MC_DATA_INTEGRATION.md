@@ -7,7 +7,7 @@
 | Archivo | Qué es |
 |---|---|
 | `FS27_MC_DATABASE_V1.md` | Conversión de `FS27mc.docx` sin cambiar ningún dato. **Nunca se edita.** |
-| `FS27_MC_CORRECTIONS_V1.md` | 5 correcciones (3 verificadas, 1 por inferencia, 1 de diseño) y los hallazgos que NO se cambian. |
+| `FS27_MC_CORRECTIONS_V1.md` | 5 correcciones + 12 de ajuste de atributos (17 en total) (3 verificadas, 1 por inferencia, 1 de diseño) y los hallazgos que NO se cambian. |
 | `FS27_MC_RECORDS_V1.json` | Registros definitivos (fuente + correcciones); un test comprueba que son exactamente eso. |
 
 ## 2. Qué se reutilizó y qué se añadió
@@ -18,7 +18,7 @@ Reutilizado: el lector de fichas propiedad/valor de los MCD (`FieldPlayerPropert
 
 - Zona primaria Midfield y una secundaria tal como la escribe la fuente (Attack ×6, Defense ×4). La cobertura de emergencia (AM, LW, CB, RM) es solo autoría.
 - Atributos, roles y Target OVR tal como investigados. McTominay tiene Finisher (91) como primer rol. Barella tiene Stamina 95, el único 95 de la base.
-- **Luka Modrić**: Target OVR 81 frente a 87 calculado (+6), fuera de la tolerancia de 5, así que el importador avisa (`TargetOvrDiffers`). La tolerancia no se toca y el juego usa el 87.
+- **Luka Modrić**: objetivo 81, salía 87 (fuera de la tolerancia de 5). **El objetivo no se tocó**: se bajaron sus 12 atributos −3 y ahora sale 84. Ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md).
 - Acciones de firma: etiquetas de autoría; solo "Late box arrival" (5 jugadores) equivale a un comportamiento existente.
 
 ## 4. Correcciones y hallazgos
@@ -27,4 +27,4 @@ Corregidos: Modrić (club AC Milan, dorsal 14, edad 41), McTominay (dorsal 8) y 
 
 ## 5. Cómo se verifica
 
-`dotnet test Tests/Core.Tests --filter MidfieldersMc` (y la suite completa). Inventario de avisos fijado: 10 `SignatureActionsPending` + 1 `TargetOvrDiffers`, ningún error.
+`dotnet test Tests/Core.Tests --filter MidfieldersMc` (y la suite completa). Inventario de avisos fijado: 10 `SignatureActionsPending`, ningún error y ningún `TargetOvrDiffers`.

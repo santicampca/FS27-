@@ -2,7 +2,7 @@
 
 > **Estado: COMPLETA — 12 jugadores (6 ED + 6 EI), 126 jugadores en la biblioteca** (20 porteros + 40 centrales + 12 laterales + 42 mediocampistas + 12 extremos). Datos, importación, correcciones y validación probados fuera de Unity (`WingersDatabaseTests`, 12 tests). Sin push, sin PR. El documento (`FS27ex.docx`) trae exactamente 12: ED Saka, Giuliano Simeone, Doué, Estêvão, Semenyo, Salah; EI Pulisic, Mitoma, Gordon, Vinícius Júnior, Barcola, Díaz. Ids `wg-nombre`.
 
-> **Aviso importante:** esta fuente es la más escasa del proyecto. No trae **afinidades de rol**, ni fecha de nacimiento, altura, peso o dorsal. Las afinidades son los **valores por defecto del proyecto por posición (90 / 75 / 60)**, no investigados (el orden de los roles sí es el de la fuente). Fecha, altura, dorsal y club actualizados los completé con búsquedas web (39 correcciones verificadas). El **peso** falta en los 12 y la **altura** en Simeone y Semenyo: se usa el valor neutro con aviso.
+> **Aviso importante:** esta fuente es la más escasa del proyecto. No trae **afinidades de rol**, ni fecha de nacimiento, altura, peso o dorsal. Las afinidades son los **valores por defecto del proyecto por posición (90 / 75 / 60)**, no investigados (el orden de los roles sí es el de la fuente). Fecha, altura, dorsal y club actualizados los completé con búsquedas web (39 correcciones verificadas + 24 de ajuste de atributos (63 en total)). El **peso** falta en los 12 y la **altura** en Simeone y Semenyo: se usa el valor neutro con aviso.
 
 ## 1. Archivos de autoría (`Docs/authoring/`)
 
@@ -20,9 +20,9 @@ Reutilizado: `FieldPlayerDataRecord`, importador, correcciones, builder. Añadid
 
 - Zona primaria Wing y secundaria Attack en los doce, tal como la fuente. Las posiciones reales ED/EI/SD/MCO son autoría: nadie se convierte en mediocampista ni delantero (2 avisos `PolyvalenceBeyondZone`, los que tienen MCO).
 - Atributos y Target OVR tal como investigados. Vinícius Júnior tiene dos valores 95 (aceleración y regate) y Overall 91.
-- Estêvão (objetivo 78, calculado 86) y Mitoma (77 frente a 87) pasan de la tolerancia de 5: avisan (`TargetOvrDiffers`), la tolerancia no se toca.
+- Estêvão (objetivo 78, salía 86) y Mitoma (77, salía 87) superaban la tolerancia de 5. **El objetivo no se tocó**: se bajaron sus 12 atributos (−5 y −7) y ahora salen 81 y 80. Ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md).
 - Barcola: la fuente dice PSG, pero hay noticias de traspaso a Liverpool en agosto de 2026; se deja PSG y se marca como no verificado.
 
 ## 4. Cómo se verifica
 
-`dotnet test Tests/Core.Tests --filter WingersDatabase` (y la suite completa). Inventario de avisos fijado: 36 `AffinityDefaulted`, 12 `WeightDefaulted`, 2 `HeightDefaulted`, 12 `ShortNameDerived`, 12 `SignatureActionsPending`, 2 `PolyvalenceBeyondZone`, 2 `TargetOvrDiffers`; ningún error.
+`dotnet test Tests/Core.Tests --filter WingersDatabase` (y la suite completa). Inventario de avisos fijado: 36 `AffinityDefaulted`, 12 `WeightDefaulted`, 2 `HeightDefaulted`, 12 `ShortNameDerived`, 12 `SignatureActionsPending`, 2 `PolyvalenceBeyondZone`. Ningún error y ningún `TargetOvrDiffers`.

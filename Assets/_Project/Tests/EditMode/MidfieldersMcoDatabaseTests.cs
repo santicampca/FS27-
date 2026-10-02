@@ -64,7 +64,7 @@ namespace FS27.Core.Tests
         {
             CollectionAssert.AreEqual(Names, Records().Select(r => r.Name).ToArray());
             Assert.AreEqual(10, batch.Added); Assert.AreEqual(0, batch.Failed);
-            Assert.AreEqual(9, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
+            Assert.AreEqual(45, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
             Assert.IsFalse(batch.Results.Any(r => r.Issues.Any(i => i.IsError)));
             Assert.IsTrue(batch.Results.All(r => r.Player.Role == PlayerRole.Midfielder));
             Assert.AreEqual(3, Records().Count(r => r.PreferredFoot == "Left")); Assert.AreEqual(7, Records().Count(r => r.PreferredFoot == "Right"));
@@ -140,16 +140,17 @@ namespace FS27.Core.Tests
             Assert.AreEqual(96, Of("Kevin De Bruyne").Profile.Roles[0].Affinity);
             int ninety = batch.Results.Sum(r => PlayerAttributeInfo.All.Count(id => r.Player.Attributes.GetValue(id) >= 90));
             int max = batch.Results.Max(r => PlayerAttributeInfo.All.Max(id => r.Player.Attributes.GetValue(id)));
-            Assert.AreEqual(24, ninety); Assert.AreEqual(94, max, "nobody reaches 95");
+            Assert.AreEqual(16, ninety); Assert.AreEqual(93, max, "nobody reaches 95");
         }
 
         [Test]
-        public void TheNineCorrections_AreDocumented_AndNoAttributeRoleOrTargetWasChanged()
+        public void TheFortyFiveCorrections_ThirtySixAreAttributeAdjustments_NoRoleOrTargetWasChanged()
         {
             List<AuthoringCorrection> list = AuthoringCorrections.ParseMarkdown(correctionsText, new List<string>());
-            Assert.AreEqual(9, list.Count);
-            Assert.AreEqual(6, list.Count(c => c.Class == CorrectionClass.Verified)); Assert.AreEqual(1, list.Count(c => c.Class == CorrectionClass.Inference)); Assert.AreEqual(2, list.Count(c => c.Class == CorrectionClass.Design));
-            Assert.IsFalse(list.Any(c => c.Field.StartsWith("attr.") || c.Field.StartsWith("role.")));
+            Assert.AreEqual(45, list.Count);
+            Assert.AreEqual(6, list.Count(c => c.Class == CorrectionClass.Verified)); Assert.AreEqual(1, list.Count(c => c.Class == CorrectionClass.Inference)); Assert.AreEqual(38, list.Count(c => c.Class == CorrectionClass.Design));
+            Assert.AreEqual(36, list.Count(c => c.Field.StartsWith("attr.")), "the 12 attributes of each of the three players above the tolerance");
+            Assert.IsFalse(list.Any(c => c.Field.StartsWith("role.") || c.Field == "targetOvr"), "no role and no target was changed");
             Assert.IsTrue(list.All(c => c.Source.Length > 0 && c.Reason.Length > 0));
             Assert.AreEqual("Fernandes", Of("Bruno Fernandes").Player.ShortName); Assert.AreEqual("Mora", Of("Gilberto Mora").Player.ShortName);
             Assert.AreEqual(32, Of("Bruno Fernandes").Player.Age);
@@ -169,15 +170,14 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TargetOvr_IsKeptApart_ToleranceIsUnchanged_ThreePlayersExceedItAndAreWarned()
+        public void TargetOvr_IsKeptAsResearched_ToleranceIsUnchanged_ThreePlayersWereBroughtInsideIt()
         {
-            Assert.AreEqual(5, FieldPlayerImportOptions.OffensiveMidfielder().OverallTolerance);
+            Assert.AreEqual(5, FieldPlayerImportOptions.OffensiveMidfielder().OverallTolerance, "the tolerance is unchanged");
             Assert.IsTrue(batch.Results.All(r => r.Overall.HasTarget));
-            string[] over = { "mo-isco", "mo-kevin-de-bruyne", "mo-florian-wirtz" };
-            CollectionAssert.AreEquivalent(over, batch.Results.Where(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)).Select(r => r.PlayerId).ToArray());
-            Assert.IsTrue(batch.Results.Where(r => !over.Contains(r.PlayerId)).All(r => Math.Abs(r.Overall.Difference) <= 5));
-            Assert.AreEqual(88, Of("Kevin De Bruyne").Overall.CalculatedOverall); Assert.AreEqual(82, Of("Kevin De Bruyne").Overall.TargetOvr);
-            Assert.AreEqual(85, Of("Jude Bellingham").Overall.CalculatedOverall);
+            Assert.IsTrue(batch.Results.All(r => Math.Abs(r.Overall.Difference) <= 5), "every calculated overall is inside the tolerance of its researched target");
+            Assert.IsFalse(batch.Results.Any(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)));
+            Assert.AreEqual(82, Of("Kevin De Bruyne").Overall.TargetOvr); Assert.AreEqual(85, Of("Kevin De Bruyne").Overall.CalculatedOverall);
+            Assert.AreEqual(83, Of("Isco").Overall.CalculatedOverall); Assert.AreEqual(84, Of("Florian Wirtz").Overall.CalculatedOverall);
         }
 
         [Test]
@@ -193,8 +193,8 @@ namespace FS27.Core.Tests
         public void TheRealWarningInventory_IsPinned_AndThereAreNoErrors()
         {
             var inv = batch.Results.SelectMany(r => r.Issues).GroupBy(i => i.Code).ToDictionary(g => g.Key, g => g.Count());
-            Assert.AreEqual(3, inv.Count, string.Join(", ", inv));
-            Assert.AreEqual(10, inv[FieldPlayerImportCode.SignatureActionsPending]); Assert.AreEqual(6, inv[FieldPlayerImportCode.PolyvalenceBeyondZone]); Assert.AreEqual(3, inv[FieldPlayerImportCode.TargetOvrDiffers]);
+            Assert.AreEqual(2, inv.Count, string.Join(", ", inv));
+            Assert.AreEqual(10, inv[FieldPlayerImportCode.SignatureActionsPending]); Assert.AreEqual(6, inv[FieldPlayerImportCode.PolyvalenceBeyondZone]);
         }
 
         [Test]

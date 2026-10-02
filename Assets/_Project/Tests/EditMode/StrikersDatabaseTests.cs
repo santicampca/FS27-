@@ -72,7 +72,7 @@ namespace FS27.Core.Tests
             Assert.IsTrue(records.All(r => r.NaturalPosition == "DC"));
             CollectionAssert.AreEqual(Names, batch.Results.Select(r => r.Player.Name).ToArray());
             Assert.AreEqual(20, batch.Added); Assert.AreEqual(0, batch.Failed);
-            Assert.AreEqual(67, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
+            Assert.AreEqual(103, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
             Assert.IsFalse(batch.Results.Any(r => r.Issues.Any(i => i.IsError)));
             Assert.IsTrue(batch.Results.All(r => r.Player.Role == PlayerRole.Forward));
         }
@@ -135,22 +135,23 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TheAttributesAreAsResearched_FourValuesReach95_InThreePlayers()
+        public void TheAttributesAreAsResearched_ThreeValuesReach95_InTwoPlayers()
         {
             int ninety = batch.Results.Sum(r => PlayerAttributeInfo.All.Count(id => r.Player.Attributes.GetValue(id) >= 90));
             var top = batch.Results.Where(r => PlayerAttributeInfo.All.Any(id => r.Player.Attributes.GetValue(id) >= 95)).Select(r => r.PlayerId).ToArray();
-            Assert.AreEqual(33, ninety);
-            CollectionAssert.AreEquivalent(new[] { "dc-kylian-mbappe", "dc-erling-haaland", "dc-karim-adeyemi" }, top);
-            Assert.AreEqual(4, batch.Results.Sum(r => PlayerAttributeInfo.All.Count(id => r.Player.Attributes.GetValue(id) >= 95)));
+            Assert.AreEqual(30, ninety);
+            CollectionAssert.AreEquivalent(new[] { "dc-kylian-mbappe", "dc-erling-haaland" }, top);
+            Assert.AreEqual(3, batch.Results.Sum(r => PlayerAttributeInfo.All.Count(id => r.Player.Attributes.GetValue(id) >= 95)));
             Assert.AreEqual(92, Of("Kylian Mbappé").Overall.CalculatedOverall); Assert.AreEqual(88, Of("Harry Kane").Overall.CalculatedOverall);
         }
 
         [Test]
-        public void TheSixtySevenCorrections_AreAllVerified_Completions_AndNoAttributeRoleOrTargetWasChanged()
+        public void TheHundredAndThreeCorrections_SixtySevenCompletions_ThirtySixAttributeAdjustments_NoRoleOrTargetWasChanged()
         {
             List<AuthoringCorrection> list = AuthoringCorrections.ParseMarkdown(correctionsText, new List<string>());
-            Assert.AreEqual(67, list.Count); Assert.IsTrue(list.All(c => c.Class == CorrectionClass.Verified));
-            Assert.IsFalse(list.Any(c => c.Field.StartsWith("attr.") || c.Field.StartsWith("role.") || c.Field == "targetOvr"));
+            Assert.AreEqual(103, list.Count); Assert.AreEqual(67, list.Count(c => c.Class == CorrectionClass.Verified)); Assert.AreEqual(36, list.Count(c => c.Class == CorrectionClass.Design && c.Field.StartsWith("attr.")));
+            Assert.IsTrue(list.Where(c => c.Field.StartsWith("attr.")).All(c => new[] { "dc-donyell-malen", "dc-pierre-emerick-aubameyang", "dc-karim-adeyemi" }.Contains(c.PlayerId)), "only the three players above the tolerance had attributes lowered");
+            Assert.IsFalse(list.Any(c => c.Field.StartsWith("role.") || c.Field == "targetOvr"), "no role and no target was changed");
             Assert.IsTrue(list.All(c => c.Source.Length > 0 && c.Reason.Length > 0));
             Assert.AreEqual("Viktor Gyökeres", Of("Viktor Gyökeres").Player.Name); Assert.AreEqual("dc-viktor-gyokeres", Of("Viktor Gyökeres").PlayerId);
             Assert.AreEqual(41, Of("Cristiano Ronaldo").Player.Age); Assert.AreEqual(7, Of("Cristiano Ronaldo").Player.Number); Assert.AreEqual(33, Of("Harry Kane").Player.Age);
@@ -171,14 +172,14 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TargetOvr_IsKeptApart_ToleranceIsUnchanged_ThreePlayersExceedItAndAreWarned()
+        public void TargetOvr_IsKeptAsResearched_ToleranceIsUnchanged_ThreePlayersWereBroughtInsideIt()
         {
-            Assert.AreEqual(5, FieldPlayerImportOptions.Striker().OverallTolerance);
+            Assert.AreEqual(5, FieldPlayerImportOptions.Striker().OverallTolerance, "the tolerance is unchanged");
             Assert.IsTrue(batch.Results.All(r => r.Overall.HasTarget));
-            string[] over = { "dc-donyell-malen", "dc-pierre-emerick-aubameyang", "dc-karim-adeyemi" };
-            CollectionAssert.AreEquivalent(over, batch.Results.Where(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)).Select(r => r.PlayerId).ToArray());
-            Assert.IsTrue(batch.Results.Where(r => !over.Contains(r.PlayerId)).All(r => Math.Abs(r.Overall.Difference) <= 5));
-            Assert.AreEqual(87, Of("Karim Adeyemi").Overall.CalculatedOverall); Assert.AreEqual(7, Of("Karim Adeyemi").Overall.Difference);
+            Assert.IsTrue(batch.Results.All(r => Math.Abs(r.Overall.Difference) <= 5), "every calculated overall is inside the tolerance of its researched target");
+            Assert.IsFalse(batch.Results.Any(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)));
+            Assert.AreEqual(80, Of("Karim Adeyemi").Overall.TargetOvr); Assert.AreEqual(83, Of("Karim Adeyemi").Overall.CalculatedOverall);
+            Assert.AreEqual(82, Of("Donyell Malen").Overall.CalculatedOverall); Assert.AreEqual(83, Of("Pierre-Emerick Aubameyang").Overall.CalculatedOverall);
         }
 
         [Test]
@@ -194,10 +195,9 @@ namespace FS27.Core.Tests
         public void TheRealWarningInventory_IsPinned_AndThereAreNoErrors()
         {
             var inv = batch.Results.SelectMany(r => r.Issues).GroupBy(i => i.Code).ToDictionary(g => g.Key, g => g.Count());
-            Assert.AreEqual(7, inv.Count, string.Join(", ", inv));
+            Assert.AreEqual(6, inv.Count, string.Join(", ", inv));
             Assert.AreEqual(60, inv[FieldPlayerImportCode.AffinityDefaulted]); Assert.AreEqual(20, inv[FieldPlayerImportCode.WeightDefaulted]); Assert.AreEqual(3, inv[FieldPlayerImportCode.ShirtNumberDefaulted]);
             Assert.AreEqual(1, inv[FieldPlayerImportCode.HeightDefaulted]); Assert.AreEqual(20, inv[FieldPlayerImportCode.ShortNameDerived]); Assert.AreEqual(20, inv[FieldPlayerImportCode.SignatureActionsPending]);
-            Assert.AreEqual(3, inv[FieldPlayerImportCode.TargetOvrDiffers]);
         }
 
         [Test]

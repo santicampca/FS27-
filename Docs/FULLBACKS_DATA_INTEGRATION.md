@@ -77,3 +77,5 @@ Los 12 conviven con los 20 porteros y los 40 centrales en un mismo `PlayerLibrar
 - Dorsal actual de Dumfries sin verificar; clubes de varios jugadores solo parcialmente contrastados.
 - Calibración global de extremos de atributos y de umbrales de BodyType (no se tocaron).
 - `PlayerDefinition.TeamId` sigue como pista legacy.
+
+> **Actualización (ajuste de atributos):** Davies (objetivo 81, salía 87) y Cancelo (81, salía 87) superaban la tolerancia. **El objetivo no se tocó**: se bajaron sus 12 atributos −3 y ahora salen 84 y 84 (la velocidad de Davies pasó de 98 a 95). Ya no hay `TargetOvrDiffers` en los laterales. Ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md).

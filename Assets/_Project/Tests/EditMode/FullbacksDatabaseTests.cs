@@ -142,7 +142,7 @@ namespace FS27.Core.Tests
             CollectionAssert.AreEqual(Names, batch.Results.Select(r => r.Player.Name).ToArray());
             Assert.IsTrue(batch.Results.All(r => r.IsComplete));
             Assert.IsTrue(batch.Library.All.All(p => p.Role == PlayerRole.Defender), "full-backs are field players, coarse role Defender: nobody becomes a midfielder or a centre-back");
-            Assert.AreEqual(13, batch.Corrections.Applied.Count);
+            Assert.AreEqual(37, batch.Corrections.Applied.Count);
             CollectionAssert.IsEmpty(batch.Corrections.Problems);
         }
 
@@ -285,14 +285,16 @@ namespace FS27.Core.Tests
         // ============================================================ corrections
 
         [Test]
-        public void TheThirteenCorrections_AreDocumented_TenVerifiedAndThreeDesign_NoAttributeRoleOrTargetWasChanged()
+        public void TheThirtySevenCorrections_TenVerified_TwentySevenDesign_NoRoleOrTargetWasChanged()
         {
             Assert.AreEqual(10, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Verified));
-            Assert.AreEqual(3, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Design));
+            Assert.AreEqual(27, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Design));
+            Assert.AreEqual(24, batch.Corrections.Applied.Count(c => c.Field.StartsWith("attr.")), "the 12 attributes of each of the two players above the tolerance");
+            Assert.IsTrue(batch.Corrections.Applied.Where(c => c.Field.StartsWith("attr.")).All(c => c.PlayerId == "fb-alphonso-davies" || c.PlayerId == "fb-joao-cancelo"));
             foreach (AuthoringCorrection c in batch.Corrections.Applied)
             {
                 Assert.IsFalse(string.IsNullOrWhiteSpace(c.Reason)); Assert.IsFalse(string.IsNullOrWhiteSpace(c.Source));
-                Assert.IsFalse(c.Field.StartsWith("attr.") || c.Field.StartsWith("role.") || c.Field == "targetOvr", c.Field);
+                Assert.IsFalse(c.Field.StartsWith("role.") || c.Field == "targetOvr", c.Field);
             }
             Assert.AreEqual(3, batch.Corrections.Applied.Count(c => c.Field == "secondaryZone"));
             Assert.AreEqual(3, batch.Corrections.Applied.Count(c => c.Field == "club"));
@@ -309,6 +311,7 @@ namespace FS27.Core.Tests
             for (int i = 0; i < 10; i++)
             {
                 if (raw.Results[i].Player == null) continue;
+                if (Names[i] == "Alphonso Davies" || Names[i] == "João Cancelo") continue; // their attributes were lowered by a documented correction
                 foreach (PlayerAttributeId id in PlayerAttributeInfo.All) Assert.AreEqual(raw.Results[i].Player.Attributes.GetValue(id), batch.Results[i].Player.Attributes.GetValue(id), Names[i]);
             }
         }
@@ -324,7 +327,7 @@ namespace FS27.Core.Tests
         // ============================================================ target vs calculated, and the attribute audit
 
         [Test]
-        public void TargetOvr_IsKeptApart_ToleranceIsUnchanged_TwoPlayersExceedItAndAreWarned()
+        public void TargetOvr_IsKeptAsResearched_ToleranceIsUnchanged_TwoPlayersWereBroughtInsideIt()
         {
             var calc = PlayerRatingCalculator.CreateDefault();
             Assert.AreEqual(5, new FieldPlayerImportOptions().OverallTolerance);
@@ -335,10 +338,11 @@ namespace FS27.Core.Tests
                 Assert.AreEqual(targets[i], r.Overall.TargetOvr, Names[i]);
                 Assert.AreEqual(calc.GetOverall(r.Player, r.Profile), r.Overall.CalculatedOverall, Names[i]);
             }
-            CollectionAssert.AreEquivalent(new[] { "Alphonso Davies", "João Cancelo" }, batch.Results.Where(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)).Select(r => r.Player.Name).ToArray());
+            Assert.IsFalse(batch.Results.Any(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)));
+            Assert.IsTrue(batch.Results.All(r => Math.Abs(r.Overall.Difference) <= 5));
             Assert.AreEqual(81, Of("Alphonso Davies").Overall.TargetOvr);
-            Assert.AreEqual(87, Of("Alphonso Davies").Overall.CalculatedOverall, "the attributes were not moved towards the target");
-            Assert.AreEqual(6, Of("João Cancelo").Overall.Difference);
+            Assert.AreEqual(84, Of("Alphonso Davies").Overall.CalculatedOverall, "all attributes were lowered by 3 (they gave 87)");
+            Assert.AreEqual(3, Of("João Cancelo").Overall.Difference);
         }
 
         [Test]
@@ -346,15 +350,15 @@ namespace FS27.Core.Tests
         {
             var values = batch.Library.All.SelectMany(p => PlayerAttributeInfo.All.Select(id => p.Attributes.GetValue(id))).ToArray();
             Assert.AreEqual(120, values.Length);
-            Assert.AreEqual(17, values.Count(v => v >= 90), "90+ values kept as researched (fidelity over balance); documented as debt");
-            Assert.AreEqual(6, values.Count(v => v >= 95), "95+ values kept: sprint records and elite passing support them; documented as debt");
-            Assert.AreEqual(1, batch.Library.All.Count(p => p.Attributes.Speed >= 95 && p.Attributes.Acceleration >= 95), "only one player is 95+ in both speed and acceleration");
+            Assert.AreEqual(15, values.Count(v => v >= 90), "90+ values kept as researched (fidelity over balance); documented as debt");
+            Assert.AreEqual(4, values.Count(v => v >= 95), "95+ values kept: sprint records and elite passing support them; documented as debt");
+            Assert.AreEqual(0, batch.Library.All.Count(p => p.Attributes.Speed >= 95 && p.Attributes.Acceleration >= 95), "after the adjustment nobody is 95+ in both speed and acceleration (Davies was 98 / 95)");
             // styles are not homogenised: the profiles differ a lot
             Assert.GreaterOrEqual(batch.Library.All.Max(p => p.Attributes.Speed) - batch.Library.All.Min(p => p.Attributes.Speed), 15);
             Assert.GreaterOrEqual(batch.Library.All.Max(p => p.Attributes.Defense) - batch.Library.All.Min(p => p.Attributes.Defense), 12);
             Assert.GreaterOrEqual(batch.Results.Max(r => r.Profile.Creativity) - batch.Results.Min(r => r.Profile.Creativity), 25);
             Assert.GreaterOrEqual(batch.Library.All.Max(p => p.Attributes.Passing) - batch.Library.All.Min(p => p.Attributes.Passing), 15);
-            Assert.AreEqual(98, Of("Alphonso Davies").Player.Attributes.Speed, "a very fast, defensively average full-back");
+            Assert.AreEqual(95, Of("Alphonso Davies").Player.Attributes.Speed, "a very fast, defensively average full-back (98 researched, 95 after the adjustment)");
             Assert.AreEqual(85, Of("Marc Cucurella").Player.Attributes.Defense, "a defensively strong, slower one");
         }
 
@@ -386,7 +390,7 @@ namespace FS27.Core.Tests
             Assert.AreEqual(0, batch.Results.Sum(r => r.Issues.Count(i => i.IsError)));
             var expected = new Dictionary<FieldPlayerImportCode, int>
             {
-                { FieldPlayerImportCode.TargetOvrDiffers, 2 }, { FieldPlayerImportCode.PolyvalenceBeyondZone, 2 }, { FieldPlayerImportCode.SignatureActionsPending, 10 }
+                { FieldPlayerImportCode.PolyvalenceBeyondZone, 2 }, { FieldPlayerImportCode.SignatureActionsPending, 10 }
             };
             foreach (FieldPlayerImportCode code in Enum.GetValues(typeof(FieldPlayerImportCode)).Cast<FieldPlayerImportCode>())
                 Assert.AreEqual(expected.TryGetValue(code, out int n) ? n : 0, batch.Results.Sum(r => r.Count(code)), code.ToString());
