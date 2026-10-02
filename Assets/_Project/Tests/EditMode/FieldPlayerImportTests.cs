@@ -143,6 +143,60 @@ namespace FS27.Core.Tests
         }
 
         [Test]
+        public void TheFullbackOptions_AllowWingAsPrimary_AndOnlyDefenseOrMidfieldAsTheSecondaryZone()
+        {
+            FieldPlayerImportOptions o = FieldPlayerImportOptions.Fullback();
+            FieldPlayerDataRecord r = Record(); r.PrimaryZone = "Wing"; r.SecondaryZone = "Midfield"; r.Roles.Clear();
+            r.Roles.Add(new AuthoredRole("Winger", 90)); r.Roles.Add(new AuthoredRole("Explosive", 80));
+            FieldPlayerImportResult ok = FieldPlayerRecordImporter.Import(r, o);
+            Assert.IsTrue(ok.IsComplete, string.Join("; ", ok.Issues));
+            r.SecondaryZone = "Attack";
+            Assert.IsTrue(FieldPlayerRecordImporter.Import(r, o).Has(FieldPlayerImportCode.SecondaryZoneNotAllowed));
+            r.SecondaryZone = "";
+            Assert.IsTrue(FieldPlayerRecordImporter.Import(r, o).IsComplete, "no secondary zone is fine");
+            r.PrimaryZone = "Defense";
+            Assert.IsTrue(FieldPlayerRecordImporter.Import(r, o).Has(FieldPlayerImportCode.PrimaryZoneInvalid));
+            Assert.IsTrue(FieldPlayerRecordImporter.Import(Record()).Profile.SecondaryZones.Contains(PitchZone.Wing), "the defender options still accept any secondary zone");
+        }
+
+        [Test]
+        public void AnOfficialBodyTypeNameAsALabel_IsUsedAsIs()
+        {
+            foreach (BodyType t in Enum.GetValues(typeof(BodyType)))
+            {
+                BodyTypeNormalization n = BodyTypeNormalizer.Normalize(t.ToString(), 150, 150);
+                Assert.AreEqual(t, n.Result);
+                Assert.AreEqual("official label", n.Rule);
+            }
+            Assert.AreEqual(BodyType.Strong, BodyTypeNormalizer.Normalize(" strong ", 170, 60).Result);
+            Assert.AreEqual(BodyType.Athletic, BodyTypeNormalizer.Normalize("Athletic / Robust", 190, 90).Result, "combined labels keep their rules");
+        }
+
+        [Test]
+        public void WideMidfieldPositions_BelongToTheMidfieldZone_ForThePolyvalenceCheck()
+        {
+            FieldPlayerDataRecord r = Record(); r.PrimaryZone = "Defense"; r.SecondaryZone = "Midfield"; r.SecondaryPositions.Clear(); r.SecondaryPositions.AddRange(new[] { "RM", "LM" });
+            Assert.IsFalse(Import(r).Has(FieldPlayerImportCode.PolyvalenceBeyondZone));
+        }
+
+        [Test]
+        public void TheCorrectionsCanFixTheNewFields_AndRecordsKeepFunctionalPositions()
+        {
+            FieldPlayerDataRecord r = Record(); r.ShortName = "Averyveryverylong"; r.FunctionalPositions.Add("RW");
+            var c = new List<AuthoringCorrection>
+            {
+                new AuthoringCorrection { PlayerId = "cb-test-01", Field = "shortName", Before = "Averyveryverylong", After = "Short", Class = CorrectionClass.Verified, Reason = "x" },
+                new AuthoringCorrection { PlayerId = "cb-test-01", Field = "dateOfBirth", Before = "2000-06-05", After = "2000-06-07", Class = CorrectionClass.Verified, Reason = "x" },
+                new AuthoringCorrection { PlayerId = "cb-test-01", Field = "ageAsWritten", Before = "26", After = "27", Class = CorrectionClass.Verified, Reason = "x" }
+            };
+            Assert.AreEqual(3, AuthoringCorrections.Apply(new[] { r }, c).Applied.Count);
+            Assert.AreEqual("Short", r.ShortName);
+            Assert.AreEqual(27, r.AgeAsWritten);
+            Assert.IsTrue(FieldPlayerRecordJson.TryFromJson(FieldPlayerRecordJson.ToJson(new[] { r }), out List<FieldPlayerDataRecord> back, out string error), error);
+            CollectionAssert.AreEqual(new[] { "RW" }, back[0].FunctionalPositions);
+        }
+
+        [Test]
         public void TheBehaviourValues_AreChecked_AndDefaultedExplicitly()
         {
             foreach (string field in new[] { "risk", "creativity", "aggression", "weakFoot" })
@@ -358,13 +412,13 @@ namespace FS27.Core.Tests
             var errors = new[]
             {
                 FieldPlayerImportCode.RecordMissing, FieldPlayerImportCode.PlayerIdInvalid, FieldPlayerImportCode.NameInvalid, FieldPlayerImportCode.AttributeMissing, FieldPlayerImportCode.AttributeUnknown,
-                FieldPlayerImportCode.AttributeOutOfRange, FieldPlayerImportCode.PrimaryZoneInvalid, FieldPlayerImportCode.SecondaryZoneInvalid, FieldPlayerImportCode.RoleNotAllowed,
+                FieldPlayerImportCode.AttributeOutOfRange, FieldPlayerImportCode.PrimaryZoneInvalid, FieldPlayerImportCode.SecondaryZoneInvalid, FieldPlayerImportCode.SecondaryZoneNotAllowed, FieldPlayerImportCode.RoleNotAllowed,
                 FieldPlayerImportCode.RoleCountInvalid, FieldPlayerImportCode.RoleDuplicate, FieldPlayerImportCode.AffinityMissing, FieldPlayerImportCode.AffinityOutOfRange,
                 FieldPlayerImportCode.ProfileValueOutOfRange, FieldPlayerImportCode.PreferredFootInvalid, FieldPlayerImportCode.PlayerInvalid, FieldPlayerImportCode.DuplicatePlayerId
             };
             var all = Enum.GetValues(typeof(FieldPlayerImportCode)).Cast<FieldPlayerImportCode>().ToArray();
             var warnings = all.Except(errors).ToArray();
-            Assert.AreEqual(17, errors.Length);
+            Assert.AreEqual(18, errors.Length);
             FieldPlayerDataRecord r = Record(); r.Attributes["Heading"] = 80; r.Roles[0] = new AuthoredRole("Engine", 90); r.PrimaryZone = "Goal";
             Assert.IsTrue(Import(r).Issues.All(i => i.IsError == errors.Contains(i.Code)));
             FieldPlayerDataRecord w = Record(); w.SecondaryZone = "Midfield / Wing"; w.ShirtNumber = null; w.BodyTypeLabel = "?"; w.AgeAsWritten = 40; w.Nationality = "Atlantis"; w.TargetOvr = 1;

@@ -19,7 +19,7 @@ namespace FS27.Core
     public sealed class AuthoringCorrection
     {
         public string PlayerId = "";
-        /// <summary>heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, club, nationality, preferredFoot, naturalPosition, signatureActions ("A; B"), attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
+        /// <summary>heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, ageAsWritten, dateOfBirth, shortName, club, nationality, preferredFoot, naturalPosition, signatureActions ("A; B"), attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
         public string Field = "";
         public string Before = "";
         public string After = "";
@@ -94,6 +94,9 @@ namespace FS27.Core
                 case "primaryZone": value = r.PrimaryZone; return true;
                 case "secondaryZone": value = r.SecondaryZone; return true;
                 case "bodyTypeLabel": value = r.BodyTypeLabel; return true;
+                case "ageAsWritten": value = N(r.AgeAsWritten); return true;
+                case "dateOfBirth": value = r.DateOfBirth; return true;
+                case "shortName": value = r.ShortName; return true;
                 case "club": value = r.Club; return true;
                 case "nationality": value = r.Nationality; return true;
                 case "preferredFoot": value = r.PreferredFoot; return true;
@@ -123,6 +126,9 @@ namespace FS27.Core
                 case "primaryZone": r.PrimaryZone = after; return true;
                 case "secondaryZone": r.SecondaryZone = after; return true;
                 case "bodyTypeLabel": r.BodyTypeLabel = after; return true;
+                case "ageAsWritten": if (!isInt) return false; r.AgeAsWritten = n; return true;
+                case "dateOfBirth": r.DateOfBirth = after; return true;
+                case "shortName": r.ShortName = after; return true;
                 case "club": r.Club = after; return true;
                 case "nationality": r.Nationality = after; return true;
                 case "preferredFoot": r.PreferredFoot = after; return true;

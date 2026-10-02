@@ -1,0 +1,22 @@
+# FS27 FULLBACKS — CORRECTIONS V1
+
+Every change made to `FS27_FULLBACKS_DATABASE_V1.md` before it is imported. The source file is never edited: these rows are applied by the importer (`AuthoringCorrections`,
+the same mechanism as the defender databases) and each one only applies if the record still holds the "before" value. Classes: **Verified** (an outside source contradicts or
+completes the file; the source is named; confidence high), **Design** (an FS27 contract decision), **Inference** (none in this base). No attribute, role affinity or Target OVR
+was changed.
+
+| Player | Field | Before | After | Class | Source | Reason |
+|---|---|---|---|---|---|---|
+| fb-trent-alexander-arnold | shortName | Alexander-Arnold | Trent | Verified | Real Madrid announcement and press: his shirt name is "Trent" (web search) | The contract limits a short name to 12 characters and "Alexander-Arnold" has 16; without the correction the player cannot be imported |
+| fb-trent-alexander-arnold | shirtNumber |  | 12 | Verified | Real Madrid announcement: he wears number 12 because La Liga restricts squad numbers to 1-25 and he could not keep 66 (web search) | The file says "66 / 2" (two numbers, and 66 is his former Liverpool number): not a whole number, the reader reports it and the field stays absent until this correction |
+| fb-trent-alexander-arnold | club | Real Madrid / Liverpool | Real Madrid | Verified | Same announcements: he plays for Real Madrid | The file lists two clubs; the current one is Real Madrid |
+| fb-denzel-dumfries | club | Inter Milan | Real Madrid | Verified | Official Real Madrid announcement of 5 July 2026 and press (web search) | Outdated club in the file; his shirt number at Real Madrid was not found, so the source value 2 (his Inter number) is kept and flagged as unverified |
+| fb-denzel-dumfries | dateOfBirth | 1996-04-26 | 1996-04-18 | Verified | Wikipedia and profile pages: born 18 April 1996 (web search) | Wrong day in the file; the age (30) is unchanged |
+| fb-dani-munoz | dateOfBirth | 1996-05-24 | 1996-05-26 | Verified | Profile page: born 26 May 1996 (web search) | Wrong day in the file; the age (30) is unchanged |
+| fb-pedro-porro | ageAsWritten | 26 | 27 | Verified | Wikipedia: born 13 September 1999 (web search); the file itself gives that date of birth | The stated age 26 contradicts the file's own date of birth on the reference date (2026-10-02): 27 |
+| fb-joao-cancelo | preferredFoot | Right (Polivalente consumado capaz de rendir de forma sobresaliente en la banda izquierda) | Right | Verified | Barcelona, FotMob and other profiles: right-footed, plays right-back (web search) | The file writes a sentence instead of a foot and its tables disagree (Left in the summary, Right/Left in the comparison table). He is right-footed with an exceptional weak foot (85, kept). His natural position stays LB as registered by the source (see the integration document) |
+| fb-joao-cancelo | club | Al Hilal / Club de élite internacional | Barcelona | Verified | Barcelona official profile: permanent signing until 2029 (web search) | The file lists a former club and a placeholder |
+| fb-joao-cancelo | shirtNumber | 27 | 2 | Verified | Barcelona profile: wears number 2 (web search) | The file gives a number from a previous club |
+| fb-denzel-dumfries | secondaryZone | Attack | Midfield | Design | FS27 contract for full-backs: the one secondary zone is Defense or Midfield | The file lists Attack, but its own polyvalence lists RM/LM/LW as his wide-midfield cover (Wing is already the primary zone); Midfield is the closest allowed zone |
+| fb-nuno-mendes | secondaryZone | Attack | Midfield | Design | FS27 contract for full-backs: the one secondary zone is Defense or Midfield | The file lists Attack, but its own polyvalence lists RM/LM/LW as his wide-midfield cover (Wing is already the primary zone); Midfield is the closest allowed zone |
+| fb-alphonso-davies | secondaryZone | Attack | Midfield | Design | FS27 contract for full-backs: the one secondary zone is Defense or Midfield | The file lists Attack, but its own polyvalence lists RM/LM/LW as his wide-midfield cover (Wing is already the primary zone); Midfield is the closest allowed zone |

@@ -47,6 +47,8 @@ namespace FS27.Core
         // ---- real positions (authoring) ----
         public string NaturalPosition = "";
         public List<string> SecondaryPositions = new List<string>();
+        /// <summary>Functional versatility: positions the player can cover without them being a real secondary position ("RM, RW"). Authoring information only.</summary>
+        public List<string> FunctionalPositions = new List<string>();
         public string VersatilityLevel = "";
         public string PolyvalenceNote = "";
 
@@ -76,6 +78,7 @@ namespace FS27.Core
         public List<string> Strengths = new List<string>();
         public List<string> Weaknesses = new List<string>();
         public string GameplayFeel = "";
+        public string GameplayBehavior = "";
     }
 
     /// <summary>The record as JSON (strict: anything unexpected is reported, nothing is guessed). Keys are sorted, so the text is stable.</summary>
@@ -100,7 +103,7 @@ namespace FS27.Core
             Str(o, "fullName", r.FullName); Str(o, "shortName", r.ShortName); Str(o, "nationality", r.Nationality); Str(o, "dateOfBirth", r.DateOfBirth);
             Str(o, "preferredFoot", r.PreferredFoot); Str(o, "club", r.Club); Str(o, "naturalPosition", r.NaturalPosition); Str(o, "versatilityLevel", r.VersatilityLevel);
             Str(o, "polyvalenceNote", r.PolyvalenceNote); Str(o, "primaryZone", r.PrimaryZone); Str(o, "secondaryZone", r.SecondaryZone); Str(o, "bodyTypeLabel", r.BodyTypeLabel);
-            Str(o, "confidence", r.Confidence); Str(o, "identity", r.Identity); Str(o, "gameplayFeel", r.GameplayFeel);
+            Str(o, "confidence", r.Confidence); Str(o, "identity", r.Identity); Str(o, "gameplayFeel", r.GameplayFeel); Str(o, "gameplayBehavior", r.GameplayBehavior);
             Num(o, "ageAsWritten", r.AgeAsWritten); Num(o, "heightCm", r.HeightCm); Num(o, "weightKg", r.WeightKg); Num(o, "weakFootQuality", r.WeakFootQuality);
             Num(o, "shirtNumber", r.ShirtNumber); Num(o, "riskPreference", r.RiskPreference); Num(o, "creativity", r.Creativity); Num(o, "aggression", r.Aggression); Num(o, "targetOvr", r.TargetOvr);
             var attrs = JsonValue.NewObject();
@@ -115,6 +118,7 @@ namespace FS27.Core
             }
             o.Set("roles", roles);
             o.Set("secondaryPositions", Strings(r.SecondaryPositions)).Set("signatureActions", Strings(r.SignatureActions));
+            if (r.FunctionalPositions.Count > 0) o.Set("functionalPositions", Strings(r.FunctionalPositions));
             o.Set("strengths", Strings(r.Strengths)).Set("weaknesses", Strings(r.Weaknesses));
             return o;
         }
@@ -146,7 +150,7 @@ namespace FS27.Core
                 Nationality = o.GetString("nationality", ""), DateOfBirth = o.GetString("dateOfBirth", ""), PreferredFoot = o.GetString("preferredFoot", ""), Club = o.GetString("club", ""),
                 NaturalPosition = o.GetString("naturalPosition", ""), VersatilityLevel = o.GetString("versatilityLevel", ""), PolyvalenceNote = o.GetString("polyvalenceNote", ""),
                 PrimaryZone = o.GetString("primaryZone", ""), SecondaryZone = o.GetString("secondaryZone", ""), BodyTypeLabel = o.GetString("bodyTypeLabel", ""),
-                Confidence = o.GetString("confidence", ""), Identity = o.GetString("identity", ""), GameplayFeel = o.GetString("gameplayFeel", "")
+                Confidence = o.GetString("confidence", ""), Identity = o.GetString("identity", ""), GameplayFeel = o.GetString("gameplayFeel", ""), GameplayBehavior = o.GetString("gameplayBehavior", "")
             };
             if (!Opt(o, "ageAsWritten", out r.AgeAsWritten, out error) || !Opt(o, "heightCm", out r.HeightCm, out error) || !Opt(o, "weightKg", out r.WeightKg, out error)
                 || !Opt(o, "weakFootQuality", out r.WeakFootQuality, out error) || !Opt(o, "shirtNumber", out r.ShirtNumber, out error) || !Opt(o, "riskPreference", out r.RiskPreference, out error)
@@ -169,7 +173,7 @@ namespace FS27.Core
                     r.Roles.Add(new AuthoredRole(ro.GetString("role", ""), aff));
                 }
             }
-            return Strs(o, "secondaryPositions", r.SecondaryPositions, out error) && Strs(o, "signatureActions", r.SignatureActions, out error)
+            return Strs(o, "secondaryPositions", r.SecondaryPositions, out error) && Strs(o, "functionalPositions", r.FunctionalPositions, out error) && Strs(o, "signatureActions", r.SignatureActions, out error)
                 && Strs(o, "strengths", r.Strengths, out error) && Strs(o, "weaknesses", r.Weaknesses, out error);
         }
 

@@ -36,6 +36,12 @@ namespace FS27.Core
             return Run(FieldPlayerCompactMarkdown.Parse(markdown, idPrefix), options, into, correctionsMarkdown);
         }
 
+        /// <summary>Same as <see cref="ImportMarkdown"/> for the sectioned layout (<see cref="FieldPlayerSectionedMarkdown"/>).</summary>
+        public static Batch ImportSectionedMarkdown(string markdown, string idPrefix, FieldPlayerImportOptions options = null, PlayerLibrary into = null, string correctionsMarkdown = null)
+        {
+            return Run(FieldPlayerSectionedMarkdown.Parse(markdown, idPrefix), options, into, correctionsMarkdown);
+        }
+
         private static Batch Run(FieldPlayerParseResult parsed, FieldPlayerImportOptions options, PlayerLibrary into, string correctionsMarkdown)
         {
             var tableProblems = new List<string>();

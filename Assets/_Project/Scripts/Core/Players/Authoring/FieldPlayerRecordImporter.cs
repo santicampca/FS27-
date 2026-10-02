@@ -21,6 +21,8 @@ namespace FS27.Core
         AttributeOutOfRange,
         PrimaryZoneInvalid,
         SecondaryZoneInvalid,
+        /// <summary>A valid zone that this database does not allow as its secondary zone (a full-back's secondary zone is Defense or Midfield).</summary>
+        SecondaryZoneNotAllowed,
         /// <summary>A role that is not one of the 12 official roles, or not allowed for this database (a defender database allows Wall, Guardian, Anchor).</summary>
         RoleNotAllowed,
         RoleCountInvalid,
@@ -110,6 +112,8 @@ namespace FS27.Core
         public HashSet<PlayerArchetype> AllowedRoles;
         /// <summary>Zones a primary zone may be (null = any except Goal).</summary>
         public HashSet<PitchZone> AllowedPrimaryZones;
+        /// <summary>Zones the secondary zone may be (null = any except Goal and the primary zone).</summary>
+        public HashSet<PitchZone> AllowedSecondaryZones;
         /// <summary>The "today" of the source, to check stated ages against dates of birth.</summary>
         public DateTime ReferenceDate = new DateTime(2026, 10, 2);
         /// <summary>Allowed distance between target and calculated overall before a warning (a starting value, not a rule).</summary>
@@ -120,6 +124,20 @@ namespace FS27.Core
         public IReadOnlyDictionary<string, string> TagBehaviors = DefenderVocabulary.TagBehaviors();
         public SignatureBehaviorCatalog Behaviors = DefaultBehaviors.Create();
         public PlayerRatingCalculator Calculator = PlayerRatingCalculator.CreateDefault();
+
+        /// <summary>Full-backs: Wing as the primary zone, Defense or Midfield as the one optional secondary zone, any of the 12 official roles, wing-play action vocabulary.</summary>
+        public static FieldPlayerImportOptions Fullback()
+        {
+            return new FieldPlayerImportOptions
+            {
+                Role = PlayerRole.Defender,
+                AllowedRoles = null,
+                AllowedPrimaryZones = new HashSet<PitchZone> { PitchZone.Wing },
+                AllowedSecondaryZones = new HashSet<PitchZone> { PitchZone.Defense, PitchZone.Midfield },
+                ActionVocabulary = WingPlayVocabulary.Create(),
+                TagBehaviors = WingPlayVocabulary.TagBehaviors()
+            };
+        }
 
         public static FieldPlayerImportOptions Defender()
         {
@@ -255,6 +273,8 @@ namespace FS27.Core
                     Add(res, FieldPlayerImportCode.SecondaryZoneAmbiguous, false, "secondaryZone", rec.SecondaryZone, "'" + rec.SecondaryZone + "' lists several zones; only one is allowed, using '" + parts[0].Trim() + "'.");
                 if (!TryZone(parts[0], out PitchZone secondary) || secondary == PitchZone.Goal || secondary == p.PrimaryZone)
                     Add(res, FieldPlayerImportCode.SecondaryZoneInvalid, true, "secondaryZone", rec.SecondaryZone, "'" + parts[0].Trim() + "' is not a valid secondary zone.");
+                else if (o.AllowedSecondaryZones != null && !o.AllowedSecondaryZones.Contains(secondary))
+                    Add(res, FieldPlayerImportCode.SecondaryZoneNotAllowed, true, "secondaryZone", rec.SecondaryZone, "'" + secondary + "' is not an allowed secondary zone for this database.");
                 else p.SecondaryZones.Add(secondary);
             }
             CheckPolyvalence(rec, p, res);
@@ -316,7 +336,7 @@ namespace FS27.Core
             {
                 case "CB": zone = PitchZone.Defense; return true;
                 case "RB": case "LB": case "RWB": case "LWB": case "RW": case "LW": zone = PitchZone.Wing; return true;
-                case "CDM": case "CM": case "CAM": zone = PitchZone.Midfield; return true;
+                case "CDM": case "CM": case "CAM": case "RM": case "LM": zone = PitchZone.Midfield; return true;
                 case "ST": case "CF": zone = PitchZone.Attack; return true;
                 default: return false;
             }
@@ -452,6 +472,9 @@ namespace FS27.Core
         {
             var n = new BodyTypeNormalization { Label = label ?? "" };
             string l = (label ?? "").ToLowerInvariant();
+            // a label that already is one of the five official types (and only that) is used as it is
+            foreach (BodyType official in Enum.GetValues(typeof(BodyType)))
+                if (l.Trim() == official.ToString().ToLowerInvariant()) { n.Result = official; n.Rule = "official label"; return n; }
             var words = l.Split(new[] { ' ', '/' }, StringSplitOptions.RemoveEmptyEntries);
             float h = heightCm / 100f;
             float bmi = h > 0f ? weightKg / (h * h) : 0f;
