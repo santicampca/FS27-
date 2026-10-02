@@ -19,7 +19,7 @@ namespace FS27.Core
     public sealed class AuthoringCorrection
     {
         public string PlayerId = "";
-        /// <summary>heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, ageAsWritten, dateOfBirth, shortName, club, nationality, preferredFoot, naturalPosition, signatureActions ("A; B"), attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
+        /// <summary>playerId, name, fullName, heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, ageAsWritten, dateOfBirth, shortName, club, nationality, preferredFoot, naturalPosition, signatureActions ("A; B"), attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
         public string Field = "";
         public string Before = "";
         public string After = "";
@@ -84,6 +84,9 @@ namespace FS27.Core
             value = null;
             switch (field)
             {
+                case "playerId": value = r.PlayerId; return true;
+                case "name": value = r.Name; return true;
+                case "fullName": value = r.FullName; return true;
                 case "heightCm": value = N(r.HeightCm); return true;
                 case "weightKg": value = N(r.WeightKg); return true;
                 case "shirtNumber": value = N(r.ShirtNumber); return true;
@@ -116,6 +119,9 @@ namespace FS27.Core
             bool isInt = int.TryParse(after, NumberStyles.Integer, CultureInfo.InvariantCulture, out int n);
             switch (field)
             {
+                case "playerId": r.PlayerId = after; return true;
+                case "name": r.Name = after; return true;
+                case "fullName": r.FullName = after; return true;
                 case "heightCm": if (!isInt) return false; r.HeightCm = n; return true;
                 case "weightKg": if (!isInt) return false; r.WeightKg = n; return true;
                 case "shirtNumber": if (!isInt) return false; r.ShirtNumber = n; return true;

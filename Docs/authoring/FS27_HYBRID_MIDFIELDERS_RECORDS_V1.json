@@ -153,7 +153,7 @@
       "weightKg": 68
     },
     {
-      "ageAsWritten": 22,
+      "ageAsWritten": 23,
       "aggression": 72,
       "attributes": {
         "Acceleration": 81,
@@ -170,17 +170,18 @@
         "Technique": 79
       },
       "bodyTypeLabel": "Athletic",
+      "club": "FC Bayern München",
       "confidence": "Medium",
       "creativity": 70,
-      "dateOfBirth": "2004-05-12",
-      "fullName": "Nathan Brown",
+      "dateOfBirth": "2003-06-16",
+      "fullName": "Nathaniel Christopher Brown",
       "gameplayBehavior": "Mediocampista izquierdo equilibrado que destaca por su recorrido continuo. Conecta la banda con el centro del campo, ofrece seguridad en el pase y respalda defensivamente a su zaga con gran disciplina.",
       "gameplayFeel": "With Ball: Oscila entre la banda izquierda y el interior del mediocampo, conduciendo el esférico de forma progresiva y ofreciendo apoyos seguros en la circulación. Without Ball: Realiza coberturas defensivas constantes ayudando al lateral, presiona la salida del rival y ocupa espacios en bloque medio. Transition: Transición rápida buscando opciones de pase en corto o conduciendo el balón para estirar el campo en ataque.",
-      "heightCm": 180,
-      "name": "Nathan Brown",
-      "nationality": "England",
+      "heightCm": 176,
+      "name": "Nathaniel Brown",
+      "nationality": "Germany",
       "naturalPosition": "LM",
-      "playerId": "md-nathan-brown",
+      "playerId": "md-nathaniel-brown",
       "polyvalenceNote": "Functional versatility: Despliegue constante entre la banda izquierda y el interior del mediocampo. | Hybrid type: Balanced Midfield Hybrid | Position confidence: Medium",
       "preferredFoot": "Left",
       "primaryZone": "Midfield",

@@ -14,7 +14,7 @@ namespace FS27.Core.Tests
     {
         private static readonly string[] Names =
         {
-            "Oleksandr Zinchenko", "Valentín Barco", "Nathan Brown", "Myles Lewis-Skelly", "Lewis Hall", "Nico O'Reilly",
+            "Oleksandr Zinchenko", "Valentín Barco", "Nathaniel Brown", "Myles Lewis-Skelly", "Lewis Hall", "Nico O'Reilly",
             "Reece James", "Joshua Kimmich", "Dominik Szoboszlai", "Moisés Caicedo", "Warren Zaïre-Emery", "Federico Valverde"
         };
 
@@ -60,9 +60,10 @@ namespace FS27.Core.Tests
         public void TheSourceHoldsTwelveHybrids_SixMdiAndSixMdd_AllImported_InOrder_WithNoErrors()
         {
             List<FieldPlayerDataRecord> records = Records();
-            CollectionAssert.AreEqual(Names, records.Select(r => r.Name).ToArray());
+            Assert.AreEqual("Nathan Brown", records[2].Name, "the source card keeps the name it was given");
+            CollectionAssert.AreEqual(Names, batch.Results.Select(r => r.Player.Name).ToArray());
             Assert.AreEqual(12, batch.Added); Assert.AreEqual(0, batch.Failed);
-            Assert.AreEqual(8, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
+            Assert.AreEqual(15, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
             var tags = new FieldPlayerCardMarkdown.CardTags();
             FieldPlayerCardMarkdown.Parse(markdown, "md", tags);
             Assert.AreEqual(6, tags.Tags.Count(t => t == "MDI")); Assert.AreEqual(6, tags.Tags.Count(t => t == "MDD"));
@@ -128,11 +129,11 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TheEightCorrections_AreDocumented_AndNoAttributeRoleOrTargetWasChanged()
+        public void TheFifteenCorrections_AreDocumented_AndNoAttributeRoleOrTargetWasChanged()
         {
             List<AuthoringCorrection> list = AuthoringCorrections.ParseMarkdown(correctionsText, new List<string>());
-            Assert.AreEqual(8, list.Count);
-            Assert.AreEqual(6, list.Count(c => c.Class == CorrectionClass.Verified)); Assert.AreEqual(2, list.Count(c => c.Class == CorrectionClass.Inference));
+            Assert.AreEqual(15, list.Count);
+            Assert.AreEqual(14, list.Count(c => c.Class == CorrectionClass.Verified)); Assert.AreEqual(1, list.Count(c => c.Class == CorrectionClass.Inference));
             Assert.IsFalse(list.Any(c => c.Field.StartsWith("attr.") || c.Field.StartsWith("role.")));
             Assert.IsTrue(list.All(c => c.Source.Length > 0 && c.Reason.Length > 0));
             Assert.AreEqual(31, Of("Joshua Kimmich").Player.Age, "the corrected birthday keeps the stated age");
@@ -141,6 +142,23 @@ namespace FS27.Core.Tests
             FieldPlayerLibraryBuilder.Batch raw = Import(null, "");
             Assert.AreEqual(12, raw.Added, "without the corrections every player still imports, only with the outdated facts");
             Assert.AreEqual(75, raw.Results[5].Player.Number);
+        }
+
+        [Test]
+        public void TheCardCalledNathanBrown_IsNathanielBrown_IdentityCorrected_NothingElseChanged()
+        {
+            FieldPlayerImportResult brown = Of("Nathaniel Brown");
+            Assert.AreEqual("md-nathaniel-brown", brown.PlayerId);
+            Assert.AreEqual("GER", brown.Player.NationalityCode);
+            Assert.AreEqual(23, brown.Player.Age); Assert.AreEqual(176, brown.Player.HeightCm); Assert.AreEqual(11, brown.Player.Number);
+            Assert.AreEqual(73, brown.Player.WeightKg, "the weight was not found in the official profiles and stays as researched");
+            Assert.AreEqual(PlayerArchetype.Engine, brown.Profile.Roles[0].Role); Assert.AreEqual(80, brown.Overall.TargetOvr);
+            Assert.AreEqual(PlayerRole.Midfielder, brown.Player.Role);
+            FieldPlayerDataRecord corrected = Records()[2];
+            AuthoringCorrections.Apply(new List<FieldPlayerDataRecord> { corrected }, AuthoringCorrections.ParseMarkdown(correctionsText, new List<string>()).Where(c => c.PlayerId == "md-nathan-brown"));
+            Assert.AreEqual("Nathaniel Christopher Brown", corrected.FullName); Assert.AreEqual("FC Bayern München", corrected.Club); Assert.AreEqual("2003-06-16", corrected.DateOfBirth);
+            FieldPlayerLibraryBuilder.Batch raw = Import(null, "");
+            Assert.AreEqual("md-nathan-brown", raw.Results[2].PlayerId); Assert.AreEqual(Of("Nathaniel Brown").Overall.CalculatedOverall, raw.Results[2].Overall.CalculatedOverall, "identity facts do not move the rating");
         }
 
         [Test]
