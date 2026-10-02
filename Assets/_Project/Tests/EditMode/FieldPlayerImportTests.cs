@@ -180,13 +180,34 @@ namespace FS27.Core.Tests
             Assert.IsTrue(Import(r).Has(FieldPlayerImportCode.PlayerInvalid));
             r = Record(); r.HeightCm = 300;
             Assert.IsTrue(Import(r).Has(FieldPlayerImportCode.PlayerInvalid));
-            r = Record(); r.PreferredFoot = "Both";
+            r = Record(); r.PreferredFoot = "Banana";
             Assert.IsTrue(Import(r).Has(FieldPlayerImportCode.PreferredFootInvalid));
             r = Record(); r.PlayerId = "has space";
             Assert.IsTrue(Import(r).Has(FieldPlayerImportCode.PlayerIdInvalid));
             r = Record(); r.Name = " ";
             Assert.IsTrue(Import(r).Has(FieldPlayerImportCode.NameInvalid));
             Assert.IsTrue(Import(null).Has(FieldPlayerImportCode.RecordMissing));
+        }
+
+        [TestCase("Izquierdo / Derecho (Ambidiestro técnico)")] [TestCase("Both")] [TestCase("ambidiestro")] [TestCase("Left / Right")] [TestCase("Ambidiestro (las fuentes discrepan)")]
+        public void AnAmbiguousFoot_IsAWarning_NeverTurnedIntoLeft(string text)
+        {
+            FieldPlayerDataRecord r = Record(); r.PreferredFoot = text;
+            FieldPlayerImportResult res = Import(r);
+            Assert.IsTrue(res.IsComplete);
+            Assert.IsTrue(res.Has(FieldPlayerImportCode.PreferredFootAmbiguous));
+            Assert.AreEqual(text, res.Issues.Single(i => i.Code == FieldPlayerImportCode.PreferredFootAmbiguous).Value, "the original text is reported");
+            Assert.AreEqual(new PlayerDefinition().PreferredFoot, res.Player.PreferredFoot);
+            Assert.AreNotEqual(PreferredFoot.Left, res.Player.PreferredFoot);
+        }
+
+        [TestCase("Izquierdo", PreferredFoot.Left)] [TestCase("Left", PreferredFoot.Left)] [TestCase("Derecho", PreferredFoot.Right)] [TestCase("Right", PreferredFoot.Right)]
+        public void ASingleFoot_IsUnderstood(string text, PreferredFoot expected)
+        {
+            FieldPlayerDataRecord r = Record(); r.PreferredFoot = text;
+            FieldPlayerImportResult res = Import(r);
+            Assert.AreEqual(expected, res.Player.PreferredFoot);
+            Assert.IsFalse(res.Has(FieldPlayerImportCode.PreferredFootAmbiguous));
         }
 
         [Test]
@@ -261,7 +282,27 @@ namespace FS27.Core.Tests
             Assert.IsTrue(res.Has(FieldPlayerImportCode.BodyTypeUnrecognised));
             Assert.AreEqual(BodyType.Athletic, res.Player.BodyType);
             r.BodyTypeLabel = "";
-            Assert.IsTrue(Import(r).Has(FieldPlayerImportCode.BodyTypeUnrecognised));
+            FieldPlayerImportResult none = Import(r);
+            Assert.IsTrue(none.Has(FieldPlayerImportCode.BodyTypeDerivedFromMeasurements), "no label: derived from height and weight, said so");
+            Assert.IsFalse(none.Has(FieldPlayerImportCode.BodyTypeUnrecognised));
+        }
+
+        [TestCase(197, 85, BodyType.Tall)] [TestCase(195, 81, BodyType.Tall)] [TestCase(175, 77, BodyType.Compact)] [TestCase(190, 75, BodyType.Light)]
+        [TestCase(183, 76, BodyType.Athletic)] [TestCase(185, 90, BodyType.Strong)] [TestCase(176, 70, BodyType.Athletic)]
+        public void WithNoLabel_TheBodyTypeComesFromHeightAndWeight_WithTheSameBmiLimits(int cm, int kg, BodyType expected)
+        {
+            BodyTypeNormalization n = BodyTypeNormalizer.Normalize("", cm, kg);
+            Assert.AreEqual(expected, n.Result);
+            Assert.AreEqual(BodyTypeNormalizer.MeasurementsRule, n.Rule);
+            Assert.AreEqual(25.5f, BodyTypeNormalizer.StrongBmi, "the label rules and their limits are untouched");
+            Assert.AreEqual(22f, BodyTypeNormalizer.LightBmi);
+        }
+
+        [Test]
+        public void WithALabel_TheRulesAreTheSameAsBefore_NoMeasurementFallbackApplies()
+        {
+            Assert.AreEqual(BodyType.Athletic, BodyTypeNormalizer.Normalize("Athletic / Robust Power", 197, 85).Result, "a label wins over height");
+            Assert.AreNotEqual(BodyTypeNormalizer.MeasurementsRule, BodyTypeNormalizer.Normalize("Athletic", 197, 85).Rule);
         }
 
         // ---- signature actions

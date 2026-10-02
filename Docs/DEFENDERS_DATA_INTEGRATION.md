@@ -1,5 +1,7 @@
 # FS27 — Integración de los 20 defensas centrales
 
+> Los 20 defensas centrales zurdos usan este mismo sistema: ver [LEFT_DEFENDERS_DATA_INTEGRATION.md](LEFT_DEFENDERS_DATA_INTEGRATION.md).
+
 Estado: **datos, importación, correcciones documentadas y validación implementados y probados fuera de Unity** (C# puro, `dotnet test Tests/Core.Tests`). No se tocó gameplay, IA, animación ni Unity. La fuente de autoría es `fs27dd.docx`.
 
 ## 1. Archivos de autoría (`Docs/authoring/`)

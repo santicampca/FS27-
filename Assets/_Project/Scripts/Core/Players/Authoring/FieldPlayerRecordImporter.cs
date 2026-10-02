@@ -51,6 +51,8 @@ namespace FS27.Core
         HeightDefaulted,
         WeakFootDefaulted,
         PreferredFootDefaulted,
+        /// <summary>The foot is ambiguous ("Izquierdo / Derecho", "ambidiestro", "both"): the default is kept and the original text is reported. Never turned into Left.</summary>
+        PreferredFootAmbiguous,
         BehaviourProfileDefaulted,
         ShortNameDerived,
         NationalityUnknown,
@@ -60,6 +62,11 @@ namespace FS27.Core
         SignatureActionDuplicate,
         /// <summary>More actions than the allowed maximum: the first ones are kept.</summary>
         SignatureActionsTrimmed,
+        /// <summary>The source lists no signature action: none is made up.</summary>
+        SignatureActionsAbsent,
+        /// <summary>The source has no body label: the type was derived from height and weight only (see <see cref="BodyTypeNormalizer"/>).</summary>
+        BodyTypeDerivedFromMeasurements,
+        NationalityMissing,
         /// <summary>These normalised tags have no football behaviour yet. They stay as authoring tags; nothing is invented.</summary>
         SignatureActionsPending
     }
@@ -181,6 +188,7 @@ namespace FS27.Core
             res.Player = player;
             res.Profile = profile;
             res.Overall = Check(rec, player, profile, options, res);
+            if (rec.SignatureActions == null || rec.SignatureActions.Count == 0) Add(res, FieldPlayerImportCode.SignatureActionsAbsent, false, "signatureActions", "", "The source lists no signature action; none is made up.");
             res.Dna = new FootballDNA();
             foreach (string tag in res.SignatureTags)
                 if (options.TagBehaviors != null && options.TagBehaviors.TryGetValue(tag, out string behaviorId) && options.Behaviors.Contains(behaviorId))
@@ -351,7 +359,8 @@ namespace FS27.Core
                 string f = GoalkeeperRecordImporter.Normalize(rec.PreferredFoot);
                 if (f == "right" || f == "derecho") p.PreferredFoot = PreferredFoot.Right;
                 else if (f == "left" || f == "izquierdo") p.PreferredFoot = PreferredFoot.Left;
-                else Add(res, FieldPlayerImportCode.PreferredFootInvalid, true, "preferredFoot", rec.PreferredFoot, "'" + rec.PreferredFoot + "' is not Left or Right.");
+                else if (IsAmbiguousFoot(f)) Add(res, FieldPlayerImportCode.PreferredFootAmbiguous, false, "preferredFoot", rec.PreferredFoot, "'" + rec.PreferredFoot + "' is not a single foot; keeping " + p.PreferredFoot + " (never turned into Left).");
+                else Add(res, FieldPlayerImportCode.PreferredFootInvalid, true, "preferredFoot", rec.PreferredFoot, "'" + rec.PreferredFoot + "' is not a foot.");
             }
 
             if (!string.IsNullOrEmpty(rec.ShortName)) p.ShortName = rec.ShortName;
@@ -362,12 +371,20 @@ namespace FS27.Core
                 if (NationalityCodes.TryGet(rec.Nationality, out string code)) p.NationalityCode = code;
                 else Add(res, FieldPlayerImportCode.NationalityUnknown, false, "nationality", rec.Nationality, "No code for '" + rec.Nationality + "'; left empty.");
             }
+            else Add(res, FieldPlayerImportCode.NationalityMissing, false, "nationality", "", "The source has no nationality; left empty.");
 
             BodyTypeNormalization bt = BodyTypeNormalizer.Normalize(rec.BodyTypeLabel, p.HeightCm, p.WeightKg);
             res.BodyType = bt;
-            if (bt.Rule == BodyTypeNormalizer.UnrecognisedRule) Add(res, FieldPlayerImportCode.BodyTypeUnrecognised, false, "bodyType", rec.BodyTypeLabel, "'" + rec.BodyTypeLabel + "' is not recognised; using " + bt.Result + ".");
+            if (bt.Rule == BodyTypeNormalizer.MeasurementsRule) Add(res, FieldPlayerImportCode.BodyTypeDerivedFromMeasurements, false, "bodyType", bt.Result.ToString(), "No body label in the source; " + bt.Result + " from height and weight only.");
+            else if (bt.Rule == BodyTypeNormalizer.UnrecognisedRule) Add(res, FieldPlayerImportCode.BodyTypeUnrecognised, false, "bodyType", rec.BodyTypeLabel, "'" + rec.BodyTypeLabel + "' is not recognised; using " + bt.Result + ".");
             p.BodyType = bt.Result;
             return p;
+        }
+
+        private static bool IsAmbiguousFoot(string normalised)
+        {
+            bool left = normalised.Contains("izquierd") || normalised.Contains("left"), right = normalised.Contains("derech") || normalised.Contains("right");
+            return (left && right) || normalised.Contains("ambi") || normalised.Contains("both") || normalised.Contains("ambos");
         }
 
         private static int ResolveAge(FieldPlayerDataRecord rec, PlayerDefinition neutral, FieldPlayerImportOptions o, FieldPlayerImportResult res)
@@ -424,6 +441,12 @@ namespace FS27.Core
         public const float StrongBmi = 25.5f;
         public const float LightBmi = 22f;
         public const string UnrecognisedRule = "unrecognised";
+        public const string MeasurementsRule = "no label: from height and weight only";
+        /// <summary>Only for a source WITHOUT a body label: from this height up the build is Tall.</summary>
+        public const int TallCm = 195;
+        /// <summary>Only for a source WITHOUT a body label: a player this short or shorter with a BMI of <see cref="CompactMinBmi"/> or more is Compact.</summary>
+        public const int CompactMaxCm = 176;
+        public const float CompactMinBmi = 24f;
 
         public static BodyTypeNormalization Normalize(string label, int heightCm, int weightKg)
         {
@@ -432,7 +455,18 @@ namespace FS27.Core
             var words = l.Split(new[] { ' ', '/' }, StringSplitOptions.RemoveEmptyEntries);
             float h = heightCm / 100f;
             float bmi = h > 0f ? weightKg / (h * h) : 0f;
-            if (words.Length == 0) { n.Result = BodyType.Athletic; n.Rule = UnrecognisedRule; return n; }
+            if (words.Length == 0)
+            {
+                // a source with no label at all: the label rules cannot run, so the same BMI limits decide, plus a height for Tall and a short sturdy build for Compact
+                n.Rule = MeasurementsRule;
+                if (heightCm <= 0 || weightKg <= 0) { n.Result = BodyType.Athletic; n.Rule = UnrecognisedRule; }
+                else if (heightCm >= TallCm) n.Result = BodyType.Tall;
+                else if (heightCm <= CompactMaxCm && bmi >= CompactMinBmi) n.Result = BodyType.Compact;
+                else if (bmi >= StrongBmi) n.Result = BodyType.Strong;
+                else if (bmi < LightBmi) n.Result = BodyType.Light;
+                else n.Result = BodyType.Athletic;
+                return n;
+            }
 
             string first = words[0];
             if (Has(words, "tall")) { n.Result = BodyType.Tall; n.Rule = "label says Tall"; }

@@ -27,7 +27,17 @@ namespace FS27.Core
         /// <param name="correctionsMarkdown">Optional table of documented corrections (see <see cref="AuthoringCorrections"/>), applied to the records before importing.</param>
         public static Batch ImportMarkdown(string markdown, string idPrefix, FieldPlayerImportOptions options = null, PlayerLibrary into = null, string correctionsMarkdown = null)
         {
-            FieldPlayerParseResult parsed = FieldPlayerDatabaseMarkdown.Parse(markdown, idPrefix);
+            return Run(FieldPlayerDatabaseMarkdown.Parse(markdown, idPrefix), options, into, correctionsMarkdown);
+        }
+
+        /// <summary>Same as <see cref="ImportMarkdown"/> for the compact layout (<see cref="FieldPlayerCompactMarkdown"/>).</summary>
+        public static Batch ImportCompactMarkdown(string markdown, string idPrefix, FieldPlayerImportOptions options = null, PlayerLibrary into = null, string correctionsMarkdown = null)
+        {
+            return Run(FieldPlayerCompactMarkdown.Parse(markdown, idPrefix), options, into, correctionsMarkdown);
+        }
+
+        private static Batch Run(FieldPlayerParseResult parsed, FieldPlayerImportOptions options, PlayerLibrary into, string correctionsMarkdown)
+        {
             var tableProblems = new List<string>();
             CorrectionLog log = AuthoringCorrections.Apply(parsed.Records, AuthoringCorrections.ParseMarkdown(correctionsMarkdown, tableProblems));
             Batch batch = Import(parsed.Records, options, into);

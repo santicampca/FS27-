@@ -19,7 +19,7 @@ namespace FS27.Core
             {
                 "ARG|Argentina", "AUS|Australia", "GER|Alemania|Germany", "BEL|Bélgica|Belgium", "BRA|Brasil|Brazil", "CMR|Camerún|Cameroon", "SVN|Eslovenia|Slovenia",
                 "ESP|España|Spain", "FRA|Francia|France", "ENG|Inglaterra|England", "ITA|Italia|Italy", "JPN|Japón|Japan", "RUS|Rusia|Russia", "SUI|Suiza|Switzerland",
-                "NED|Países Bajos|Netherlands|Holanda", "POR|Portugal", "SEN|Senegal", "KOR|Corea del Sur|South Korea", "URU|Uruguay", "VEN|Venezuela"
+                "NED|Países Bajos|Netherlands|Holanda", "POR|Portugal", "SEN|Senegal", "KOR|Corea del Sur|South Korea", "URU|Uruguay", "VEN|Venezuela", "ECU|Ecuador", "SVK|Eslovaquia|Slovakia", "CRO|Croacia|Croatia", "NGA|Nigeria"
             };
             foreach (string row in rows)
             {

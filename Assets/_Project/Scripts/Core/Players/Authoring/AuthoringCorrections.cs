@@ -19,7 +19,7 @@ namespace FS27.Core
     public sealed class AuthoringCorrection
     {
         public string PlayerId = "";
-        /// <summary>heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
+        /// <summary>heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, club, nationality, preferredFoot, naturalPosition, signatureActions ("A; B"), attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
         public string Field = "";
         public string Before = "";
         public string After = "";
@@ -94,6 +94,11 @@ namespace FS27.Core
                 case "primaryZone": value = r.PrimaryZone; return true;
                 case "secondaryZone": value = r.SecondaryZone; return true;
                 case "bodyTypeLabel": value = r.BodyTypeLabel; return true;
+                case "club": value = r.Club; return true;
+                case "nationality": value = r.Nationality; return true;
+                case "preferredFoot": value = r.PreferredFoot; return true;
+                case "naturalPosition": value = r.NaturalPosition; return true;
+                case "signatureActions": value = string.Join("; ", r.SignatureActions); return true;
             }
             if (field.StartsWith("attr.", StringComparison.Ordinal)) { value = r.Attributes.TryGetValue(field.Substring(5), out int a) ? a.ToString(CultureInfo.InvariantCulture) : null; return value != null; }
             if (field.StartsWith("role.", StringComparison.Ordinal))
@@ -118,6 +123,14 @@ namespace FS27.Core
                 case "primaryZone": r.PrimaryZone = after; return true;
                 case "secondaryZone": r.SecondaryZone = after; return true;
                 case "bodyTypeLabel": r.BodyTypeLabel = after; return true;
+                case "club": r.Club = after; return true;
+                case "nationality": r.Nationality = after; return true;
+                case "preferredFoot": r.PreferredFoot = after; return true;
+                case "naturalPosition": r.NaturalPosition = after; return true;
+                case "signatureActions":
+                    r.SignatureActions.Clear();
+                    foreach (string a in after.Split(';')) if (a.Trim().Length > 0) r.SignatureActions.Add(a.Trim());
+                    return true;
             }
             if (field.StartsWith("attr.", StringComparison.Ordinal)) { if (!isInt) return false; r.Attributes[field.Substring(5)] = n; return true; }
             if (field.StartsWith("role.", StringComparison.Ordinal))
