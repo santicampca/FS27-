@@ -416,6 +416,21 @@ namespace FS27.Core.Tests
         }
 
         [Test]
+        public void ARuntimeRecord_WithAContentIdOfTheWrongKind_IsRejected()
+        {
+            var v = new CreatorValidationResult();
+            string behaviourAsPart = "{\"schemaVersion\":\"FS27.RuntimeCharacter.v1\",\"id\":\"x\",\"style\":\"style.cartoon_sports\",\"look\":{\"parts\":[\"behavior.stop_and_go\"]}}";
+            Assert.IsFalse(RuntimeCharacterJson.TryFromJson(behaviourAsPart, pipeline.Index, catalogs, out _, v));
+            Assert.IsTrue(v.Has(CreatorIssueCode.ContentUnresolved));
+            v = new CreatorValidationResult();
+            string partAsBehaviour = "{\"schemaVersion\":\"FS27.RuntimeCharacter.v1\",\"id\":\"x\",\"style\":\"style.cartoon_sports\",\"dna\":{\"behaviors\":[[\"hair.short_curly_07\",0.5]]}}";
+            Assert.IsFalse(RuntimeCharacterJson.TryFromJson(partAsBehaviour, pipeline.Index, catalogs, out _, v));
+            v = new CreatorValidationResult();
+            string materialAsStyle = "{\"schemaVersion\":\"FS27.RuntimeCharacter.v1\",\"id\":\"x\",\"style\":\"material.skin_toon\"}";
+            Assert.IsFalse(RuntimeCharacterJson.TryFromJson(materialAsStyle, pipeline.Index, catalogs, out _, v));
+        }
+
+        [Test]
         public void TheDebugReport_ShowsEveryStage()
         {
             CreatorResult r = Run("Crea un extremo rápido, no muy alto");

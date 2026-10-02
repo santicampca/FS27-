@@ -358,6 +358,19 @@ namespace FS27.Core.Tests
         }
 
         [Test]
+        public void TheSemanticStage_CatchesAConceptThatDoesNotExist_EvenWhenTheShapeIsRight()
+        {
+            JsonValue root = Json.Parse(Answer("hazlo más alto"));
+            root.Members["commands"].Items[0].Members["target"] = JsonValue.Of("flying");
+            var t = new ScriptedTransport().EnqueueBody(ClaudeReply(Json.Write(root))).EnqueueBody(ClaudeReply(Answer("hazlo más alto")));
+            LlmSemanticInterpreter llm = Interp(t);
+            llm.Interpret("hazlo más alto");
+            Assert.AreEqual("semantic", llm.LastReport.Attempts[0].FailedAt);
+            StringAssert.Contains("flying", string.Join(" ", llm.LastReport.Attempts[0].Errors));
+            Assert.IsTrue(llm.LastReport.Attempts[1].Accepted);
+        }
+
+        [Test]
         public void AColourThatIsNotAColour_IsRejected()
         {
             JsonValue root = Json.Parse(Answer("pelo negro"));
