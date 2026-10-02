@@ -40,9 +40,10 @@ namespace FS27.Core.Tests
             Assert.AreEqual(GoalkeeperStyle.ShotStopper, res.Profile.PrimaryStyle);
             CollectionAssert.AreEqual(new[] { GoalkeeperStyle.Sweeper }, res.Profile.SecondaryStyles);
             Assert.AreEqual(PlayerRole.Goalkeeper, res.Player.Role);
-            Assert.AreEqual(0, res.Player.Number, "the source gives no number");
-            Assert.IsTrue(DataValidator.ValidatePlayer(res.Player).Has(ValidationCode.PlayerNumberOutOfRange), "unusable until the roster step gives it a number");
-            Assert.AreEqual(GoalkeeperRatingCalculator.CreateDefault().GetRating(res.Player, res.Profile), res.ComputedGrl);
+            Assert.IsTrue(res.GeneralAttributesAuthored);
+            Assert.IsTrue(DataValidator.ValidatePlayer(res.Player).IsValid);
+            Assert.AreEqual(GoalkeeperRatingCalculator.Calculate(res.Profile), res.ComputedGrl);
+            Assert.IsTrue(res.Has(GoalkeeperImportCode.NumberDefaulted), "the source gives no number: said, not hidden");
             Assert.GreaterOrEqual(res.ComputedGrl, 1);
         }
 
@@ -75,23 +76,34 @@ namespace FS27.Core.Tests
             Assert.IsTrue(GoalkeeperRecordImporter.Import(r, Behaviors).Has(GoalkeeperImportCode.CapabilityUnknown), "there is no ninth goalkeeper attribute");
             r = Record(); r.PrimaryStyle = "Libero";
             Assert.IsTrue(GoalkeeperRecordImporter.Import(r, Behaviors).Has(GoalkeeperImportCode.StyleInvalid));
+            r = Record(); r.SecondaryStyles.Add("Diving");
+            GoalkeeperImportResult dropped = GoalkeeperRecordImporter.Import(r, Behaviors);
+            Assert.IsTrue(dropped.Has(GoalkeeperImportCode.StyleDropped), "a trait that is not a style is reported...");
+            Assert.IsFalse(dropped.HasErrors);
+            CollectionAssert.AreEqual(new[] { GoalkeeperStyle.Sweeper }, dropped.Profile.SecondaryStyles, "...and left out of the profile");
+            CollectionAssert.AreEqual(new[] { "Diving" }, dropped.DroppedStyles);
             r = Record(); r.SecondaryStyles.Add("ShotStopper");
             Assert.IsTrue(GoalkeeperRecordImporter.Import(r, Behaviors).Has(GoalkeeperImportCode.StyleDuplicate));
             r = Record(); r.PrimaryStyle = "Wall";
             Assert.IsTrue(GoalkeeperRecordImporter.Import(r, Behaviors).Has(GoalkeeperImportCode.StyleInvalid), "the 12 player roles are not goalkeeper styles");
+            r = Record(); r.SecondaryStyles.Add("Guardian");
+            Assert.IsTrue(GoalkeeperRecordImporter.Import(r, Behaviors).Has(GoalkeeperImportCode.StyleDropped));
         }
 
         [Test]
-        public void WithoutGeneralAttributes_ItIsReported_NotInvented()
+        public void WithoutGeneralAttributes_TheExplicitDefaultsAreUsed_AndItIsSaid()
         {
-            GoalkeeperImportResult res = GoalkeeperRecordImporter.Import(Record(general: false), Behaviors);
-            Assert.IsTrue(res.Has(GoalkeeperImportCode.GeneralMissing));
-            Assert.IsFalse(res.HasGeneralAttributes);
-            Assert.IsFalse(res.IsComplete, "not playable until the 12 general attributes are known");
-            Assert.AreEqual(0, res.ComputedGrl);
-            Assert.IsNotNull(res.Profile, "the 8 capabilities themselves are fine");
+            var defaults = new GoalkeeperImportDefaults { ShirtNumber = 1, GeneralAttributeValue = 55 };
+            GoalkeeperImportResult res = GoalkeeperRecordImporter.Import(Record(general: false), Behaviors, null, defaults);
+            Assert.IsTrue(res.Has(GoalkeeperImportCode.GeneralDefaulted));
+            Assert.IsFalse(res.GeneralAttributesAuthored);
+            Assert.IsTrue(res.IsComplete);
+            Assert.AreEqual(55, res.Player.Attributes.Speed, "the defaults come from the caller, not from the importer");
+            Assert.AreEqual(GoalkeeperRatingCalculator.Calculate(res.Profile), res.ComputedGrl, "the rating never needed them");
             GoalkeeperDataRecord partial = Record(); partial.General.Remove("Speed");
-            Assert.IsTrue(GoalkeeperRecordImporter.Import(partial, Behaviors).Has(GoalkeeperImportCode.GeneralMissing));
+            Assert.IsTrue(GoalkeeperRecordImporter.Import(partial, Behaviors).Has(GoalkeeperImportCode.GeneralDefaulted));
+            GoalkeeperDataRecord badGeneral = Record(); badGeneral.General["Speed"] = 120;
+            Assert.IsTrue(GoalkeeperRecordImporter.Import(badGeneral, Behaviors).Has(GoalkeeperImportCode.GeneralOutOfRange));
         }
 
         [Test]
@@ -102,7 +114,8 @@ namespace FS27.Core.Tests
             GoalkeeperImportResult ra = GoalkeeperRecordImporter.Import(a, Behaviors), rb = GoalkeeperRecordImporter.Import(b, Behaviors);
             Assert.AreEqual(ra.ComputedGrl, rb.ComputedGrl, "the game's rating does not depend on the reported one");
             Assert.IsTrue(ra.Has(GoalkeeperImportCode.GrlDiffers));
-            Assert.IsFalse(ra.HasErrors, "a different rating is information, not a failure");
+            Assert.IsFalse(ra.HasErrors, "a different rating is a warning, not a failure");
+            Assert.AreEqual(GoalkeeperRatingCalculator.Calculate(ra.Profile), ra.ComputedGrl, "the game rating is the mean of the 8 attributes");
             GoalkeeperDataRecord c = Record(); c.ReportedGrl = ra.ComputedGrl;
             Assert.IsFalse(GoalkeeperRecordImporter.Import(c, Behaviors).Has(GoalkeeperImportCode.GrlDiffers));
             GoalkeeperDataRecord bad = Record(); bad.ReportedGrl = 150;
@@ -117,6 +130,7 @@ namespace FS27.Core.Tests
             var map = new Dictionary<string, string> { { GoalkeeperRecordImporter.Normalize("Quick Distribution"), DefaultBehaviors.OneTouchCombination } };
             GoalkeeperImportResult res = GoalkeeperRecordImporter.Import(r, Behaviors, map);
             CollectionAssert.AreEqual(new[] { DefaultBehaviors.StopAndGo, DefaultBehaviors.OneTouchCombination }, res.BehaviorIds);
+            CollectionAssert.AreEqual(new[] { DefaultBehaviors.StopAndGo, DefaultBehaviors.OneTouchCombination }, res.Dna.Behaviors.Select(b => b.Id).ToArray(), "the DNA lists only the ids");
             CollectionAssert.AreEqual(new[] { "Second Save" }, res.UnmappedActions);
             Assert.IsTrue(res.Has(GoalkeeperImportCode.ActionUnmapped));
             Assert.IsFalse(res.HasErrors);
@@ -197,12 +211,12 @@ namespace FS27.Core.Tests
             GoalkeeperImportResult res = GoalkeeperRecordImporter.Import(Record(), Behaviors);
             PlayerDefinition player = res.Player;
             PlayerAttributes before = player.Attributes;
-            int rating = GoalkeeperRatingCalculator.CreateDefault().GetRating(player, res.Profile);
+            int rating = GoalkeeperRatingCalculator.Calculate(res.Profile);
             foreach (DifficultyLevel level in Enum.GetValues(typeof(DifficultyLevel)))
             {
                 GoalkeeperSkill s = GoalkeeperSkillModel.Resolve(DefaultDifficulties.Create(level).Goalkeeper, player.Attributes, res.Profile, new GoalkeeperTuning());
                 Assert.IsTrue(s.ReactionSeconds > 0f);
-                Assert.AreEqual(rating, GoalkeeperRatingCalculator.CreateDefault().GetRating(player, res.Profile));
+                Assert.AreEqual(rating, GoalkeeperRatingCalculator.Calculate(res.Profile));
             }
             Assert.AreEqual(before.GetValue(PlayerAttributeId.Speed), player.Attributes.GetValue(PlayerAttributeId.Speed));
             Assert.AreEqual(63, res.Profile.Reflexes);

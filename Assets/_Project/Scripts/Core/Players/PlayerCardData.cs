@@ -35,26 +35,23 @@ namespace FS27.Core
         private readonly TeamDefinition team;
         private readonly PlayerRatingCalculator calculator;
         private readonly GoalkeeperProfile goalkeeperProfile;
-        private readonly GoalkeeperRatingCalculator goalkeeperCalculator;
 
         public CardType CardType { get; }
 
         public PlayerCardData(PlayerDefinition player, PlayerPlayingProfile profile, TeamDefinition team, CardType cardType, PlayerRatingCalculator calculator)
-            : this(player, profile, team, cardType, calculator, null, null)
+            : this(player, profile, team, cardType, calculator, null)
         {
         }
 
         /// <param name="goalkeeperProfile">The player's goalkeeper profile, or null for a field player. Only a reference: the card reads from it, never copies.</param>
-        /// <param name="goalkeeperCalculator">Needed to show the goalkeeper rating; defaults to the standard weights when a goalkeeper profile is given.</param>
         public PlayerCardData(PlayerDefinition player, PlayerPlayingProfile profile, TeamDefinition team, CardType cardType, PlayerRatingCalculator calculator,
-                              GoalkeeperProfile goalkeeperProfile, GoalkeeperRatingCalculator goalkeeperCalculator)
+                              GoalkeeperProfile goalkeeperProfile)
         {
             this.player = player ?? throw new ArgumentNullException(nameof(player));
             this.calculator = calculator ?? throw new ArgumentNullException(nameof(calculator));
             this.profile = profile;
             this.team = team;
             this.goalkeeperProfile = goalkeeperProfile;
-            this.goalkeeperCalculator = goalkeeperProfile == null ? null : (goalkeeperCalculator ?? GoalkeeperRatingCalculator.CreateDefault());
             CardType = cardType;
         }
 
@@ -85,7 +82,7 @@ namespace FS27.Core
         public bool IsGoalkeeper => goalkeeperProfile != null;
 
         /// <summary>The goalkeeper rating (1..99), separate from <see cref="Overall"/>. 0 for a field player.</summary>
-        public int GoalkeeperRating => goalkeeperProfile == null ? 0 : goalkeeperCalculator.GetRating(player, goalkeeperProfile);
+        public int GoalkeeperRating => goalkeeperProfile == null ? 0 : GoalkeeperRatingCalculator.Calculate(goalkeeperProfile);
 
         /// <summary>The number the card headlines: the goalkeeper rating for a goalkeeper, the Overall for everyone else.</summary>
         public int HeadlineRating => IsGoalkeeper ? GoalkeeperRating : Overall;
@@ -205,15 +202,12 @@ namespace FS27.Core
         private readonly PlayerCardCatalog cardTypes;
         private readonly Func<string, TeamDefinition> teamLookup;
         private readonly IPlayerLookup players;
-        private readonly GoalkeeperRatingCalculator goalkeeperCalculator;
 
         /// <param name="players">Where goalkeeper profiles are found (normally the <see cref="PlayerLibrary"/>). Optional: without it every card is a field player's.</param>
-        /// <param name="goalkeeperCalculator">The goalkeeper rating weights; the defaults if omitted.</param>
         public PlayerCardBuilder(PlayerRatingCalculator calculator, PlayingProfileCatalog profiles = null, PlayerCardCatalog cardTypes = null,
-                                 Func<string, TeamDefinition> teamLookup = null, IPlayerLookup players = null, GoalkeeperRatingCalculator goalkeeperCalculator = null)
+                                 Func<string, TeamDefinition> teamLookup = null, IPlayerLookup players = null)
         {
             this.players = players;
-            this.goalkeeperCalculator = goalkeeperCalculator;
             this.calculator = calculator ?? throw new ArgumentNullException(nameof(calculator));
             this.profiles = profiles;
             this.cardTypes = cardTypes;
@@ -229,7 +223,7 @@ namespace FS27.Core
             CardType type = cardTypes != null ? cardTypes.Get(player.Id) : CardType.Standard;
             GoalkeeperProfile keeperProfile = null;
             if (players != null) players.TryGetGoalkeeperProfile(player.Id, out keeperProfile);
-            return new PlayerCardData(player, profile, team, type, calculator, keeperProfile, goalkeeperCalculator);
+            return new PlayerCardData(player, profile, team, type, calculator, keeperProfile);
         }
     }
 }

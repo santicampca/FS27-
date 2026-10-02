@@ -11,7 +11,6 @@ namespace FS27.Core.Tests
         private static readonly DifficultyLevel[] Levels = (DifficultyLevel[])Enum.GetValues(typeof(DifficultyLevel));
         private static DifficultyDefinition L(DifficultyLevel l) { return DefaultDifficulties.Create(l); }
         private readonly GoalkeeperTuning tuning = new GoalkeeperTuning();
-        private readonly GoalkeeperRatingCalculator calc = GoalkeeperRatingCalculator.CreateDefault();
 
         private static GoalkeeperSkill Skill(DifficultyLevel level, PlayerDefinition p, GoalkeeperProfile gk, GoalkeeperTuning t)
         {
@@ -31,17 +30,15 @@ namespace FS27.Core.Tests
             var player = NicoGkData.Player(); var gk = NicoGkData.Profile();
             var attrs = player.Attributes;
             int[] caps = Snapshot(gk);
-            int rating = calc.GetRating(player, gk);
+            int rating = GoalkeeperRatingCalculator.Calculate(gk);
             var styles = gk.SecondaryStyles.ToArray();
-            int[] styleRatings = GoalkeeperInfo.Styles.Select(s => calc.GetStyleRating(player, gk, s)).ToArray();
 
             foreach (var level in Levels)
             {
                 Skill(level, player, gk, tuning);
                 Assert.AreEqual(attrs, player.Attributes, level.ToString());
                 CollectionAssert.AreEqual(caps, Snapshot(gk), level.ToString());
-                Assert.AreEqual(rating, calc.GetRating(player, gk), level.ToString());
-                CollectionAssert.AreEqual(styleRatings, GoalkeeperInfo.Styles.Select(s => calc.GetStyleRating(player, gk, s)).ToArray(), level.ToString());
+                Assert.AreEqual(rating, GoalkeeperRatingCalculator.Calculate(gk), level.ToString());
                 CollectionAssert.AreEqual(styles, gk.SecondaryStyles);
             }
             Assert.AreEqual(92, gk.Reflexes, "Reflexes is still 92");
@@ -279,7 +276,7 @@ namespace FS27.Core.Tests
         {
             var card = builder.Build(nico);
             Assert.IsTrue(card.IsGoalkeeper);
-            Assert.AreEqual(calc.GetRating(nico, nicoProfile), card.GoalkeeperRating);
+            Assert.AreEqual(GoalkeeperRatingCalculator.Calculate(nicoProfile), card.GoalkeeperRating);
             foreach (var c in GoalkeeperInfo.Capabilities)
                 Assert.AreEqual(nicoProfile.GetValue(c), card.GetGoalkeeperCapability(c), c.ToString());
             Assert.IsTrue(card.TryGetGoalkeeperStyle(out var style));
@@ -323,13 +320,13 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void ChangesToThePlayersAttributes_AppearInTheGoalkeeperRating_OnTheCard()
+        public void ChangesToThePlayersGeneralAttributes_ShowOnTheCard_ButNeverChangeTheGoalkeeperRating()
         {
             var card = builder.Build(nico);
             int rating = card.GoalkeeperRating;
             nico.Attributes = nico.Attributes.With(PlayerAttributeId.Agility, 30).With(PlayerAttributeId.Speed, 30).With(PlayerAttributeId.Acceleration, 30);
-            Assert.AreEqual(30, card.GetAttribute(PlayerAttributeId.Agility));
-            Assert.Less(card.GoalkeeperRating, rating);
+            Assert.AreEqual(30, card.GetAttribute(PlayerAttributeId.Agility), "the card still reads the player live");
+            Assert.AreEqual(rating, card.GoalkeeperRating, "the goalkeeper rating is the mean of the 8 goalkeeper attributes only");
         }
 
         [Test]
@@ -367,8 +364,8 @@ namespace FS27.Core.Tests
             Assert.IsFalse(plain.Build(nico).IsGoalkeeper);
             var direct = new PlayerCardData(nico, null, null, CardType.Standard, PlayerRatingCalculator.CreateDefault());
             Assert.IsFalse(direct.IsGoalkeeper);
-            var gk = new PlayerCardData(nico, null, null, CardType.Standard, PlayerRatingCalculator.CreateDefault(), nicoProfile, null);
-            Assert.AreEqual(calc.GetRating(nico, nicoProfile), gk.GoalkeeperRating, "default weights when no calculator is given");
+            var gk = new PlayerCardData(nico, null, null, CardType.Standard, PlayerRatingCalculator.CreateDefault(), nicoProfile);
+            Assert.AreEqual(GoalkeeperRatingCalculator.Calculate(nicoProfile), gk.GoalkeeperRating, "default weights when no calculator is given");
         }
 
         [Test]

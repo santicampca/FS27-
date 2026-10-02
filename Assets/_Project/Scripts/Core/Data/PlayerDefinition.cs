@@ -29,7 +29,11 @@ namespace FS27.Core
         public string ShortName = "";
         /// <summary>Two or three capital letters, or empty when not set.</summary>
         public string NationalityCode = "";
-        /// <summary>Id of the team the player belongs to (a <see cref="TeamDefinition"/>), or empty for a free player.</summary>
+        /// <summary>
+        /// A denormalised HINT of the team the player belongs to (empty = none). It is NOT the authority: <see cref="TeamDefinition.PlayerIds"/> is.
+        /// When set it must agree with the rosters (<see cref="RosterValidator"/>, <see cref="DataValidator.ValidateTeam"/>). Imported data leaves it empty.
+        /// Kept only so cards and older data keep working; removing it is a planned migration (see Docs/GOALKEEPER_SYSTEM.md).
+        /// </summary>
         public string TeamId = "";
         public int Age = 22;
         public int HeightCm = 178;

@@ -19,14 +19,20 @@ namespace FS27.Core
         /// <summary>Stable id the keeper will get as <see cref="PlayerDefinition.Id"/>.</summary>
         public string Id = "";
         public string DisplayName = "";
-        /// <summary>The goalkeeper rating the source claims (1..99; 0 = not given). A REFERENCE only: the game computes its own rating and this is never stored.</summary>
+        /// <summary>As the source writes it ("Francia"); the importer turns it into a code.</summary>
+        public string Nationality = "";
+        /// <summary>Height in centimetres (0 = not given).</summary>
+        public int HeightCm;
+        /// <summary>As the source writes it ("Derecho").</summary>
+        public string PreferredFoot = "";
+        /// <summary>The rating the source claims (1..99; 0 = not given). A REFERENCE only: the game always uses the mean of the 8 attributes and this is never stored.</summary>
         public int ReportedGrl;
         /// <summary>The 8 goalkeeper capabilities by <see cref="GoalkeeperCapability"/> name, 1..99.</summary>
         public Dictionary<string, int> Capabilities = new Dictionary<string, int>();
         /// <summary>A <see cref="GoalkeeperStyle"/> name (case, spaces and dashes are ignored).</summary>
         public string PrimaryStyle = "";
         public List<string> SecondaryStyles = new List<string>();
-        /// <summary>The 12 general attributes by <see cref="PlayerAttributeId"/> name. OPTIONAL in the record, REQUIRED to become a playable keeper (they feed the rating and the player).</summary>
+        /// <summary>The 12 general attributes by <see cref="PlayerAttributeId"/> name. OPTIONAL: when absent the importer uses explicit defaults (and says so). They never affect the goalkeeper rating.</summary>
         public Dictionary<string, int> General = new Dictionary<string, int>();
         /// <summary>Signature actions as the source names them ("Second Save", "Sweeper Run"). They are mapped to behaviour ids by data, never by code.</summary>
         public List<string> SignatureActions = new List<string>();
@@ -47,19 +53,31 @@ namespace FS27.Core
         CapabilityMissing,
         CapabilityUnknown,
         CapabilityOutOfRange,
+        /// <summary>The PRIMARY style is not one of the four goalkeeper styles (error).</summary>
         StyleInvalid,
         StyleDuplicate,
+        /// <summary>A secondary/tertiary label is not a goalkeeper style (e.g. a trait such as "Diving"): it is left out of the profile and reported. The trait itself lives in the attributes, strengths and signature actions.</summary>
+        StyleDropped,
         GeneralUnknown,
         GeneralOutOfRange,
-        /// <summary>No general attributes: the keeper cannot become a playable player and has no computed rating yet.</summary>
-        GeneralMissing,
+        /// <summary>The source has no (complete) general attributes: the player gets the supplied defaults, which are NOT authored data.</summary>
+        GeneralDefaulted,
+        /// <summary>The source has no shirt number: the player gets the supplied default (it only has to be unique inside a team, which the roster step checks).</summary>
+        NumberDefaulted,
         ReportedGrlOutOfRange,
-        /// <summary>The computed rating differs from the reported one by more than the tolerance (information for whoever calibrates).</summary>
+        /// <summary>The authored rating differs from the mean of the 8 attributes. The game always uses the mean; the authored number is only compared.</summary>
         GrlDiffers,
         /// <summary>A signature action matched no behaviour in the catalog or the map. Reported, never invented.</summary>
         ActionUnmapped,
         /// <summary>The behaviour exists but is for field players only.</summary>
-        ActionWrongScope
+        ActionWrongScope,
+        NationalityUnknown,
+        /// <summary>The preferred foot is not a single known foot (e.g. "both"): the default is kept.</summary>
+        FootUnclear,
+        /// <summary>The resulting <see cref="PlayerDefinition"/> fails the normal player validation.</summary>
+        PlayerInvalid,
+        /// <summary>Another record already used this player id (batch import).</summary>
+        DuplicateId
     }
 
     public sealed class GoalkeeperImportIssue
@@ -71,45 +89,68 @@ namespace FS27.Core
         public override string ToString() { return (IsError ? "ERROR " : "warning ") + Code + " [" + Field + "]: " + Message; }
     }
 
+    /// <summary>What the importer fills in when the source does not say. Explicit data, so nothing is silently invented.</summary>
+    public sealed class GoalkeeperImportDefaults
+    {
+        public int ShirtNumber = 1;
+        /// <summary>The value (1..99) given to each of the 12 general attributes when the source has none.</summary>
+        public int GeneralAttributeValue = 70;
+
+        internal PlayerAttributes BuildGeneral()
+        {
+            PlayerAttributes a = PlayerAttributes.CreateDefault();
+            foreach (PlayerAttributeId id in PlayerAttributeInfo.All) a = a.With(id, GeneralAttributeValue);
+            return a;
+        }
+    }
+
     /// <summary>What importing one record produced. Runtime data only (no notes, sources or tags): the rest stays in the authoring record.</summary>
     public sealed class GoalkeeperImportResult
     {
-        /// <summary>The profile built from the record (valid only when there are no errors).</summary>
+        /// <summary>The keeper's profile (8 capabilities + styles); null when the record has errors.</summary>
         public GoalkeeperProfile Profile;
-        /// <summary>
-        /// The player the record describes (id, name, role Goalkeeper, the 12 general attributes), only when the record carried all 12 attributes; otherwise null.
-        /// The shirt number is 0 here on purpose (the source does not give it): it is invalid until the roster step assigns a real one.
-        /// </summary>
+        /// <summary>The player (identity + the 12 general attributes); null when the record has errors. Always a normal <see cref="PlayerDefinition"/>.</summary>
         public PlayerDefinition Player;
-        public bool HasGeneralAttributes => Player != null;
+        /// <summary>True when the 12 general attributes came from the record (false = the defaults were used).</summary>
+        public bool GeneralAttributesAuthored;
+        /// <summary>The signature behaviours as football DNA (weights 1): behaviour ids only, no attributes or tendencies are made up. Null when the record has errors.</summary>
+        public FootballDNA Dna;
         /// <summary>Behaviour ids the signature actions resolved to (catalog ids, in the record's order, no duplicates).</summary>
         public readonly List<string> BehaviorIds = new List<string>();
         /// <summary>Signature actions that matched nothing.</summary>
         public readonly List<string> UnmappedActions = new List<string>();
-        /// <summary>The game's own goalkeeper rating, only when the general attributes are present (0 otherwise).</summary>
+        /// <summary>Style labels left out because they are not goalkeeper styles.</summary>
+        public readonly List<string> DroppedStyles = new List<string>();
+        /// <summary>The goalkeeper rating of the 8 attributes (0 when the record has errors).</summary>
         public int ComputedGrl;
         public readonly List<GoalkeeperImportIssue> Issues = new List<GoalkeeperImportIssue>();
 
         public bool HasErrors { get { foreach (GoalkeeperImportIssue i in Issues) if (i.IsError) return true; return false; } }
-        /// <summary>No errors and everything needed to make a playable player is there. Warnings (an unmapped action, a different GRL) do not block.</summary>
+        /// <summary>No errors: a profile and a valid player exist. Warnings do not block.</summary>
         public bool IsComplete => !HasErrors && Player != null && Profile != null;
         public bool Has(GoalkeeperImportCode code) { foreach (GoalkeeperImportIssue i in Issues) if (i.Code == code) return true; return false; }
     }
 
     /// <summary>
     /// Turns a <see cref="GoalkeeperDataRecord"/> into game data without inventing anything: a missing capability is an error (never a
-    /// default), a missing general attribute is reported, an unknown signature action is listed, and the reported rating is compared with the
-    /// game's own, never copied. The tuning of the game's rating is not touched.
+    /// default), a style that is not a goalkeeper style is reported, an unknown signature action is listed, and the authored rating is compared with
+    /// the mean of the 8 attributes (<see cref="GoalkeeperRatingCalculator"/>, the only calculation), never copied. What the source does not
+    /// say (general attributes, shirt number) comes from an explicit <see cref="GoalkeeperImportDefaults"/> and is reported.
     /// </summary>
     public static class GoalkeeperRecordImporter
     {
-        /// <summary>Starting tolerance for "the computed rating differs from the reported one" (a warning only).</summary>
-        public const int DefaultGrlTolerance = 5;
+        /// <summary>Allowed difference between the authored and the calculated rating before a warning (0 = they must be equal).</summary>
+        public const int DefaultGrlTolerance = 0;
+        /// <summary>The football-DNA weight a signature action gets (it is listed as a full signature).</summary>
+        public const float SignatureWeight = 1f;
 
-        /// <param name="actionMap">External action name (normalised) -> behaviour id. Data supplied by the caller; may be null.</param>
+        private static readonly Dictionary<string, string> NationalityCodes = BuildNationalities();
+
+        /// <param name="actionMap">External action name (normalised) -> behaviour id (see <see cref="GoalkeeperBehaviors.DefaultActionMap"/>). May be null.</param>
         public static GoalkeeperImportResult Import(GoalkeeperDataRecord rec, SignatureBehaviorCatalog behaviors, IReadOnlyDictionary<string, string> actionMap = null,
-                                                    GoalkeeperRatingCalculator calculator = null, int grlTolerance = DefaultGrlTolerance)
+                                                    GoalkeeperImportDefaults defaults = null, int grlTolerance = DefaultGrlTolerance)
         {
+            defaults = defaults ?? new GoalkeeperImportDefaults();
             var res = new GoalkeeperImportResult();
             if (rec == null) { Add(res, GoalkeeperImportCode.RecordMissing, true, "record", "Missing."); return res; }
 
@@ -133,42 +174,73 @@ namespace FS27.Core
             if (rec.SecondaryStyles != null)
                 foreach (string s in rec.SecondaryStyles)
                 {
-                    if (!TryStyle(s, out GoalkeeperStyle st)) Add(res, GoalkeeperImportCode.StyleInvalid, true, "secondaryStyles", "'" + s + "' is not a goalkeeper style.");
+                    if (!TryStyle(s, out GoalkeeperStyle st))
+                    {
+                        res.DroppedStyles.Add(s);
+                        Add(res, GoalkeeperImportCode.StyleDropped, false, "secondaryStyles", "'" + s + "' is not a goalkeeper style; left out of the profile (the trait stays in attributes, strengths and actions).");
+                    }
                     else if (st == profile.PrimaryStyle || profile.SecondaryStyles.Contains(st)) Add(res, GoalkeeperImportCode.StyleDuplicate, true, "secondaryStyles", "'" + s + "' repeats another style.");
                     else profile.SecondaryStyles.Add(st);
                 }
 
-            ReadGeneral(rec, res);
+            PlayerAttributes general = ReadGeneral(rec, defaults, res);
             if (rec.ReportedGrl != 0 && (rec.ReportedGrl < PlayerAttributes.Min || rec.ReportedGrl > PlayerAttributes.Max))
                 Add(res, GoalkeeperImportCode.ReportedGrlOutOfRange, true, "reportedGrl", rec.ReportedGrl + " is outside " + PlayerAttributes.Min + ".." + PlayerAttributes.Max + ".");
 
             MapActions(rec, behaviors, actionMap, res);
-            res.Profile = res.HasErrors ? null : profile;
+            if (res.HasErrors) return res;
 
-            if (res.Profile != null && res.Player != null)
-            {
-                res.ComputedGrl = (calculator ?? GoalkeeperRatingCalculator.CreateDefault()).GetRating(res.Player, res.Profile);
-                if (rec.ReportedGrl != 0 && Math.Abs(res.ComputedGrl - rec.ReportedGrl) > grlTolerance)
-                    Add(res, GoalkeeperImportCode.GrlDiffers, false, "reportedGrl", "Reported " + rec.ReportedGrl + ", computed " + res.ComputedGrl + ". The game keeps its own rating; this is for calibration.");
-            }
+            res.Profile = profile;
+            res.ComputedGrl = GoalkeeperRatingCalculator.Calculate(profile);
+            if (rec.ReportedGrl != 0 && Math.Abs(res.ComputedGrl - rec.ReportedGrl) > grlTolerance)
+                Add(res, GoalkeeperImportCode.GrlDiffers, false, "reportedGrl", "Authored " + rec.ReportedGrl + ", mean of the 8 attributes " + GoalkeeperRatingCalculator.CalculateRaw(profile).ToString("0.###", CultureInfo.InvariantCulture) + " -> " + res.ComputedGrl + ". The game uses " + res.ComputedGrl + ".");
+
+            res.Player = BuildPlayer(rec, general, defaults, res);
+            ValidationResult pv = DataValidator.ValidatePlayer(res.Player);
+            foreach (ValidationIssue i in pv.Issues) Add(res, GoalkeeperImportCode.PlayerInvalid, true, "player", i.ToString());
+            if (res.HasErrors) { res.Profile = null; res.Player = null; res.ComputedGrl = 0; return res; }
+
+            res.Dna = new FootballDNA();
+            foreach (string id in res.BehaviorIds) res.Dna.SetBehavior(id, SignatureWeight);
             return res;
         }
 
-        private static void ReadGeneral(GoalkeeperDataRecord rec, GoalkeeperImportResult res)
+        private static PlayerDefinition BuildPlayer(GoalkeeperDataRecord rec, PlayerAttributes general, GoalkeeperImportDefaults defaults, GoalkeeperImportResult res)
         {
-            if (rec.General == null || rec.General.Count == 0) { Add(res, GoalkeeperImportCode.GeneralMissing, false, "general", "No general attributes: not playable yet and no computed rating."); return; }
-            PlayerAttributes a = PlayerAttributes.CreateDefault();
-            int seen = 0;
-            foreach (KeyValuePair<string, int> kv in rec.General)
+            var p = new PlayerDefinition(rec.Id, rec.DisplayName, defaults.ShirtNumber, PlayerRole.Goalkeeper, general);
+            Add(res, GoalkeeperImportCode.NumberDefaulted, false, "number", "The source has no shirt number; using " + defaults.ShirtNumber + ".");
+            if (rec.HeightCm > 0) p.HeightCm = rec.HeightCm;
+            if (!string.IsNullOrEmpty(rec.Nationality))
             {
-                if (!Enum.TryParse(kv.Key, false, out PlayerAttributeId id) || !Enum.IsDefined(typeof(PlayerAttributeId), id)) { Add(res, GoalkeeperImportCode.GeneralUnknown, true, kv.Key, "Not one of the 12 general attributes."); continue; }
-                if (kv.Value < PlayerAttributes.Min || kv.Value > PlayerAttributes.Max) { Add(res, GoalkeeperImportCode.GeneralOutOfRange, true, kv.Key, kv.Value + " is outside " + PlayerAttributes.Min + ".." + PlayerAttributes.Max + "."); continue; }
-                a = a.With(id, kv.Value);
-                seen++;
+                if (NationalityCodes.TryGetValue(Normalize(rec.Nationality), out string code)) p.NationalityCode = code;
+                else Add(res, GoalkeeperImportCode.NationalityUnknown, false, "nationality", "'" + rec.Nationality + "' has no code in the table; left empty.");
             }
-            if (seen == PlayerAttributeInfo.Count) res.Player = new PlayerDefinition(rec.Id, rec.DisplayName, 0, PlayerRole.Goalkeeper, a);
-            else if (!res.Has(GoalkeeperImportCode.GeneralUnknown) && !res.Has(GoalkeeperImportCode.GeneralOutOfRange))
-                Add(res, GoalkeeperImportCode.GeneralMissing, false, "general", "Only " + seen + " of " + PlayerAttributeInfo.Count + " general attributes: not playable yet and no computed rating.");
+            if (!string.IsNullOrEmpty(rec.PreferredFoot))
+            {
+                string f = Normalize(rec.PreferredFoot);
+                if (f == "derecho" || f == "right") p.PreferredFoot = PreferredFoot.Right;
+                else if (f == "izquierdo" || f == "left") p.PreferredFoot = PreferredFoot.Left;
+                else Add(res, GoalkeeperImportCode.FootUnclear, false, "preferredFoot", "'" + rec.PreferredFoot + "' is not a single foot; keeping the default.");
+            }
+            return p;
+        }
+
+        private static PlayerAttributes ReadGeneral(GoalkeeperDataRecord rec, GoalkeeperImportDefaults defaults, GoalkeeperImportResult res)
+        {
+            PlayerAttributes a = defaults.BuildGeneral();
+            int seen = 0;
+            bool bad = false;
+            if (rec.General != null)
+                foreach (KeyValuePair<string, int> kv in rec.General)
+                {
+                    if (!Enum.TryParse(kv.Key, false, out PlayerAttributeId id) || !Enum.IsDefined(typeof(PlayerAttributeId), id)) { Add(res, GoalkeeperImportCode.GeneralUnknown, true, kv.Key, "Not one of the 12 general attributes."); bad = true; continue; }
+                    if (kv.Value < PlayerAttributes.Min || kv.Value > PlayerAttributes.Max) { Add(res, GoalkeeperImportCode.GeneralOutOfRange, true, kv.Key, kv.Value + " is outside " + PlayerAttributes.Min + ".." + PlayerAttributes.Max + "."); bad = true; continue; }
+                    a = a.With(id, kv.Value);
+                    seen++;
+                }
+            if (seen == PlayerAttributeInfo.Count && !bad) { res.GeneralAttributesAuthored = true; return a; }
+            if (!bad) Add(res, GoalkeeperImportCode.GeneralDefaulted, false, "general", (seen == 0 ? "No" : "Only " + seen + " of " + PlayerAttributeInfo.Count) + " general attributes in the source: using the supplied defaults (not authored data). They do not affect the goalkeeper rating.");
+            return defaults.BuildGeneral();
         }
 
         private static void MapActions(GoalkeeperDataRecord rec, SignatureBehaviorCatalog behaviors, IReadOnlyDictionary<string, string> actionMap, GoalkeeperImportResult res)
@@ -198,18 +270,68 @@ namespace FS27.Core
             return false;
         }
 
-        /// <summary>Lower-case letters and digits only: "Second Save", "second-save" and "SecondSave" are the same label.</summary>
+        /// <summary>Lower-case letters and digits only, accents removed: "Second Save", "second-save" and "SecondSave" are the same label.</summary>
         public static string Normalize(string text)
         {
             if (string.IsNullOrEmpty(text)) return "";
             var sb = new System.Text.StringBuilder();
-            foreach (char ch in text) if (char.IsLetterOrDigit(ch)) sb.Append(char.ToLowerInvariant(ch));
+            foreach (char ch in text.Normalize(System.Text.NormalizationForm.FormD))
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(ch) == UnicodeCategory.NonSpacingMark) continue;
+                if (char.IsLetterOrDigit(ch)) sb.Append(char.ToLowerInvariant(ch));
+            }
             return sb.ToString();
+        }
+
+        private static Dictionary<string, string> BuildNationalities()
+        {
+            var d = new Dictionary<string, string>();
+            string[] pairs = { "Argentina|ARG", "Australia|AUS", "Alemania|GER", "Bélgica|BEL", "Brasil|BRA", "Camerún|CMR", "Eslovenia|SVN", "España|ESP", "Francia|FRA",
+                               "Inglaterra|ENG", "Italia|ITA", "Japón|JPN", "Rusia|RUS", "Suiza|SUI" };
+            foreach (string pair in pairs) { string[] kv = pair.Split('|'); d[Normalize(kv[0])] = kv[1]; }
+            return d;
         }
 
         private static void Add(GoalkeeperImportResult res, GoalkeeperImportCode code, bool error, string field, string message)
         {
             res.Issues.Add(new GoalkeeperImportIssue { Code = code, IsError = error, Field = field, Message = message });
+        }
+    }
+
+    /// <summary>
+    /// Imports many records into the ONE <see cref="PlayerLibrary"/>: each complete keeper becomes a normal player plus its profile. A repeated
+    /// player id is reported and the later record is not added. Records with errors are not added. Nothing is hidden: every result is returned.
+    /// </summary>
+    public static class GoalkeeperLibraryBuilder
+    {
+        public sealed class Batch
+        {
+            public readonly List<GoalkeeperImportResult> Results = new List<GoalkeeperImportResult>();
+            public readonly PlayerLibrary Library = new PlayerLibrary();
+            /// <summary>Football DNA (signature behaviours) by player id, for the keepers that were added.</summary>
+            public readonly Dictionary<string, FootballDNA> Dna = new Dictionary<string, FootballDNA>();
+            public int Added => Library.Count;
+            public int Failed { get { int n = 0; foreach (GoalkeeperImportResult r in Results) if (r.HasErrors) n++; return n; } }
+        }
+
+        public static Batch Import(IEnumerable<GoalkeeperDataRecord> records, SignatureBehaviorCatalog behaviors, IReadOnlyDictionary<string, string> actionMap = null,
+                                   GoalkeeperImportDefaults defaults = null, PlayerLibrary into = null)
+        {
+            var batch = new Batch();
+            var seen = new HashSet<string>();
+            foreach (GoalkeeperDataRecord rec in records)
+            {
+                GoalkeeperImportResult res = GoalkeeperRecordImporter.Import(rec, behaviors, actionMap, defaults);
+                if (rec != null && rec.Id != null && !seen.Add(rec.Id))
+                {
+                    res.Issues.Add(new GoalkeeperImportIssue { Code = GoalkeeperImportCode.DuplicateId, IsError = true, Field = "id", Message = "Player id '" + rec.Id + "' was already used by an earlier record." });
+                    res.Profile = null; res.Player = null; res.Dna = null;
+                }
+                batch.Results.Add(res);
+                if (!res.IsComplete) continue;
+                if (batch.Library.TryAdd(res.Player) && batch.Library.TryAddGoalkeeperProfile(res.Profile)) batch.Dna[res.Player.Id] = res.Dna;
+            }
+            return batch;
         }
     }
 
@@ -238,6 +360,9 @@ namespace FS27.Core
         {
             var o = JsonValue.NewObject();
             o.Set("schemaVersion", JsonValue.Of(GoalkeeperDataRecord.Schema)).Set("id", JsonValue.Of(r.Id)).Set("displayName", JsonValue.Of(r.DisplayName));
+            if (!string.IsNullOrEmpty(r.Nationality)) o.Set("nationality", JsonValue.Of(r.Nationality));
+            if (r.HeightCm != 0) o.Set("heightCm", JsonValue.Of((double)r.HeightCm));
+            if (!string.IsNullOrEmpty(r.PreferredFoot)) o.Set("preferredFoot", JsonValue.Of(r.PreferredFoot));
             if (r.ReportedGrl != 0) o.Set("reportedGrl", JsonValue.Of((double)r.ReportedGrl));
             o.Set("capabilities", Ints(r.Capabilities)).Set("primaryStyle", JsonValue.Of(r.PrimaryStyle)).Set("secondaryStyles", Strings(r.SecondaryStyles));
             if (r.General.Count > 0) o.Set("general", Ints(r.General));
@@ -252,7 +377,11 @@ namespace FS27.Core
             rec = null;
             if (!Json.TryParse(text, out JsonValue root, out error)) return false;
             if (root.Kind != JsonKind.Object || root.GetString("schemaVersion", null) != GoalkeeperDataRecord.Schema) { error = "Expected schema '" + GoalkeeperDataRecord.Schema + "'."; return false; }
-            var r = new GoalkeeperDataRecord { Id = root.GetString("id", ""), DisplayName = root.GetString("displayName", ""), PrimaryStyle = root.GetString("primaryStyle", ""), Notes = root.GetString("notes", "") };
+            var r = new GoalkeeperDataRecord { Id = root.GetString("id", ""), DisplayName = root.GetString("displayName", ""), PrimaryStyle = root.GetString("primaryStyle", ""), Notes = root.GetString("notes", ""),
+                                             Nationality = root.GetString("nationality", ""), PreferredFoot = root.GetString("preferredFoot", "") };
+            double height = root.GetNumber("heightCm", 0.0);
+            if (height != Math.Floor(height) || height < 0 || height > 1000) { error = "heightCm must be a whole number."; return false; }
+            r.HeightCm = (int)height;
             double grl = root.GetNumber("reportedGrl", 0.0);
             if (grl != Math.Floor(grl)) { error = "reportedGrl must be a whole number."; return false; }
             r.ReportedGrl = (int)grl;

@@ -241,10 +241,9 @@ namespace FS27.Core.Tests
         public void TheGoalkeeperTypes_AreSerializable_AndHaveNoSprint()
         {
             const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
-            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperWeights), typeof(GoalkeeperRatingTuning), typeof(GoalkeeperStyleWeightEntry),
-                                       typeof(GoalkeeperAreaWeightEntry), typeof(GoalkeeperTuning) })
+            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperTuning) })
                 Assert.IsTrue(t.IsSerializable, t.Name);
-            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperWeights), typeof(GoalkeeperRatingTuning), typeof(GoalkeeperRatingCalculator),
+            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperRatingCalculator),
                                        typeof(GoalkeeperSkillModel), typeof(GoalkeeperSkill), typeof(GoalkeeperInfo), typeof(GoalkeeperProfileValidator) })
             {
                 Assert.IsFalse(t.Name.ToLowerInvariant().Contains("sprint"), t.Name);

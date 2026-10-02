@@ -1,50 +1,81 @@
-# FS27 — Integración futura de la base de datos de porteros
+# FS27 — Integración de la base de datos de 20 porteros
 
-Estado: **solo contratos y validación** (C# puro, probado con `dotnet test Tests/Core.Tests`; nada probado en Unity). **No hay ningún portero importado.** Este documento explica cómo se recibirá la base de datos investigada y qué decisiones quedan abiertas.
+Estado: **datos, importación, validación y GRL implementados y probados fuera de Unity** (C# puro, `dotnet test Tests/Core.Tests`). No se ha abierto Unity ni se ha tocado gameplay. No hay física de paradas, animaciones ni controlador de portero.
 
-## Cadena
+## 1. Fuente de autoría
+
+`Docs/authoring/FS27_GOALKEEPER_DATABASE_V2.md` es la fuente de autoría de los 20 porteros. Se generó a partir del documento Word entregado (`FS27p.docx`) con una conversión mecánica del texto (cabeceras, tabla de atributos y listas); **ningún dato se reconstruyó de memoria ni se modificó**. Es texto de autoría: el runtime nunca lo lee.
+
+## 2. Cadena e importación
 
 ```
-investigación externa ─► GoalkeeperDataRecord (autoría) ─► GoalkeeperRecordImporter ─► PlayerDefinition + GoalkeeperProfile + ids de comportamiento
-                                                                                          │
-                       PlayerLibrary / TeamDefinition.PlayerIds ◄─────────────────────────┘ ─► GoalkeeperRatingCalculator ─► PlayerCardData
+FS27_GOALKEEPER_DATABASE_V2.md  (AUTORÍA)
+   │  GoalkeeperDatabaseMarkdown.Parse(texto)        lector de autoría: solo convierte texto a registros
+   ▼
+GoalkeeperDataRecord                                 contrato de autoría (el único; reutilizado, no hay un segundo)
+   │  GoalkeeperRecordImporter.Import                validación + conversión, sin inventar
+   ▼
+─────────────────────────── frontera autoría | runtime ───────────────────────────
+   ▼
+PlayerDefinition  +  GoalkeeperProfile  +  FootballDNA (ids de acciones)      un único PlayerLibrary
+   ▼
+GoalkeeperRatingCalculator.Calculate  →  GRL        PlayerCardData lee de las dos fuentes
+                                                    GoalkeeperSkillModel recibe el perfil
 ```
 
-No hay un segundo tipo de jugador: el record **no es** un jugador, es la entrada de un importador. Lo que sobrevive es un `PlayerDefinition` normal y un `GoalkeeperProfile`.
+`GoalkeeperLibraryBuilder.Import` hace el lote: cada portero completo entra en el `PlayerLibrary` (jugador + perfil), un `PlayerId` repetido se rechaza con `DuplicateId`, y **todos** los resultados (errores y avisos) se devuelven. Notas, fuentes, fortalezas, debilidades y texto de identidad se quedan en el record: no llegan a ningún tipo de runtime (una prueba lo comprueba). No hay clase "GoalkeeperPlayer": son `PlayerDefinition` normales con un `GoalkeeperProfile` aparte.
 
-## Autoría frente a runtime
+Esquema del record (`FS27.GoalkeeperRecord.v1`, también legible como JSON estricto con `GoalkeeperRecordJson`): `Id`, `DisplayName`, `Nationality`, `HeightCm`, `PreferredFoot`, `ReportedGrl` (referencia), 8 `Capabilities`, `PrimaryStyle`, `SecondaryStyles`, `General` (12 atributos, opcional), `SignatureActions`, y solo de autoría: `Identity`, `Strengths`, `Weaknesses`, `Notes`, `Sources`. El `Id` es `gk-` + el nombre en ASCII (p. ej. `gk-mike-maignan`).
 
-| Campo del record | Destino |
-|---|---|
-| `Id`, `DisplayName` | `PlayerDefinition.Id` / `Name` |
-| 8 `Capabilities` (1–99) | `GoalkeeperProfile` |
-| `PrimaryStyle`, `SecondaryStyles` | `GoalkeeperProfile` (solo los 4 estilos de portero; "Wall", "Guardian"… se rechazan) |
-| `General` (12 atributos) | `PlayerDefinition.Attributes` (opcional en el record, **obligatorio** para ser jugable) |
-| `SignatureActions` | ids del catálogo de comportamientos, por **datos** (mapa externo → id); lo que no coincide se lista como `ActionUnmapped`, nunca se inventa |
-| `ReportedGrl` | **solo comparación**: se calcula el GRL del juego y, si difiere más de la tolerancia, aviso `GrlDiffers`. No se guarda ni sustituye al calculado |
-| `Identity`, `Strengths`, `Weaknesses`, `Notes`, `Sources` | se quedan en autoría; no llegan a ningún tipo de runtime (una prueba lo comprueba) |
+## 3. GRL
 
-El importador **nunca rellena**: una capacidad ausente es error, un atributo general ausente es aviso `GeneralMissing` (no jugable, sin GRL calculado), una acción desconocida se lista. El número de camiseta queda a 0 a propósito (la fuente no lo da) y no es válido hasta el paso de plantillas.
+`GRL = media aritmética de los 8 atributos GK, redondeada al entero más cercano (un empate .5 sube)`. Un único cálculo (`GoalkeeperRatingCalculator`, estático, solo recibe el perfil). No usa pesos, perfiles, estilos, altura, Overall, dificultad, reputación, nombre, nacionalidad ni potencial. **Se eliminó** la fórmula anterior (media ponderada por estilo con atributos generales, `GoalkeeperRatingTuning`, rating/idoneidad por estilo y por área). El GRL de autoría **no se guarda**: el sistema lo recalcula y solo lo compara.
 
-## Formato
+## 4. Perfiles
 
-`GoalkeeperRecordJson` (`FS27.GoalkeeperRecord.v1`) lee y escribe el record de forma estricta (números enteros, tipos exactos, errores con motivo). Es **un** lector posible: el núcleo no depende de él, así que otro formato (CSV, hoja de cálculo) solo necesita producir `GoalkeeperDataRecord`.
+Exactamente cuatro: Shot Stopper, Distributor, Sweeper, Commander. No afectan al GRL. El perfil principal inválido es un **error** (el portero no se importa). Una etiqueta secundaria/terciaria que no es perfil se **deja fuera y se avisa** (`StyleDropped`).
 
-## Validación disponible
+## 5. Signature Actions
 
-Ya cubierta por el sistema existente: 1 portero + 5 de campo (6 en total), portero válido con perfil, capacidades 1–99, perfiles de estilo válidos, ids de jugador únicos (`PlayerLibrary.TryAdd`), números únicos por equipo, datos del jugador. Nuevo: `RosterValidator` (jugador en dos equipos; `TeamId` no confirmado por el roster) y `BehaviorScopeRules` (acciones de portero fuera de jugadores de campo y al revés).
+Son ids de comportamiento, no atributos ni perfiles. `GoalkeeperBehaviors.CreateCatalog()` registra 12 comportamientos **genéricos** (`GoalkeeperReflexSave`, `…DivingSave`, `…OneOnOneStopper`, `…PenaltyStopper`, `…CloseShotReaction`, `…AggressiveClaim`, `…QuickDistribution`, `…PressureBreakPass`, `…LongBallSpecialist`, `…SweeperRun`, `…VocalLeader`, `…CommandBackline`) con `Scope = Goalkeeper`, estado `Planned` (no ejecutables), y un mapa de nombres externos → id. Los 20 porteros comparten los 12 (ninguno es exclusivo de un jugador). Cada portero importado obtiene un `FootballDNA` que solo lista esos ids (peso 1); no se inventa ningún otro dato de DNA. Una acción sin comportamiento se avisa (`ActionUnmapped`) y no se crea nada para ella.
 
-## Decisiones que necesito de ti antes de la fase de importación
+Importante: este catálogo **no está fusionado** con el de jugadores de campo. Hace falta antes definir los contextos de portero (tiro entrante, centro, pase atrás…) en `BehaviorContext`. Mientras tanto el catálogo de campo sigue idéntico (15 comportamientos, `Scope = Any`).
 
-1. **GRL externo vs. GRL del juego.** El juego calcula el GRL a partir de capacidades y de algunos atributos generales (Agility, Speed, Passing, Technique…); la base trae GRL y solo 8 capacidades. Opciones: (a) ella aporta también los 12 generales; (b) los 12 generales se derivan de otra fuente en una fase explícita (no se inventan aquí); (c) el GRL externo se usa solo para calibrar. Hoy el contrato soporta (a) y (c) y avisa de las diferencias.
-2. **Acciones características.** Hay que decidir qué comportamientos genéricos de portero se crean en el catálogo (con `Scope = Goalkeeper`) y el mapa nombre externo → id. Hasta entonces las acciones llegan como `ActionUnmapped`.
-3. **`PlayerDefinition.TeamId`.** Migración propuesta en [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md) §16; los datos importados no deben traerlo.
-4. **Tolerancia del aviso de GRL** (`DefaultGrlTolerance = 5`, valor de partida sin calibrar).
+## 6. Validación del importador
 
-## Qué NO existe todavía
+Errores (el portero no se importa): record nulo, `Id`/nombre inválidos, atributo GK ausente, desconocido o fuera de 1–99, perfil principal inválido, estilo repetido, atributo general desconocido o fuera de rango, GRL de autoría fuera de rango, acción con ámbito de jugador de campo, `PlayerDefinition` resultante inválido, `PlayerId` duplicado en el lote. Avisos: `GrlDiffers`, `StyleDropped`, `ActionUnmapped`, `GeneralDefaulted`, `NumberDefaulted`, `NationalityUnknown`, `FootUnclear`. Roster: `RosterValidator` (jugador en dos equipos, `TeamId` que el roster no confirma) + `DataValidator.ValidateTeam` (1 portero + 5 de campo, números únicos, `TeamPlayerTeamIdMismatch`).
 
-Ningún portero real o de ejemplo, ningún comportamiento específico de portero, ninguna animación, ninguna base de datos completa, ninguna lectura de internet ni de LLM, ni conexión del importador con una carga masiva de la `PlayerLibrary`.
+## 7. Roster
 
-## Rendimiento
+`TeamDefinition.PlayerIds` es la autoridad. `PlayerDefinition.TeamId` es una pista desnormalizada (comentado en el código): los datos importados la dejan vacía y el validador detecta cualquier contradicción. **Deuda:** `PlayerCardData.TeamId` y `PlayerLibrary.GetByTeam` aún la leen; la migración (derivar del roster y eliminar `TeamId`) queda para una fase propia.
 
-El record se descarta tras importar; el runtime guarda solo ids, 8 enteros, estilos y un `PlayerDefinition`. Cientos o miles de porteros no cargan texto de investigación.
+## 8. Relaciones
+
+- **`PlayerDefinition`:** identidad, altura, pie, nacionalidad y atributos generales. No contiene datos de portero.
+- **`GoalkeeperProfile`:** solo las 8 capacidades y los estilos.
+- **`GoalkeeperSkillModel`:** sin estado; recibe perfil + dificultad; una prueba lo ejecuta con los 20 porteros en los 5 niveles sin cambiar atributos ni GRL. Sin nombres hardcodeados (una prueba lee las fuentes).
+- **`FootballDNA`:** tendencias y comportamientos; los atributos GK no se duplican en él.
+- **`PlayerCardData`:** lee jugador + perfil (no copia nada) y muestra nombre, GRL, 8 atributos, perfiles, nacionalidad, equipo.
+- **Dificultad:** no cambia atributos ni GRL (`DifficultyDefinition` no se modificó).
+
+## 9. Hallazgos honestos sobre la base de autoría (no se editó el archivo)
+
+1. **10 de los 20 `Target GRL` no coinciden con la media redondeada de sus propios 8 atributos**, aunque el archivo marca `Match: YES`. El importador los avisa (`GrlDiffers`) y el juego usa siempre la media. Tabla (autoría → media de las 8): Maignan 81→82 · Pickford 83→84 · Sommer 81→82 · Oblak 82→83 · Donnarumma 83→82 · Neuer 84→86 · Kobel 83→82 · Onana 79→81 · Alisson 84→85 · Ramsdale 80→81. Además algunas sumas/promedios escritos en la sección "GRL Verification" son aritméticamente incorrectos (p. ej. Maignan: la tabla suma 656, no 646); esa sección se ignora por ser derivada. Decisión tuya: corregir los objetivos, corregir los atributos o aceptar el GRL calculado (hoy es lo que usa el juego). Una prueba fija esta lista para que cualquier cambio de datos se note.
+2. **Perfil "Diving"** como secundario/terciario de Suzuki y de Gea: no es un perfil oficial; se deja fuera y se avisa (el rasgo ya vive en el atributo Diving y en las acciones).
+3. **Acciones sin comportamiento:** "Shot Stopper" (Henderson, Ramsdale: es un nombre de perfil), "Tapadas Imposibles (Miracle Save)" (Ryan) y "Vocal Energizer" (Ramsdale). Se avisan; no se inventó nada.
+4. **Un portero con pie "Izquierdo / Derecho (Ambidiestro técnico)":** no es un único pie; se mantiene el valor por defecto y se avisa (`FootUnclear`).
+
+## 10. Valores que NO vienen de la base (decisiones pendientes)
+
+- **12 atributos generales:** la base no los trae. El importador usa un valor explícito y común (`GoalkeeperImportDefaults.GeneralAttributeValue = 70`) y lo avisa (`GeneralDefaulted`). No afectan al GRL; sí al Overall, que para un portero no es relevante, y a una parte del posicionamiento en `GoalkeeperSkillModel` (Agility/Speed/Acceleration). **No son datos de autoría.**
+- **Número de camiseta:** no viene; se usa 1 y se avisa (`NumberDefaulted`). Solo debe ser único dentro de un equipo (lo comprueba la validación de plantillas).
+- **Edad, peso, tipo de cuerpo, pie débil, nombre corto:** quedan con los valores por defecto de `PlayerDefinition` (el nombre corto se deriva del último apellido, p. ej. "Gea" para "David de Gea").
+- **Nacionalidad:** se traduce a un código (FIFA) con una tabla de datos; un país no incluido se avisa.
+
+## 11. Siguiente fase
+
+Aportar los 12 atributos generales, números y datos reales de plantilla; decidir los puntos de la sección 9; definir los contextos de portero y fusionar su catálogo con el de campo; conectar el `FootballDNA` de cada portero a `CharacterSpecification`; y migrar `TeamId`. Luego, el gameplay de portero (paradas, animaciones, controlador) y Unity.
+
+## 12. Qué NO existe todavía
+
+Paradas, física, animaciones, IK, colliders, controlador de portero, integración con el partido, presentación visual y cualquier prueba en Unity.
