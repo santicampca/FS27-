@@ -54,6 +54,12 @@ namespace FS27.Core
             return Run(FieldPlayerPropertyCardMarkdown.Parse(markdown, idPrefix), options, into, correctionsMarkdown);
         }
 
+        /// <summary>Same as <see cref="ImportMarkdown"/> for the list layout (<see cref="FieldPlayerListMarkdown"/>).</summary>
+        public static Batch ImportListMarkdown(string markdown, string idPrefix, FieldPlayerImportOptions options = null, PlayerLibrary into = null, string correctionsMarkdown = null)
+        {
+            return Run(FieldPlayerListMarkdown.Parse(markdown, idPrefix), options, into, correctionsMarkdown);
+        }
+
         private static Batch Run(FieldPlayerParseResult parsed, FieldPlayerImportOptions options, PlayerLibrary into, string correctionsMarkdown)
         {
             var tableProblems = new List<string>();

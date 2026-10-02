@@ -1,0 +1,684 @@
+{
+  "players": [
+    {
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 87,
+        "BallControl": 88,
+        "Defense": 68,
+        "Dribbling": 87,
+        "Finishing": 80,
+        "Passing": 85,
+        "Shooting": 82,
+        "Speed": 84,
+        "Stamina": 91,
+        "Strength": 73,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Arsenal FC",
+      "creativity": 86,
+      "dateOfBirth": "2001-09-05",
+      "fullName": "Bukayo Ayoyinka Saka",
+      "heightCm": 178,
+      "name": "Bukayo Saka",
+      "nationality": "England",
+      "naturalPosition": "ED",
+      "playerId": "wg-bukayo-saka",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 7,
+      "signatureActions": [
+        "OutsideWingerCarry",
+        "CutInsideAndShoot",
+        "LineBreakingPass",
+        "DefensiveTracking"
+      ],
+      "strengths": [],
+      "targetOvr": 84,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 88,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 82,
+        "BallControl": 79,
+        "Defense": 73,
+        "Dribbling": 80,
+        "Finishing": 74,
+        "Passing": 74,
+        "Shooting": 75,
+        "Speed": 83,
+        "Stamina": 94,
+        "Strength": 76,
+        "Technique": 78
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Atlético de Madrid",
+      "creativity": 68,
+      "dateOfBirth": "2002-12-18",
+      "fullName": "Giuliano Giovanni Simeone Baldini",
+      "name": "Giuliano Simeone",
+      "nationality": "Argentina",
+      "naturalPosition": "ED",
+      "playerId": "wg-giuliano-simeone",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "role": "Engine"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 20,
+      "signatureActions": [
+        "HighPressuring",
+        "DeepRun",
+        "SidelineWorkrate",
+        "CounterPress"
+      ],
+      "strengths": [],
+      "targetOvr": 79,
+      "weakFootQuality": 75,
+      "weaknesses": []
+    },
+    {
+      "aggression": 70,
+      "attributes": {
+        "Acceleration": 87,
+        "Agility": 89,
+        "BallControl": 88,
+        "Defense": 66,
+        "Dribbling": 89,
+        "Finishing": 77,
+        "Passing": 83,
+        "Shooting": 80,
+        "Speed": 85,
+        "Stamina": 86,
+        "Strength": 74,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Paris Saint-Germain",
+      "creativity": 85,
+      "dateOfBirth": "2006-03-08",
+      "fullName": "Désiré Doué",
+      "heightCm": 182,
+      "name": "Désiré Doué",
+      "nationality": "France",
+      "naturalPosition": "ED",
+      "playerId": "wg-desire-doue",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "MCO"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 14,
+      "signatureActions": [
+        "ProgressiveCarry",
+        "CloseControlDribble",
+        "HalfSpaceDrive",
+        "TurnAndAccelerate"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 62,
+      "attributes": {
+        "Acceleration": 88,
+        "Agility": 91,
+        "BallControl": 89,
+        "Defense": 58,
+        "Dribbling": 90,
+        "Finishing": 76,
+        "Passing": 81,
+        "Shooting": 79,
+        "Speed": 84,
+        "Stamina": 84,
+        "Strength": 64,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Chelsea",
+      "creativity": 87,
+      "dateOfBirth": "2007-04-24",
+      "fullName": "Estêvão Willian Almeida de Oliveira Gonçalves",
+      "heightCm": 176,
+      "name": "Estêvão",
+      "nationality": "Brazil",
+      "naturalPosition": "ED",
+      "playerId": "wg-estevao",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "MCO"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 41,
+      "signatureActions": [
+        "ElusiveDribble",
+        "CutInside",
+        "ProgressiveCarry",
+        "CreativePass"
+      ],
+      "strengths": [],
+      "targetOvr": 78,
+      "weakFootQuality": 75,
+      "weaknesses": []
+    },
+    {
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 88,
+        "Agility": 85,
+        "BallControl": 84,
+        "Defense": 64,
+        "Dribbling": 85,
+        "Finishing": 79,
+        "Passing": 77,
+        "Shooting": 81,
+        "Speed": 86,
+        "Stamina": 89,
+        "Strength": 80,
+        "Technique": 83
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Manchester City",
+      "creativity": 75,
+      "dateOfBirth": "2000-01-07",
+      "fullName": "Antoine Serlom Semenyo",
+      "name": "Antoine Semenyo",
+      "nationality": "Ghana",
+      "naturalPosition": "ED",
+      "playerId": "wg-antoine-semenyo",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 42,
+      "signatureActions": [
+        "PowerDrive",
+        "InsideCutAndShoot",
+        "PhysicalShielding",
+        "TransitionSprint"
+      ],
+      "strengths": [],
+      "targetOvr": 81,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 89,
+        "Agility": 87,
+        "BallControl": 89,
+        "Defense": 62,
+        "Dribbling": 90,
+        "Finishing": 88,
+        "Passing": 84,
+        "Shooting": 87,
+        "Speed": 88,
+        "Stamina": 88,
+        "Strength": 75,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Trabzonspor",
+      "creativity": 84,
+      "dateOfBirth": "1992-06-15",
+      "fullName": "Mohamed Salah Hamed Mahrous Ghaly",
+      "heightCm": 175,
+      "name": "Mohamed Salah",
+      "nationality": "Egypt",
+      "naturalPosition": "ED",
+      "playerId": "wg-mohamed-salah",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 76,
+      "roles": [
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 10,
+      "signatureActions": [
+        "InvertedDiagonalRun",
+        "ClinicalFinishing",
+        "CutInsideAndShoot",
+        "BlindsideAttack"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 89,
+        "Agility": 88,
+        "BallControl": 86,
+        "Defense": 60,
+        "Dribbling": 88,
+        "Finishing": 81,
+        "Passing": 79,
+        "Shooting": 82,
+        "Speed": 87,
+        "Stamina": 87,
+        "Strength": 70,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Light",
+      "club": "AC Milan",
+      "creativity": 80,
+      "dateOfBirth": "1998-09-18",
+      "fullName": "Christian Mate Pulisic",
+      "heightCm": 178,
+      "name": "Christian Pulisic",
+      "nationality": "United States",
+      "naturalPosition": "EI",
+      "playerId": "wg-christian-pulisic",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 11,
+      "signatureActions": [
+        "BurstAcceleration",
+        "InsideDrive",
+        "GoalAreaArrival",
+        "1v1Dribble"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 85,
+      "weaknesses": []
+    },
+    {
+      "aggression": 60,
+      "attributes": {
+        "Acceleration": 89,
+        "Agility": 91,
+        "BallControl": 89,
+        "Defense": 63,
+        "Dribbling": 91,
+        "Finishing": 76,
+        "Passing": 80,
+        "Shooting": 78,
+        "Speed": 86,
+        "Stamina": 88,
+        "Strength": 68,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Brighton & Hove Albion",
+      "creativity": 83,
+      "dateOfBirth": "1997-05-20",
+      "fullName": "Kaoru Mitoma",
+      "heightCm": 178,
+      "name": "Kaoru Mitoma",
+      "nationality": "Japan",
+      "naturalPosition": "EI",
+      "playerId": "wg-kaoru-mitoma",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 76,
+      "roles": [
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "ED"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 7,
+      "signatureActions": [
+        "OutsideWingerBurst",
+        "ChangeOfPaceDribble",
+        "LineBreakingCross",
+        "CutInside"
+      ],
+      "strengths": [],
+      "targetOvr": 77,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 91,
+        "Agility": 87,
+        "BallControl": 86,
+        "Defense": 69,
+        "Dribbling": 87,
+        "Finishing": 78,
+        "Passing": 81,
+        "Shooting": 80,
+        "Speed": 89,
+        "Stamina": 92,
+        "Strength": 73,
+        "Technique": 85
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "FC Barcelona",
+      "creativity": 78,
+      "dateOfBirth": "2001-02-24",
+      "fullName": "Anthony Michael Gordon",
+      "heightCm": 183,
+      "name": "Anthony Gordon",
+      "nationality": "England",
+      "naturalPosition": "EI",
+      "playerId": "wg-anthony-gordon",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Engine"
+        },
+        {
+          "role": "Explosive"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 17,
+      "signatureActions": [
+        "HighIntensityPress",
+        "WingBurst",
+        "ProgressiveCarry",
+        "DirectRunning"
+      ],
+      "strengths": [],
+      "targetOvr": 82,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 75,
+      "attributes": {
+        "Acceleration": 95,
+        "Agility": 94,
+        "BallControl": 92,
+        "Defense": 61,
+        "Dribbling": 95,
+        "Finishing": 84,
+        "Passing": 84,
+        "Shooting": 83,
+        "Speed": 94,
+        "Stamina": 90,
+        "Strength": 72,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Real Madrid",
+      "creativity": 91,
+      "dateOfBirth": "2000-07-12",
+      "fullName": "Vinícius José Paixão de Oliveira Júnior",
+      "heightCm": 176,
+      "name": "Vinícius Júnior",
+      "nationality": "Brazil",
+      "naturalPosition": "EI",
+      "playerId": "wg-vinicius-junior",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 88,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 7,
+      "signatureActions": [
+        "Electrifying1v1",
+        "ExplosiveBurst",
+        "InsideCutAndFinish",
+        "ProgressiveCarry"
+      ],
+      "strengths": [],
+      "targetOvr": 86,
+      "weakFootQuality": 82,
+      "weaknesses": []
+    },
+    {
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 90,
+        "Agility": 89,
+        "BallControl": 87,
+        "Defense": 62,
+        "Dribbling": 88,
+        "Finishing": 79,
+        "Passing": 80,
+        "Shooting": 80,
+        "Speed": 88,
+        "Stamina": 87,
+        "Strength": 71,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Paris Saint-Germain",
+      "creativity": 82,
+      "dateOfBirth": "2002-09-02",
+      "fullName": "Bradley Barcola",
+      "heightCm": 182,
+      "name": "Bradley Barcola",
+      "nationality": "France",
+      "naturalPosition": "EI",
+      "playerId": "wg-bradley-barcola",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 29,
+      "signatureActions": [
+        "SpeedBurst",
+        "CounterAttackRun",
+        "CutInsideAndFinish",
+        "1v1Isolation"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 76,
+      "attributes": {
+        "Acceleration": 91,
+        "Agility": 92,
+        "BallControl": 89,
+        "Defense": 64,
+        "Dribbling": 91,
+        "Finishing": 80,
+        "Passing": 80,
+        "Shooting": 81,
+        "Speed": 89,
+        "Stamina": 91,
+        "Strength": 74,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "FC Bayern München",
+      "creativity": 84,
+      "dateOfBirth": "1997-01-13",
+      "fullName": "Luis Fernando Díaz Marulanda",
+      "heightCm": 180,
+      "name": "Luis Díaz",
+      "nationality": "Colombia",
+      "naturalPosition": "EI",
+      "playerId": "wg-luis-diaz",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 14,
+      "signatureActions": [
+        "TightSpaceDribble",
+        "HighWorkratePress",
+        "CounterAttackBurst",
+        "InsideDiagonalRun"
+      ],
+      "strengths": [],
+      "targetOvr": 84,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

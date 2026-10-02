@@ -28,6 +28,8 @@ namespace FS27.Core
         RoleCountInvalid,
         RoleDuplicate,
         AffinityMissing,
+        /// <summary>The source lists the roles without affinities and the database allows the project default by rank (90 / 75 / 60): not researched values.</summary>
+        AffinityDefaulted,
         AffinityOutOfRange,
         /// <summary>Risk, creativity, aggression or weak foot outside 0..100.</summary>
         ProfileValueOutOfRange,
@@ -119,6 +121,8 @@ namespace FS27.Core
         /// <summary>Allowed distance between target and calculated overall before a warning (a starting value, not a rule).</summary>
         public int OverallTolerance = 5;
         public int MaxSignatureActions = 5;
+        /// <summary>When the source lists roles without affinities: use the project default by rank and warn, instead of an error. Off for every database that researches its affinities.</summary>
+        public bool DefaultMissingAffinities;
         public int ShirtNumberDefault = 99;
         public IReadOnlyDictionary<string, string> ActionVocabulary = DefenderVocabulary.Create();
         public IReadOnlyDictionary<string, string> TagBehaviors = DefenderVocabulary.TagBehaviors();
@@ -151,6 +155,19 @@ namespace FS27.Core
                 ActionVocabulary = MidfieldPlayVocabulary.Create(),
                 TagBehaviors = MidfieldPlayVocabulary.TagBehaviors()
             };
+        }
+
+        /// <summary>Wingers and wide forwards (the ED / EI database): Wing primary, Attack or Midfield as the one optional secondary zone, any of the 12 roles, attacking-play vocabulary, and the project default affinities when the source gives none.</summary>
+        public static FieldPlayerImportOptions Winger()
+        {
+            FieldPlayerImportOptions o = HybridMidfielder();
+            o.Role = PlayerRole.Forward;
+            o.AllowedPrimaryZones = new HashSet<PitchZone> { PitchZone.Wing };
+            o.AllowedSecondaryZones = new HashSet<PitchZone> { PitchZone.Attack, PitchZone.Midfield };
+            o.DefaultMissingAffinities = true;
+            o.ActionVocabulary = AttackPlayVocabulary.Create();
+            o.TagBehaviors = AttackPlayVocabulary.TagBehaviors();
+            return o;
         }
 
         /// <summary>Defensive midfielders (the MCD database): the same contract as <see cref="HybridMidfielder"/> (Midfield primary, Defense or Wing secondary, any of the 12 roles).</summary>
@@ -320,11 +337,18 @@ namespace FS27.Core
                     if (!Enum.TryParse(r.Role, false, out PlayerArchetype role) || !Enum.IsDefined(typeof(PlayerArchetype), role) || (o.AllowedRoles != null && !o.AllowedRoles.Contains(role)))
                     { Add(res, FieldPlayerImportCode.RoleNotAllowed, true, "roles", r.Role, "'" + r.Role + "' is not an allowed role for this database."); continue; }
                     if (!seen.Add(role)) { Add(res, FieldPlayerImportCode.RoleDuplicate, true, "roles", r.Role, "Role listed twice."); continue; }
-                    if (!r.Affinity.HasValue) { Add(res, FieldPlayerImportCode.AffinityMissing, true, "roles", r.Role, "A role needs an affinity."); continue; }
-                    if (r.Affinity.Value < 0 || r.Affinity.Value > 100) { Add(res, FieldPlayerImportCode.AffinityOutOfRange, true, "roles", r.Role, "Affinity " + r.Affinity.Value + " is outside 0..100."); continue; }
-                    if (r.Affinity.Value > previous) ordered = false;
-                    previous = r.Affinity.Value;
-                    p.Roles.Add(new RoleAffinity(role, r.Affinity.Value));
+                    int? given = r.Affinity;
+                    if (!given.HasValue && o.DefaultMissingAffinities)
+                    {
+                        int[] byRank = PlayerPlayingProfile.DefaultAffinityByRank;
+                        given = byRank[Math.Min(p.Roles.Count, byRank.Length - 1)];
+                        Add(res, FieldPlayerImportCode.AffinityDefaulted, false, "roles", r.Role, "The source gives no affinity: the project default for rank " + (p.Roles.Count + 1) + " (" + given.Value + ") is used. It is not researched.");
+                    }
+                    if (!given.HasValue) { Add(res, FieldPlayerImportCode.AffinityMissing, true, "roles", r.Role, "A role needs an affinity."); continue; }
+                    if (given.Value < 0 || given.Value > 100) { Add(res, FieldPlayerImportCode.AffinityOutOfRange, true, "roles", r.Role, "Affinity " + given.Value + " is outside 0..100."); continue; }
+                    if (given.Value > previous) ordered = false;
+                    previous = given.Value;
+                    p.Roles.Add(new RoleAffinity(role, given.Value));
                 }
             if (!ordered) Add(res, FieldPlayerImportCode.RolesNotOrderedByAffinity, false, "roles", "", "The roles are not listed from the highest affinity to the lowest.");
 
@@ -365,7 +389,9 @@ namespace FS27.Core
                 case "CB": zone = PitchZone.Defense; return true;
                 case "RB": case "LB": case "RWB": case "LWB": case "RW": case "LW": zone = PitchZone.Wing; return true;
                 case "CDM": case "CM": case "CAM": case "RM": case "LM": zone = PitchZone.Midfield; return true;
-                case "ST": case "CF": zone = PitchZone.Attack; return true;
+                case "ST": case "CF": case "SD": zone = PitchZone.Attack; return true;
+                case "ED": case "EI": zone = PitchZone.Wing; return true;
+                case "MCO": zone = PitchZone.Midfield; return true;
                 default: return false;
             }
         }

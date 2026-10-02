@@ -1,0 +1,57 @@
+# FS27 WINGERS (ED / EI) — CORRECTIONS V1
+
+Every change made to `FS27_WINGERS_DATABASE_V1.md` before it is imported. The source file is never edited: these rows are applied by the importer (`AuthoringCorrections`, the same mechanism as the
+other player databases) and each one only applies if the record still holds the "before" value (an empty "before" means the source has no value). Classes: **Verified** (an outside source
+completes or contradicts the file; the source is named), **Inference**, **Design**. No attribute, role, role affinity or Target OVR was changed. This source is the thinnest of the project: it carries no
+date of birth, height, weight, shirt number or role affinity, so most rows below COMPLETE the file rather than correct it.
+
+| Player | Field | Before | After | Class | Source | Reason |
+|---|---|---|---|---|---|---|
+| wg-bukayo-saka | dateOfBirth |  | 2001-09-05 | Verified | Wikipedia, ESPN and Arsenal profiles (web search) | The source gives no date of birth (age is computed from it) |
+| wg-bukayo-saka | heightCm |  | 178 | Verified | Wikipedia, ESPN and Arsenal profiles (web search) | The source gives no height |
+| wg-bukayo-saka | shirtNumber |  | 7 | Verified | Wikipedia, ESPN and Arsenal profiles (web search) | The source gives no shirt number |
+| wg-giuliano-simeone | dateOfBirth |  | 2002-12-18 | Verified | Atlético de Madrid / FotMob / Flashscore profiles (web search) | The source gives no date of birth (age is computed from it) |
+| wg-giuliano-simeone | shirtNumber |  | 20 | Verified | Atlético de Madrid / FotMob / Flashscore profiles (web search) | The source gives no shirt number |
+| wg-desire-doue | dateOfBirth |  | 2006-03-08 | Verified | FIFA and ESPN profiles (web search) | The source gives no date of birth (age is computed from it) |
+| wg-desire-doue | heightCm |  | 182 | Verified | FIFA and ESPN profiles (web search) | The source gives no height |
+| wg-desire-doue | shirtNumber |  | 14 | Verified | FIFA and ESPN profiles (web search) | The source gives no shirt number |
+| wg-estevao | dateOfBirth |  | 2007-04-24 | Verified | Chelsea official profile and Wikipedia (joined from Palmeiras in August 2025) (web search) | The source gives no date of birth (age is computed from it) |
+| wg-estevao | heightCm |  | 176 | Verified | Chelsea official profile and Wikipedia (joined from Palmeiras in August 2025) (web search) | The source gives no height |
+| wg-estevao | shirtNumber |  | 41 | Verified | Chelsea official profile and Wikipedia (joined from Palmeiras in August 2025) (web search) | The source gives no shirt number |
+| wg-estevao | club | Palmeiras / Chelsea | Chelsea | Verified | Chelsea official profile and Wikipedia (joined from Palmeiras in August 2025) (web search) | Outdated club in the file |
+| wg-antoine-semenyo | dateOfBirth |  | 2000-01-07 | Verified | Manchester City announcement and ESPN: signed from Bournemouth in January 2026, number 42 (web search) | The source gives no date of birth (age is computed from it) |
+| wg-antoine-semenyo | shirtNumber |  | 42 | Verified | Manchester City announcement and ESPN: signed from Bournemouth in January 2026, number 42 (web search) | The source gives no shirt number |
+| wg-antoine-semenyo | club | AFC Bournemouth | Manchester City | Verified | Manchester City announcement and ESPN: signed from Bournemouth in January 2026, number 42 (web search) | Outdated club in the file |
+| wg-mohamed-salah | dateOfBirth |  | 1992-06-15 | Verified | Sky Sports, Yahoo Sports and Wikipedia: left Liverpool at the end of 2025-26 and joined Trabzonspor on a free transfer (web search) | The source gives no date of birth (age is computed from it) |
+| wg-mohamed-salah | heightCm |  | 175 | Verified | Sky Sports, Yahoo Sports and Wikipedia: left Liverpool at the end of 2025-26 and joined Trabzonspor on a free transfer (web search) | The source gives no height |
+| wg-mohamed-salah | shirtNumber |  | 10 | Verified | Sky Sports, Yahoo Sports and Wikipedia: left Liverpool at the end of 2025-26 and joined Trabzonspor on a free transfer (web search) | The source gives no shirt number |
+| wg-mohamed-salah | club | Liverpool FC | Trabzonspor | Verified | Sky Sports, Yahoo Sports and Wikipedia: left Liverpool at the end of 2025-26 and joined Trabzonspor on a free transfer (web search) | Outdated club in the file |
+| wg-christian-pulisic | dateOfBirth |  | 1998-09-18 | Verified | AC Milan official profile and ESPN (web search) | The source gives no date of birth (age is computed from it) |
+| wg-christian-pulisic | heightCm |  | 178 | Verified | AC Milan official profile and ESPN (web search) | The source gives no height |
+| wg-christian-pulisic | shirtNumber |  | 11 | Verified | AC Milan official profile and ESPN (web search) | The source gives no shirt number |
+| wg-kaoru-mitoma | dateOfBirth |  | 1997-05-20 | Verified | Wikipedia (number 7 reported from August 2026; earlier profiles list 22) (web search) | The source gives no date of birth (age is computed from it) |
+| wg-kaoru-mitoma | heightCm |  | 178 | Verified | Wikipedia (number 7 reported from August 2026; earlier profiles list 22) (web search) | The source gives no height |
+| wg-kaoru-mitoma | shirtNumber |  | 7 | Verified | Wikipedia (number 7 reported from August 2026; earlier profiles list 22) (web search) | The source gives no shirt number |
+| wg-anthony-gordon | dateOfBirth |  | 2001-02-24 | Verified | FC Barcelona official profile and Wikipedia (web search) | The source gives no date of birth (age is computed from it) |
+| wg-anthony-gordon | heightCm |  | 183 | Verified | FC Barcelona official profile and Wikipedia (web search) | The source gives no height |
+| wg-anthony-gordon | shirtNumber |  | 17 | Verified | FC Barcelona official profile and Wikipedia (web search) | The source gives no shirt number |
+| wg-anthony-gordon | club | Newcastle United | FC Barcelona | Verified | FC Barcelona official profile and Wikipedia (web search) | Outdated club in the file |
+| wg-vinicius-junior | dateOfBirth |  | 2000-07-12 | Verified | Real Madrid official profile and Wikipedia (web search) | The source gives no date of birth (age is computed from it) |
+| wg-vinicius-junior | heightCm |  | 176 | Verified | Real Madrid official profile and Wikipedia (web search) | The source gives no height |
+| wg-vinicius-junior | shirtNumber |  | 7 | Verified | Real Madrid official profile and Wikipedia (web search) | The source gives no shirt number |
+| wg-bradley-barcola | dateOfBirth |  | 2002-09-02 | Verified | PSG official profile and Wikipedia (web search) | The source gives no date of birth (age is computed from it) |
+| wg-bradley-barcola | heightCm |  | 182 | Verified | PSG official profile and Wikipedia (web search) | The source gives no height |
+| wg-bradley-barcola | shirtNumber |  | 29 | Verified | PSG official profile and Wikipedia (web search) | The source gives no shirt number |
+| wg-luis-diaz | dateOfBirth |  | 1997-01-13 | Verified | ESPN, Bundesliga and press: joined Bayern in 2025 (web search) | The source gives no date of birth (age is computed from it) |
+| wg-luis-diaz | heightCm |  | 180 | Verified | ESPN, Bundesliga and press: joined Bayern in 2025 (web search) | The source gives no height |
+| wg-luis-diaz | shirtNumber |  | 14 | Verified | ESPN, Bundesliga and press: joined Bayern in 2025 (web search) | The source gives no shirt number |
+| wg-luis-diaz | club | Liverpool FC | FC Bayern München | Verified | ESPN, Bundesliga and press: joined Bayern in 2025 (web search) | Outdated club in the file |
+
+## Findings that are NOT changed (documented, nothing is invented)
+
+- **Role affinities are not researched.** The source lists three roles per player without affinities. The importer option `DefaultMissingAffinities` (only for this database) gives the project default by rank (90 / 75 / 60, the value the playing-profile model already uses) and warns `AffinityDefaulted` (36 warnings). The ORDER of the roles is the source's; the numbers are placeholders until they are researched.
+- **Weight is missing for all twelve** (`WeightDefaulted`, the neutral default 72 kg is used and warned); **height is missing for Giuliano Simeone and Antoine Semenyo** (`HeightDefaulted`, 178 cm): public profiles did not give them. Ages come from the dates of birth above.
+- **Bradley Barcola**: his profile lists PSG and number 29, but August 2026 press reports transfer talks with Liverpool and one result describes a completed move. The club is left as the source writes it (PSG) and flagged UNVERIFIED.
+- **Target OVR** is kept apart from the calculated overall: **Estêvão** (target 78, calculated 86, +8) and **Kaoru Mitoma** (target 77, calculated 87, +10) are outside the tolerance of 5 and warn (`TargetOvrDiffers`); the tolerance is not touched and the research is not changed.
+- **Secondary zones** are Attack for all twelve, as the source states. Real positions ED/EI (right/left winger) are Wing positions, SD (second striker) is Attack, and MCO (offensive midfielder, Doué and Estêvão) is a Midfield position beyond the one secondary zone (`PolyvalenceBeyondZone`): kept as authoring information, nobody is converted into a midfielder or a striker.
+- **Signature actions** with no football behaviour yet are authoring tags. Only exact spellings of one action are merged (for example CutInsideAndShoot / InsideCutAndShoot); none is forced onto an existing behaviour.

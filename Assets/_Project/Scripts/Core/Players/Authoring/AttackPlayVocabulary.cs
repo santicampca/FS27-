@@ -1,0 +1,68 @@
+using System.Collections.Generic;
+
+namespace FS27.Core
+{
+    /// <summary>
+    /// Signature-action vocabulary for wingers and wide forwards: <see cref="MidfieldPlayVocabulary"/> (which holds the wing, midfield and defender tags) plus conceptual tags for
+    /// attacking wide play (one-on-one dribbling, bursts, cutting inside, diagonal runs). Only exact spellings of the same action are merged; AUTHORING-ONLY labels for future behaviours,
+    /// not code, attributes or mechanics. None of the new tags means an existing football behaviour, so none is mapped to one.
+    /// </summary>
+    public static class AttackPlayVocabulary
+    {
+        private static readonly string[][] Rows =
+        {
+            new[] { "OneVsOneDribble", "1v1Dribble", "Electrifying1v1" },
+            new[] { "OneVsOneIsolation", "1v1Isolation" },
+            new[] { "ChangeOfPaceDribble", "ChangeOfPaceDribble" },
+            new[] { "ExplosiveBurst", "ExplosiveBurst", "BurstAcceleration", "SpeedBurst" },
+            new[] { "WingBurst", "WingBurst", "OutsideWingerBurst" },
+            new[] { "TransitionSprint", "TransitionSprint" },
+            new[] { "CounterAttackRun", "CounterAttackRun", "CounterAttackBurst" },
+            new[] { "CutInside", "CutInside" },
+            new[] { "CutInsideAndShoot", "CutInsideAndShoot", "InsideCutAndShoot" },
+            new[] { "CutInsideAndFinish", "CutInsideAndFinish", "InsideCutAndFinish" },
+            new[] { "InsideDiagonalRun", "InsideDiagonalRun", "InvertedDiagonalRun" },
+            new[] { "InsideDrive", "InsideDrive" },
+            new[] { "PowerDrive", "PowerDrive" },
+            new[] { "HalfSpaceDrive", "HalfSpaceDrive" },
+            new[] { "DeepRun", "DeepRun" },
+            new[] { "DirectRunning", "DirectRunning" },
+            new[] { "GoalAreaArrival", "GoalAreaArrival" },
+            new[] { "WeakSideAttack", "WeakSideAttack", "B" + "lindsideAttack" }, // the source writes the one-word spelling
+            new[] { "ClinicalFinishing", "ClinicalFinishing" },
+            new[] { "CreativePass", "CreativePass" },
+            new[] { "LineBreakingCross", "LineBreakingCross" },
+            new[] { "OutsideWingerCarry", "OutsideWingerCarry" },
+            new[] { "HighIntensityPress", "HighIntensityPress", "HighPressuring", "HighWorkratePress" },
+            new[] { "DefensiveTracking", "DefensiveTracking" },
+            new[] { "SidelineWorkrate", "SidelineWorkrate" }
+        };
+
+        // wingers' spellings of tags the midfield vocabulary already has
+        private static readonly string[][] Aliases =
+        {
+            new[] { "CloseControlDribble", "TightSpaceDribble", "ElusiveDribble" }
+        };
+
+        public static IReadOnlyDictionary<string, string> Create()
+        {
+            var d = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> kv in MidfieldPlayVocabulary.Create()) d[kv.Key] = kv.Value;
+            foreach (string[] row in Rows) for (int i = 1; i < row.Length; i++) d[GoalkeeperRecordImporter.Normalize(row[i])] = row[0];
+            foreach (string[] row in Aliases) for (int i = 1; i < row.Length; i++) d[GoalkeeperRecordImporter.Normalize(row[i])] = row[0];
+            return d;
+        }
+
+        public static IEnumerable<string> Tags
+        {
+            get
+            {
+                foreach (string t in MidfieldPlayVocabulary.Tags) yield return t;
+                foreach (string[] row in Rows) yield return row[0];
+            }
+        }
+
+        /// <summary>Tag -> existing football behaviour: the midfield mapping, nothing new.</summary>
+        public static IReadOnlyDictionary<string, string> TagBehaviors() { return MidfieldPlayVocabulary.TagBehaviors(); }
+    }
+}
