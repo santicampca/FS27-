@@ -238,6 +238,14 @@ namespace FS27.Core
         }
     }
 
+    /// <summary>Which kind of player a behaviour is for. <see cref="Any"/> keeps every existing behaviour valid for everyone.</summary>
+    public enum BehaviorScope
+    {
+        Any = 0,
+        FieldPlayer = 1,
+        Goalkeeper = 2
+    }
+
     /// <summary>
     /// A signature behaviour as DATA: what drives it, in which situations it applies, what it needs from the player and from animation.
     /// There is no code per behaviour here and none per player. Executing a behaviour is the job of the future gameplay runtime.
@@ -246,6 +254,8 @@ namespace FS27.Core
     public sealed class SignatureBehaviorDefinition
     {
         public string Id;
+        /// <summary>Who may have this behaviour (default: anyone). A goalkeeper-only action is data here, never a class per keeper.</summary>
+        public BehaviorScope Scope = BehaviorScope.Any;
         public BehaviorCategory Category;
         public string Description;
         public BehaviorRuntimeStatus Status = BehaviorRuntimeStatus.Planned;

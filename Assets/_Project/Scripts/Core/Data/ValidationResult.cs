@@ -67,7 +67,15 @@ namespace FS27.Core
         /// <summary>A goalkeeper (PlayerRole.Goalkeeper) has no goalkeeper profile.</summary>
         GoalkeeperProfileMissing,
         /// <summary>A profile exists for a player who is not a goalkeeper.</summary>
-        GoalkeeperProfileOnFieldPlayer
+        GoalkeeperProfileOnFieldPlayer,
+
+        // Roster consistency (appended)
+        /// <summary>One player id is listed in the rosters of two different teams.</summary>
+        RosterPlayerInMultipleTeams,
+        /// <summary>A player says it belongs to a team (TeamId) whose roster does not list it, or names a team that does not exist.</summary>
+        RosterPlayerTeamIdNotInRoster,
+        /// <summary>A behaviour is for another kind of player (a goalkeeper-only action on a field player, or the reverse).</summary>
+        BehaviorScopeMismatch
     }
 
     public sealed class ValidationIssue

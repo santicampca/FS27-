@@ -156,3 +156,38 @@ Preparada, no implementada. Handling quedará listo para la interacción balón�
 ## 15. Qué NO está implementado todavía
 
 Movimiento del portero, animaciones (estiradas, root motion, ragdoll, IK), paradas, física de atrapar, desvíos, colisiones, IA completa del portero, pase y saque, tiros, penaltis, UI, integración con Unity, multijugador, base de datos y online. Esta fase es **datos + rating + perfil + arquitectura + tests**.
+
+## 16. Auditoría de preparación para datos externos (fase de arquitectura)
+
+Auditoría hecha sobre el repositorio real, antes de tocar nada. **No se añadió ningún portero ni ninguna estadística.**
+
+### Fuente de verdad (tabla)
+
+| Dato | Dueño único | Quien lo lee (sin copiar) |
+|---|---|---|
+| Identidad, 12 atributos generales, número, físico | `PlayerDefinition` | cartas, rating, IA |
+| Perfil de juego (zona, rol) | `PlayerPlayingProfile` | IA, rating de campo |
+| 8 capacidades + estilos de portero | `GoalkeeperProfile` (enlazado por `PlayerId`) | `GoalkeeperRatingCalculator`, `GoalkeeperSkillModel`, `PlayerCardData` |
+| Pertenencia a un equipo (roster) | **`TeamDefinition.PlayerIds`** | `RosterValidator.TeamOf` |
+| Tendencias y comportamientos | `FootballDNA` (ids de catálogo) | motor de comportamiento |
+| Dificultad | `DifficultyDefinition` | solo cambia cómo se *usan* las capacidades |
+
+### GRL: cómo funciona exactamente hoy
+No existe un campo GRL. Se **calcula** (`GoalkeeperRatingCalculator.GetRating`) como media ponderada de capacidades y algunos atributos generales, con pesos por estilo (sección 5). Es independiente del Overall y **no se tocó**. Consecuencia para la importación: el GRL de una fuente externa es una **referencia** (`ReportedGrl`), se compara con el calculado y nunca se guarda ni sustituye al del juego. Para calcular el GRL de un portero importado hacen falta sus 12 atributos generales (la base de datos prevista trae solo 8 capacidades + GRL): ver [GOALKEEPER_DATA_INTEGRATION.md](GOALKEEPER_DATA_INTEGRATION.md).
+
+### Hallazgos
+1. **`PlayerDefinition.TeamId` + `TeamDefinition.PlayerIds` = dos fuentes de verdad de la plantilla (real).** Hoy `PlayerLibrary.TryAssignToTeam` cambia el `TeamId` del jugador pero no reconstruye ningún roster (el comentario de la clase lo promete), y el validador solo detectaba el desacuerdo desde el lado del equipo. Un jugador con `TeamId = "red"` que ningún roster lista, o listado en dos equipos, pasaba sin aviso. **Decisión:** no se elimina `TeamId` (lo usan `PlayerCardData`, `PlayerLibrary.GetByTeam` y ~40 pruebas; quitarlo sería destructivo). Se declara **`TeamDefinition.PlayerIds` la única verdad** y `TeamId` una pista desnormalizada, y se añade `RosterValidator` (solo lectura) que detecta jugador en dos equipos y `TeamId` que el roster no confirma. Migración segura pendiente (fase posterior, con tu visto bueno): derivar `PlayerCardData.TeamId` del roster, deprecar `TeamId` y, al final, eliminarlo; los datos importados **no** deben traer `TeamId`.
+2. **`Reaction` sigue existiendo en `PlayerAttributes`** como campo legado (13.º valor, fuera de los 12; lo leen `AnticipationModel` y `AiErrorModel`, y `DataValidator` lo valida). No forma parte de los ratings ni de las 8 capacidades, pero contradice "Reaction pertenece a la IA/dificultad". **No se cambió** (es de la infraestructura de IA ya probada); queda como riesgo documentado: retirarlo exigiría reescribir esos dos modelos.
+3. **`GoalkeeperProfileSuggester`** (Creator) puntúa estilos con medias simples de deseos 0..1, y `GoalkeeperRatingCalculator.GetStyleRatingRaw` lo hace con pesos reales. Son dos fórmulas de "qué estilo encaja"; la del Creator trabaja antes de que existan atributos y solo **sugiere**, no define el rating. Se documenta, no se unifica (riesgo de cambiar resultados del Creator).
+4. **Un portero se reconoce de dos maneras** (`Role == Goalkeeper` y tener `GoalkeeperProfile`); `ValidateTeam` ya exige que coincidan (`GoalkeeperProfileMissing` / `GoalkeeperProfileOnFieldPlayer`). Sin cambios.
+5. **Comportamientos de acción característica:** el catálogo (`DefaultBehaviors`, 15 entradas, todas `Planned`) es genérico —datos, sin clase por jugador— y sirve para porteros, pero no distinguía a quién se aplican. Se añade `BehaviorScope` (`Any` por defecto, `FieldPlayer`, `Goalkeeper`) y `BehaviorScopeRules`. **No se creó ningún comportamiento de portero** (las acciones características reales llegarán con la base de datos).
+6. **Sin duplicaciones** de atributos GK en `FootballDNA`, `GoalkeeperSkillModel` (estático y sin estado), `PlayerCardData` (referencia) ni en `Difficulty`. **Sin ramas por nombre o id de jugador** en `Core` (ahora lo comprueba una prueba que lee las fuentes). La dificultad no escribe atributos, capacidades ni rating (pruebas existentes + una nueva con un portero importado).
+7. **Unity:** nada de esto se ejecutó en Unity; todo es C# puro probado con `dotnet test Tests/Core.Tests`.
+
+### Qué se añadió (solo contratos)
+- `RosterValidator` (Data): `BuildIndex`, `TeamOf`, `Validate` y los códigos `RosterPlayerInMultipleTeams`, `RosterPlayerTeamIdNotInRoster`.
+- `BehaviorScope` en `SignatureBehaviorDefinition` y `BehaviorScopeRules`, código `BehaviorScopeMismatch`.
+- `GoalkeeperDataRecord`, `GoalkeeperRecordImporter`, `GoalkeeperRecordJson` (Goalkeepers): contrato de **autoría** para la futura base de datos.
+
+### Qué deliberadamente NO existe todavía
+Ningún portero real ni de ejemplo en el juego, ningún comportamiento específico de portero, ningún cambio en GRL o en sus pesos, ninguna novena capacidad, ninguna animación o IA de portero, y `TeamId` sigue en `PlayerDefinition` (migración pendiente).
