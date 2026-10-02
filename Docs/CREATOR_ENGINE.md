@@ -1,6 +1,6 @@
 # FS27 Creator Engine
 
-Estado: **fase "Intelligence" completada y probada fuera de Unity** (C# puro, `dotnet test Tests/Core.Tests`: 1249 pruebas, 0 fallos). **Nada de esto se ha ejecutado dentro del editor de Unity**, ningún modelo de lenguaje real se ha conectado y no existe arte final: ver la sección 5.
+Estado: **fase "Intelligence" completada y probada fuera de Unity** (C# puro, `dotnet test Tests/Core.Tests`: 1253 pruebas, 0 fallos). **Nada de esto se ha ejecutado dentro del editor de Unity**, ningún modelo de lenguaje real se ha conectado y no existe arte final: ver la sección 5.
 
 > El Creator Engine es de FS27. No depende de Quaternius, de Ready Player Me, de ningún creador de avatares externo ni de ningún proveedor de IA. Un modelo de lenguaje es **un intérprete más**, intercambiable, que produce datos; el motor funciona entero sin él.
 

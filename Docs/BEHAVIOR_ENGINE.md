@@ -32,7 +32,7 @@ Para cada comportamiento del catálogo (15):
 - **IA sin acción explícita:** el comportamiento elegido pasa a ser `Action` + `MovementStyle` + `BehaviorId`.
 - **Persona:** la acción pedida **nunca se sustituye**. El DNA solo da sabor dentro de la misma familia: tiro colocado, pase al hueco, finta en el regate. No se inventa ninguna acción para una persona.
 - **No toca la mira** (`ShotIntent.Aim`, `PassIntent.Target`): `IntentAssist.SnapAim` y los ajustes de asistencia siguen siendo los dueños de eso.
-- `PlayerIntent` es **el mismo struct** extendido (BehaviorId, Action, Style, Dribble/Shot/Pass); un intent solo de movimiento queda idéntico. Sin bool, sin sprint.
+- `PlayerIntent` es **el mismo struct** extendido (BehaviorId, Action, Style, Dribble/Shot/Pass); un intent solo de movimiento queda idéntico. Sin bool, sin sprint. `IntentMixer.Sanitize` (la tubería de entrada existente) ahora **conserva** esos campos: una prueba de extremo a extremo (IA → decisión → intent → `Sanitize` → `PlayerLocomotion`) comprueba que la velocidad del jugador es la misma con o sin acción.
 
 ## Estado honesto
 Los 15 comportamientos siguen `Planned` (hay definición, prioridad, riesgo, enfriamiento y etiquetas de animación, pero ninguno se ejecuta en partido). Los valores de prioridad/riesgo/enfriamiento y los pesos son **valores de partida** pensados para calibrarse. La IA de partido no usa todavía este motor.
