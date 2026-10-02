@@ -39,7 +39,35 @@ namespace FS27.Core
 
         // A match between two teams
         MatchSameTeam,
-        MatchDuplicatePlayerId
+        MatchDuplicatePlayerId,
+
+        // Player System V2 (appended, so earlier codes keep their values)
+        PlayerShortNameInvalid,
+        PlayerNationalityInvalid,
+        PlayerTeamIdInvalid,
+        PlayerAgeOutOfRange,
+        PlayerHeightOutOfRange,
+        PlayerWeightOutOfRange,
+        PlayerFootInvalid,
+        PlayerWeakFootOutOfRange,
+        PlayerBodyTypeInvalid,
+        TeamPlayerTeamIdMismatch,
+        FormationZoneInvalid,
+        TeamPlayerNotFound,
+        TeamPlayerIdInvalid,
+        TeamPlayerLookupMissing,
+
+        // Goalkeeper System V1
+        GoalkeeperProfileNull,
+        GoalkeeperProfilePlayerIdInvalid,
+        GoalkeeperProfilePlayerIdMismatch,
+        GoalkeeperCapabilityOutOfRange,
+        GoalkeeperStyleInvalid,
+        GoalkeeperStyleDuplicate,
+        /// <summary>A goalkeeper (PlayerRole.Goalkeeper) has no goalkeeper profile.</summary>
+        GoalkeeperProfileMissing,
+        /// <summary>A profile exists for a player who is not a goalkeeper.</summary>
+        GoalkeeperProfileOnFieldPlayer
     }
 
     public sealed class ValidationIssue

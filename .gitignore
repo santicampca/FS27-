@@ -64,3 +64,9 @@ crashlytics-build.properties
 # OS junk
 .DS_Store
 Thumbs.db
+
+# --- generated previews (the repo stores binaries in Git LFS; regenerate with Tools/PreviewWriter) ---
+/Docs/previews/*.png
+/Docs/previews/*.glb
+/Tools/**/bin/
+/Tools/**/obj/

@@ -1,28 +1,51 @@
-# Data Core: jugadores, equipos y formaciones (5v5)
+# Data Core: jugadores, equipos y formaciones (6v6)
+
+**FS27 es 6 contra 6: cada equipo tiene 1 portero + 5 jugadores de campo = 6 jugadores.** (Las constantes viven en un solo
+sitio, `DataRules`: `GoalkeepersPerTeam = 1`, `FieldPlayersPerTeam = 5`, `PlayersPerTeam = 6`.)
 
 Capa de datos pura en `Assets/_Project/Scripts/Core/Data`. Sin UnityEngine, sin IA, sin comportamiento:
-solo **qué es** un jugador, un equipo y una formación, y la validación de que son utilizables en un 5 contra 5.
+solo **qué es** un jugador, un equipo y una formación, y la validación de que son utilizables en un 6 contra 6.
 Todo es aditivo: reutiliza `PlayerAttributes` y `FieldDimensions` sin modificarlos.
+
+> **Historia:** este sistema se escribió primero para 5 contra 5 (1 portero + 4 de campo). Esa regla **ya no existe**: el diseño definitivo es 6v6.
+> Además, los equipos ya no contienen jugadores sino sus **ids**; la identidad y los 12 atributos (+ `Reaction`, que pertenece a la IA/dificultad y no es uno de los 12)
+> están descritos en [PLAYER_SYSTEM.md](PLAYER_SYSTEM.md).
 
 ## Modelo
 
 ```
-TeamDefinition ──► Players: List<PlayerDefinition>   (el orden = la alineación; índice 0..4)
-      │                         └─► Attributes: PlayerAttributes (los 9 atributos 1..99, ya existentes)
+TeamDefinition ──► PlayerIds: List<string>   (el orden = la alineación; índice 0..5)
+      │                         └─(se resuelve en)─► PlayerLibrary ──► PlayerDefinition (UNA instancia lógica por id)
+      │                                                                   └─► Attributes: PlayerAttributes
       └─► FormationId ──(se resuelve en)──► FormationLibrary ──► FormationDefinition
-                                                                   └─► Positions: List<FormationPosition> (5)
+                                                                   └─► Positions: List<FormationPosition> (6)
 ```
+
+El equipo **no contiene copias** de `PlayerDefinition`: solo ids. Existe una única instancia por jugador (en la `PlayerLibrary`),
+lo que permite cambiar un jugador de equipo, editar plantillas, crear equipos y reutilizar jugadores sin duplicar nada.
+Para resolver los ids (y los perfiles de portero) se usa `IPlayerLookup` (la `PlayerLibrary` lo implementa), por lo que `Data` no depende de `Players`.
 
 | Tipo | Contenido |
 |---|---|
-| `PlayerDefinition` | `Id` estable, `Name`, `Number`, `Role`, `Attributes` (speed, acceleration, stamina, ballControl, passing, shooting, defense, strength, reaction) |
+| `PlayerDefinition` | `Id` estable, `Name`, `Number`, `Role`, `Attributes` e identidad/datos físicos (ver PLAYER_SYSTEM.md) |
 | `PlayerRole` | `Goalkeeper`, `Defender`, `Midfielder`, `Forward` (solo dato, sin comportamiento) |
-| `TeamDefinition` | `Id`, `Name`, `Colors` (`TeamColors`: primario/secundario en `ColorRgb`), `Players`, `FormationId` |
+| `TeamDefinition` | `Id`, `Name`, `Colors` (`TeamColors`), `PlayerIds` (6), `FormationId`; `GoalkeeperIndex(IPlayerLookup)` |
 | `FormationDefinition` | `Id`, `Name`, `Positions` |
-| `FormationPosition` | `PlayerIndex` (índice en la alineación), `Role`, `Relative` |
+| `FormationPosition` | `PlayerIndex` (índice en la alineación), `Role` (categoría gruesa, el portero se identifica por ella), `Zone` (`PitchZone`: Goal/Defense/Midfield/Wing/Attack), `Relative` |
 | `FormationLibrary` | busca formaciones por id; `TryAdd` rechaza duplicados/ids inválidos |
-| `DefaultFormations` | `2-2`, `1-2-1` (rombo), `2-1-1`: ejemplos, el portero siempre en el slot 0 |
-| `DataRules` | las constantes: 5 jugadores, 1 portero, números 1..99, longitudes de id/nombre, rango relativo 0..1 |
+| `DefaultFormations` | `2-1-2`, `1-2-2`, `2-2-1`: ejemplos de 1 portero + 5 de campo, el portero siempre en el slot 0 |
+| `DataRules` | las constantes: 1 portero, 5 de campo, 6 en total, números 1..99, longitudes de id/nombre, rango relativo 0..1 |
+
+### Formaciones por defecto (6 jugadores)
+
+Una formación define **posición inicial, distribución espacial, zona y rol grueso**; no ata al jugador a una posición tradicional
+(los jugadores siguen siendo polivalentes, y su idoneidad por zona se calcula en el Player System).
+
+| Id | Alineación (además del portero) |
+|---|---|
+| `2-1-2` | 2 defensas, 1 medio, 1 extremo (zona `Wing`), 1 atacante |
+| `1-2-2` | 1 defensa, 2 medios, 1 extremo (zona `Wing`), 1 atacante |
+| `2-2-1` | 2 defensas, 2 medios, 1 atacante |
 
 Un `PlayerDefinition.Attributes` se pasa tal cual a `PlayerStats.Resolve(...)`, así que un jugador definido en datos
 llega a la locomoción/stamina existente sin conversiones. Los tipos son `[Serializable]` con campos públicos:
@@ -43,12 +66,12 @@ Cada problema es un `ValidationIssue` con `Code` (enum `ValidationCode`, lo que 
 
 | Método | Comprueba |
 |---|---|
-| `ValidatePlayer` | id válido (1-64, sin espacios), nombre (1-32, no vacío), número 1..99, rol definido, los 9 atributos en 1..99 |
-| `ValidateFormation` | exactamente 5 posiciones, índices 0..4 sin repetir, exactamente 1 portero, roles definidos, coordenadas en 0..1 (NaN/infinito rechazados) |
-| `ValidateTeam(team, library?)` | exactamente 5 jugadores, exactamente 1 portero, ids y números de camiseta sin repetir, cada jugador válido, `FormationId` presente. Con biblioteca: la formación existe, es válida y su slot de portero coincide con el portero del equipo |
-| `ValidateMatchTeams(home, away, library?)` | ambos equipos válidos, ids de equipo distintos, ningún id de jugador compartido |
+| `ValidatePlayer` | id válido (1-64, sin espacios), nombre (1-32, no vacío), número 1..99, rol definido, los atributos en 1..99, identidad y datos físicos |
+| `ValidateFormation` | exactamente 6 posiciones (1 portero + 5 de campo), índices 0..5 sin repetir, exactamente 1 portero, roles y zonas definidos (solo el portero en la zona `Goal`), coordenadas en 0..1 (NaN/infinito rechazados) |
+| `ValidateTeam(team, players, formations?)` | exactamente 6 ids de jugador, ids válidos y sin repetir, todos existentes en la biblioteca de jugadores, cada jugador válido, exactamente 1 portero (y por tanto 5 de campo) **con `GoalkeeperProfile` válido** (y ningún jugador de campo con uno; ver [GOALKEEPER_SYSTEM.md](GOALKEEPER_SYSTEM.md)), números de camiseta sin repetir, `TeamId` del jugador coherente, `FormationId` presente. Con biblioteca de formaciones: la formación existe, es válida (6 posiciones) y su slot de portero coincide con el portero del equipo |
+| `ValidateMatchTeams(home, away, players, formations?)` | ambos equipos válidos, ids de equipo distintos, ningún id de jugador compartido |
 
-Ejemplo de uso (pseudocódigo): `var r = DataValidator.ValidateTeam(team, library); if (!r.IsValid) log(r.ToString());`
+Ejemplo de uso (pseudocódigo): `var r = DataValidator.ValidateTeam(team, playerLibrary, formationLibrary); if (!r.IsValid) log(r.ToString());`
 
 ## Qué NO hay (a propósito)
 
@@ -63,6 +86,6 @@ pasarán por `DataValidator` en `OnValidate`. `PlayerEntity` leerá sus atributo
 
 ## Tests
 
-`Assets/_Project/Tests/EditMode/DataCoreTests.cs` (153 casos): cada regla en su límite (valores válidos e inválidos),
-formaciones por defecto, conversión a campo, biblioteca, equipos, partidos, mensajes con el id del culpable y tests-guarda
+`Assets/_Project/Tests/EditMode/DataCoreTests.cs`: cada regla en su límite (equipos de 5, 6 y 7; 0, 1 y 2 porteros; formaciones de 5 y 6),
+formaciones por defecto, conversión a campo, biblioteca, equipos por ids, partidos, mensajes con el id del culpable y tests-guarda
 de arquitectura (Core sin Unity, tipos serializables, sin sprint). Ejecutar: `dotnet test Tests/Core.Tests`.

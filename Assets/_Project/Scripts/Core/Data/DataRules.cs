@@ -1,11 +1,13 @@
 namespace FS27.Core
 {
-    /// <summary>The numbers that define what a valid 5v5 team is. One place, so rules are easy to find and change.</summary>
+    /// <summary>The numbers that define what a valid 6v6 team is. One place, so rules are easy to find and change.</summary>
     public static class DataRules
     {
-        /// <summary>Players on the pitch per team (1 goalkeeper + 4 outfield).</summary>
-        public const int PlayersPerTeam = 5;
+        /// <summary>FS27 is 6v6: every team has exactly 1 goalkeeper and 5 field players. These are the only place the numbers live.</summary>
         public const int GoalkeepersPerTeam = 1;
+        public const int FieldPlayersPerTeam = 5;
+        /// <summary>Players on the pitch per team (1 goalkeeper + 5 field players = 6).</summary>
+        public const int PlayersPerTeam = GoalkeepersPerTeam + FieldPlayersPerTeam;
 
         public const int MinShirtNumber = 1;
         public const int MaxShirtNumber = 99;
