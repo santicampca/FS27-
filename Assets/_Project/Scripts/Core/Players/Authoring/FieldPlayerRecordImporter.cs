@@ -179,6 +179,9 @@ namespace FS27.Core
             return o;
         }
 
+        /// <summary>Centre forwards (the DC database): the same contract as <see cref="SecondStriker"/> (Attack primary; Midfield or Wing secondary, or none; any of the 12 roles; default affinities when the source gives none).</summary>
+        public static FieldPlayerImportOptions Striker() { return SecondStriker(); }
+
         /// <summary>Defensive midfielders (the MCD database): the same contract as <see cref="HybridMidfielder"/> (Midfield primary, Defense or Wing secondary, any of the 12 roles).</summary>
         public static FieldPlayerImportOptions DefensiveMidfielder() { return HybridMidfielder(); }
 

@@ -77,7 +77,7 @@ namespace FS27.Core
                     case "FS27 Zones":
                         {
                             Match m = Regex.Match(body, @"^Primary:\s*(\w+)\s*,\s*Secondary:\s*(\w+)\s*$");
-                            if (m.Success) { rec.PrimaryZone = m.Groups[1].Value; rec.SecondaryZone = m.Groups[2].Value; }
+                            if (m.Success) { rec.PrimaryZone = m.Groups[1].Value; rec.SecondaryZone = m.Groups[2].Value.Equals("None", StringComparison.OrdinalIgnoreCase) ? "" : m.Groups[2].Value; }
                             else result.Problems.Add(heading + ": cannot read the zones '" + body + "'.");
                             break;
                         }
@@ -106,6 +106,9 @@ namespace FS27.Core
                         break;
                     case "Signature Actions":
                         foreach (string part in body.TrimEnd('.').Split(',')) if (part.Trim().Length > 0) rec.SignatureActions.Add(part.Trim());
+                        break;
+                    case "Tipo Funcional":
+                        rec.PolyvalenceNote = body;
                         break;
                     case "Target OVR":
                         if (int.TryParse(body, NumberStyles.Integer, CultureInfo.InvariantCulture, out int t)) rec.TargetOvr = t; else result.Problems.Add(heading + ": Target OVR '" + body + "' is not a whole number.");
@@ -140,6 +143,7 @@ namespace FS27.Core
             {
                 Dictionary<string, string> row = rows[i];
                 FieldPlayerDataRecord r = result.Records[i];
+                foreach (string k in new[] { "Secondary Zone", "Secondary Real Position" }) if (row.TryGetValue(k, out string none) && none.Equals("None", StringComparison.OrdinalIgnoreCase)) row[k] = "";
                 if (row.TryGetValue("Nation", out string nation)) { if (FieldPlayerSectionedMarkdown.N(nation) != FieldPlayerSectionedMarkdown.N(r.Nationality)) result.Problems.Add(r.Name + ": " + table + " says nation '" + nation + "' but the paragraph says '" + r.Nationality + "'."); row.Remove("Nation"); }
                 if (row.TryGetValue("Club", out string club)) { if (FieldPlayerSectionedMarkdown.N(club) != FieldPlayerSectionedMarkdown.N(r.Club)) result.Problems.Add(r.Name + ": " + table + " says club '" + club + "' but the paragraph says '" + r.Club + "'."); row.Remove("Club"); }
                 if (row.TryGetValue("Secondary Real Position", out string sec)) { if (FieldPlayerSectionedMarkdown.N(sec) != FieldPlayerSectionedMarkdown.N(string.Join("/", r.SecondaryPositions))) result.Problems.Add(r.Name + ": " + table + " says secondary position '" + sec + "' but the paragraph says '" + string.Join(" / ", r.SecondaryPositions) + "'."); row.Remove("Secondary Real Position"); }

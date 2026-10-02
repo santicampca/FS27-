@@ -19,7 +19,7 @@ namespace FS27.Core
             {
                 "ARG|Argentina", "AUS|Australia", "GER|Alemania|Germany", "BEL|Bélgica|Belgium", "BRA|Brasil|Brazil", "CMR|Camerún|Cameroon", "SVN|Eslovenia|Slovenia",
                 "ESP|España|Spain", "FRA|Francia|France", "ENG|Inglaterra|England", "SCO|Escocia|Scotland", "ITA|Italia|Italy", "JPN|Japón|Japan", "RUS|Rusia|Russia", "SUI|Suiza|Switzerland",
-                "NED|Países Bajos|Netherlands|Holanda", "POR|Portugal", "SEN|Senegal", "KOR|Corea del Sur|South Korea", "URU|Uruguay", "VEN|Venezuela", "ECU|Ecuador", "SVK|Eslovaquia|Slovakia", "CRO|Croacia|Croatia", "NGA|Nigeria", "MAR|Marruecos|Morocco", "COL|Colombia", "CAN|Canadá|Canada", "UKR|Ucrania|Ukraine", "HUN|Hungría|Hungary", "TUR|Turquía|Turkey|Türkiye", "NOR|Noruega|Norway", "MEX|México|Mexico", "USA|Estados Unidos|United States", "EGY|Egipto|Egypt", "GHA|Ghana", "GEO|Georgia|Georgia"
+                "NED|Países Bajos|Netherlands|Holanda", "POR|Portugal", "SEN|Senegal", "KOR|Corea del Sur|South Korea", "URU|Uruguay", "VEN|Venezuela", "ECU|Ecuador", "SVK|Eslovaquia|Slovakia", "CRO|Croacia|Croatia", "NGA|Nigeria", "MAR|Marruecos|Morocco", "COL|Colombia", "CAN|Canadá|Canada", "UKR|Ucrania|Ukraine", "HUN|Hungría|Hungary", "TUR|Turquía|Turkey|Türkiye", "NOR|Noruega|Norway", "MEX|México|Mexico", "USA|Estados Unidos|United States", "EGY|Egipto|Egypt", "GHA|Ghana", "GEO|Georgia|Georgia", "SWE|Suecia|Sweden", "IRL|Irlanda|Republic of Ireland|Ireland", "NZL|Nueva Zelanda|New Zealand", "GAB|Gabón|Gabon", "KVX|Kosovo"
             };
             foreach (string row in rows)
             {
