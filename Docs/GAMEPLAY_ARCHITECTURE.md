@@ -1,10 +1,10 @@
 # FS27 — Arquitectura de gameplay V1 (CERRADA)
 
-Estado: **arquitectura cerrada. Todas las decisiones de este documento son definitivas.** La implementación del gameplay empieza después, por la fase 1 de la sección K.
+Estado: **arquitectura cerrada y FASE 1 (núcleo determinista) implementada** — ver sección N para lo que existe de verdad y las decisiones de implementación. Todas las decisiones de este documento son definitivas.
 Esta fase de cierre solo modificó documentación y movió `FootballActionKind` a un archivo neutro de Core (con acciones nuevas añadidas al final). No se implementó gameplay, ni se tocaron los contratos de jugadores, porteros, entrenadores ni árbitros.
 Las ampliaciones que se mencionan (banquillo, periodos, estados de partido, tipo de competición) son **propuestas aditivas para la fase de implementación**.
 
-Leyenda: ✅ resuelto y cerrado · 🔧 resuelto y ya aplicado en código · ⏳ pendiente de implementar (decisión tomada, falta construir) · ⚙ valor de configuración sin cifra decidida.
+Leyenda: ✅ resuelto y cerrado · 🔧 resuelto y ya aplicado en código (cierre o Fase 1) · ⏳ pendiente de implementar (decisión tomada, falta construir) · ⚙ valor de configuración sin cifra decidida.
 
 **Principio rector:** `GameMode` (cómo se juega: Arena | Classic) y `CompetitionMatchType` (cómo se resuelve el resultado: Normal | Knockout) son conceptos **independientes**. Ninguna regla de desempate depende del modo.
 
@@ -33,14 +33,14 @@ Leyenda: ✅ resuelto y cerrado · 🔧 resuelto y ya aplicado en código · ⏳
 
 ### A.2 Conflictos entre la especificación y el proyecto — todos cerrados
 
-**C1 ✅ Dos físicas de balón.** `Gameplay/BallPhysics.cs` mueve el balón con `Rigidbody`; `Core/Ball/BallSimulator` (puro) no se usa en Gameplay.
-Cierre: **`Core/Ball/BallSimulator` es la fuente autoritativa.** Flujo: `Input → Core Simulation → BallSimulator → MatchState → Presentación Unity / Rigidbody`. El `Rigidbody` representa visualmente (y puede participar en la presentación física donde corresponda) pero **nunca decide**: copia el `BallState`. Objetivos: determinismo, tests, depuración, replays; online fuera de alcance. ⏳ Adaptar `BallPhysics/BallController/BallInteractor` en la fase 1.
+**C1 🔧 Dos físicas de balón (Fase 1).** `Gameplay/BallPhysics.cs` mueve el balón con `Rigidbody`; `Core/Ball/BallSimulator` (puro) no se usa en Gameplay.
+Cierre: **`Core/Ball/BallSimulator` es la fuente autoritativa.** Flujo: `Input → Core Simulation → BallSimulator → MatchState → Presentación Unity / Rigidbody`. El `Rigidbody` representa visualmente (y puede participar en la presentación física donde corresponda) pero **nunca decide**: copia el `BallState`. Objetivos: determinismo, tests, depuración, replays; online fuera de alcance. 🔧 Fase 1: `MatchController.Advance` mueve el balón con `BallSimulator`; `BallController` tiene modo "core-driven" (cinemático, solo refleja) y `MatchBridge` lo alimenta. Ver N.
 
-**C2 ✅ `MatchRules` genera córners/bandas/saques de puerta siempre.** Cierre: reglas **por modo, en datos** (`MatchModeDefinition` + `IModeRules`). Classic = comportamiento actual; Arena no usa la regla de líneas. ⏳ fase 1.
+**C2 🔧 `MatchRules` genera córners/bandas/saques de puerta siempre (Fase 1).** Cierre: reglas **por modo, en datos** (`MatchModeDefinition` + `IModeRules`). Classic = comportamiento actual; Arena no usa la regla de líneas. 🔧 `IGameModeRules`/`ArenaRules`/`ClassicRules`.
 
 **C3 ✅ Arena y los límites.** Cierre: campo cerrado; el balón **rebota** y continúa en juego. Sin saque de banda, córner ni saque de puerta. El rebote conserva de forma coherente velocidad, dirección, ángulo y energía (la física exacta se define al implementar; coeficiente de restitución configurable). El gol cuenta solo por la boca de la portería; el resto de la línea de fondo rebota. Tras una parada el portero juega el balón sin reanudación formal.
 
-**C4 ✅ `MatchState`.** Cierre: **se amplía el existente** hasta ser la fuente autoritativa; no hay `GameState` ni segundo estado. `MatchController` evoluciona a `MatchEngine`, único escritor. Nuevos valores de `MatchPhase` solo al final (no se renumeran). Contenido en B.4. ⏳ fase 1.
+**C4 🔧 `MatchState` (Fase 1).** Cierre: **se amplía el existente** hasta ser la fuente autoritativa; no hay `GameState` ni segundo estado. `MatchController` evoluciona a `MatchEngine`, único escritor. Nuevos valores de `MatchPhase` solo al final (no se renumeran). Contenido en B.4. 🔧 Hecho; ver N.1 para el mapa entre `MatchPhase` y `MatchPeriod`.
 
 **C5 ✅ Atributo legado `Reaction`.** Cierre: se mantiene; se marca como **legacy / internal derived value**; **no es el 13.º atributo oficial**; no entra en Overall, tarjetas ni datos nuevos; la IA aún lo consume. Deuda M-1.
 
@@ -348,38 +348,38 @@ Tests puros (NUnit, `dotnet test`), sin nombres reales en identificadores. Estad
 
 | # | Caso | Estado |
 |---|---|---|
-| 1 | Arena puede terminar empatado | ⏳ f1 |
-| 2 | Classic puede terminar empatado | ⏳ f1 |
-| 3 | Arena Normal no tiene prórroga | ⏳ f1 |
-| 4 | Classic Normal no tiene prórroga | ⏳ f1 |
-| 5 | Arena Knockout empatado → prórroga | ⏳ f1 |
-| 6 | Classic Knockout empatado → prórroga | ⏳ f1 |
-| 7 | Knockout empatado tras prórroga → penales | ⏳ f1 |
-| 8 | League/Friendly nunca activa penales | ⏳ f1 |
-| 9 | Classic con <3 activos → terminado (`InsufficientPlayers`, victoria técnica, marcador conservado) | ⏳ f11 |
-| 10–13 | Arena no genera faltas / fuera de juego / córners / saques de banda | ⏳ f1/f6 |
-| 14 | Arena rebota en las paredes | ⏳ f6 |
-| 15 | Máximo 3 sustituciones | ⏳ f2 |
-| 16 | El banquillo contiene portero suplente | ⏳ f2 |
-| 17 | Segunda amarilla → roja (mismo estado de expulsión) | ⏳ f11 |
-| 18 | Portero expulsado con suplente consume una sustitución | ⏳ f11 |
-| 19 | Sin sustituciones, un jugador de campo puede ocupar la portería | ⏳ f11 |
+| 1 | Arena puede terminar empatado | 🔧 `MatchEngineTests` |
+| 2 | Classic puede terminar empatado | 🔧 `MatchEngineTests` |
+| 3 | Arena Normal no tiene prórroga | 🔧 `MatchEngineTests` |
+| 4 | Classic Normal no tiene prórroga | 🔧 `MatchEngineTests` |
+| 5 | Arena Knockout empatado → prórroga | 🔧 `MatchEngineTests` |
+| 6 | Classic Knockout empatado → prórroga | 🔧 `MatchEngineTests` |
+| 7 | Knockout empatado tras prórroga → penales | 🔧 `MatchEngineTests` |
+| 8 | League/Friendly nunca activa penales | 🔧 `MatchEngineTests` |
+| 9 | Classic con <3 activos → terminado (`InsufficientPlayers`, victoria técnica, marcador conservado) | 🔧 `MatchEngineTests` |
+| 10–13 | Arena no genera faltas / fuera de juego / córners / saques de banda | 🔧 `MatchEngineTests` |
+| 14 | Arena rebota en las paredes | 🔧 `MatchEngineTests` |
+| 15 | Máximo 3 sustituciones | 🔧 `MatchEngineTests` |
+| 16 | El banquillo contiene portero suplente | 🔧 `MatchEngineTests` |
+| 17 | Segunda amarilla → roja (mismo estado de expulsión) | 🔧 `MatchEngineTests` |
+| 18 | Portero expulsado con suplente consume una sustitución | 🔧 `MatchEngineTests` |
+| 19 | Sin sustituciones, un jugador de campo puede ocupar la portería | 🔧 `MatchEngineTests` |
 | 20 | C tap ordena la salida del portero (y la IA puede rechazarla) | ⏳ f5/f7 |
 | 21–24 | A↓ tiro con efecto · A↑ vaselina · B↓ pared · B↑ pase al hueco | ⏳ f5 |
 | 25–26 | C↑ skill · C↓ pase especial (solo con skill disponible) | ⏳ f5 |
 | 27 | Un jugador sin skill no puede ejecutarla | ⏳ f5 |
 | 28 | No existe botón de sprint (guarda estructural; ya existe para `PlayerIntent`/`MovementStyle`/`FootballActionKind`) | 🔧 parcial |
 | 29 | La stamina afecta progresivamente al rendimiento | ⏳ f3 |
-| 30 | Descanso Classic recupera 25 % (tope 100 %) | ⏳ f3 |
-| 31 | Cambio de lado Arena recupera 10 % (tope 100 %) | ⏳ f3 |
-| 32 | `CoachBoost` no modifica atributos | ⏳ f1 (el cálculo ya está testeado en el sistema de entrenadores) |
-| 33 | `CoachBoost` no se aplica dos veces / el motor no consume `EffectiveOverall` | ⏳ f1 |
+| 30 | Descanso Classic recupera 25 % (tope 100 %) | 🔧 `MatchEngineTests` |
+| 31 | Cambio de lado Arena recupera 10 % (tope 100 %) | 🔧 `MatchEngineTests` |
+| 32 | `CoachBoost` no modifica atributos | 🔧 `MatchEngineTests` |
+| 33 | `CoachBoost` no se aplica dos veces / el motor no consume `EffectiveOverall` | 🔧 `MatchEngineTests` |
 | 34 | `EffectiveOverall = BaseOverall + CoachBoost` | 🔧 ya cubierto (sistema de entrenadores) |
 | 35 | `Reaction` no es atributo oficial (no está en `PlayerAttributeId`, Overall ni tarjeta) | 🔧 ya cubierto por las guardas de atributos; marca legacy ⏳ f2 |
 | 36 | `FootballActionKind` está desacoplado del Creator | 🔧 `FootballActionKindTests` |
 | 37 | `FootballActionKind` conserva compatibilidad con los valores existentes | 🔧 `FootballActionKindTests` |
-| 38 | `BallSimulator` es la fuente de verdad (el Rigidbody no altera `BallState`) | ⏳ f1 |
-| 39 | `MatchState` es la única fuente autoritativa | ⏳ f1 |
+| 38 | `BallSimulator` es la fuente de verdad (el Rigidbody no altera `BallState`) | 🔧 `MatchEngineTests` |
+| 39 | `MatchState` es la única fuente autoritativa | 🔧 `MatchEngineTests` |
 
 Guardas adicionales (⏳ con su fase): `IResultResolver` no depende de `GameMode` ni `IModeRules` de `CompetitionMatchType`; ninguna comparación por nombre de jugador/entrenador/árbitro; Simulation no depende de Presentation/UI; Core sin `UnityEngine`; el motor no contiene formaciones; skills solo contrato; portero de emergencia no guarda atributos ni toca `PlayerDefinition`; determinismo por semilla y replay; sin allocations en el paso caliente.
 
@@ -390,7 +390,7 @@ Guardas adicionales (⏳ con su fase): `IResultResolver` no depende de `GameMode
 Cada fase: rama propia, tests verdes, sin push/PR salvo que se pida.
 
 0. ✅ **Decisiones y cierre de arquitectura** (este documento) + `FootballActionKind` movido a Core.
-1. **Núcleo determinista:** paso fijo; `MatchState` ampliado (modo, tipo de competición, fases `HalfTime/ExtraTime/PenaltyShootout/FullTime`, motivo de finalización); `MatchModeDefinition` + `IModeRules`; `CompetitionRules` + `IResultResolver` (empate/prórroga/penales, tests 1–8); bus de eventos filtrado por modo; `BallSimulator` autoritativo con Rigidbody visual reflejando Core (tests 38–39, 32–33).
+1. ✅ **Núcleo determinista (HECHO, ver N):** paso fijo; `MatchState` ampliado (modo, tipo de competición, fases `HalfTime/ExtraTime/PenaltyShootout/FullTime`, motivo de finalización); `MatchModeDefinition` + `IModeRules`; `CompetitionRules` + `IResultResolver` (empate/prórroga/penales, tests 1–8); bus de eventos filtrado por modo; `BallSimulator` autoritativo con Rigidbody visual reflejando Core (tests 38–39, 32–33).
 2. **Datos mínimos:** banquillo 6+4 (≥1 GK suplente), periodos por modo (Arena 2×6, Classic 2×8), contratos `SkillDefinition`/`PlayerSkillSet` sin catálogo ni asignaciones, marca `legacy/internal derived` de `Reaction`.
 3. **Locomoción y stamina:** `FatigueCurve` continua, recuperación 25 %/10 % configurable, BodyType físico, selector de jugador.
 4. **Acciones base:** control, pase, tiro (normal/efecto/vaselina), regate, protección; contactos y duelos.
@@ -450,13 +450,64 @@ No queda **ninguna decisión de diseño** abierta. Solo quedan valores de config
 
 ## M. DEUDA CONOCIDA (solo lo que sigue pendiente)
 
-1. **`Reaction` (legado):** `PlayerAttributes.Reaction` sigue consumido por `ReactionModel`, `AnticipationModel` y `AiErrorModel`. Está decidido que es *legacy / internal derived value*, pero la marca en código aún no se escribió (esta fase no tocó `PlayerAttributes`). Migrar la IA y eliminarlo: fase posterior de IA (8).
-2. **Balón en Unity:** `BallPhysics`/`BallController`/`BallInteractor` aún usan `Rigidbody` como verdad; `Docs/ARCHITECTURE.md` conserva "solo el balón es dinámico" (obsoleto). Fase 1.
-3. **`MatchState`/`MatchPhase`/`MatchSettings` mínimos** frente a lo decidido (modo, tipo de competición, `ExtraTime`, `PenaltyShootout`, `HalfTime`, `FullTime`, motivo de finalización, periodos). Fase 1.
-4. **`TeamDefinition` sin banquillo.** Cambio aditivo en la fase 2.
-5. **Habilidades:** contrato aún no escrito en código; sin catálogo ni asignaciones (fase 10).
-6. **Formaciones:** `DefaultFormations` genéricas sin comportamiento; las reales y `FormationBehaviorProfile` en la fase 9.
-7. **Acciones defensivas del enum:** `FootballActionKind` no tiene valores propios para presión/contención, entrada deslizante, disputa física ni despeje (decisión en la fase 5; no se rellenan huecos).
-8. **Perfiles de animación de las 7 acciones nuevas:** solo `Planned`, sin clips ni arte (presentación, fase 13).
-9. **Árbitros:** los 5 son datos que nadie lee todavía (fase 11).
-10. **Coach Boost:** el motor no lo consume; influencia pendiente de balance (fase 14).
+1. **`Reaction` (legado):** `PlayerAttributes.Reaction` sigue consumido por `ReactionModel`, `AnticipationModel` y `AiErrorModel`. Está decidido que es *legacy / internal derived value*, pero la marca en código aún no se escribió (la Fase 1 no tocó `PlayerAttributes`). Migrar la IA y eliminarlo: fase de IA (8).
+2. **Jugadores y balón en Unity:** con el balón dirigido por el Core (`MatchBridge`) el rigidbody es cinemático, así que **ya no colisiona físicamente con los jugadores**. Los toques se reportan por `IBallCoreLink`/`ApplyBallImpulse`; el contacto jugador–balón real (control, pase, tiro) es la fase 4. Mientras tanto la escena Sandbox sigue con la física antigua porque el modo "core-driven" es opt-in (hay que añadir `MatchBridge`). `Docs/ARCHITECTURE.md` conserva "solo el balón es dinámico" para el sandbox.
+3. **Código no verificado en Unity:** `MatchBridge`, `IBallCoreLink` y los cambios de `BallController`/`BallPhysics` se comprobaron con un compilador contra stubs de UnityEngine escritos a mano (solo detecta errores de tipos), **no se ejecutaron en el editor**.
+4. **`MatchController.Tick(dt, BallObservation)` (camino antiguo):** se mantiene para compatibilidad (los 40 tests previos lo usan); el camino autoritativo es `Advance`. Cuando ningún host use `Tick`, retirarlo.
+5. **Valores ⚙ sin decisión** (ver L.2): duración de prórroga (placeholder 120 s), formato de tanda (5 por equipo + muerte súbita, convencional), recuperación en prórroga (0), penalización del portero de emergencia (0,7, sin calibrar), coeficiente de rebote de Arena (0,75, tuning), `HalftimeSeconds` (0).
+6. **Convenciones adoptadas sin decisión explícita** (ver N.3): quién saca en el 2.º tiempo y en la prórroga, cambio de lado también en Classic, paredes sin techo, "portero expulsado bloquea el siguiente saque", regla portero↔portero en sustituciones. Revisar con el diseño.
+7. **Entrenadores, árbitro, formaciones y habilidades siguen sin conectarse al motor** (a propósito): `CoachBoost` aislado, árbitro sin lógica, ninguna formación, ninguna habilidad.
+8. **Sin movimiento de jugadores, IA, pases, tiros, regates ni entradas:** `GiveBallTo`/`ApplyBallImpulse` son las puertas explícitas para esos sistemas; el pad de acciones (fase 5) y las acciones defensivas del enum siguen pendientes.
+9. **Perfiles de animación de las 7 acciones nuevas:** solo `Planned`, sin clips ni arte.
+10. **Árbitros:** los 5 son datos que nadie lee todavía (fase 11); `IssueCard` es la API que usará el árbitro.
+11. **Tanda de penales:** solo estado y conteo; la ejecución física del penalti, sus controles y animaciones son una fase posterior. Los penaltis por infracción (`PenaltyAwarded`) existen como tipo de evento permitido en Classic pero nada los genera todavía.
+12. **`Break` y `Shootout`** se añadieron a `MatchPhase` (al final); los hosts que hagan `switch` exhaustivo sobre `MatchPhase` deben tratarlos (no existe ninguno en el repositorio fuera de los tests).
+
+---
+
+## N. IMPLEMENTACIÓN DE LA FASE 1 (estado real)
+
+### N.1 Estados: `MatchPhase` + `MatchPeriod` (contradicción detectada y resuelta)
+**Problema:** la lista pedida (`PreMatch, Kickoff, FirstHalf, HalfTime, SecondHalf, ExtraTime*, PenaltyShootout, FullTime`) mezcla dos preguntas distintas — *¿está el balón vivo o el partido esperando?* y *¿en qué parte del partido estamos?* — y el `MatchPhase` existente (`NotStarted, WaitingForKickoff, Playing, GoalCelebration, WaitingForRestart, Paused, Finished`) ya contesta la primera y lo usan ~40 tests y `MatchController`.
+**Causa:** meter "primer tiempo" y "segundo tiempo" en `MatchPhase` obligaría a duplicar `Playing`/`WaitingFor*`/`GoalCelebration` por cada periodo.
+**Solución:** dos ejes ortogonales **dentro del mismo `MatchState`** (una sola fuente de verdad): `MatchPhase` (existente, + `Break` y `Shootout` añadidos al final) y `MatchPeriod` (nuevo: `PreMatch, FirstHalf, HalfTime, SecondHalf, ExtraTimeFirstHalf, ExtraTimeBreak, ExtraTimeSecondHalf, PenaltyShootout, FullTime`). `Kickoff` = `Phase WaitingForKickoff`. Invariantes (comprobadas por tests tras cada transición): `NotStarted ⇔ PreMatch`, `Break ⇔ HalfTime | ExtraTimeBreak`, `Shootout ⇔ PenaltyShootout`, `Finished ⇔ FullTime`.
+**Impacto:** ninguno en el código existente; los consumidores leen `State.Period` para "qué parte" y `State.Phase` para "qué está pasando".
+
+### N.2 Qué existe ahora
+| Pieza | Dónde | Notas |
+|---|---|---|
+| `GameMode`, `CompetitionMatchType`, `MatchPeriod`, `MatchTerminationReason`, `BallMode`, `MatchDefaults` | `Core/Match/MatchModes.cs` | Todos los números por defecto de la arquitectura viven en `MatchDefaults`. |
+| `MatchSettings` (ampliada) | `Core/Match/MatchTypes.cs` | Modo, competición, periodos, descanso, recuperaciones, prórroga, tanda, sustituciones, mínimo de jugadores, rebote de Arena, paso de simulación. `CreateArena()`/`CreateClassic()` dan los valores de la arquitectura; `new MatchSettings()` conserva el comportamiento antiguo (1 periodo de 180 s, Classic, Normal). `IsValid` rechaza valores imposibles (p. ej. más de 3 sustituciones). |
+| `MatchState` (ampliado) | `Core/Match/MatchState.cs` | Configuración (`Settings`) separada del estado mutable. Contiene id, modo, competición, `Phase`, `Period`, marcador, reloj del periodo, `MatchTimeSeconds`, balón (`MatchBall`), `Home/Away` (`TeamMatchState`), dirección de ataque actual, prórroga, tanda, goles, resultado y motivo. |
+| `MatchBall` | `Core/Match/MatchBall.cs` | Envuelve el `BallState` **existente** (no se duplicó) + `BallMode`, posesión (equipo/jugador), último y penúltimo toque (para la asistencia). |
+| `TeamMatchState`, `MatchPlayer`, `MatchSquad`, `SquadMember` | `Core/Match/MatchRoster.cs` | 6+4 validado (1 portero titular, ≥1 portero suplente); estado por jugador (`OnPitch/Bench/SubstitutedOff/Dismissed`), amarillas, `InGoal`, `IsEmergencyKeeper` y el `PlayerRuntimeState` **existente**. |
+| `IGameModeRules`, `ArenaRules`, `ClassicRules` | `Core/Match/GameModeRules.cs` | Qué tiene cada modo, qué eventos permite, cómo se juzga el balón, cuándo se puede sustituir y qué colisionadores crea. El motor no compara el modo (un test lo vigila). |
+| `CompetitionResolver` | `Core/Match/CompetitionResolver.cs` | Empate/prórroga/penales. No recibe `GameMode`. |
+| `PenaltyShootoutState` | `Core/Match/PenaltyShootout.cs` | Estado y conteo de la tanda (alternancia, victoria anticipada, muerte súbita). Sin ejecución física. |
+| `GameplayEventBus`, `GameplayEvent`, `GameplayEventKind` | `Core/Match/GameplayEvents.cs` | 26 tipos; el bus rechaza (y cuenta) los que el modo no tiene; numeración determinista. |
+| `ArenaWalls` | `Core/Ball/ArenaWalls.cs` | 4 paredes con rebote (mismo cálculo que `PlaneCollider`), bocas de portería abiertas, cuenta rebotes para el evento. |
+| `MatchController` (evolucionado) | `Core/Match/MatchController.cs` | Motor: periodos, descanso/cambio de lado, recuperación de stamina, prórroga, tanda, fin, goles con goleador/asistente, posesión, sustituciones, tarjetas, expulsiones, insuficiencia de jugadores, `Advance` (autoritativo) y `Tick` (antiguo). |
+| `EmergencyKeeperProfile` | `Core/Match/EmergencyKeeperProfile.cs` | Las 7 capacidades derivadas en runtime con las fórmulas de F.4; `Command` contextual; nunca se guardan. |
+| `SimulationClock` | `Core/SimulationClock.cs` | Convierte frames en pasos fijos (60 Hz por defecto, con tope por llamada). |
+| `MatchRules.Evaluate` (sobrecarga) | `Core/Match/MatchRules.cs` | Misma regla con la dirección de ataque explícita (cambia con el cambio de lado). La firma antigua sigue igual. |
+| Puente Unity | `Gameplay/MatchBridge.cs`, `IBallCoreLink.cs`, cambios en `BallController.cs` y `BallPhysics.cs` | Ver N.4. |
+| `FootballActionKind` | `Core/FootballActionKind.cs` | Sin cambios en esta fase (0–22). |
+
+### N.3 Convenciones adoptadas (no estaban decididas; documentadas, configurables o fáciles de cambiar)
+1. **Quién saca:** primer tiempo = `KickoffTeam`; segundo tiempo = el otro; prórroga: 1.ª parte `KickoffTeam`, 2.ª el otro; tras un gol saca quien lo encajó (ya existía).
+2. **Cambio de lado en Classic:** la arquitectura solo lo fija para Arena. Se aplica también a Classic al descanso y al descanso de prórroga (`SwitchSidesAtBreak`, configurable). No hay cambio entre el reglamentario y la prórroga.
+3. **Paredes de Arena sin techo:** el balón no puede salir por arriba. Las dos porterías quedan abiertas (la regla del gol es la de siempre).
+4. **Descanso de Classic:** dura `HalftimeSeconds` (0 por defecto = un tick); la fase `Break` existe igualmente. En Arena no hay `Break`.
+5. **Portero expulsado:** `NeedsGoalkeeper` bloquea `ConfirmRestartReady` hasta que entre el suplente (`TryReplaceDismissedKeeper`, consume 1 cambio, sale un jugador de campo) o un jugador de campo tome los guantes (`TryAssignEmergencyKeeper`, solo si no hay cambio o portero suplente disponible; no es una sustitución).
+6. **Sustituciones:** el hueco de portería solo se entrega a un portero y un portero solo entra por ese hueco (`GoalkeeperMismatch`); un sustituido o expulsado no vuelve. Momentos seguros: Arena = esperando saque/celebración/cambio de lado; Classic = además reanudaciones y descanso. La pausa no cuenta.
+7. **Asistencia:** el toque anterior al último, si es de otro jugador del mismo equipo que marca. Gol en propia puerta: el último toque es del rival.
+8. **Terminación técnica:** el rival gana, el marcador se conserva (puede ser empate), no hay prórroga ni penales, ni siquiera en eliminatoria; se comprueba en cada expulsión y al final de cada periodo.
+9. **Tanda sin muerte súbita** (`ShootoutSuddenDeath = false`): puede acabar sin ganador (empate con `Reason = PenaltyShootout`); por defecto la muerte súbita está activa.
+
+### N.4 El balón y Unity
+- **Core:** `MatchController.Advance(dt)` llama a `BallSimulator.Step` (con `ArenaWalls` en Arena), luego juzga el balón con las reglas del modo. El estado vive en `MatchState.Ball.Physics`. Las únicas entradas externas son explícitas: `ApplyBallImpulse`, `GiveBallTo`, `ReleaseBall`, `RegisterTouch`, `SetBallMode`.
+- **Unity:** `MatchBridge` posee el `MatchController`, avanza con `SimulationClock` (pasos fijos; el tiempo de frame solo decide cuántos pasos tocan) y llama a `BallController.ApplyCoreState`. `BallController.SetCoreDriven(true)` pone el rigidbody cinemático, redirige `ApplyTouch` hacia `IBallCoreLink.RequestTouch` y `BallPhysics` deja de aplicar fuerzas. El puente no lee el rigidbody de vuelta (lo vigila un test sobre el texto del código).
+- **Determinismo:** `Advance` no usa tiempo de Unity, aleatoriedad ni reloj de pared (test de texto sobre Core/Match y Core/Ball). Mismas llamadas ⇒ mismo balón y mismo registro de eventos (test).
+
+### N.5 Qué NO se hizo (a propósito)
+Movimiento de jugadores, IA, pases/tiros/regates/entradas, habilidades, formaciones, `Coach Boost` en simulación, árbitro, animaciones, gráficos, UI y online. No se crearon atributos nuevos ni se modificaron los contratos de jugadores, porteros, entrenadores ni árbitros.

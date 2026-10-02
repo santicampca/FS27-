@@ -12,6 +12,13 @@ namespace FS27.Core
         public static BallJudgement Evaluate(FieldDimensions field, MatchSettings settings, in BallObservation ball,
                                              bool hasLastTouch, TeamSide lastTouch)
         {
+            return Evaluate(field, settings.HomeAttacksPositiveX, settings.KickoffTeam, ball, hasLastTouch, lastTouch);
+        }
+
+        /// <summary>Same, with the attacking direction given explicitly: it changes at the side switch, and settings are configuration, not state.</summary>
+        public static BallJudgement Evaluate(FieldDimensions field, bool homeAttacksPositiveX, TeamSide kickoffTeam, in BallObservation ball,
+                                             bool hasLastTouch, TeamSide lastTouch)
+        {
             float halfL = field.Length * 0.5f;
             float halfW = field.Width * 0.5f;
             Vec3 p = ball.Position;
@@ -21,7 +28,7 @@ namespace FS27.Core
             if (Math.Abs(p.X) - r > halfL)
             {
                 int endSign = p.X > 0f ? 1 : -1;
-                TeamSide attacker = settings.AttackerAtEnd(endSign);
+                TeamSide attacker = AttackerAtEnd(homeAttacksPositiveX, endSign);
 
                 bool insideMouth = Math.Abs(p.Z) <= field.GoalWidth * 0.5f && p.Y - r <= field.GoalHeight;
                 if (insideMouth)
@@ -52,7 +59,7 @@ namespace FS27.Core
             // Sidelines: throw-in for the opponent of whoever touched it last.
             if (Math.Abs(p.Z) - r > halfW)
             {
-                TeamSide taker = hasLastTouch ? lastTouch.Opponent() : settings.KickoffTeam;
+                TeamSide taker = hasLastTouch ? lastTouch.Opponent() : kickoffTeam;
                 float x = Math.Max(-halfL + field.ThrowInEndMargin, Math.Min(halfL - field.ThrowInEndMargin, p.X));
                 return new BallJudgement
                 {
@@ -64,6 +71,12 @@ namespace FS27.Core
             }
 
             return new BallJudgement { Outcome = BallOutcome.InPlay };
+        }
+
+        private static TeamSide AttackerAtEnd(bool homeAttacksPositiveX, int endSign)
+        {
+            bool homeAttacksThatEnd = homeAttacksPositiveX == (endSign > 0);
+            return homeAttacksThatEnd ? TeamSide.Home : TeamSide.Away;
         }
     }
 }

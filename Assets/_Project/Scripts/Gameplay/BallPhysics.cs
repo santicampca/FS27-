@@ -32,6 +32,9 @@ namespace FS27.Gameplay
 
         private void FixedUpdate()
         {
+            // when the Core drives the ball, its physics (drag, rolling) are BallSimulator's: this component must not add forces
+            if (ball.IsCoreDriven) return;
+
             Vector3 v = body.linearVelocity;
 
             // Raycasts that start inside the ball's own collider do not hit it, so this only sees what is below.

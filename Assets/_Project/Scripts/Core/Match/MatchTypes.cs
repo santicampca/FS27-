@@ -27,7 +27,11 @@ namespace FS27.Core
         /// <summary>Ball left the pitch: waiting for the presentation to set up a throw-in / corner / goal kick.</summary>
         WaitingForRestart,
         Paused,
-        Finished
+        Finished,
+        /// <summary>The interval between two timed periods (half-time, extra-time break). Only modes with a break use it. The clock is stopped.</summary>
+        Break,
+        /// <summary>The penalty shoot-out. The match clock is not used; no ball is judged.</summary>
+        Shootout
     }
 
     public enum RestartKind
@@ -91,6 +95,11 @@ namespace FS27.Core
         public bool IsDraw;
         /// <summary>Only meaningful when <see cref="IsDraw"/> is false.</summary>
         public TeamSide Winner;
+        /// <summary>How the match ended. Default (0) = regulation time, so results built by older code keep their meaning.</summary>
+        public MatchTerminationReason Reason;
+        /// <summary>Shoot-out goals (only when <see cref="Reason"/> is PenaltyShootout). The game score never includes them.</summary>
+        public int ShootoutHome;
+        public int ShootoutAway;
     }
 
     /// <summary>Pitch geometry in field space: centre at (0,0), X = length, Y (world Z) = width.</summary>
@@ -110,21 +119,140 @@ namespace FS27.Core
         public float ThrowInEndMargin = 1f;
     }
 
+    /// <summary>
+    /// ALL the configuration of a match, in one place: nothing in the engine hard-codes a duration, a recovery or a limit.
+    /// Configuration only: the mutable match lives in <see cref="MatchState"/>. A plain <c>new MatchSettings()</c> keeps the original single-period
+    /// behaviour (one period of <see cref="DurationSeconds"/>, Classic rules, no competition); use <see cref="CreateArena"/> / <see cref="CreateClassic"/>
+    /// for the architecture defaults of each mode.
+    /// </summary>
     [Serializable]
     public class MatchSettings
     {
+        /// <summary>Largest allowed <see cref="SubstitutionLimit"/>: the architecture's hard cap.</summary>
+        public const int MaxSubstitutionsAllowed = MatchDefaults.MaxSubstitutions;
+
+        // ---- how it is played / how the result is resolved (independent concepts) ----
+        public GameMode Mode = GameMode.Classic;
+        public CompetitionMatchType CompetitionType = CompetitionMatchType.Normal;
+
+        // ---- regulation time ----
+        /// <summary>Total regulation seconds. Used as the whole match when <see cref="PeriodSeconds"/> is 0.</summary>
         public float DurationSeconds = 180f;
+        /// <summary>1 (a single period) or 2 (two halves).</summary>
+        public int RegulationPeriods = 1;
+        /// <summary>Length of each regulation period. 0 = <see cref="DurationSeconds"/> divided by <see cref="RegulationPeriods"/>.</summary>
+        public float PeriodSeconds;
+
+        // ---- interval between periods ----
+        /// <summary>How long the half-time / extra-time break lasts, in Core time. 0 = it ends on the next tick (the break phase is still entered).</summary>
+        public float HalftimeSeconds;
+        /// <summary>Swap the attacking directions at the interval between two periods of the same stage (half-time / extra-time break).</summary>
+        public bool SwitchSidesAtBreak = true;
+        /// <summary>Fraction (0..1) of maximum stamina recovered during the Classic half-time.</summary>
+        public float HalfTimeStaminaRecovery = MatchDefaults.ClassicHalfTimeRecovery;
+        /// <summary>Fraction (0..1) of maximum stamina recovered at the Arena side switch.</summary>
+        public float SideSwitchStaminaRecovery = MatchDefaults.ArenaSideSwitchRecovery;
+        /// <summary>Recovery at the extra-time break. NO DECISION EXISTS yet: 0 until the balance phase decides.</summary>
+        public float ExtraTimeStaminaRecovery;
+        /// <summary>Recovery between the end of regulation and the start of extra time. NO DECISION EXISTS yet: 0 until the balance phase decides.</summary>
+        public float PreExtraTimeStaminaRecovery;
+
+        // ---- extra time and shoot-out (only used when CompetitionType is Knockout) ----
+        public bool ExtraTimeEnabled = true;
+        /// <summary>Length of each of the two extra-time periods. PLACEHOLDER: the exact duration is not decided yet (configurable).</summary>
+        public float ExtraTimePeriodSeconds = MatchDefaults.ExtraTimePlaceholderSeconds;
+        public bool ShootoutEnabled = true;
+        /// <summary>Kicks per team before sudden death. Conventional value; not tuned for 6v6 yet.</summary>
+        public int ShootoutKicksPerTeam = MatchDefaults.ShootoutKicksPerTeam;
+        public bool ShootoutSuddenDeath = true;
+        public TeamSide ShootoutFirstTeam = TeamSide.Home;
+
+        // ---- squads, substitutions, minimum players ----
+        /// <summary>Substitutions per team and match. Never above <see cref="MaxSubstitutionsAllowed"/>.</summary>
+        public int SubstitutionLimit = MatchDefaults.MaxSubstitutions;
+        /// <summary>A team with fewer active players than this ends the match (technical victory for the rival).</summary>
+        public int MinimumActivePlayers = MatchDefaults.MinimumActivePlayers;
+
+        // ---- Arena boundary (TUNING parameters) ----
+        /// <summary>Fraction of the normal speed the ball keeps after hitting an Arena wall. TUNING parameter, not a final value.</summary>
+        public float ArenaWallRestitution = MatchDefaults.ArenaWallRestitution;
+        /// <summary>Tangential friction of an Arena wall. TUNING parameter.</summary>
+        public float ArenaWallFriction = MatchDefaults.ArenaWallFriction;
+
+        // ---- simulation ----
+        /// <summary>Fixed simulation step (seconds). The Core never uses a variable step.</summary>
+        public float SimulationStepSeconds = MatchDefaults.SimulationStepSeconds;
+
+        // ---- existing fields ----
         public float GoalCelebrationSeconds = 3f;
         public TeamSide KickoffTeam = TeamSide.Home;
-        /// <summary>If true Home attacks the +X end (and defends -X).</summary>
+        /// <summary>If true Home attacks the +X end (and defends -X) at the start of the match.</summary>
         public bool HomeAttacksPositiveX = true;
 
-        /// <summary>The team that attacks the end line on the given side (+1 = +X end, -1 = -X end).</summary>
+        /// <summary>Length of one regulation period, in seconds.</summary>
+        public float RegulationPeriodSeconds
+        {
+            get
+            {
+                if (PeriodSeconds > 0f) return PeriodSeconds;
+                return DurationSeconds / Math.Max(1, RegulationPeriods);
+            }
+        }
+
+        /// <summary>Substitutions actually allowed (the limit, capped by the architecture's maximum).</summary>
+        public int EffectiveSubstitutionLimit => Math.Max(0, Math.Min(SubstitutionLimit, MaxSubstitutionsAllowed));
+
+        /// <summary>The team that attacks the end line on the given side (+1 = +X end, -1 = -X end), at the START of the match.</summary>
         public TeamSide AttackerAtEnd(int endSign)
         {
             bool homeAttacksThatEnd = HomeAttacksPositiveX == (endSign > 0);
             return homeAttacksThatEnd ? TeamSide.Home : TeamSide.Away;
         }
+
+        /// <summary>Architecture defaults for Arena: 2 x 6 minutes, 10 % stamina at the side switch, no half-time.</summary>
+        public static MatchSettings CreateArena(CompetitionMatchType competition = CompetitionMatchType.Normal)
+        {
+            return new MatchSettings
+            {
+                Mode = GameMode.Arena,
+                CompetitionType = competition,
+                RegulationPeriods = 2,
+                PeriodSeconds = MatchDefaults.ArenaPeriodSeconds,
+                DurationSeconds = 2f * MatchDefaults.ArenaPeriodSeconds
+            };
+        }
+
+        /// <summary>Architecture defaults for Classic: 2 x 8 minutes, 25 % stamina at half-time.</summary>
+        public static MatchSettings CreateClassic(CompetitionMatchType competition = CompetitionMatchType.Normal)
+        {
+            return new MatchSettings
+            {
+                Mode = GameMode.Classic,
+                CompetitionType = competition,
+                RegulationPeriods = 2,
+                PeriodSeconds = MatchDefaults.ClassicPeriodSeconds,
+                DurationSeconds = 2f * MatchDefaults.ClassicPeriodSeconds
+            };
+        }
+
+        /// <summary>Checks the configuration. Returns false and says why instead of failing later in the middle of a match.</summary>
+        public bool IsValid(out string problem)
+        {
+            problem = "";
+            if (RegulationPeriods < 1 || RegulationPeriods > 2) problem = "RegulationPeriods must be 1 or 2.";
+            else if (!(RegulationPeriodSeconds > 0f)) problem = "The regulation period length must be positive.";
+            else if (!(ExtraTimePeriodSeconds > 0f)) problem = "ExtraTimePeriodSeconds must be positive.";
+            else if (HalftimeSeconds < 0f) problem = "HalftimeSeconds cannot be negative.";
+            else if (SubstitutionLimit < 0 || SubstitutionLimit > MaxSubstitutionsAllowed) problem = "SubstitutionLimit must be between 0 and " + MaxSubstitutionsAllowed + ".";
+            else if (MinimumActivePlayers < 1) problem = "MinimumActivePlayers must be at least 1.";
+            else if (ShootoutKicksPerTeam < 1) problem = "ShootoutKicksPerTeam must be at least 1.";
+            else if (!Fraction(HalfTimeStaminaRecovery) || !Fraction(SideSwitchStaminaRecovery) || !Fraction(ExtraTimeStaminaRecovery) || !Fraction(PreExtraTimeStaminaRecovery)) problem = "Stamina recovery is a fraction between 0 and 1.";
+            else if (!Fraction(ArenaWallRestitution) || !Fraction(ArenaWallFriction)) problem = "Arena wall restitution and friction are fractions between 0 and 1.";
+            else if (!(SimulationStepSeconds > 0f)) problem = "SimulationStepSeconds must be positive.";
+            return problem.Length == 0;
+        }
+
+        private static bool Fraction(float f) { return f >= 0f && f <= 1f; }
     }
 
     public sealed class MatchScore
@@ -160,6 +288,13 @@ namespace FS27.Core
         {
             if (dt <= 0f) return;
             Elapsed = Math.Min(Duration, Elapsed + dt);
+        }
+
+        /// <summary>Starts a new period: new length, nothing elapsed.</summary>
+        public void Reset(float duration)
+        {
+            Duration = duration;
+            Elapsed = 0f;
         }
     }
 }
