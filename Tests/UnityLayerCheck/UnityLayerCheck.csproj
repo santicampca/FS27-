@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Compile check ONLY. It builds the Creator Unity layer (Assets/_Project/Scripts/Gameplay/Creator) against a hand-written stub of the few
+    UnityEngine types it uses. Passing means "no typos, no wrong signatures"; it proves NOTHING about how the code behaves in Unity.
+    Run: dotnet build Tests/UnityLayerCheck
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>CS0169;CS0649;CS0414</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Assets/_Project/Scripts/Core/**/*.cs" />
+    <Compile Include="../../Assets/_Project/Scripts/Gameplay/Creator/*.cs" />
+    <Compile Include="UnityStubs.cs" />
+  </ItemGroup>
+</Project>
