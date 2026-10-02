@@ -15,8 +15,7 @@ namespace FS27.Core
 
     public sealed class ComposerInput
     {
-        public bool HasAttributes;
-        public PlayerAttributes Attributes;
+        // The attributes are NOT stored here: only PlayerDefinition stores a player's attributes. They are passed to Compose as an argument.
         public PlayerPlayingProfile Profile;
         public IEnumerable<FootballObservation> Observations;
         public ManualPreferences Manual;
@@ -108,8 +107,10 @@ namespace FS27.Core
 
         private static string F(float v) { return v.ToString("0.00", CultureInfo.InvariantCulture); }
 
-        public static ComposerResult Compose(ComposerInput input, CreatorCatalogs catalogs)
+        public static ComposerResult Compose(ComposerInput input, CreatorCatalogs catalogs, PlayerAttributes? attributes = null)
         {
+            bool hasAttributes = attributes.HasValue;
+            PlayerAttributes attrs = attributes ?? default;
             var res = new ComposerResult();
             ParameterCatalog pc = catalogs.Parameters;
             var level = new SortedDictionary<string, float>(StringComparer.Ordinal);
@@ -117,13 +118,13 @@ namespace FS27.Core
             var firm = new HashSet<string>(StringComparer.Ordinal);   // observed or manual: no variation
 
             // ---- 1. attributes nudge
-            if (input.HasAttributes)
+            if (hasAttributes)
             {
                 foreach (KeyValuePair<string, AW[]> kv in AttributeTable)
                 {
                     if (!pc.Contains(kv.Key)) continue;
                     float sum = 0f, w = 0f;
-                    foreach (AW a in kv.Value) { sum += a.W * input.Attributes.GetValue(a.A); w += a.W; }
+                    foreach (AW a in kv.Value) { sum += a.W * attrs.GetValue(a.A); w += a.W; }
                     float avg01 = MathUtil.Clamp01(sum / w / PlayerAttributes.Max);
                     float v = MathUtil.Clamp01(0.5f + (avg01 - 0.5f) * AttributeInfluence);
                     level[kv.Key] = v;
@@ -220,7 +221,7 @@ namespace FS27.Core
                     foreach (WeightedParameter d in b.Drivers) { sum += d.Weight * res.Dna.Get(pc, d.ParameterId); w += d.Weight; }
                     float drive = w > 0f ? sum / w : 0f;
                     if (drive < DeriveThreshold) continue;
-                    if (input.HasAttributes && BehaviorResolver.AttributeFit(b, input.Attributes) < 0.7f) continue;
+                    if (hasAttributes && BehaviorResolver.AttributeFit(b, attrs) < 0.7f) continue;
                     derived.Add(new KeyValuePair<float, SignatureBehaviorDefinition>(drive, b));
                 }
                 derived.Sort((x, y) => { int c = y.Key.CompareTo(x.Key); return c != 0 ? c : string.CompareOrdinal(x.Value.Id, y.Value.Id); });

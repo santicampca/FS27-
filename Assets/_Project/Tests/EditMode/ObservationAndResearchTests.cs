@@ -110,9 +110,9 @@ namespace FS27.Core.Tests
 
         // ---------------- composer ----------------
 
-        private ComposerResult Compose(ComposerInput input)
+        private ComposerResult Compose(ComposerInput input, PlayerAttributes? attributes = null)
         {
-            return FootballDnaComposer.Compose(input, catalogs);
+            return FootballDnaComposer.Compose(input, catalogs, attributes);
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace FS27.Core.Tests
         public void Attributes_OnlyNudge()
         {
             var fast = PlayerAttributes.CreateDefault().With(PlayerAttributeId.Acceleration, 99).With(PlayerAttributeId.Dribbling, 99).With(PlayerAttributeId.Agility, 99);
-            ComposerResult r = Compose(new ComposerInput { HasAttributes = true, Attributes = fast });
+            ComposerResult r = Compose(new ComposerInput(), fast);
             float takeOn = r.Dna.Get(catalogs.Parameters, "dribbling.takeOn");
             Assert.Greater(takeOn, 0.6f);
             Assert.LessOrEqual(takeOn, 0.76f, "attributes alone may not push a tendency to the extreme");
@@ -159,11 +159,8 @@ namespace FS27.Core.Tests
         {
             var manual = new ManualPreferences();
             manual.Params["dribbling.takeOn"] = 0.1f;
-            ComposerResult r = Compose(new ComposerInput
-            {
-                HasAttributes = true, Attributes = PlayerAttributes.CreateDefault().With(PlayerAttributeId.Dribbling, 99),
-                Observations = new[] { Obs("a", "dribbling.takeOn", 0.95f, 0.95f) }, Manual = manual
-            });
+            ComposerResult r = Compose(new ComposerInput { Observations = new[] { Obs("a", "dribbling.takeOn", 0.95f, 0.95f) }, Manual = manual },
+                                       PlayerAttributes.CreateDefault().With(PlayerAttributeId.Dribbling, 99));
             Assert.AreEqual(0.1f, r.Dna.Get(catalogs.Parameters, "dribbling.takeOn"), 1e-4f);
             Assert.AreEqual(1f, r.Dna.ConfidenceOf("dribbling.takeOn"), "a manual value is certain");
         }
@@ -206,7 +203,7 @@ namespace FS27.Core.Tests
         {
             var weak = PlayerAttributes.CreateDefault().With(PlayerAttributeId.Agility, 20).With(PlayerAttributeId.Control, 20).With(PlayerAttributeId.Technique, 20).With(PlayerAttributeId.Dribbling, 20);
             var obs = new[] { Obs("a", "dribbling.stopAndGo", 1f, 1f, ObservationSourceType.Manual, 100), Obs("b", "dribbling.takeOn", 1f, 1f, ObservationSourceType.Manual, 100), Obs("c", "movement.decelerationTendency", 1f, 1f, ObservationSourceType.Manual, 100) };
-            ComposerResult r = Compose(new ComposerInput { HasAttributes = true, Attributes = weak, Observations = obs });
+            ComposerResult r = Compose(new ComposerInput { Observations = obs }, weak);
             Assert.IsFalse(r.Dna.HasBehavior("StopAndGo"));
         }
 
@@ -228,10 +225,11 @@ namespace FS27.Core.Tests
                 Obs("a", "dribbling.takeOn", 0.9f, 0.7f), Obs("b", "shooting.frequency", 0.7f, 0.9f), Obs("c", "dribbling.takeOn", 0.5f, 0.4f, ObservationSourceType.Scouting)
             };
             var profile = new PlayerPlayingProfile("x", PitchZone.Attack, null, PlayerArchetype.GoalHunter);
-            ComposerInput In(List<FootballObservation> o) => new ComposerInput { HasAttributes = true, Attributes = PlayerAttributes.CreateDefault().With(PlayerAttributeId.Shooting, 90), Profile = profile, Observations = o };
-            string a = CharacterSpecificationJson.ToJson(Wrap(Compose(In(Make())).Dna));
+            ComposerInput In(List<FootballObservation> o) => new ComposerInput { Profile = profile, Observations = o };
+            PlayerAttributes shooter = PlayerAttributes.CreateDefault().With(PlayerAttributeId.Shooting, 90);
+            string a = CharacterSpecificationJson.ToJson(Wrap(Compose(In(Make()), shooter).Dna));
             var reversed = Make(); reversed.Reverse();
-            string b = CharacterSpecificationJson.ToJson(Wrap(Compose(In(reversed)).Dna));
+            string b = CharacterSpecificationJson.ToJson(Wrap(Compose(In(reversed), shooter).Dna));
             Assert.AreEqual(a, b);
         }
 
@@ -257,7 +255,7 @@ namespace FS27.Core.Tests
         public void TheComposedDna_AlwaysPassesTheValidator()
         {
             var obs = new[] { Obs("a", "dribbling.takeOn", 0.9f, 0.7f), Obs("b", "StopAndGo", 0.9f, 0.7f, kind: ObservationKind.Behavior, ctx: BehaviorContext.FacingDefender) };
-            ComposerResult r = Compose(new ComposerInput { HasAttributes = true, Attributes = PlayerAttributes.CreateDefault(), Profile = new PlayerPlayingProfile("x", PitchZone.Wing, null, PlayerArchetype.Winger), Observations = obs });
+            ComposerResult r = Compose(new ComposerInput { Profile = new PlayerPlayingProfile("x", PitchZone.Wing, null, PlayerArchetype.Winger), Observations = obs }, PlayerAttributes.CreateDefault());
             CreatorValidationResult v = FootballDNAValidator.Validate(r.Dna, catalogs);
             Assert.IsTrue(v.IsValid, v.ToString());
             Assert.IsNotEmpty(r.Explanation);
