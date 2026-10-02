@@ -2,12 +2,12 @@ using System;
 
 namespace FS27.Core
 {
-    /// <summary>Tuning of the emergency keeper. Not calibrated yet (the architecture leaves the value open).</summary>
+    /// <summary>Tuning of the emergency keeper.</summary>
     [Serializable]
     public sealed class EmergencyKeeperTuning
     {
-        /// <summary>A field player in goal is clearly worse than a specialist: every derived capability is multiplied by this (0..1). TUNING parameter, to be calibrated against the keeper database.</summary>
-        public float UnspecializedFactor = 0.7f;
+        /// <summary>A field player in goal is clearly worse than a specialist: every derived capability is multiplied by this (0..1). Calibrated against the keeper database (see <see cref="MatchDefaults.EmergencyKeeperFactor"/>).</summary>
+        public float UnspecializedFactor = MatchDefaults.EmergencyKeeperFactor;
     }
 
     /// <summary>

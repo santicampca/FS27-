@@ -74,10 +74,21 @@ namespace FS27.Core
         public const int BenchPerTeam = 4;
         public const float SimulationStepSeconds = 1f / 60f;
 
-        // TUNING / PLACEHOLDER values: the architecture leaves them configurable and undecided.
+        // Initial values of the remaining conventions. All are configurable in MatchSettings; none is repeated anywhere else.
+        /// <summary>Penalties per team before sudden death (decided: 3).</summary>
+        public const int ShootoutKicksPerTeam = 3;
+        /// <summary>Each extra-time period lasts a third of a regulation period (as 15 minutes are a third of 45): 2 min in Arena, 2 min 40 s in Classic.</summary>
+        public const float ArenaExtraTimePeriodSeconds = ArenaPeriodSeconds / 3f;
+        public const float ClassicExtraTimePeriodSeconds = ClassicPeriodSeconds / 3f;
+        /// <summary>The intervals around extra time recover the same fraction as the mode's own interval (Classic half-time / Arena side switch).</summary>
+        public const float ClassicExtraTimeRecovery = ClassicHalfTimeRecovery;
+        public const float ArenaExtraTimeRecovery = ArenaSideSwitchRecovery;
+        /// <summary>The Classic half-time lasts this long in Core time (Arena has no break).</summary>
+        public const float ClassicHalftimeSeconds = 10f;
+        /// <summary>Arena wall rebound: slightly livelier than the ground bounce (0.7) on purpose, for the arcade feel. Re-tuned in the balance phase.</summary>
         public const float ArenaWallRestitution = 0.75f;
         public const float ArenaWallFriction = 0.2f;
-        public const float ExtraTimePlaceholderSeconds = 120f;
-        public const int ShootoutKicksPerTeam = 5;
+        /// <summary>A field player in goal keeps this fraction of his derived keeper capabilities. Calibrated against the 20 keepers and 136 field players of the database (see the architecture doc).</summary>
+        public const float EmergencyKeeperFactor = 0.75f;
     }
 }

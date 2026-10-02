@@ -144,25 +144,25 @@ namespace FS27.Core
         public float PeriodSeconds;
 
         // ---- interval between periods ----
-        /// <summary>How long the half-time / extra-time break lasts, in Core time. 0 = it ends on the next tick (the break phase is still entered).</summary>
-        public float HalftimeSeconds;
+        /// <summary>How long the half-time / extra-time break lasts, in Core time (only modes with a break phase use it; Arena has none).</summary>
+        public float HalftimeSeconds = MatchDefaults.ClassicHalftimeSeconds;
         /// <summary>Swap the attacking directions at the interval between two periods of the same stage (half-time / extra-time break).</summary>
         public bool SwitchSidesAtBreak = true;
         /// <summary>Fraction (0..1) of maximum stamina recovered during the Classic half-time.</summary>
         public float HalfTimeStaminaRecovery = MatchDefaults.ClassicHalfTimeRecovery;
         /// <summary>Fraction (0..1) of maximum stamina recovered at the Arena side switch.</summary>
         public float SideSwitchStaminaRecovery = MatchDefaults.ArenaSideSwitchRecovery;
-        /// <summary>Recovery at the extra-time break. NO DECISION EXISTS yet: 0 until the balance phase decides.</summary>
-        public float ExtraTimeStaminaRecovery;
-        /// <summary>Recovery between the end of regulation and the start of extra time. NO DECISION EXISTS yet: 0 until the balance phase decides.</summary>
-        public float PreExtraTimeStaminaRecovery;
+        /// <summary>Recovery at the extra-time break: the same as the mode's own interval (<see cref="CreateArena"/> / <see cref="CreateClassic"/> set it).</summary>
+        public float ExtraTimeStaminaRecovery = MatchDefaults.ClassicExtraTimeRecovery;
+        /// <summary>Recovery between the end of regulation and the start of extra time: the same as the mode's own interval.</summary>
+        public float PreExtraTimeStaminaRecovery = MatchDefaults.ClassicExtraTimeRecovery;
 
         // ---- extra time and shoot-out (only used when CompetitionType is Knockout) ----
         public bool ExtraTimeEnabled = true;
-        /// <summary>Length of each of the two extra-time periods. PLACEHOLDER: the exact duration is not decided yet (configurable).</summary>
-        public float ExtraTimePeriodSeconds = MatchDefaults.ExtraTimePlaceholderSeconds;
+        /// <summary>Length of each of the two extra-time periods: a third of a regulation period (the factories set it per mode).</summary>
+        public float ExtraTimePeriodSeconds = MatchDefaults.ClassicExtraTimePeriodSeconds;
         public bool ShootoutEnabled = true;
-        /// <summary>Kicks per team before sudden death. Conventional value; not tuned for 6v6 yet.</summary>
+        /// <summary>Kicks per team before sudden death (3). The ONLY place the number is read from; the shoot-out state takes it as a parameter.</summary>
         public int ShootoutKicksPerTeam = MatchDefaults.ShootoutKicksPerTeam;
         public bool ShootoutSuddenDeath = true;
         public TeamSide ShootoutFirstTeam = TeamSide.Home;
@@ -173,10 +173,10 @@ namespace FS27.Core
         /// <summary>A team with fewer active players than this ends the match (technical victory for the rival).</summary>
         public int MinimumActivePlayers = MatchDefaults.MinimumActivePlayers;
 
-        // ---- Arena boundary (TUNING parameters) ----
-        /// <summary>Fraction of the normal speed the ball keeps after hitting an Arena wall. TUNING parameter, not a final value.</summary>
+        // ---- Arena boundary ----
+        /// <summary>Fraction of the normal speed the ball keeps after hitting an Arena wall.</summary>
         public float ArenaWallRestitution = MatchDefaults.ArenaWallRestitution;
-        /// <summary>Tangential friction of an Arena wall. TUNING parameter.</summary>
+        /// <summary>Tangential friction of an Arena wall.</summary>
         public float ArenaWallFriction = MatchDefaults.ArenaWallFriction;
 
         // ---- simulation ----
@@ -218,7 +218,11 @@ namespace FS27.Core
                 CompetitionType = competition,
                 RegulationPeriods = 2,
                 PeriodSeconds = MatchDefaults.ArenaPeriodSeconds,
-                DurationSeconds = 2f * MatchDefaults.ArenaPeriodSeconds
+                DurationSeconds = 2f * MatchDefaults.ArenaPeriodSeconds,
+                HalftimeSeconds = 0f,
+                ExtraTimePeriodSeconds = MatchDefaults.ArenaExtraTimePeriodSeconds,
+                ExtraTimeStaminaRecovery = MatchDefaults.ArenaExtraTimeRecovery,
+                PreExtraTimeStaminaRecovery = MatchDefaults.ArenaExtraTimeRecovery
             };
         }
 
@@ -231,7 +235,11 @@ namespace FS27.Core
                 CompetitionType = competition,
                 RegulationPeriods = 2,
                 PeriodSeconds = MatchDefaults.ClassicPeriodSeconds,
-                DurationSeconds = 2f * MatchDefaults.ClassicPeriodSeconds
+                DurationSeconds = 2f * MatchDefaults.ClassicPeriodSeconds,
+                HalftimeSeconds = MatchDefaults.ClassicHalftimeSeconds,
+                ExtraTimePeriodSeconds = MatchDefaults.ClassicExtraTimePeriodSeconds,
+                ExtraTimeStaminaRecovery = MatchDefaults.ClassicExtraTimeRecovery,
+                PreExtraTimeStaminaRecovery = MatchDefaults.ClassicExtraTimeRecovery
             };
         }
 

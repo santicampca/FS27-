@@ -84,7 +84,7 @@ Quedan sin enum las acciones defensivas de H.2 que no están en la lista mínima
 Player AI, Team AI, transiciones, sistema de habilidades (solo contrato por ahora), resolución de duelos, detección de contacto/falta/fuera de juego, `ActionPadModel`, motor de partido con máquina de estados por modo, bus de eventos, estadísticas, sustituciones, tarjetas, reglas por modo, árbitro operativo, selector de jugador activo, fatiga continua, banquillo, formaciones con comportamiento (fase posterior), replay/log determinista.
 
 ### A.4 Ambigüedades de la spec original
-Todas resueltas por la Fase 0 y por este cierre. Los pocos valores que son configuración sin cifra decidida (⚙) están en L.2.
+Todas resueltas por la Fase 0 y por este cierre. Los valores de configuración de la Fase 1 quedaron decididos en N.3; lo que sigue pendiente de fases posteriores está en L.2.
 
 ---
 
@@ -222,10 +222,10 @@ Estados conceptuales: `PreMatch, Kickoff, InPlay, DeadBall, Goal, Restart, HalfT
 
 Reglas:
 - Un empate es un empate: nunca activa prórroga ni penales por sí solo.
-- La prórroga depende **exclusivamente** de `CompetitionMatchType = Knockout` (no de Classic ni de Arena). Duración y número de periodos: ⚙ configurable (`CompetitionRules.ExtraTime`).
-- La tanda de penales solo se activa si es Knockout **y** el empate persiste tras la prórroga; **determina al ganador**. Formato (tiradas por equipo, muerte súbita): ⚙ configurable (`CompetitionRules.Shootout`).
+- La prórroga depende **exclusivamente** de `CompetitionMatchType = Knockout` (no de Classic ni de Arena). **Dos periodos, cada uno de un tercio de un periodo reglamentario** (Arena 2 min, Classic 2 min 40 s), configurable en `MatchSettings`.
+- La tanda de penales solo se activa si es Knockout **y** el empate persiste tras la prórroga; **determina al ganador**. **Formato: 3 lanzamientos por equipo; si siguen empatados, muerte súbita** (una tirada cada uno; decide la primera ronda completa con diferencia). Termina antes si un equipo queda matemáticamente inalcanzable. El 3 vive en un solo sitio (`MatchDefaults.ShootoutKicksPerTeam` → `MatchSettings.ShootoutKicksPerTeam`).
 - Un partido Normal jamás entra en `ExtraTime` ni en `PenaltyShootout`; un Knockout con ganador al finalizar el tiempo reglamentario tampoco.
-- En Arena la prórroga se juega con las reglas de Arena (campo cerrado, sin reglas de infracción); en Classic con las de Classic. El stamina de la prórroga usa la misma curva continua; la recuperación entre periodos es ⚙ configurable.
+- En Arena la prórroga se juega con las reglas de Arena (campo cerrado, sin reglas de infracción); en Classic con las de Classic. El stamina de la prórroga usa la misma curva continua; la recuperación antes de la prórroga y en su descanso es la **del propio intervalo del modo** (Classic 25 %, Arena 10 %), configurable.
 - Marcador: los goles de la tanda no se suman al marcador de juego; `Result` registra ganador y `TerminationReason`.
 
 ### F.3 Disciplina y expulsiones (solo Classic)
@@ -252,7 +252,7 @@ No se crean atributos nuevos ni se modifica `PlayerDefinition`; no se guarda nad
 | Command | Comportamiento contextual / IA (no es un valor derivado de atributos) |
 | Recovery | Stamina + Agility |
 
-Debe rendir **claramente peor** que un portero especializado: la fórmula de combinación incluye una penalización de falta de especialización ⚙ (valor al implementar y calibrar contra los porteros de la base de datos). El GRL de un portero real sigue siendo la media exacta de sus 8 atributos; el portero de emergencia no tiene GRL.
+Debe rendir **claramente peor** que un portero especializado: la media de cada par se multiplica por un factor de falta de especialización de **0,75**, calibrado con la base de datos (ver N.3, fila 10). El GRL de un portero real sigue siendo la media exacta de sus 8 atributos; el portero de emergencia no tiene GRL.
 
 ### F.5 Sustituciones y tiempos
 Contador único por equipo (máx. 3) en `MatchState`; solicitud → `SubstitutionRules.Validate` → `PlayerSubstituted`.
@@ -437,14 +437,14 @@ Dependencias duras: 1 → todo; 2 → 4/5/6; 4 → 6/11; 8 y 9 → pulir 6/11.
 | 20 | Formaciones data-driven; ninguna definitiva ni en el motor | C12 |
 | 21 | Duración Arena 2×6 / Classic 2×8, configurable | C15 |
 | 22 | Árbitros: preparados para los 7 parámetros, sin lógica por nombre, relevantes en Classic | B.2 |
+| 23 | **Tanda: 3 lanzamientos por equipo y muerte súbita si siguen empatados** (configuración centralizada) | F.2, N.3 |
+| 24 | Convenciones de la Fase 1 cerradas: cambio de lado, saque tras el descanso, prórroga, recuperaciones, descanso, rebote, portero expulsado, portero de emergencia | N.3 |
 
 ### L.2 Qué queda abierto
-No queda **ninguna decisión de diseño** abierta. Solo quedan valores de configuración sin cifra (⚙), que se fijan al implementar y calibrar, y que están marcados como configurables:
-1. Duración y número de periodos de la prórroga; formato de la tanda (tiradas por equipo, muerte súbita).
-2. Recuperación de stamina entre periodos de prórroga.
-3. Penalización de falta de especialización del portero de emergencia.
-4. Coeficiente de restitución del rebote en las paredes de Arena y valores de la `FatigueCurve`.
-5. Si hacen falta valores nuevos del enum para acciones defensivas (presión/contención, entrada deslizante, disputa física, despeje): se decide en la fase 5.
+No queda **ninguna decisión de diseño ni de convención de la Fase 1** abierta: la tanda (3 + muerte súbita), la prórroga, las recuperaciones, el descanso, el rebote, el portero de emergencia y las convenciones de N.3 están **cerradas** (con su valor, configurable). Lo único pendiente es de **fases posteriores**:
+1. Valores de la `FatigueCurve` (fase 3).
+2. Si hacen falta valores nuevos del enum para acciones defensivas (presión/contención, entrada deslizante, disputa física, despeje): fase 5.
+3. Re-afinar en la fase de balance (no bloquea nada): rebote de Arena, factor del portero de emergencia, duración de prórroga.
 
 ---
 
@@ -454,8 +454,8 @@ No queda **ninguna decisión de diseño** abierta. Solo quedan valores de config
 2. **Jugadores y balón en Unity:** con el balón dirigido por el Core (`MatchBridge`) el rigidbody es cinemático, así que **ya no colisiona físicamente con los jugadores**. Los toques se reportan por `IBallCoreLink`/`ApplyBallImpulse`; el contacto jugador–balón real (control, pase, tiro) es la fase 4. Mientras tanto la escena Sandbox sigue con la física antigua porque el modo "core-driven" es opt-in (hay que añadir `MatchBridge`). `Docs/ARCHITECTURE.md` conserva "solo el balón es dinámico" para el sandbox.
 3. **Código no verificado en Unity:** `MatchBridge`, `IBallCoreLink` y los cambios de `BallController`/`BallPhysics` se comprobaron con un compilador contra stubs de UnityEngine escritos a mano (solo detecta errores de tipos), **no se ejecutaron en el editor**.
 4. **`MatchController.Tick(dt, BallObservation)` (camino antiguo):** se mantiene para compatibilidad (los 40 tests previos lo usan); el camino autoritativo es `Advance`. Cuando ningún host use `Tick`, retirarlo.
-5. **Valores ⚙ sin decisión** (ver L.2): duración de prórroga (placeholder 120 s), formato de tanda (5 por equipo + muerte súbita, convencional), recuperación en prórroga (0), penalización del portero de emergencia (0,7, sin calibrar), coeficiente de rebote de Arena (0,75, tuning), `HalftimeSeconds` (0).
-6. **Convenciones adoptadas sin decisión explícita** (ver N.3): quién saca en el 2.º tiempo y en la prórroga, cambio de lado también en Classic, paredes sin techo, "portero expulsado bloquea el siguiente saque", regla portero↔portero en sustituciones. Revisar con el diseño.
+5. **Re-afinado en balance (no bloquea):** rebote de Arena (0,75), factor del portero de emergencia (0,75), duración de prórroga (un tercio del periodo) y descanso de Classic (10 s). Son valores decididos y configurables, no pendientes.
+6. **Convenciones de N.3:** cerradas. La única consecuencia pendiente es que `MatchBridge` no confirma los saques por sí solo (no hay jugadores que colocar todavía).
 7. **Entrenadores, árbitro, formaciones y habilidades siguen sin conectarse al motor** (a propósito): `CoachBoost` aislado, árbitro sin lógica, ninguna formación, ninguna habilidad.
 8. **Sin movimiento de jugadores, IA, pases, tiros, regates ni entradas:** `GiveBallTo`/`ApplyBallImpulse` son las puertas explícitas para esos sistemas; el pad de acciones (fase 5) y las acciones defensivas del enum siguen pendientes.
 9. **Perfiles de animación de las 7 acciones nuevas:** solo `Planned`, sin clips ni arte.
@@ -477,7 +477,7 @@ No queda **ninguna decisión de diseño** abierta. Solo quedan valores de config
 | Pieza | Dónde | Notas |
 |---|---|---|
 | `GameMode`, `CompetitionMatchType`, `MatchPeriod`, `MatchTerminationReason`, `BallMode`, `MatchDefaults` | `Core/Match/MatchModes.cs` | Todos los números por defecto de la arquitectura viven en `MatchDefaults`. |
-| `MatchSettings` (ampliada) | `Core/Match/MatchTypes.cs` | Modo, competición, periodos, descanso, recuperaciones, prórroga, tanda, sustituciones, mínimo de jugadores, rebote de Arena, paso de simulación. `CreateArena()`/`CreateClassic()` dan los valores de la arquitectura; `new MatchSettings()` conserva el comportamiento antiguo (1 periodo de 180 s, Classic, Normal). `IsValid` rechaza valores imposibles (p. ej. más de 3 sustituciones). |
+| `MatchSettings` (ampliada) | `Core/Match/MatchTypes.cs` | Modo, competición, periodos, descanso, recuperaciones, prórroga, tanda, sustituciones, mínimo de jugadores, rebote de Arena, paso de simulación. `CreateArena()`/`CreateClassic()` dan los valores de la arquitectura (periodos, descanso, recuperaciones, prórroga, tanda de 3); `new MatchSettings()` conserva el comportamiento antiguo (1 periodo de 180 s, Classic, Normal). `IsValid` rechaza valores imposibles (p. ej. más de 3 sustituciones). |
 | `MatchState` (ampliado) | `Core/Match/MatchState.cs` | Configuración (`Settings`) separada del estado mutable. Contiene id, modo, competición, `Phase`, `Period`, marcador, reloj del periodo, `MatchTimeSeconds`, balón (`MatchBall`), `Home/Away` (`TeamMatchState`), dirección de ataque actual, prórroga, tanda, goles, resultado y motivo. |
 | `MatchBall` | `Core/Match/MatchBall.cs` | Envuelve el `BallState` **existente** (no se duplicó) + `BallMode`, posesión (equipo/jugador), último y penúltimo toque (para la asistencia). |
 | `TeamMatchState`, `MatchPlayer`, `MatchSquad`, `SquadMember` | `Core/Match/MatchRoster.cs` | 6+4 validado (1 portero titular, ≥1 portero suplente); estado por jugador (`OnPitch/Bench/SubstitutedOff/Dismissed`), amarillas, `InGoal`, `IsEmergencyKeeper` y el `PlayerRuntimeState` **existente**. |
@@ -493,16 +493,24 @@ No queda **ninguna decisión de diseño** abierta. Solo quedan valores de config
 | Puente Unity | `Gameplay/MatchBridge.cs`, `IBallCoreLink.cs`, cambios en `BallController.cs` y `BallPhysics.cs` | Ver N.4. |
 | `FootballActionKind` | `Core/FootballActionKind.cs` | Sin cambios en esta fase (0–22). |
 
-### N.3 Convenciones adoptadas (no estaban decididas; documentadas, configurables o fáciles de cambiar)
-1. **Quién saca:** primer tiempo = `KickoffTeam`; segundo tiempo = el otro; prórroga: 1.ª parte `KickoffTeam`, 2.ª el otro; tras un gol saca quien lo encajó (ya existía).
-2. **Cambio de lado en Classic:** la arquitectura solo lo fija para Arena. Se aplica también a Classic al descanso y al descanso de prórroga (`SwitchSidesAtBreak`, configurable). No hay cambio entre el reglamentario y la prórroga.
-3. **Paredes de Arena sin techo:** el balón no puede salir por arriba. Las dos porterías quedan abiertas (la regla del gol es la de siempre).
-4. **Descanso de Classic:** dura `HalftimeSeconds` (0 por defecto = un tick); la fase `Break` existe igualmente. En Arena no hay `Break`.
-5. **Portero expulsado:** `NeedsGoalkeeper` bloquea `ConfirmRestartReady` hasta que entre el suplente (`TryReplaceDismissedKeeper`, consume 1 cambio, sale un jugador de campo) o un jugador de campo tome los guantes (`TryAssignEmergencyKeeper`, solo si no hay cambio o portero suplente disponible; no es una sustitución).
-6. **Sustituciones:** el hueco de portería solo se entrega a un portero y un portero solo entra por ese hueco (`GoalkeeperMismatch`); un sustituido o expulsado no vuelve. Momentos seguros: Arena = esperando saque/celebración/cambio de lado; Classic = además reanudaciones y descanso. La pausa no cuenta.
-7. **Asistencia:** el toque anterior al último, si es de otro jugador del mismo equipo que marca. Gol en propia puerta: el último toque es del rival.
-8. **Terminación técnica:** el rival gana, el marcador se conserva (puede ser empate), no hay prórroga ni penales, ni siquiera en eliminatoria; se comprueba en cada expulsión y al final de cada periodo.
-9. **Tanda sin muerte súbita** (`ShootoutSuddenDeath = false`): puede acabar sin ganador (empate con `Reason = PenaltyShootout`); por defecto la muerte súbita está activa.
+### N.3 Convenciones de la Fase 1 — CERRADAS
+Estas convenciones empezaron como provisionales; quedan **definitivas**, cada una con su razón. Todas son configurables en `MatchSettings` (salvo las reglas de comportamiento) y sus valores viven en `MatchDefaults`.
+
+| # | Convención | Valor / regla | Razón |
+|---|---|---|---|
+| 1 | **Tanda de penales** | 3 lanzamientos por equipo; si siguen empatados, muerte súbita; termina antes si un equipo es inalcanzable; empieza `ShootoutFirstTeam` (Home por defecto; el sorteo es cosa de la capa de competición, no del Core determinista) | Decisión del diseño |
+| 2 | **Quién saca** | 1.er tiempo `KickoffTeam`; 2.º tiempo el otro; prórroga: 1.ª parte `KickoffTeam`, 2.ª el otro; tras un gol saca quien lo encajó | Alternancia habitual del fútbol, determinista |
+| 3 | **Cambio de lado** | En Arena (decidido) y también en Classic, al descanso y al descanso de prórroga (`SwitchSidesAtBreak`). No hay cambio entre el reglamentario y la prórroga | Fútbol tradicional; Arena lo conserva como único "descanso" |
+| 4 | **Duración de la prórroga** | 2 periodos de **un tercio** de un periodo reglamentario: Arena 120 s, Classic 160 s | Como 15 min son un tercio de 45: proporcional en cada modo |
+| 5 | **Recuperación de stamina en prórroga** | Antes de la prórroga y en su descanso: **la del intervalo del modo** (Classic 25 %, Arena 10 %) | Sin curvas nuevas: reutiliza lo decidido y mantiene Classic más "descansado" que Arena |
+| 6 | **Descanso de Classic** | `HalftimeSeconds` = 10 s de tiempo de Core (fase `Break`); Arena no tiene `Break` | Pausa breve para sustituciones y presentación; cualquier mayor duración es de UI |
+| 7 | **Rebote de Arena** | Restitución 0,75 y fricción 0,2; paredes **sin techo** y porterías abiertas | Algo más vivo que el bote del suelo (0,7) para el ritmo arcade; el balón nunca sale |
+| 8 | **Portero expulsado** | `NeedsGoalkeeper` bloquea el siguiente saque hasta que entre el suplente (`TryReplaceDismissedKeeper`, consume 1 cambio y sale un jugador de campo) o un jugador de campo tome los guantes (`TryAssignEmergencyKeeper`, solo sin cambio o sin portero suplente; no es sustitución). Nunca más de 3 cambios | Un equipo no puede reanudar sin portero; respeta el límite |
+| 9 | **Sustituciones** | El hueco de portería solo pasa a un portero y un portero solo entra por ese hueco (`GoalkeeperMismatch`); un sustituido o expulsado no vuelve. Momentos seguros: Arena = esperando saque/celebración/cambio de lado; Classic = además reanudaciones y descanso; la pausa no cuenta | Coherente con "no parar un ataque" y "respetar las interrupciones" |
+| 10 | **Portero de emergencia** | Las 7 capacidades derivadas (F.4) × **0,75**. Calibración con la base de datos: los 136 jugadores de campo dan de media 82,5 con las fórmulas sin factor (máximo 89,2) y los 20 porteros 82,0 de media en esas 7 capacidades (mínimo 74,6). Con 0,75 el jugador de campo medio queda en ≈ 61,9 y el mejor en ≈ 66,9, por debajo del peor portero real (74,6) | Sin factor un jugador de campo igualaría a un portero; con 0,75 es claramente peor sin ser absurdo |
+| 11 | **Asistencia / gol en propia** | Asistencia = el toque anterior al último si es de otro jugador del mismo equipo que marca; gol en propia = último toque del rival | Usa el historial de toques del balón |
+| 12 | **Terminación técnica** | El rival gana, el marcador se conserva (puede ser empate), sin prórroga ni penales, ni siquiera en eliminatoria; se comprueba en cada expulsión y al final de cada periodo | Decisión de la Fase 0 |
+| 13 | **Tanda sin muerte súbita** (`ShootoutSuddenDeath = false`) | Puede acabar sin ganador (`Reason = PenaltyShootout`, empate); por defecto la muerte súbita está activa | Opción de configuración; no se usa por defecto |
 
 ### N.4 El balón y Unity
 - **Core:** `MatchController.Advance(dt)` llama a `BallSimulator.Step` (con `ArenaWalls` en Arena), luego juzga el balón con las reglas del modo. El estado vive en `MatchState.Ball.Physics`. Las únicas entradas externas son explícitas: `ApplyBallImpulse`, `GiveBallTo`, `ReleaseBall`, `RegisterTouch`, `SetBallMode`.

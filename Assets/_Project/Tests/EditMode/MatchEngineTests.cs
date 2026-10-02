@@ -41,6 +41,7 @@ namespace FS27.Core.Tests
 
         private static MatchSettings Arena(CompetitionMatchType t = CompetitionMatchType.Normal) { var s = MatchSettings.CreateArena(t); s.ExtraTimePeriodSeconds = 60f; return s; }
         private static MatchSettings Classic(CompetitionMatchType t = CompetitionMatchType.Normal) { var s = MatchSettings.CreateClassic(t); s.ExtraTimePeriodSeconds = 60f; return s; }
+        /// <summary>The factory defaults as they are, without the shortened extra time the other helpers use.</summary>
 
         private static void Kickoff(MatchController c)
         {
@@ -60,7 +61,8 @@ namespace FS27.Core.Tests
         /// <summary>Takes the pending kick-off and, when there is a break, lets it end.</summary>
         private static void Resume(MatchController c)
         {
-            if (c.State.Phase == MatchPhase.Break) c.Advance(1f);
+            int guard = 0;
+            while (c.State.Phase == MatchPhase.Break && guard++ < 100) c.Advance(1f);
             Assert.IsTrue(c.ConfirmRestartReady(), "expected a kick-off to be pending, phase " + c.State.Phase + " period " + c.State.Period);
         }
 
@@ -131,11 +133,44 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void ExtraTimeRecovery_HasNoDecidedValue_SoItIsZeroUntilConfigured()
+        public void ExtraTime_UsesAThirdOfARegulationPeriod_AndTheModesOwnIntervalRecovery()
         {
-            var s = MatchSettings.CreateClassic(CompetitionMatchType.Knockout);
-            Assert.AreEqual(0f, s.ExtraTimeStaminaRecovery);
-            Assert.AreEqual(0f, s.PreExtraTimeStaminaRecovery);
+            MatchSettings arena = MatchSettings.CreateArena(CompetitionMatchType.Knockout), classic = MatchSettings.CreateClassic(CompetitionMatchType.Knockout);
+            Assert.AreEqual(arena.RegulationPeriodSeconds / 3f, arena.ExtraTimePeriodSeconds, 1e-3f);
+            Assert.AreEqual(120f, arena.ExtraTimePeriodSeconds, 1e-3f);
+            Assert.AreEqual(classic.RegulationPeriodSeconds / 3f, classic.ExtraTimePeriodSeconds, 1e-3f);
+            Assert.AreEqual(arena.SideSwitchStaminaRecovery, arena.ExtraTimeStaminaRecovery);
+            Assert.AreEqual(arena.SideSwitchStaminaRecovery, arena.PreExtraTimeStaminaRecovery);
+            Assert.AreEqual(classic.HalfTimeStaminaRecovery, classic.ExtraTimeStaminaRecovery);
+            Assert.AreEqual(classic.HalfTimeStaminaRecovery, classic.PreExtraTimeStaminaRecovery);
+        }
+
+        [Test]
+        public void ExtraTime_RecoversStamina_BeforeItAndAtItsBreak()
+        {
+            foreach (var s in new[] { MatchSettings.CreateClassic(CompetitionMatchType.Knockout), MatchSettings.CreateArena(CompetitionMatchType.Knockout) })
+            {
+                var c = New(s);
+                RunWholeRegulation(c);
+                MatchPlayer p = c.State.Home.Find("hs1");
+                float tank = p.Runtime.StaminaCapacity, step = tank * (s.Mode == GameMode.Classic ? 0.25f : 0.10f);
+                // the pre-extra-time recovery was applied when extra time was entered
+                Assert.AreEqual(MatchPeriod.ExtraTimeFirstHalf, c.State.Period);
+                p.Runtime.Stamina = tank * 0.5f;
+                c.ConfirmRestartReady(); RunPeriod(c);          // end of the first extra-time half: the break recovery applies
+                Assert.AreEqual(tank * 0.5f + step, p.Runtime.Stamina, 1e-3f, s.Mode.ToString());
+            }
+        }
+
+        [Test]
+        public void ClassicHasATenSecondBreak_ArenaHasNone()
+        {
+            Assert.AreEqual(10f, MatchSettings.CreateClassic().HalftimeSeconds);
+            Assert.AreEqual(0f, MatchSettings.CreateArena().HalftimeSeconds);
+            var c = New(MatchSettings.CreateClassic());
+            Kickoff(c); RunPeriod(c);
+            c.Advance(9f); Assert.AreEqual(MatchPhase.Break, c.State.Phase);
+            c.Advance(1.5f); Assert.AreEqual(MatchPhase.WaitingForKickoff, c.State.Phase);
         }
 
         [Test]
@@ -525,6 +560,84 @@ namespace FS27.Core.Tests
             var s = new PenaltyShootoutState(2, false, TeamSide.Home);
             Kick(s, true, true, false, false);
             Assert.IsTrue(s.IsDecided); Assert.IsFalse(s.HasWinner);
+        }
+
+        // ---- the shoot-out of the match: 3 kicks per team, then sudden death, all from the settings ----
+
+        private static MatchController ReachShootout(MatchSettings s)
+        {
+            var c = New(s);
+            RunWholeRegulation(c);
+            Resume(c); RunPeriod(c); Resume(c); RunPeriod(c);
+            Assert.AreEqual(MatchPhase.Shootout, c.State.Phase);
+            return c;
+        }
+
+        [Test]
+        public void Shootout_IsThreeKicksPerTeam_ByDefault_InEveryMode_FromOnePlace()
+        {
+            Assert.AreEqual(3, MatchDefaults.ShootoutKicksPerTeam);
+            Assert.AreEqual(3, new MatchSettings().ShootoutKicksPerTeam);
+            Assert.AreEqual(3, MatchSettings.CreateArena().ShootoutKicksPerTeam);
+            Assert.AreEqual(3, MatchSettings.CreateClassic().ShootoutKicksPerTeam);
+            foreach (var s in new[] { Classic(CompetitionMatchType.Knockout), Arena(CompetitionMatchType.Knockout) })
+                Assert.AreEqual(3, ReachShootout(s).State.Shootout.KicksPerTeam, s.Mode.ToString());
+            // the number is not repeated in the engine: it only reads the setting
+            string engine = File.ReadAllText(Path.Combine(MatchSourceDirectory(), "MatchController.cs"));
+            Assert.IsTrue(engine.Contains("settings.ShootoutKicksPerTeam"));
+            Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(engine, @"new PenaltyShootoutState\(\s*\d"), "no literal kick count in the engine");
+        }
+
+        [Test]
+        public void Shootout_LevelAfterThreeKicksEach_GoesToSuddenDeath()
+        {
+            var c = ReachShootout(Classic(CompetitionMatchType.Knockout));
+            for (int i = 0; i < 6; i++) Assert.IsTrue(c.RecordShootoutKick(true));     // 3-3
+            Assert.AreEqual(MatchPhase.Shootout, c.State.Phase, "still level: the shoot-out goes on");
+            Assert.IsTrue(c.State.Shootout.InSuddenDeath);
+            Assert.IsFalse(c.State.Shootout.IsDecided);
+            c.RecordShootoutKick(true); c.RecordShootoutKick(true);                     // 4-4: level again
+            Assert.AreEqual(MatchPhase.Shootout, c.State.Phase);
+            c.RecordShootoutKick(false); c.RecordShootoutKick(true);                    // Home misses, Away scores
+            Assert.AreEqual(MatchPhase.Finished, c.State.Phase);
+            Assert.AreEqual(TeamSide.Away, c.State.Result.Winner);
+            Assert.AreEqual(MatchTerminationReason.PenaltyShootout, c.State.Result.Reason);
+            Assert.AreEqual(4, c.State.Result.ShootoutHome); Assert.AreEqual(5, c.State.Result.ShootoutAway);
+        }
+
+        [Test]
+        public void Shootout_ThreeKicksEach_EndsEarly_WhenOneTeamCanNoLongerBeCaught()
+        {
+            var s = new PenaltyShootoutState(MatchDefaults.ShootoutKicksPerTeam, true, TeamSide.Home);
+            Kick(s, true, false, true);                     // H A H: 2-0, Away has 2 kicks left
+            Assert.IsFalse(s.IsDecided);
+            Kick(s, false);                                 // A misses: 2-0 with one kick left each... Away can reach 1 at most
+            Assert.IsTrue(s.IsDecided, "2-0 with one Away kick left is out of reach");
+            Assert.AreEqual(TeamSide.Home, s.Winner);
+            Assert.AreEqual(4, s.Kicks.Count);
+        }
+
+        [Test]
+        public void Shootout_ThreeKicksEach_IsNotDecidedWhileTheOtherTeamCanStillCatchUp()
+        {
+            var s = new PenaltyShootoutState(3, true, TeamSide.Home);
+            Kick(s, true, false, false, true);              // H scores, A misses, H misses, A scores: 1-1, one kick each left
+            Assert.IsFalse(s.IsDecided);
+            Kick(s, true, false);                           // H scores, A misses: 2-1 after 3 each: decided
+            Assert.IsTrue(s.IsDecided);
+            Assert.AreEqual(TeamSide.Home, s.Winner);
+            Assert.AreEqual(6, s.Kicks.Count);
+        }
+
+        [Test]
+        public void Shootout_EngineEndsEarly_AndNeverSimulatesFurtherKicks()
+        {
+            var c = ReachShootout(Arena(CompetitionMatchType.Knockout));
+            c.RecordShootoutKick(true); c.RecordShootoutKick(false); c.RecordShootoutKick(true); c.RecordShootoutKick(false);
+            Assert.AreEqual(MatchPhase.Finished, c.State.Phase);
+            Assert.AreEqual(TeamSide.Home, c.State.Result.Winner);
+            Assert.AreEqual(4, c.State.Shootout.Kicks.Count);
+            Assert.IsFalse(c.RecordShootoutKick(true));
         }
 
         // ================= the ball =================
