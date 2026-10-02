@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace FS27.Core
 {
     /// <summary>
-    /// AUTHORING reader for the PROPERTY-CARD layout of a field-player database: three global tables (database, attributes, play profile) and then one "# n. PLAYER — NAME" card
+    /// AUTHORING reader for the PROPERTY-CARD layout of a field-player database: three global tables (database with a Nation column, attributes, play profile) and then one "# n. PLAYER — NAME" card
     /// per player with "Key: value" identity and position lines, a roles table, a 12-row attribute table, a property/value play-profile table, a polyvalence line, signature actions
     /// and a gameplay feel. Same output as the other readers (<see cref="FieldPlayerDataRecord"/>s), so the generic importer, corrections and builder are reused. A value that cannot
     /// be read is NOT guessed: it stays absent and is reported. Stray citation labels the source leaves inside a block (a line that is not "Key: value", or an extra line after the polyvalence) are ignored. Every global table is
@@ -80,7 +80,7 @@ namespace FS27.Core
                         if (key == "Primary Zone") rec.PrimaryZone = v;
                         else if (key == "Secondary Zone") rec.SecondaryZone = v.Equals("None", StringComparison.OrdinalIgnoreCase) ? "" : v;
                         break;
-                    case "MCD Type": mcdType = line; break;
+                    case "MCD Type": case "MC Type": mcdType = line; break;
                     case "Roles":
                         {
                             List<string> c = FieldPlayerSectionedMarkdown.Cells(line);
@@ -122,7 +122,8 @@ namespace FS27.Core
             Close();
 
             // the names come from the database table; the card headings ("PLAYER — NAME") must agree with it
-            List<Dictionary<string, string>> names = tables.ContainsKey("Tabla MCD Database") ? tables["Tabla MCD Database"] : new List<Dictionary<string, string>>();
+            List<Dictionary<string, string>> names = new List<Dictionary<string, string>>();
+            foreach (List<Dictionary<string, string>> t in tables.Values) if (t.Count > 0 && t[0].ContainsKey("Nation")) { names = t; break; }
             if (names.Count != result.Records.Count) result.Problems.Add("The database table lists " + names.Count + " players but the file has " + result.Records.Count + " cards.");
             for (int i = 0; i < result.Records.Count; i++)
             {

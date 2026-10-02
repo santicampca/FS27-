@@ -156,6 +156,14 @@ namespace FS27.Core
         /// <summary>Defensive midfielders (the MCD database): the same contract as <see cref="HybridMidfielder"/> (Midfield primary, Defense or Wing secondary, any of the 12 roles).</summary>
         public static FieldPlayerImportOptions DefensiveMidfielder() { return HybridMidfielder(); }
 
+        /// <summary>Central midfielders (the MC database): Midfield primary, Defense, Wing or Attack as the one optional secondary zone, any of the 12 roles.</summary>
+        public static FieldPlayerImportOptions CentralMidfielder()
+        {
+            FieldPlayerImportOptions o = HybridMidfielder();
+            o.AllowedSecondaryZones = new HashSet<PitchZone> { PitchZone.Defense, PitchZone.Wing, PitchZone.Attack };
+            return o;
+        }
+
         public static FieldPlayerImportOptions Defender()
         {
             return new FieldPlayerImportOptions

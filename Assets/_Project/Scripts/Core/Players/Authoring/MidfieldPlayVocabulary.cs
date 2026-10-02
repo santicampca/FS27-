@@ -26,7 +26,11 @@ namespace FS27.Core
             new[] { "DefensiveScreen", "DefensiveScreen", "Defensive Screen" },
             new[] { "LineBreakingPass", "LineBreakingPass", "Line-Breaking Pass" },
             new[] { "BallRecovery", "BallRecovery", "Ball Recovery" },
-            new[] { "TacticalFoul", "TacticalFoul", "Tactical Foul" }
+            new[] { "TacticalFoul", "TacticalFoul", "Tactical Foul" },
+            new[] { "TurnAndAccelerate", "TurnAndAccelerate", "Turn And Accelerate" },
+            new[] { "OutsideOfFootPass", "OutsideOfFootPass", "Outside-Of-Foot Pass" },
+            new[] { "TempoControl", "TempoControl", "Tempo Control" },
+            new[] { "AerialThreat", "AerialThreat", "Aerial Threat" }
         };
 
         // a hybrid midfielder's spelling of a tag the wing vocabulary already has
