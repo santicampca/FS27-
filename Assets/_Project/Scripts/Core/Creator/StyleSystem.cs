@@ -76,9 +76,9 @@ namespace FS27.Core
             var c = new StyleCatalog();
             var s = new StylePreset { Id = CartoonSports, Name = "FS27 Cartoon Sports" };
             // Starting look (~6.5 heads, slightly big head, hands and boots emphasised, athletic): normalised levels.
-            s.StartLevels["head.scale"] = 0.30f;
-            s.StartLevels["body.handScale"] = 0.20f;
-            s.StartLevels["body.footScale"] = 0.20f;
+            s.StartLevels["head.scale"] = 0.40f;     // 1.08x
+            s.StartLevels["body.handScale"] = 0.40f;  // 1.10x
+            s.StartLevels["body.footScale"] = 0.40f;  // 1.10x
             s.StartLevels["face.expressiveness"] = 0.65f;
             s.StartLevels["style.athleticity"] = 0.70f;
             s.StartLevels["style.stylization"] = 0.70f;

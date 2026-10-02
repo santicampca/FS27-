@@ -226,7 +226,7 @@ namespace FS27.Core.Tests
 
         private static readonly string[] BannedTerms =
         {
-            "real madrid", "barcelona", "manchester", "liverpool", "chelsea", "arsenal", "juventus", "bayern", "atletico", "paris saint", "tottenham",
+            "real madrid", "barcelona", "manchester", "liverpool", "chelsea", "arsenal", "juventus", "bayern", "atletico madrid", "atletico de madrid", "paris saint", "tottenham",
             "premier league", "la liga", "laliga", "serie a", "bundesliga", "ligue 1", "champions league", "europa league", "copa libertadores",
             "uefa", "fifa", "ultimate team", "ea sports", "konami", "efootball", "pro evolution", "football manager", "fab 5",
             "messi", "ronaldo", "neymar", "mbappe", "haaland", "lewandowski", "modric", "benzema"

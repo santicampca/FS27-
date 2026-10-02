@@ -10,7 +10,8 @@ namespace FS27.Core
     /// requests in one sentence, requests about a character that already exists, and the context a word is used in. It is the reference
     /// implementation that lets the whole pipeline be built and tested for free.
     ///
-    /// It is honest about its limits: anything it does not recognise is returned as unresolved, contradictions are returned as conflicts
+    /// It is honest about its limits: a sentence (clause) in which it recognises nothing is returned as unresolved (words it does not recognise INSIDE a clause
+    /// that also has recognised words are ignored: a lexicon cannot tell filler from content, so it does not guess), contradictions are returned as conflicts
     /// instead of being resolved silently, and requests the engine cannot fulfil are returned as unsupported. It is NOT semantic
     /// understanding: a language-model interpreter replaces it behind the same interface.
     /// </summary>
@@ -150,6 +151,18 @@ namespace FS27.Core
             return list;
         }
 
+        /// <summary>Colour words in any gender or number ("rojo", "roja", "rojas", "azules").</summary>
+        private static bool TryColor(string w, out string hex)
+        {
+            if (PromptLexicon.Colors.TryGetValue(w, out hex)) return true;
+            if (w.EndsWith("es") && PromptLexicon.Colors.TryGetValue(w.Substring(0, w.Length - 2), out hex)) return true;
+            if (w.EndsWith("s") && PromptLexicon.Colors.TryGetValue(w.Substring(0, w.Length - 1), out hex)) return true;
+            if (w.EndsWith("os") && PromptLexicon.Colors.TryGetValue(w.Substring(0, w.Length - 2) + "o", out hex)) return true;
+            if (w.EndsWith("as") && PromptLexicon.Colors.TryGetValue(w.Substring(0, w.Length - 2) + "a", out hex)) return true;
+            hex = null;
+            return false;
+        }
+
         private List<Match> FindMatches(List<string> t, bool[] consumed, PromptContext context)
         {
             var matches = new List<Match>();
@@ -170,7 +183,7 @@ namespace FS27.Core
                     if (PromptLexicon.Subjects.ContainsKey(w) && !consumed[j]) break;
                     LexiconEffect[] fx = null;
                     if (table != null && table.TryGetValue(w, out fx)) { }
-                    else if (canColor && PromptLexicon.Colors.TryGetValue(w, out string hex))
+                    else if (canColor && TryColor(w, out string hex))
                         fx = new[] { LexiconEffect.Col(PromptLexicon.ColorSlotOfSubject[subject], hex) };
                     if (fx == null) continue;
 
@@ -294,7 +307,7 @@ namespace FS27.Core
             result.Changes = merged;
             AttachProfileCombinationRules(result, baseSpec, creating);
 
-            bool understood = result.Changes.Count > 0 || result.AttributeHints.Count > 0 || result.ProfileHints.Count > 0;
+            bool understood = result.Changes.Count > 0 || result.AttributeHints.Count > 0 || result.ProfileHints.Count > 0 || result.Conflicts.Count > 0;
             if (!understood)
             {
                 // Nothing usable was found (only unsupported or unknown requests): no draft is invented.
