@@ -8,8 +8,8 @@ namespace FS27.Core.Tests
 {
     /// <summary>
     /// The full-backs of FS27_FULLBACKS_DATABASE_V1.md (+ the documented corrections) through the SAME generic field-player chain (sectioned reader -> records -> corrections ->
-    /// FieldPlayerRecordImporter -> PlayerLibrary), living with the 20 goalkeepers and the 40 centre-backs. The source holds TEN players (5 right-backs, 5 left-backs), not the twelve
-    /// (6 + 6) the phase asked for: see <see cref="TheFullbackQuotaOfSixPlusSix_IsNotMetBySource_AndStaysPending"/>.
+    /// FieldPlayerRecordImporter -> PlayerLibrary), living with the 20 goalkeepers and the 40 centre-backs. The researched source holds TEN players (5 + 5); the project owner added
+    /// Andy Robertson (LB) and Marcos Llorente (RB) in FS27_FULLBACKS_ADDITIONS_V1.md to reach 6 + 6 (see <see cref="TheTwelveFullbacks_AreSixRightBacksAndSixLeftBacks_AndTheLibraryHolds72"/>).
     /// </summary>
     public class FullbacksDatabaseTests
     {
@@ -35,7 +35,7 @@ namespace FS27.Core.Tests
             PitchZone.Midfield, PitchZone.Midfield, PitchZone.Defense, PitchZone.Midfield, PitchZone.Midfield
         };
 
-        private static string root, markdown, correctionsText;
+        private static string root, markdown, correctionsText, additionsText;
         private FieldPlayerLibraryBuilder.Batch batch;
 
         [OneTimeSetUp]
@@ -46,6 +46,12 @@ namespace FS27.Core.Tests
             root = new DirectoryInfo(core).Parent.Parent.Parent.Parent.FullName;
             markdown = File.ReadAllText(Path.Combine(root, "Docs", "authoring", "FS27_FULLBACKS_DATABASE_V1.md"));
             correctionsText = File.ReadAllText(Path.Combine(root, "Docs", "authoring", "FS27_FULLBACKS_CORRECTIONS_V1.md"));
+            additionsText = File.ReadAllText(Path.Combine(root, "Docs", "authoring", "FS27_FULLBACKS_ADDITIONS_V1.md"));
+        }
+
+        private static FieldPlayerLibraryBuilder.Batch ImportAdditions(PlayerLibrary into)
+        {
+            return FieldPlayerLibraryBuilder.ImportSectionedMarkdown(additionsText, "fb", FieldPlayerImportOptions.Fullback(), into);
         }
 
         [SetUp]
@@ -62,7 +68,7 @@ namespace FS27.Core.Tests
         // ============================================================ the quota
 
         [Test]
-        public void TheSourceHoldsTenFullbacks_FiveRightBacksAndFiveLeftBacks_NoneWasAddedToReachTwelve()
+        public void TheResearchedSourceHoldsTenFullbacks_FiveRightBacksAndFiveLeftBacks()
         {
             List<FieldPlayerDataRecord> records = Records();
             Assert.AreEqual(10, records.Count);
@@ -75,14 +81,59 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TheFullbackQuotaOfSixPlusSix_IsNotMetBySource_AndStaysPending()
+        public void TheTwelveFullbacks_AreSixRightBacksAndSixLeftBacks_AndTheLibraryHolds72()
         {
-            // The phase asked for 6 right-backs + 6 left-backs = 12 (72 players in all). The source has 5 + 5 = 10 (70 in all) and no player may be invented or chosen here.
-            Assert.AreEqual(10, batch.Added);
-            Assert.Ignore("PENDING: 2 full-backs missing from the source (one right-back, one left-back). The library holds 70 players, not 72, until the source is completed.");
+            PlayerLibrary all = LibraryWithEverythingElse(out List<PlayerPlayingProfile> profiles, out _);
+            Assert.AreEqual(60, all.Count);
+            FieldPlayerLibraryBuilder.Batch researched = Import(all);
+            FieldPlayerLibraryBuilder.Batch added = ImportAdditions(all);
+            Assert.AreEqual(10, researched.Added); Assert.AreEqual(2, added.Added);
+            Assert.AreEqual(72, all.Count);
+            Assert.AreEqual(72, all.All.Select(p => p.Id).Distinct().Count());
+            var records = Records(); records.AddRange(FieldPlayerSectionedMarkdown.Parse(additionsText, "fb").Records);
+            Assert.AreEqual(12, records.Count);
+            Assert.AreEqual(6, records.Count(r => r.NaturalPosition == "RB"));
+            Assert.AreEqual(6, records.Count(r => r.NaturalPosition == "LB"));
+            Assert.AreEqual(12, all.All.Count(p => p.Id.StartsWith("fb-")));
+            Assert.AreEqual(20, all.All.Count(p => p.Role == PlayerRole.Goalkeeper));
+            Assert.AreEqual(40, all.All.Count(p => p.Id.StartsWith("cb-")));
+            profiles.AddRange(researched.Results.Select(r => r.Profile)); profiles.AddRange(added.Results.Select(r => r.Profile));
+            PlayerSystemReport report = PlayerSystemValidator.ValidateAll(all, profiles);
+            Assert.IsTrue(report.IsValid, report.ToString());
+            Assert.AreEqual(20, all.GoalkeeperProfiles.Count);
         }
 
-        // ============================================================ players
+        [Test]
+        public void TheTwoAdditions_AreAuthoredEstimates_ImportedByTheSameImporter_WithTheirWarnings()
+        {
+            FieldPlayerLibraryBuilder.Batch added = ImportAdditions(null);
+            Assert.AreEqual(2, added.Added); Assert.AreEqual(0, added.Failed);
+            CollectionAssert.IsEmpty(added.ReaderProblems);
+            FieldPlayerImportResult robertson = added.Results[0], llorente = added.Results[1];
+            Assert.AreEqual("fb-andy-robertson", robertson.PlayerId); Assert.AreEqual("fb-marcos-llorente", llorente.PlayerId);
+            Assert.AreEqual(PreferredFoot.Left, robertson.Player.PreferredFoot); Assert.AreEqual(PreferredFoot.Right, llorente.Player.PreferredFoot);
+            Assert.AreEqual("SCO", robertson.Player.NationalityCode); Assert.AreEqual("ESP", llorente.Player.NationalityCode);
+            Assert.AreEqual(BodyType.Light, robertson.Player.BodyType); Assert.AreEqual(BodyType.Athletic, llorente.Player.BodyType);
+            Assert.AreEqual(PitchZone.Wing, robertson.Profile.PrimaryZone); Assert.AreEqual(PitchZone.Wing, llorente.Profile.PrimaryZone);
+            CollectionAssert.AreEqual(new[] { PitchZone.Defense }, robertson.Profile.SecondaryZones); CollectionAssert.AreEqual(new[] { PitchZone.Midfield }, llorente.Profile.SecondaryZones);
+            Assert.AreEqual(PlayerArchetype.Engine, robertson.Profile.Roles[0].Role); Assert.AreEqual(PlayerArchetype.Engine, llorente.Profile.Roles[0].Role);
+            Assert.AreEqual(92, robertson.Player.Attributes.Stamina); Assert.AreEqual(91, llorente.Player.Attributes.Stamina);
+            Assert.IsTrue(robertson.Player.Attributes.GetValue(PlayerAttributeId.Speed) < 85 && llorente.Player.Attributes.Speed < 85, "no new 95+ extremes");
+            foreach (FieldPlayerImportResult r in added.Results)
+            {
+                Assert.IsFalse(r.Overall.HasTarget, "no design target exists for the two additions");
+                Assert.IsTrue(r.Has(FieldPlayerImportCode.WeakFootDefaulted), "weak foot is not researched: defaulted and warned");
+                Assert.AreEqual(1, r.Defaulted.Count);
+                Assert.IsFalse(r.Issues.Any(i => i.IsError));
+                Assert.That(r.Overall.CalculatedOverall, Is.InRange(78, 84));
+            }
+            CollectionAssert.AreEqual(new[] { DefaultBehaviors.LateBoxArrival }, added.Dna["fb-marcos-llorente"].Behaviors.Select(b => b.Id).ToArray());
+            CollectionAssert.IsEmpty(added.Dna["fb-andy-robertson"].Behaviors);
+            Assert.AreEqual("Tottenham Hotspur", FieldPlayerSectionedMarkdown.Parse(additionsText, "fb").Records[0].Club);
+            StringAssert.Contains("AUTHORED BY CLAUDE", additionsText);
+        }
+
+                // ============================================================ players
 
         [Test]
         public void TheTenFullbacks_AreImported_InOrder_WithNoErrors_AndTheCorrectionsAreAllApplied()
@@ -359,7 +410,7 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void SeventyPlayers_LiveInOneLibrary_TwentyKeepersFortyCentreBacksTenFullbacks()
+        public void SeventyPlayers_LiveInOneLibrary_BeforeTheTwoAdditions()
         {
             PlayerLibrary all = LibraryWithEverythingElse(out List<PlayerPlayingProfile> profiles, out int keepers);
             Assert.AreEqual(60, all.Count, "before the full-backs");
@@ -409,15 +460,16 @@ namespace FS27.Core.Tests
         // ============================================================ the committed final records
 
         [Test]
-        public void TheCommittedFinalRecords_AreExactlyTheSourceWithTheCorrectionsApplied_AndImportOnTheirOwn()
+        public void TheCommittedFinalRecords_AreExactlyTheSourceWithTheCorrectionsApplied_PlusTheAdditions_AndImportOnTheirOwn()
         {
             List<FieldPlayerDataRecord> records = Records();
             AuthoringCorrections.Apply(records, AuthoringCorrections.ParseMarkdown(correctionsText, new List<string>()));
+            records.AddRange(FieldPlayerSectionedMarkdown.Parse(additionsText, "fb").Records);
             string committed = File.ReadAllText(Path.Combine(root, "Docs", "authoring", "FS27_FULLBACKS_RECORDS_V1.json"));
-            Assert.AreEqual(FieldPlayerRecordJson.ToJson(records).Replace("\r\n", "\n").Trim(), committed.Replace("\r\n", "\n").Trim(), "regenerate FS27_FULLBACKS_RECORDS_V1.json when the source or the corrections change");
+            Assert.AreEqual(FieldPlayerRecordJson.ToJson(records).Replace("\r\n", "\n").Trim(), committed.Replace("\r\n", "\n").Trim(), "regenerate FS27_FULLBACKS_RECORDS_V1.json when the source, the corrections or the additions change");
             Assert.IsTrue(FieldPlayerRecordJson.TryFromJson(committed, out List<FieldPlayerDataRecord> back, out string error), error);
             FieldPlayerLibraryBuilder.Batch fromJson = FieldPlayerLibraryBuilder.Import(back, FieldPlayerImportOptions.Fullback());
-            Assert.AreEqual(10, fromJson.Added);
+            Assert.AreEqual(12, fromJson.Added);
             for (int i = 0; i < 10; i++) Assert.AreEqual(batch.Results[i].Overall.CalculatedOverall, fromJson.Results[i].Overall.CalculatedOverall, Names[i]);
         }
 
@@ -432,7 +484,7 @@ namespace FS27.Core.Tests
             foreach (string file in Directory.GetFiles(dir, "*.cs"))
             {
                 string text = File.ReadAllText(file);
-                foreach (string name in Names)
+                foreach (string name in Names.Concat(new[] { "Andy Robertson", "Marcos Llorente" }))
                     foreach (string part in name.Split(' ').Where(w => w.Length > 4 && w != "João")) Assert.IsFalse(text.Contains(part), Path.GetFileName(file) + " mentions '" + part + "'");
                 Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(text, "(Name|PlayerId|Id)\\s*(==|!=)\\s*\""), Path.GetFileName(file));
             }

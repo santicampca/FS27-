@@ -1,6 +1,8 @@
-# FS27 — Integración de laterales (fase PARCIAL: 10 de 12)
+# FS27 — Integración de laterales (6 LD + 6 LI = 12)
 
-> **Estado: INCOMPLETA.** La fase pedía 6 laterales derechos + 6 izquierdos (12, 72 jugadores en total). **La fuente (`fs27la.docx`) trae solo 10: 5 derechos + 5 izquierdos.** No se eligió ni se añadió ningún jugador para llegar a 12. La biblioteca tiene **70 jugadores, no 72**. Faltan **un lateral derecho y un lateral izquierdo**; cuando existan en la fuente, esta integración los acepta sin cambios de código (una prueba marcada como *pendiente* lo recuerda).
+> **Estado: COMPLETA — 12 laterales (6 derechos + 6 izquierdos), 72 jugadores en la biblioteca.** El documento investigado (`fs27la.docx`) traía 10 (5 + 5). El dueño del proyecto añadió **Andy Robertson (LI)** y **Marcos Llorente (LD)** para llegar a 6 + 6, y confirmó que **Cancelo se queda como lateral izquierdo (LI)**.
+>
+> **Aviso importante sobre esos dos:** no estaban en la investigación. Su identidad (club, dorsal, altura, pie, fecha de nacimiento) sale de búsquedas web o de conocimiento general; **sus 12 atributos, roles, perfil de juego y acciones son estimaciones mías, calibradas contra los otros 10, no mediciones investigadas**. Están en un archivo aparte (`FS27_FULLBACKS_ADDITIONS_V1.md`, marcado "AUTHORED BY CLAUDE") para poder revisarlos o sustituirlos. No tienen Target OVR y su pie débil no se inventó (default con aviso).
 
 Estado técnico: datos, importación, correcciones documentadas y validación implementados y probados fuera de Unity. Reutiliza el sistema genérico de jugadores de campo ([DEFENDERS_DATA_INTEGRATION.md](DEFENDERS_DATA_INTEGRATION.md), [LEFT_DEFENDERS_DATA_INTEGRATION.md](LEFT_DEFENDERS_DATA_INTEGRATION.md)): **no hay ningún sistema específico de laterales** (ni `FullbackImporter`, ni `LateralDataRecord`, ni roles o posiciones nuevas).
 
@@ -10,7 +12,8 @@ Estado técnico: datos, importación, correcciones documentadas y validación im
 |---|---|
 | `FS27_FULLBACKS_DATABASE_V1.md` | Conversión de `fs27la.docx` (sin cambiar ningún dato; las tablas pasan a tablas markdown). **Nunca se edita.** |
 | `FS27_FULLBACKS_CORRECTIONS_V1.md` | 13 correcciones documentadas (jugador, campo, antes, después, clase, fuente, razón). Cada una se aplica solo si el "antes" coincide. |
-| `FS27_FULLBACKS_RECORDS_V1.json` | Registros definitivos (fuente + correcciones). Un test comprueba que son exactamente eso y que se importan por sí solos. |
+| `FS27_FULLBACKS_ADDITIONS_V1.md` | Robertson y Llorente (autoría mía, ver el aviso de arriba). Mismo formato que la fuente, sin correcciones. |
+| `FS27_FULLBACKS_RECORDS_V1.json` | Registros definitivos de los 12 (fuente + correcciones + adiciones). Un test comprueba que son exactamente eso y que se importan por sí solos. |
 
 ## 2. Qué se reutilizó y qué se añadió (todo genérico y compatible hacia atrás)
 
@@ -22,7 +25,7 @@ Añadido (sirve a cualquier jugador de campo futuro):
 - **`BodyTypeNormalizer`:** una etiqueta que ya es uno de los 5 tipos oficiales ("Light", "Athletic", "Strong"…) se usa tal cual. Las etiquetas combinadas y la rama sin etiqueta no cambian; los umbrales de IMC **no se tocan**.
 - **`WingPlayVocabulary`:** vocabulario de acciones = el de defensas + 12 etiquetas conceptuales de juego por banda (carrera de apoyo, pase atrás, centro, cambio de orientación...). Siguen siendo **solo de autoría**; únicamente `LateBoxArrival` (nuevo mapeo exacto) y `HighPressing` equivalen a un comportamiento existente.
 - `FieldPlayerDataRecord`: `FunctionalPositions` y `GameplayBehavior` (autoría). `AuthoringCorrections`: campos `ageAsWritten`, `dateOfBirth` y `shortName`.
-- `NationalityCodes`: Marruecos, Colombia y Canadá. Posición real `RM`/`LM` → zona Midfield en la comprobación de polivalencia.
+- `NationalityCodes`: Marruecos, Colombia, Canadá y Escocia. Posición real `RM`/`LM` → zona Midfield en la comprobación de polivalencia.
 
 ## 3. Correcciones (13; ningún atributo, afinidad de rol ni Target OVR)
 
@@ -40,21 +43,21 @@ Añadido (sirve a cualquier jugador de campo futuro):
 | Cancelo | dorsal | 27 → 2 | Verified, alta | Lleva el 2 en el Barcelona |
 | Dumfries, Mendes, Davies | zona secundaria | Attack → Midfield | Design | El contrato del lateral permite Defense o Midfield; su propia polivalencia cita RM/LM (Wing ya es la zona primaria) |
 
-**No se corrigió** (decisión documentada): la **posición natural de Cancelo** sigue siendo `LB`, como lo registra la fuente ("opción principal en el flanco zurdo según solicitud"), aunque en la realidad es lateral derecho que juega por dentro por la izquierda. No tiene efecto en runtime (zona primaria Wing en ambos casos) y su pie diestro queda correcto. Si más adelante se quiere la posición real, es una corrección de una línea.
+**Decisión confirmada por el dueño:** la **posición natural de Cancelo** es `LB` (lateral izquierdo), como la registra la fuente, aunque en la realidad es lateral derecho que juega por dentro por la izquierda. Su pie diestro queda correcto (Right) y no tiene efecto en runtime (zona primaria Wing).
 
 ## 4. Normalización
 
-- **Zonas:** todos Wing como primaria; secundaria Defense (Hakimi, Dani Muñoz, Cucurella) o Midfield (los otros 7). Nunca más de una, nunca una inventada.
+- **Zonas:** todos Wing como primaria; secundaria Defense (Hakimi, Dani Muñoz, Cucurella, Robertson) o Midfield (los otros 8). Nunca más de una, nunca una inventada.
 - **Roles:** los 12 oficiales y como máximo 3 (aquí: Winger, Explosive, Engine, Creator, Builder, Guardian, Wall), con su afinidad. No se creó ningún rol de lateral. Las afinidades se conservan: las diferencias con los ratings de rol oficiales son de 1–2 puntos, sin contradicción clara.
 - **Posiciones:** natural RB/LB; posiciones secundarias reales (RWB, LWB, CM, RM, LM, RB) y versatilidad funcional (RM, RW, LW, CM) se conservan **separadas en el registro de autoría**. En runtime todos son `PlayerRole.Defender` con la zona Wing: nadie se vuelve mediocampista ni central. Aviso `PolyvalenceBeyondZone` cuando una posición real no cabe en la zona secundaria (Dani Muñoz: RM; Cucurella: LM).
-- **Pie:** 6 diestros (5 laterales derechos + Cancelo) y 4 zurdos. El pie débil es independiente (Cancelo 85).
+- **Pie:** 7 diestros (6 laterales derechos + Cancelo) y 5 zurdos. El pie débil es independiente (Cancelo 85).
 - **BodyType:** la fuente usa tipos oficiales (Athletic, Light, Strong): sin derivación por medidas.
 - **Etiquetas descriptivas** (lateral defensivo/ofensivo/híbrido): no existen en la fuente como dato y **no se crearon enums**.
 - **PlayerId:** `fb-` + nombre en ASCII (`fb-achraf-hakimi`), único y determinista, sin choques con los 20 porteros ni los 40 centrales.
 
 ## 5. Auditoría de atributos
 
-Los 12 atributos oficiales, 1–99, sin cambios. Hay **17 valores de 90 o más** (de 120) y **6 de 95 o más** (Hakimi Speed 95, Alexander-Arnold Passing 95, Dani Muñoz Stamina 95, Davies Speed 98 y Acceleration 95, Cancelo Technique 95); solo Davies es 95+ en velocidad y aceleración a la vez. Se **conservan tal cual** (fidelidad al jugador > balance global): los registros de velocidad punta (Davies 37,1 km/h) respaldan los extremos de velocidad y la técnica de Cancelo/Alexander-Arnold es su rasgo. Los perfiles no se homogeneizan: Davies es rapidísimo y defensivamente medio (Defense 77), Cucurella defensivamente fuerte (85) y más lento, Dimarco/Alexander-Arnold muy creativos. Deuda: la calibración de extremos entre bases (Davies 98 frente al 97 de van de Ven, que registra una velocidad mayor) queda para una revisión global.
+Los 12 atributos oficiales, 1–99, sin cambios en los 10 investigados. Entre ellos hay **17 valores de 90 o más** (de 120) y **6 de 95 o más** (Hakimi Speed 95, Alexander-Arnold Passing 95, Dani Muñoz Stamina 95, Davies Speed 98 y Acceleration 95, Cancelo Technique 95); solo Davies es 95+ en velocidad y aceleración a la vez. Se **conservan tal cual** (fidelidad al jugador > balance global): el récord de velocidad punta de Davies (37,1 km/h) respalda los extremos de velocidad y la técnica de Cancelo/Alexander-Arnold es su rasgo. Los perfiles no se homogeneizan. Los dos añadidos suman solo dos valores de 90 o más (Stamina 92 y 91) y ninguno de 95. Deuda: la calibración de extremos entre bases (Davies 98 frente al 97 de van de Ven) queda para una revisión global.
 
 ## 6. Target OVR frente a Overall calculado
 
@@ -62,16 +65,15 @@ El Target OVR sigue siendo referencia de autoría (`OverallCheck`), nunca runtim
 
 ## 7. Avisos reales y errores
 
-0 errores. Avisos: `TargetOvrDiffers` ×2, `PolyvalenceBeyondZone` ×2, `SignatureActionsPending` ×10 (etiquetas de autoría sin comportamiento). **No hay ningún valor por defecto**: la fuente trae dorsal, pie débil, nacionalidad, nombre corto y BodyType. Problemas de lectura (3, de la propia fuente): el dorsal "66 / 2" de Alexander-Arnold y dos tablas que dan un pie distinto para Cancelo.
+0 errores. Avisos de los 10 investigados: `TargetOvrDiffers` ×2, `PolyvalenceBeyondZone` ×2, `SignatureActionsPending` ×10 (etiquetas de autoría sin comportamiento); ningún valor por defecto. Avisos de los 2 añadidos: `WeakFootDefaulted` ×2 (pie débil 50, **no investigado**) y `SignatureActionsPending` ×1 (Llorente tiene `LateBoxArrival`, que sí equivale a un comportamiento existente). Problemas de lectura (3, de la propia fuente): el dorsal "66 / 2" de Alexander-Arnold y dos tablas que dan un pie distinto para Cancelo.
 
 ## 8. Integración
 
-Los 10 conviven con los 20 porteros y los 40 centrales en un mismo `PlayerLibrary` (70 jugadores, 20 perfiles de portero, `PlayerSystemValidator.ValidateAll` válido, GRL de portero intacto). Un equipo de 1 portero + 5 laterales valida; `TeamDefinition.PlayerIds` sigue siendo la única autoridad del roster (`TeamId` queda vacío; el club es solo autoría). Reimportar no crea duplicados.
+Los 12 conviven con los 20 porteros y los 40 centrales en un mismo `PlayerLibrary` (**72 jugadores**: 20 + 20 + 20 + 6 + 6, 20 perfiles de portero, `PlayerSystemValidator.ValidateAll` válido, GRL de portero intacto). Un equipo de 1 portero + 5 laterales valida; `TeamDefinition.PlayerIds` sigue siendo la única autoridad del roster (`TeamId` queda vacío; el club es solo autoría). Reimportar no crea duplicados.
 
 ## 9. Deuda
 
-- **Faltan 2 jugadores** (un lateral derecho y un lateral izquierdo) para llegar a 6 + 6 y 72. Hay que completar la fuente; no se eligieron.
-- Posición natural real de Cancelo (RB) frente a la registrada (LB).
-- Dorsal actual de Dumfries no verificado; clubes de Hakimi, Porro, Dani Muñoz, Mendes, Dimarco, Cucurella y Davies (confirmado en Bayern) solo parcialmente contrastados.
+- **Robertson y Llorente son estimaciones mías**: conviene sustituirlos por una investigación como la de los otros 10 (atributos, perfil, pie débil, Target OVR). Su dorsal y su altura/peso (peso de Robertson: 64 kg de conocimiento general) no están todos verificados.
+- Dorsal actual de Dumfries sin verificar; clubes de varios jugadores solo parcialmente contrastados.
 - Calibración global de extremos de atributos y de umbrales de BodyType (no se tocaron).
 - `PlayerDefinition.TeamId` sigue como pista legacy.

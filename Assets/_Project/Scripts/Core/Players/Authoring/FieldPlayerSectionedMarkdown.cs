@@ -14,7 +14,7 @@ namespace FS27.Core
     public static class FieldPlayerSectionedMarkdown
     {
         private static readonly Regex PlayerHeading = new Regex(@"^#\s+\d+\.\s+\S", RegexOptions.Compiled);
-        private static readonly Regex IndexItem = new Regex(@"^-\s+(.+?)\s+\((\w+)\)\s+—\s+(\d+)\s*$", RegexOptions.Compiled);
+        private static readonly Regex IndexItem = new Regex(@"^-\s+(.+?)\s+\((\w+)\)\s+—\s+(\S+)\s*$", RegexOptions.Compiled);
         private static readonly string[] RoleSlots = { "Primary Role", "Secondary Role", "Tertiary Role" };
 
         public static FieldPlayerParseResult Parse(string markdown, string idPrefix)

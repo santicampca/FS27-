@@ -746,6 +746,151 @@
         "Fluctuaciones en la concentración defensiva estática ante pérdidas en salida"
       ],
       "weightKg": 74
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 80,
+        "BallControl": 80,
+        "Defense": 78,
+        "Dribbling": 76,
+        "Finishing": 58,
+        "Passing": 84,
+        "Shooting": 62,
+        "Speed": 80,
+        "Stamina": 92,
+        "Strength": 66,
+        "Technique": 80
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Tottenham Hotspur",
+      "creativity": 72,
+      "dateOfBirth": "1994-03-11",
+      "fullName": "Andrew Henry Robertson",
+      "functionalPositions": [
+        "LM"
+      ],
+      "gameplayBehavior": "Sube por fuera durante todo el partido y regresa al repliegue sin pausa.",
+      "gameplayFeel": "Un motor de la banda izquierda: incansable, vertical y generoso en los centros.",
+      "heightCm": 178,
+      "identity": "Lateral izquierdo incansable: despliegue aeróbico enorme, centros constantes desde la banda y llegada por fuera como carrilero.",
+      "name": "Andy Robertson",
+      "nationality": "Scotland",
+      "naturalPosition": "LB",
+      "playerId": "fb-andy-robertson",
+      "polyvalenceNote": "Natural: LB | Secondary: LWB | Functional: LM",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 62,
+      "roles": [
+        {
+          "affinity": 93,
+          "role": "Engine"
+        },
+        {
+          "affinity": 84,
+          "role": "Winger"
+        },
+        {
+          "affinity": 78,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "LWB"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 3,
+      "shortName": "Robertson",
+      "signatureActions": [
+        "Overlapping run",
+        "Early cross",
+        "Recovery sprint"
+      ],
+      "strengths": [
+        "Resistencia y despliegue constantes",
+        "Centros precisos desde la banda",
+        "Intensidad en la presión y la recuperación"
+      ],
+      "weaknesses": [
+        "Fuerza física limitada ante delanteros corpulentos"
+      ],
+      "weightKg": 64
+    },
+    {
+      "ageAsWritten": 31,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 78,
+        "BallControl": 77,
+        "Defense": 76,
+        "Dribbling": 73,
+        "Finishing": 70,
+        "Passing": 76,
+        "Shooting": 78,
+        "Speed": 84,
+        "Stamina": 91,
+        "Strength": 76,
+        "Technique": 76
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Atlético de Madrid",
+      "creativity": 62,
+      "dateOfBirth": "1995-01-30",
+      "fullName": "Marcos Llorente Moreno",
+      "functionalPositions": [
+        "RWB"
+      ],
+      "gameplayBehavior": "Recorre la banda derecha de punta a punta y aparece por sorpresa en el área.",
+      "gameplayFeel": "Un pulmón incansable: potente, vertical y con gol desde segunda línea.",
+      "heightCm": 184,
+      "identity": "Lateral derecho de motor físico: recorre toda la banda, llega al área desde segunda línea y golpea de media distancia.",
+      "name": "Marcos Llorente",
+      "nationality": "Spain",
+      "naturalPosition": "RB",
+      "playerId": "fb-marcos-llorente",
+      "polyvalenceNote": "Natural: RB | Secondary: CM, RM | Functional: RWB",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Engine"
+        },
+        {
+          "affinity": 82,
+          "role": "Explosive"
+        },
+        {
+          "affinity": 78,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "RM"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 14,
+      "shortName": "Llorente",
+      "signatureActions": [
+        "Late box arrival",
+        "Long-range strike",
+        "Recovery sprint"
+      ],
+      "strengths": [
+        "Motor físico y recorrido",
+        "Llegada tardía al área",
+        "Disparo de media distancia"
+      ],
+      "weaknesses": [
+        "Menor refinamiento técnico en espacios reducidos"
+      ],
+      "weightKg": 74
     }
   ],
   "schemaVersion": "FS27.FieldPlayerRecord.v1"
