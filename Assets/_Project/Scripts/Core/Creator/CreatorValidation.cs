@@ -56,7 +56,10 @@ namespace FS27.Core
         BehaviorSettingOutOfRange,
         BehaviorConditionContradictory,
         SequenceInvalid,
-        ConfidenceOutOfRange
+        ConfidenceOutOfRange,
+        // ---- observations and research
+        ObservationInvalid,
+        ResearchFailed
     }
 
     public enum CreatorSeverity
