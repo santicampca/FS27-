@@ -68,5 +68,3 @@ Pruebas (22 propias + las del importador genérico): 20 jugadores en orden, ids 
 - Umbrales nuevos de la rama sin etiqueta (195 cm, 176 cm, IMC 24) y tolerancia de 5 del Target OVR: valores de partida sin calibrar.
 - Clubes y dorsales no verificados salvo los cuatro corregidos.
 - `PlayerDefinition.TeamId` sigue como pista legacy.
-
-> **Actualización (alineación de objetivos):** Calvin Bassey (76 → 82) superaba la tolerancia y su objetivo se alineó al Overall calculado; ya no hay `TargetOvrDiffers` en los centrales zurdos. Ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md).

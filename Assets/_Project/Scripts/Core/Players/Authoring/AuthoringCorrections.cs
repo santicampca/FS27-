@@ -19,7 +19,7 @@ namespace FS27.Core
     public sealed class AuthoringCorrection
     {
         public string PlayerId = "";
-        /// <summary>targetOvr, playerId, name, fullName, heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, ageAsWritten, dateOfBirth, shortName, club, nationality, preferredFoot, naturalPosition, signatureActions ("A; B"), attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
+        /// <summary>playerId, name, fullName, heightCm, weightKg, shirtNumber, weakFootQuality, riskPreference, creativity, aggression, primaryZone, secondaryZone, bodyTypeLabel, ageAsWritten, dateOfBirth, shortName, club, nationality, preferredFoot, naturalPosition, signatureActions ("A; B"), attr.&lt;Name&gt;, role.&lt;Name&gt;.</summary>
         public string Field = "";
         public string Before = "";
         public string After = "";
@@ -84,7 +84,6 @@ namespace FS27.Core
             value = null;
             switch (field)
             {
-                case "targetOvr": value = N(r.TargetOvr); return true;
                 case "playerId": value = r.PlayerId; return true;
                 case "name": value = r.Name; return true;
                 case "fullName": value = r.FullName; return true;
@@ -120,7 +119,6 @@ namespace FS27.Core
             bool isInt = int.TryParse(after, NumberStyles.Integer, CultureInfo.InvariantCulture, out int n);
             switch (field)
             {
-                case "targetOvr": if (!isInt) return false; r.TargetOvr = n; return true;
                 case "playerId": r.PlayerId = after; return true;
                 case "name": r.Name = after; return true;
                 case "fullName": r.FullName = after; return true;

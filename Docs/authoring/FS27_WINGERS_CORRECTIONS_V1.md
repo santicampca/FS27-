@@ -46,8 +46,6 @@ date of birth, height, weight, shirt number or role affinity, so most rows below
 | wg-luis-diaz | heightCm |  | 180 | Verified | ESPN, Bundesliga and press: joined Bayern in 2025 (web search) | The source gives no height |
 | wg-luis-diaz | shirtNumber |  | 14 | Verified | ESPN, Bundesliga and press: joined Bayern in 2025 (web search) | The source gives no shirt number |
 | wg-luis-diaz | club | Liverpool FC | FC Bayern München | Verified | ESPN, Bundesliga and press: joined Bayern in 2025 (web search) | Outdated club in the file |
-| wg-estevao | targetOvr | 78 | 86 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 86; the design target is only a reference | The target differed from the calculated overall by 8 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
-| wg-kaoru-mitoma | targetOvr | 77 | 87 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 87; the design target is only a reference | The target differed from the calculated overall by 10 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
 
 ## Findings that are NOT changed (documented, nothing is invented)
 

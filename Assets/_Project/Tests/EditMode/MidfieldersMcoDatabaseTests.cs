@@ -64,7 +64,7 @@ namespace FS27.Core.Tests
         {
             CollectionAssert.AreEqual(Names, Records().Select(r => r.Name).ToArray());
             Assert.AreEqual(10, batch.Added); Assert.AreEqual(0, batch.Failed);
-            Assert.AreEqual(12, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
+            Assert.AreEqual(9, batch.Corrections.Applied.Count); CollectionAssert.IsEmpty(batch.Corrections.Problems);
             Assert.IsFalse(batch.Results.Any(r => r.Issues.Any(i => i.IsError)));
             Assert.IsTrue(batch.Results.All(r => r.Player.Role == PlayerRole.Midfielder));
             Assert.AreEqual(3, Records().Count(r => r.PreferredFoot == "Left")); Assert.AreEqual(7, Records().Count(r => r.PreferredFoot == "Right"));
@@ -144,11 +144,11 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TheTwelveCorrections_ThreeAreTargetAlignments_NoAttributeOrRoleWasChanged()
+        public void TheNineCorrections_AreDocumented_AndNoAttributeRoleOrTargetWasChanged()
         {
             List<AuthoringCorrection> list = AuthoringCorrections.ParseMarkdown(correctionsText, new List<string>());
-            Assert.AreEqual(12, list.Count);
-            Assert.AreEqual(6, list.Count(c => c.Class == CorrectionClass.Verified)); Assert.AreEqual(1, list.Count(c => c.Class == CorrectionClass.Inference)); Assert.AreEqual(5, list.Count(c => c.Class == CorrectionClass.Design));
+            Assert.AreEqual(9, list.Count);
+            Assert.AreEqual(6, list.Count(c => c.Class == CorrectionClass.Verified)); Assert.AreEqual(1, list.Count(c => c.Class == CorrectionClass.Inference)); Assert.AreEqual(2, list.Count(c => c.Class == CorrectionClass.Design));
             Assert.IsFalse(list.Any(c => c.Field.StartsWith("attr.") || c.Field.StartsWith("role.")));
             Assert.IsTrue(list.All(c => c.Source.Length > 0 && c.Reason.Length > 0));
             Assert.AreEqual("Fernandes", Of("Bruno Fernandes").Player.ShortName); Assert.AreEqual("Mora", Of("Gilberto Mora").Player.ShortName);
@@ -169,14 +169,15 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TargetOvr_IsKeptApart_ToleranceIsUnchanged_ThreeTargetsWereAlignedToTheCalculatedOverall()
+        public void TargetOvr_IsKeptApart_ToleranceIsUnchanged_ThreePlayersExceedItAndAreWarned()
         {
-            Assert.AreEqual(5, FieldPlayerImportOptions.OffensiveMidfielder().OverallTolerance, "the tolerance is unchanged");
+            Assert.AreEqual(5, FieldPlayerImportOptions.OffensiveMidfielder().OverallTolerance);
             Assert.IsTrue(batch.Results.All(r => r.Overall.HasTarget));
-            Assert.IsTrue(batch.Results.All(r => Math.Abs(r.Overall.Difference) <= 5), "every target is inside the tolerance after the documented alignment");
-            Assert.IsFalse(batch.Results.Any(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)));
-            Assert.AreEqual(88, Of("Kevin De Bruyne").Overall.CalculatedOverall); Assert.AreEqual(88, Of("Kevin De Bruyne").Overall.TargetOvr);
-            Assert.AreEqual(80, Records()[5].TargetOvr, "the source still says 80");
+            string[] over = { "mo-isco", "mo-kevin-de-bruyne", "mo-florian-wirtz" };
+            CollectionAssert.AreEquivalent(over, batch.Results.Where(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)).Select(r => r.PlayerId).ToArray());
+            Assert.IsTrue(batch.Results.Where(r => !over.Contains(r.PlayerId)).All(r => Math.Abs(r.Overall.Difference) <= 5));
+            Assert.AreEqual(88, Of("Kevin De Bruyne").Overall.CalculatedOverall); Assert.AreEqual(82, Of("Kevin De Bruyne").Overall.TargetOvr);
+            Assert.AreEqual(85, Of("Jude Bellingham").Overall.CalculatedOverall);
         }
 
         [Test]
@@ -192,8 +193,8 @@ namespace FS27.Core.Tests
         public void TheRealWarningInventory_IsPinned_AndThereAreNoErrors()
         {
             var inv = batch.Results.SelectMany(r => r.Issues).GroupBy(i => i.Code).ToDictionary(g => g.Key, g => g.Count());
-            Assert.AreEqual(2, inv.Count, string.Join(", ", inv));
-            Assert.AreEqual(10, inv[FieldPlayerImportCode.SignatureActionsPending]); Assert.AreEqual(6, inv[FieldPlayerImportCode.PolyvalenceBeyondZone]);
+            Assert.AreEqual(3, inv.Count, string.Join(", ", inv));
+            Assert.AreEqual(10, inv[FieldPlayerImportCode.SignatureActionsPending]); Assert.AreEqual(6, inv[FieldPlayerImportCode.PolyvalenceBeyondZone]); Assert.AreEqual(3, inv[FieldPlayerImportCode.TargetOvrDiffers]);
         }
 
         [Test]

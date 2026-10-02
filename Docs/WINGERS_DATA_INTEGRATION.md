@@ -20,9 +20,9 @@ Reutilizado: `FieldPlayerDataRecord`, importador, correcciones, builder. Añadid
 
 - Zona primaria Wing y secundaria Attack en los doce, tal como la fuente. Las posiciones reales ED/EI/SD/MCO son autoría: nadie se convierte en mediocampista ni delantero (2 avisos `PolyvalenceBeyondZone`, los que tienen MCO).
 - Atributos y Target OVR tal como investigados. Vinícius Júnior tiene dos valores 95 (aceleración y regate) y Overall 91.
-- Estêvão (objetivo 78 → 86) y Mitoma (77 → 87) superaban la tolerancia de 5; su objetivo se alineó al Overall calculado (ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md)). La tolerancia no se toca.
+- Estêvão (objetivo 78, calculado 86) y Mitoma (77 frente a 87) pasan de la tolerancia de 5: avisan (`TargetOvrDiffers`), la tolerancia no se toca.
 - Barcola: la fuente dice PSG, pero hay noticias de traspaso a Liverpool en agosto de 2026; se deja PSG y se marca como no verificado.
 
 ## 4. Cómo se verifica
 
-`dotnet test Tests/Core.Tests --filter WingersDatabase` (y la suite completa). Inventario de avisos fijado: 36 `AffinityDefaulted`, 12 `WeightDefaulted`, 2 `HeightDefaulted`, 12 `ShortNameDerived`, 12 `SignatureActionsPending`, 2 `PolyvalenceBeyondZone`, sin `TargetOvrDiffers`; ningún error.
+`dotnet test Tests/Core.Tests --filter WingersDatabase` (y la suite completa). Inventario de avisos fijado: 36 `AffinityDefaulted`, 12 `WeightDefaulted`, 2 `HeightDefaulted`, 12 `ShortNameDerived`, 12 `SignatureActionsPending`, 2 `PolyvalenceBeyondZone`, 2 `TargetOvrDiffers`; ningún error.

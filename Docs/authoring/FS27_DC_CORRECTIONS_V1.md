@@ -74,9 +74,6 @@ date of birth, height, weight, shirt number or role affinity, so most rows COMPL
 | dc-vedat-muriqi | heightCm |  | 194 | Verified | Wikipedia and besoccer profiles: moved to Fenerbahçe (web search) | The source gives no height |
 | dc-vedat-muriqi | shirtNumber |  | 19 | Verified | Wikipedia and besoccer profiles: moved to Fenerbahçe (web search) | The source gives no shirt number |
 | dc-vedat-muriqi | club | Mallorca | Fenerbahçe | Verified | Wikipedia and besoccer profiles: moved to Fenerbahçe (web search) | Outdated club in the file |
-| dc-donyell-malen | targetOvr | 79 | 85 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 85; the design target is only a reference | The target differed from the calculated overall by 6 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
-| dc-pierre-emerick-aubameyang | targetOvr | 80 | 86 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 86; the design target is only a reference | The target differed from the calculated overall by 6 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
-| dc-karim-adeyemi | targetOvr | 80 | 87 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 87; the design target is only a reference | The target differed from the calculated overall by 7 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
 
 ## Findings that are NOT changed (documented, nothing is invented)
 

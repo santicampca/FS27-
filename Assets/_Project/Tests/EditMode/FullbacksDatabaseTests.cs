@@ -142,7 +142,7 @@ namespace FS27.Core.Tests
             CollectionAssert.AreEqual(Names, batch.Results.Select(r => r.Player.Name).ToArray());
             Assert.IsTrue(batch.Results.All(r => r.IsComplete));
             Assert.IsTrue(batch.Library.All.All(p => p.Role == PlayerRole.Defender), "full-backs are field players, coarse role Defender: nobody becomes a midfielder or a centre-back");
-            Assert.AreEqual(15, batch.Corrections.Applied.Count);
+            Assert.AreEqual(13, batch.Corrections.Applied.Count);
             CollectionAssert.IsEmpty(batch.Corrections.Problems);
         }
 
@@ -285,15 +285,14 @@ namespace FS27.Core.Tests
         // ============================================================ corrections
 
         [Test]
-        public void TheFifteenCorrections_AreDocumented_TenVerified_FiveDesign_NoAttributeOrRoleWasChanged()
+        public void TheThirteenCorrections_AreDocumented_TenVerifiedAndThreeDesign_NoAttributeRoleOrTargetWasChanged()
         {
             Assert.AreEqual(10, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Verified));
-            Assert.AreEqual(5, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Design));
-            Assert.AreEqual(2, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Design && c.Field == "targetOvr"), "two targets were aligned to the calculated overall");
+            Assert.AreEqual(3, batch.Corrections.Applied.Count(c => c.Class == CorrectionClass.Design));
             foreach (AuthoringCorrection c in batch.Corrections.Applied)
             {
                 Assert.IsFalse(string.IsNullOrWhiteSpace(c.Reason)); Assert.IsFalse(string.IsNullOrWhiteSpace(c.Source));
-                Assert.IsFalse(c.Field.StartsWith("attr.") || c.Field.StartsWith("role."), c.Field);
+                Assert.IsFalse(c.Field.StartsWith("attr.") || c.Field.StartsWith("role.") || c.Field == "targetOvr", c.Field);
             }
             Assert.AreEqual(3, batch.Corrections.Applied.Count(c => c.Field == "secondaryZone"));
             Assert.AreEqual(3, batch.Corrections.Applied.Count(c => c.Field == "club"));
@@ -325,23 +324,21 @@ namespace FS27.Core.Tests
         // ============================================================ target vs calculated, and the attribute audit
 
         [Test]
-        public void TargetOvr_IsKeptApart_ToleranceIsUnchanged_TwoTargetsWereAlignedToTheCalculatedOverall()
+        public void TargetOvr_IsKeptApart_ToleranceIsUnchanged_TwoPlayersExceedItAndAreWarned()
         {
             var calc = PlayerRatingCalculator.CreateDefault();
             Assert.AreEqual(5, new FieldPlayerImportOptions().OverallTolerance);
-            int[] targets = { 86, 83, 83, 82, 80, 85, 83, 82, 87, 87 }; // Davies and Cancelo: 81 in the source, aligned to 87
+            int[] targets = { 86, 83, 83, 82, 80, 85, 83, 82, 81, 81 };
             for (int i = 0; i < 10; i++)
             {
                 FieldPlayerImportResult r = batch.Results[i];
                 Assert.AreEqual(targets[i], r.Overall.TargetOvr, Names[i]);
                 Assert.AreEqual(calc.GetOverall(r.Player, r.Profile), r.Overall.CalculatedOverall, Names[i]);
             }
-            Assert.IsFalse(batch.Results.Any(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)));
-            Assert.IsTrue(batch.Results.All(r => Math.Abs(r.Overall.Difference) <= 5));
-            Assert.AreEqual(87, Of("Alphonso Davies").Overall.TargetOvr);
-            Assert.AreEqual(87, Of("Alphonso Davies").Overall.CalculatedOverall, "the attributes were not moved");
-            Assert.AreEqual(0, Of("João Cancelo").Overall.Difference);
-            Assert.AreEqual(81, FieldPlayerSectionedMarkdown.Parse(markdown, "fb").Records[8].TargetOvr, "the source still says 81");
+            CollectionAssert.AreEquivalent(new[] { "Alphonso Davies", "João Cancelo" }, batch.Results.Where(r => r.Has(FieldPlayerImportCode.TargetOvrDiffers)).Select(r => r.Player.Name).ToArray());
+            Assert.AreEqual(81, Of("Alphonso Davies").Overall.TargetOvr);
+            Assert.AreEqual(87, Of("Alphonso Davies").Overall.CalculatedOverall, "the attributes were not moved towards the target");
+            Assert.AreEqual(6, Of("João Cancelo").Overall.Difference);
         }
 
         [Test]
@@ -389,7 +386,7 @@ namespace FS27.Core.Tests
             Assert.AreEqual(0, batch.Results.Sum(r => r.Issues.Count(i => i.IsError)));
             var expected = new Dictionary<FieldPlayerImportCode, int>
             {
-                { FieldPlayerImportCode.PolyvalenceBeyondZone, 2 }, { FieldPlayerImportCode.SignatureActionsPending, 10 }
+                { FieldPlayerImportCode.TargetOvrDiffers, 2 }, { FieldPlayerImportCode.PolyvalenceBeyondZone, 2 }, { FieldPlayerImportCode.SignatureActionsPending, 10 }
             };
             foreach (FieldPlayerImportCode code in Enum.GetValues(typeof(FieldPlayerImportCode)).Cast<FieldPlayerImportCode>())
                 Assert.AreEqual(expected.TryGetValue(code, out int n) ? n : 0, batch.Results.Sum(r => r.Count(code)), code.ToString());

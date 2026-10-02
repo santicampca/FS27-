@@ -39,8 +39,6 @@ date of birth, height, weight, shirt number or role affinity, so most rows COMPL
 | sd-ousmane-dembele | dateOfBirth |  | 1997-05-15 | Verified | PSG and Wikipedia profiles (web search) | The source gives no date of birth (age is computed from it) |
 | sd-ousmane-dembele | heightCm |  | 178 | Verified | PSG and Wikipedia profiles (web search) | The source gives no height |
 | sd-ousmane-dembele | shirtNumber |  | 10 | Verified | PSG and Wikipedia profiles (web search) | The source gives no shirt number |
-| sd-lionel-messi | targetOvr | 83 | 90 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 90; the design target is only a reference | The target differed from the calculated overall by 7 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
-| sd-neymar-jr | targetOvr | 80 | 89 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 89; the design target is only a reference | The target differed from the calculated overall by 9 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
 
 ## Findings that are NOT changed (documented, nothing is invented)
 

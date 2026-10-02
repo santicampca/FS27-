@@ -11,7 +11,6 @@ other player databases) and each one only applies if the record still holds the 
 | mq-luka-modric | ageAsWritten | 40 | 41 | Inference | The file itself: date of birth 1985-09-09 | The stated age 40 contradicts the file's own date of birth on the reference date (2026-10-02): 41 |
 | mq-scott-mctominay | shirtNumber | 39 | 8 | Verified | SSC Napoli shop and profiles: wears number 8 (web search) | The file gives his former Manchester United number |
 | mq-enzo-fernandez | shortName | Enzo Fernández | Fernández | Design | FS27 contract: a short name has at most 12 characters | "Enzo Fernández" has 14; without the correction the player cannot be imported |
-| mq-luka-modric | targetOvr | 81 | 87 | Design | The calculated overall of the researched attributes and roles (`PlayerRatingCalculator`): 87; the design target is only a reference | The target differed from the calculated overall by 6 points (tolerance 5); the reference is aligned to the official value, attributes and roles are unchanged |
 
 ## Findings that are NOT changed (documented, nothing is invented)
 

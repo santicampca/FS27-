@@ -18,7 +18,7 @@ Reutilizado: el lector de fichas propiedad/valor de los MCD (`FieldPlayerPropert
 
 - Zona primaria Midfield y una secundaria tal como la escribe la fuente (Attack ×6, Defense ×4). La cobertura de emergencia (AM, LW, CB, RM) es solo autoría.
 - Atributos, roles y Target OVR tal como investigados. McTominay tiene Finisher (91) como primer rol. Barella tiene Stamina 95, el único 95 de la base.
-- **Luka Modrić**: su Target OVR (81) estaba 6 por debajo del calculado (87), fuera de la tolerancia de 5; el objetivo se alineó a 87 (ver [OVERALL_ALIGNMENT.md](OVERALL_ALIGNMENT.md)). La tolerancia no se toca.
+- **Luka Modrić**: Target OVR 81 frente a 87 calculado (+6), fuera de la tolerancia de 5, así que el importador avisa (`TargetOvrDiffers`). La tolerancia no se toca y el juego usa el 87.
 - Acciones de firma: etiquetas de autoría; solo "Late box arrival" (5 jugadores) equivale a un comportamiento existente.
 
 ## 4. Correcciones y hallazgos
@@ -27,4 +27,4 @@ Corregidos: Modrić (club AC Milan, dorsal 14, edad 41), McTominay (dorsal 8) y 
 
 ## 5. Cómo se verifica
 
-`dotnet test Tests/Core.Tests --filter MidfieldersMc` (y la suite completa). Inventario de avisos fijado: 10 `SignatureActionsPending`, ningún error y ningún `TargetOvrDiffers`.
+`dotnet test Tests/Core.Tests --filter MidfieldersMc` (y la suite completa). Inventario de avisos fijado: 10 `SignatureActionsPending` + 1 `TargetOvrDiffers`, ningún error.
