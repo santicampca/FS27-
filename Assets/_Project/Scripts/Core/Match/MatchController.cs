@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace FS27.Core
 {
@@ -64,6 +65,7 @@ namespace FS27.Core
         private readonly BallParameters ballParameters;
         private readonly IBallCollider[] colliders;
         private readonly ArenaWalls walls;
+        private readonly LocomotionTuning locomotion;
         private MatchPhase phaseBeforePause;
         private MatchPeriod periodAfterBreak;
         private bool periodKickoffDone;
@@ -82,7 +84,7 @@ namespace FS27.Core
         public event Action<RestartRequest> RestartRequested;
         public event Action<MatchResult> MatchFinished;
 
-        public MatchController(FieldDimensions field, MatchSettings settings, MatchSquad home = null, MatchSquad away = null, BallParameters ballParameters = null, string matchId = "match")
+        public MatchController(FieldDimensions field, MatchSettings settings, MatchSquad home = null, MatchSquad away = null, BallParameters ballParameters = null, string matchId = "match", LocomotionTuning locomotionTuning = null, IPlayerLookup players = null)
         {
             this.field = field ?? throw new ArgumentNullException(nameof(field));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -97,6 +99,17 @@ namespace FS27.Core
             Events = new GameplayEventBus(rules);
             State = new MatchState(matchId, settings, home, away);
             State.Ball.Physics = new BallState(Vec3.FromXZ(Vec2.Zero, this.ballParameters.Radius), Vec3.Zero) { IsGrounded = true };
+
+            locomotion = locomotionTuning ?? new LocomotionTuning();
+            // each player's movement abilities are derived from his official attributes (read through the lookup, never copied); a player the lookup does not know gets the neutral default attributes
+            PlayerAttributes neutral = PlayerAttributes.CreateDefault();
+            foreach (TeamMatchState team in new[] { State.Home, State.Away })
+                foreach (MatchPlayer p in team.Players)
+                {
+                    PlayerDefinition def = null;
+                    bool known = players != null && players.TryGet(p.PlayerId, out def) && def != null;
+                    p.LocomotionProfile = known ? LocomotionProfile.Resolve(def.Attributes, locomotion) : LocomotionProfile.Resolve(neutral, locomotion);
+                }
         }
 
         // ------------------------------------------------------------------ flow
@@ -149,7 +162,50 @@ namespace FS27.Core
                     Emit(GameplayEventKind.BallBouncedOffWall, null, null, walls.LastBouncePosition, "Wall");
                 }
             }
+            if (State.Phase == MatchPhase.Playing) StepLocomotion(dt);
             Tick(dt, new BallObservation(State.Ball.Physics.Position, ballParameters.Radius));
+        }
+
+        // ------------------------------------------------------------------ player movement (Phase 3)
+
+        /// <summary>
+        /// The joystick of a player: an INTENTION (direction and magnitude, clamped to length 1), applied by the next <see cref="Advance"/> steps. Only active players can be moved.
+        /// Players are only moved while the ball is live; the input is kept and used from then on.
+        /// </summary>
+        public bool SetPlayerInput(TeamSide side, string playerId, Vec2 move)
+        {
+            MatchPlayer p = State.Team(side).Find(playerId);
+            if (p == null || !p.IsActive) return false;
+            p.PendingInput = move;
+            return true;
+        }
+
+        /// <summary>Puts a player somewhere, at rest (a restart, a kick-off). Only the engine side may place players; the speed is reset, the stamina is kept.</summary>
+        public bool PlacePlayer(TeamSide side, string playerId, Vec2 position, float heading = 0f)
+        {
+            MatchPlayer p = State.Team(side).Find(playerId);
+            if (p == null || !p.IsActive) return false;
+            p.Locomotion.Position = position;
+            p.Locomotion.Heading = heading;
+            p.Locomotion.CurrentSpeed = 0f;
+            p.Locomotion.Velocity = Vec2.Zero;
+            return true;
+        }
+
+        private void StepLocomotion(float dt)
+        {
+            StepTeam(State.Home, dt);
+            StepTeam(State.Away, dt);
+        }
+
+        private void StepTeam(TeamMatchState team, float dt)
+        {
+            IReadOnlyList<MatchPlayer> players = team.Players;
+            for (int i = 0; i < players.Count; i++)
+            {
+                MatchPlayer p = players[i];
+                if (p.IsActive) LocomotionStepper.Step(ref p.Locomotion, p.LocomotionProfile, locomotion, p.PendingInput, dt);
+            }
         }
 
         /// <summary>Observation-driven step: the host says where the ball is. Kept for hosts (and tests) that supply their own ball.</summary>
@@ -608,6 +664,7 @@ namespace FS27.Core
             RestartRequested?.Invoke(request);
         }
 
+        /// <summary>The recovery of an interval: the same rule for every kind of stamina the match holds, a fraction of the maximum, never above it.</summary>
         private void RecoverStamina(float fraction)
         {
             if (fraction <= 0f) return;
@@ -615,8 +672,10 @@ namespace FS27.Core
             {
                 foreach (MatchPlayer p in team.Players)
                 {
-                    if (!p.IsActive || p.Runtime.StaminaCapacity <= 0f) continue;
-                    p.Runtime.Stamina = Math.Min(p.Runtime.StaminaCapacity, p.Runtime.Stamina + p.Runtime.StaminaCapacity * fraction);
+                    if (!p.IsActive) continue;
+                    p.Locomotion.CurrentStamina = LocomotionStamina.RecoverFraction(p.Locomotion.CurrentStamina, fraction, locomotion);
+                    if (p.Runtime.StaminaCapacity > 0f)
+                        p.Runtime.Stamina = Math.Min(p.Runtime.StaminaCapacity, p.Runtime.Stamina + p.Runtime.StaminaCapacity * fraction);
                 }
             }
         }

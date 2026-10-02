@@ -72,7 +72,7 @@ namespace FS27.Core
         public const int MinimumActivePlayers = 3;
         public const int StartersPerTeam = 6;
         public const int BenchPerTeam = 4;
-        public const float SimulationStepSeconds = 1f / 60f;
+        public const float SimulationStepSeconds = LocomotionDefaults.FixedDeltaTime;
 
         // Initial values of the remaining conventions. All are configurable in MatchSettings; none is repeated anywhere else.
         /// <summary>Penalties per team before sudden death (decided: 3).</summary>

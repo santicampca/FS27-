@@ -81,8 +81,19 @@ namespace FS27.Core
         public bool IsEmergencyKeeper { get; internal set; }
         public PlayerRuntimeState Runtime { get; }
 
+        /// <summary>
+        /// The Phase-3 movement state (position, velocity, facing, speed, stamina 0..100). Part of the authoritative match state: only the engine steps it.
+        /// A goalkeeper uses exactly the same locomotion as everybody else.
+        /// </summary>
+        public LocomotionState Locomotion;
+        /// <summary>His movement abilities, resolved from his attributes when the match is created.</summary>
+        public LocomotionProfile LocomotionProfile { get; internal set; }
+        /// <summary>The joystick the engine will apply on the next steps (set through <see cref="MatchController.SetPlayerInput"/>).</summary>
+        internal Vec2 PendingInput;
+
         internal MatchPlayer(SquadMember m, TeamSide team, MatchPlayerStatus status)
         {
+            Locomotion = LocomotionState.Create(Vec2.Zero);
             PlayerId = m.PlayerId;
             Team = team;
             IsGoalkeeper = m.IsGoalkeeper;

@@ -24,13 +24,14 @@ namespace FS27.Gameplay
 
         private MatchController match;
         private SimulationClock clock;
+        private MatchSettings settings;
 
         /// <summary>The Core match. Read its State; call its API; never copy state out of Unity back into it.</summary>
         public MatchController Match => match;
 
         private void Awake()
         {
-            MatchSettings settings = mode == GameMode.Arena ? MatchSettings.CreateArena(competition) : MatchSettings.CreateClassic(competition);
+            settings = mode == GameMode.Arena ? MatchSettings.CreateArena(competition) : MatchSettings.CreateClassic(competition);
             match = new MatchController(field, settings);
             clock = new SimulationClock(settings.SimulationStepSeconds);
             if (ball != null)
@@ -39,6 +40,16 @@ namespace FS27.Gameplay
                 ball.CoreLink = this;
             }
             if (startAutomatically) StartMatch();
+        }
+
+        /// <summary>
+        /// Gives the match its two squads (before <see cref="StartMatch"/>): the players then exist in the Core and can move. Each player's movement abilities are read from the lookup.
+        /// Turn off "Start Automatically" if squads are going to be configured.
+        /// </summary>
+        public void Configure(MatchSquad home, MatchSquad away, IPlayerLookup players)
+        {
+            match = new MatchController(field, settings, home, away, null, "match", null, players);
+            Present();
         }
 
         /// <summary>Starts the match and takes the opening kick-off (there are no players to place yet).</summary>

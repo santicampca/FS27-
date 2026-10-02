@@ -528,3 +528,12 @@ Detalle en [TEAMS_AND_ROSTERS.md](TEAMS_AND_ROSTERS.md). Lo que afecta a este do
 - **Porteros:** 12 plantillas necesitan 24 y la base tenía 20; en la Fase 2.1 se añadieron 4 porteros reales (`FS27_GOALKEEPER_ADDITIONS_V1.md`) y la biblioteca real queda en **160 jugadores = 24 porteros + 136 de campo**. El sorteo real ya se ejecuta sin porteros de prueba.
 - El Match Engine no conoce rosters ni sorteos; solo recibe un `MatchSquad` (`TeamRoster.TryToMatchSquad`).
 - `PlayerDefinition.TeamId` y `PlayerAttributes.Reaction` están marcados `[Obsolete]` (legacy); ninguno es autoridad ni atributo oficial.
+
+---
+
+## P. FASE 3 — locomoción y stamina (resumen)
+Detalle y fórmulas en [LOCOMOTION_STAMINA.md](LOCOMOTION_STAMINA.md). Lo que afecta a este documento:
+- Cumple las fases 3 (locomoción) y la parte de stamina de la fase 3 de la hoja de ruta: curva de fatiga continua, `BodyType` y `Strength` sin usar todavía.
+- El estado de movimiento vive en el `MatchState` (`MatchPlayer.Locomotion`); el motor lo avanza a 60 Hz solo con el balón vivo; Unity solo lo refleja.
+- Recuperación de intervalos: las mismas fracciones de la Fase 1 (Classic 25 %, Arena 10 %), aplicadas también a la stamina 0–100.
+- **No implementado (fases posteriores):** pases, tiros, regates, entradas, control del balón, skills, IA, formaciones, contacto entre jugadores, límites del campo, animaciones.
