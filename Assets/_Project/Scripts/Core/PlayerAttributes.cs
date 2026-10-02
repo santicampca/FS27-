@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System;
 
 namespace FS27.Core
@@ -26,6 +27,7 @@ namespace FS27.Core
         public int Defense;
         public int Strength;
         /// <summary>Legacy attribute kept for the AI/difficulty infrastructure. Not used by V2 ratings.</summary>
+        [System.Obsolete("LEGACY / INTERNAL derived value: NOT one of the 12 official attributes. Only the AI/difficulty code still reads it; never show it, never use it for the Overall.", false)]
         public int Reaction;
 
         // Added by Player System V2 (appended, so earlier fields keep their meaning).

@@ -75,6 +75,7 @@ namespace FS27.Core
         }
 
         /// <summary>The players whose <see cref="PlayerDefinition.TeamId"/> hint names the team, in registration order. NOT the roster: for the authoritative answer use <see cref="RosterValidator.TeamOf"/> / <see cref="TeamDefinition.PlayerIds"/>.</summary>
+        [System.Obsolete("LEGACY: reads the deprecated PlayerDefinition.TeamId hint. A team's players are its TeamRosterBuilder.", false)]
         public List<PlayerDefinition> GetByTeam(string teamId)
         {
             var result = new List<PlayerDefinition>();
@@ -85,6 +86,7 @@ namespace FS27.Core
         }
 
         /// <summary>Sets the player's team HINT (empty = none). It does not touch any roster: <see cref="TeamDefinition.PlayerIds"/> stays the authority. Returns false for an unknown player or an invalid team id.</summary>
+        [System.Obsolete("LEGACY: writes the deprecated PlayerDefinition.TeamId hint. Players have no permanent team; use a TeamRosterBuilder.", false)]
         public bool TryAssignToTeam(string playerId, string teamId)
         {
             if (!TryGet(playerId, out PlayerDefinition p)) return false;
@@ -98,7 +100,7 @@ namespace FS27.Core
     /// Builds team rosters out of library players. A team holds only player ids, so there is exactly one logical player per id
     /// (the library's own instance): edit a player and every team, card and rating sees the change.
     /// </summary>
-    public static class TeamRoster
+    public static class TeamRosterBuilder
     {
         /// <summary>
         /// Builds a team from ordered player ids (the order is the lineup). Fails, creating nothing, if an id is unknown or repeated.

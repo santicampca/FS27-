@@ -48,8 +48,30 @@ namespace FS27.Core
         public string Id;
         public string Name;
         public TeamColors Colors;
+        /// <summary>
+        /// LEGACY 6-player lineup of the original data core (kept so the older data, validators and the sandbox keep working). It is NOT where a drawn squad lives:
+        /// a team's 10 players are its <see cref="TeamRoster"/> (the authority), generated for one concrete draw. Phase-2 teams leave this empty.
+        /// </summary>
         public List<string> PlayerIds = new List<string>();
         public string FormationId;
+
+        // ---- identity and configuration (Phase 2). Data only: no assets, no behaviour. ----
+        /// <summary>Short name for tight spaces (e.g. a scoreboard).</summary>
+        public string ShortName = "";
+        /// <summary>An official FS27 team, or the user's team.</summary>
+        public TeamKind Kind = TeamKind.Official;
+        /// <summary>How strong the team is meant to be. It steers the draw (squad quality comes from WHICH players it gets, never from changing a player). Configurable; the user team is never Elite by default.</summary>
+        public TeamLevel Level = TeamLevel.Balanced;
+        /// <summary>The coach, by id in the coach library. Empty = none assigned (e.g. a user team that has not chosen one). A reference only: the coach boost is not applied to the simulation.</summary>
+        public string CoachId = "";
+        /// <summary>A reference to the team's badge (an id or a path; empty = none). No badge art exists yet.</summary>
+        public string BadgeRef = "";
+        /// <summary>The team's theme in a few words (identity text, not a rule).</summary>
+        public string Theme = "";
+        public string Description = "";
+
+        public bool IsUserTeam => Kind == TeamKind.User;
+        public bool IsElite => Level == TeamLevel.Elite;
 
         public TeamDefinition()
         {

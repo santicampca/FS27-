@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System;
 using System.Linq;
 using System.Reflection;
@@ -315,7 +316,7 @@ namespace FS27.Core.Tests
             team.PlayerIds[0] = NicoGkData.Id;
             Assert.AreEqual(NicoGkData.Id, team.PlayerIds[0]);
             Assert.AreEqual(0, team.GoalkeeperIndex(lib));
-            Assert.IsTrue(TeamRoster.TryResolve(team, lib, out var squad));
+            Assert.IsTrue(TeamRosterBuilder.TryResolve(team, lib, out var squad));
             lib.TryGet(NicoGkData.Id, out var nico);
             Assert.AreSame(nico, squad[0]);
             Assert.IsTrue(DataValidator.ValidateTeam(team, lib, FormationLibrary.CreateDefault()).IsValid);

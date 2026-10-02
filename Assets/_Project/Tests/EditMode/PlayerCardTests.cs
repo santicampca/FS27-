@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -519,3 +519,12 @@ Estas convenciones empezaron como provisionales; quedan **definitivas**, cada un
 
 ### N.5 Qué NO se hizo (a propósito)
 Movimiento de jugadores, IA, pases/tiros/regates/entradas, habilidades, formaciones, `Coach Boost` en simulación, árbitro, animaciones, gráficos, UI y online. No se crearon atributos nuevos ni se modificaron los contratos de jugadores, porteros, entrenadores ni árbitros.
+
+---
+
+## O. FASE 2 — equipos, Player Library y sorteo (resumen)
+Detalle en [TEAMS_AND_ROSTERS.md](TEAMS_AND_ROSTERS.md). Lo que afecta a este documento:
+- **Plantilla de 10 = 2 porteros + 8 de campo** (6 activos con 1 portero; 4 suplentes con 1 portero suplente). La especificación de la Fase 2 decía "exactamente 1 portero" y "al menos 1 portero suplente" a la vez; el usuario eligió 2 porteros, que **conserva intacta la regla de la Fase 1** (`MatchSquad`).
+- **La biblioteca real tiene 20 porteros y 12 plantillas necesitan 24:** el sorteo real queda bloqueado (informado, no ocultado) hasta autorar 4 porteros más.
+- El Match Engine no conoce rosters ni sorteos; solo recibe un `MatchSquad` (`TeamRoster.TryToMatchSquad`).
+- `PlayerDefinition.TeamId` y `PlayerAttributes.Reaction` están marcados `[Obsolete]` (legacy); ninguno es autoridad ni atributo oficial.

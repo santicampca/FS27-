@@ -188,7 +188,7 @@ TeamDefinition → PlayerIds[6] → PlayerLibrary → PlayerDefinition   (una so
 ```
 
 - `PlayerLibrary` es el único registro (ids únicos) y la forma de resolver un id (`IPlayerLookup`).
-- `TeamRoster.TryBuild` crea un equipo a partir de ids existentes; `TeamRoster.TryResolve` devuelve los jugadores de la biblioteca (las mismas instancias, nunca copias). Editar un jugador lo cambia para todos los equipos, cartas y ratings.
+- `TeamRosterBuilder.TryBuild` crea un equipo a partir de ids existentes; `TeamRosterBuilder.TryResolve` devuelve los jugadores de la biblioteca (las mismas instancias, nunca copias). Editar un jugador lo cambia para todos los equipos, cartas y ratings.
 - Mover un jugador es cambiar su `TeamId` (`TryAssignToTeam`) y reconstruir las plantillas; el validador detecta si un equipo lista a un jugador que dice pertenecer a otro.
 - `DataValidator.ValidateTeam(team, players, formations)` exige 6 ids distintos y existentes, jugadores válidos, exactamente 1 portero (y por tanto 5 de campo) y una formación de 6 posiciones. La regla de "exactamente 5 jugadores" **ya no existe**.
 Esto prepara cambiar jugadores de equipo, editar plantillas, crear equipos y torneos ficticios sin duplicar jugadores.

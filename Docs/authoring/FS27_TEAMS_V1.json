@@ -1,0 +1,257 @@
+{
+  "schemaVersion": "FS27.Teams.v1",
+  "teams": [
+    {
+      "badgeRef": "badge:fs27/team-solaris-meridian",
+      "coachId": "coach-pep-guardiola",
+      "description": "Equipo de elite que manda con el balón: triangula, domina el centro y presiona en cuanto lo pierde.",
+      "kind": "Official",
+      "level": "Elite",
+      "name": "Solaris Meridian",
+      "primary": [
+        244,
+        180,
+        0
+      ],
+      "secondary": [
+        20,
+        24,
+        48
+      ],
+      "shortName": "SMR",
+      "teamId": "team-solaris-meridian",
+      "theme": "Dominio por posición"
+    },
+    {
+      "badgeRef": "badge:fs27/team-obsidian-bastion",
+      "coachId": "coach-diego-simeone",
+      "description": "Equipo de elite de bloque compacto: no cede espacios, gana duelos y castiga en transicion.",
+      "kind": "Official",
+      "level": "Elite",
+      "name": "Obsidian Bastion",
+      "primary": [
+        24,
+        24,
+        28
+      ],
+      "secondary": [
+        200,
+        32,
+        48
+      ],
+      "shortName": "OBS",
+      "teamId": "team-obsidian-bastion",
+      "theme": "Bloque y transición"
+    },
+    {
+      "badgeRef": "badge:fs27/team-vortex-rapids",
+      "coachId": "coach-hansi-flick",
+      "description": "Equipo fuerte que roba arriba y ataca en vertical con mucha intensidad.",
+      "kind": "Official",
+      "level": "Strong",
+      "name": "Vortex Rapids",
+      "primary": [
+        0,
+        160,
+        200
+      ],
+      "secondary": [
+        255,
+        255,
+        255
+      ],
+      "shortName": "VXR",
+      "teamId": "team-vortex-rapids",
+      "theme": "Presion alta vertical"
+    },
+    {
+      "badgeRef": "badge:fs27/team-emerald-compass",
+      "coachId": "coach-roberto-mancini",
+      "description": "Equipo fuerte de juego tecnico y equilibrado, con interiores que asocian y extremos de calidad.",
+      "kind": "Official",
+      "level": "Strong",
+      "name": "Emerald Compass",
+      "primary": [
+        16,
+        140,
+        84
+      ],
+      "secondary": [
+        250,
+        240,
+        200
+      ],
+      "shortName": "EMC",
+      "teamId": "team-emerald-compass",
+      "theme": "Tecnica equilibrada"
+    },
+    {
+      "badgeRef": "badge:fs27/team-gilded-falcons",
+      "coachId": "coach-zinedine-zidane",
+      "description": "Equipo fuerte que da libertad a sus jugadores de mas calidad y gestiona bien el grupo.",
+      "kind": "Official",
+      "level": "Strong",
+      "name": "Gilded Falcons",
+      "primary": [
+        212,
+        175,
+        55
+      ],
+      "secondary": [
+        60,
+        20,
+        90
+      ],
+      "shortName": "GLF",
+      "teamId": "team-gilded-falcons",
+      "theme": "Libertad para el talento"
+    },
+    {
+      "badgeRef": "badge:fs27/team-northwind-union",
+      "coachId": "coach-lionel-scaloni",
+      "description": "Equipo equilibrado, cohesionado e intenso, que se adapta al rival.",
+      "kind": "Official",
+      "level": "Balanced",
+      "name": "Northwind Union",
+      "primary": [
+        120,
+        170,
+        220
+      ],
+      "secondary": [
+        20,
+        40,
+        90
+      ],
+      "shortName": "NWU",
+      "teamId": "team-northwind-union",
+      "theme": "Colectivo intenso"
+    },
+    {
+      "badgeRef": "badge:fs27/team-cobalt-syndicate",
+      "coachId": "coach-mikel-arteta",
+      "description": "Equipo equilibrado de posesion estructurada, laterales interiores y presion organizada.",
+      "kind": "Official",
+      "level": "Balanced",
+      "name": "Cobalt Syndicate",
+      "primary": [
+        20,
+        60,
+        170
+      ],
+      "secondary": [
+        230,
+        230,
+        235
+      ],
+      "shortName": "CBS",
+      "teamId": "team-cobalt-syndicate",
+      "theme": "Posesion estructurada"
+    },
+    {
+      "badgeRef": "badge:fs27/team-ashen-foundry",
+      "coachId": "coach-massimiliano-allegri",
+      "description": "Equipo equilibrado y pragmatico: solidez, control del riesgo y adaptacion durante el partido.",
+      "kind": "Official",
+      "level": "Balanced",
+      "name": "Ashen Foundry",
+      "primary": [
+        110,
+        110,
+        115
+      ],
+      "secondary": [
+        235,
+        110,
+        20
+      ],
+      "shortName": "ASF",
+      "teamId": "team-ashen-foundry",
+      "theme": "Pragmatismo"
+    },
+    {
+      "badgeRef": "badge:fs27/team-tidal-phoenix",
+      "coachId": "coach-thomas-tuchel",
+      "description": "Equipo equilibrado que cambia de estructura segun el rival.",
+      "kind": "Official",
+      "level": "Balanced",
+      "name": "Tidal Phoenix",
+      "primary": [
+        0,
+        120,
+        130
+      ],
+      "secondary": [
+        255,
+        120,
+        60
+      ],
+      "shortName": "TDP",
+      "teamId": "team-tidal-phoenix",
+      "theme": "Flexibilidad tactica"
+    },
+    {
+      "badgeRef": "badge:fs27/team-ember-rovers",
+      "coachId": "coach-mauricio-pochettino",
+      "description": "Equipo modesto de presion fisica e intensidad atletica.",
+      "kind": "Official",
+      "level": "Modest",
+      "name": "Ember Rovers",
+      "primary": [
+        190,
+        50,
+        30
+      ],
+      "secondary": [
+        250,
+        220,
+        160
+      ],
+      "shortName": "EMR",
+      "teamId": "team-ember-rovers",
+      "theme": "Energia fisica"
+    },
+    {
+      "badgeRef": "badge:fs27/team-silver-thistle",
+      "coachId": "coach-manuel-pellegrini",
+      "description": "Equipo modesto de futbol ofensivo, con posesion y creacion por encima de la solidez.",
+      "kind": "Official",
+      "level": "Modest",
+      "name": "Silver Thistle",
+      "primary": [
+        170,
+        175,
+        185
+      ],
+      "secondary": [
+        110,
+        40,
+        140
+      ],
+      "shortName": "SVT",
+      "teamId": "team-silver-thistle",
+      "theme": "Ofensivo y tecnico"
+    },
+    {
+      "badgeRef": "badge:fs27/team-user",
+      "coachId": "",
+      "description": "Equipo configurable por el usuario: nombre, colores y escudo se personalizan en una fase posterior.",
+      "kind": "User",
+      "level": "Balanced",
+      "name": "Mi Equipo",
+      "primary": [
+        90,
+        90,
+        90
+      ],
+      "secondary": [
+        240,
+        240,
+        240
+      ],
+      "shortName": "USR",
+      "teamId": "team-user",
+      "theme": "Equipo del usuario"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System.Collections.Generic;
 
 namespace FS27.Core
