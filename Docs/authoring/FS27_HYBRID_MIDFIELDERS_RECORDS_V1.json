@@ -1,0 +1,916 @@
+{
+  "players": [
+    {
+      "ageAsWritten": 29,
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 82,
+        "BallControl": 86,
+        "Defense": 74,
+        "Dribbling": 83,
+        "Finishing": 62,
+        "Passing": 85,
+        "Shooting": 69,
+        "Speed": 75,
+        "Stamina": 84,
+        "Strength": 68,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Ajax",
+      "confidence": "High",
+      "creativity": 82,
+      "dateOfBirth": "1996-12-15",
+      "fullName": "Oleksandr Volodymyrovych Zinchenko",
+      "gameplayBehavior": "Mediocampista izquierdo híbrido que actúa como un armador invertido. Fluye constantemente del lateral hacia el mediocampo central para dominar la posesión, proteger el balón bajo presión y asociarse con fluidez quirúrgica.",
+      "gameplayFeel": "With Ball: Abandona la banda izquierda al iniciar la posesión para colocarse como mediocampista interior junto al pivote, dictando el ritmo, conectando líneas y ejecutando pases progresivos hacia el ataque. Without Ball: Realiza repliegues disciplinados, ocupa espacios en el carril central durante la pérdida y presiona de manera inteligente para cortar líneas de pase rivales. Transition: En transición ofensiva se asocia con rapidez para iniciar la salida lavada; en transición defensiva corre con intensidad para recuperar su sector natural en la zaga.",
+      "heightCm": 175,
+      "name": "Oleksandr Zinchenko",
+      "nationality": "Ukraine",
+      "naturalPosition": "LB",
+      "playerId": "md-oleksandr-zinchenko",
+      "polyvalenceNote": "Functional versatility: Alta en zona de construcción interior desde la banda izquierda. | Hybrid type: Midfield-Defense Hybrid | Position confidence: High",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Architect"
+        },
+        {
+          "affinity": 84,
+          "role": "Builder"
+        },
+        {
+          "affinity": 75,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "LWB"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 35,
+      "shortName": "Zinchenko",
+      "signatureActions": [
+        "Inside Movement",
+        "Progressive Pass",
+        "Switch of Play",
+        "Counterpressing",
+        "Support Run"
+      ],
+      "strengths": [
+        "Inteligencia táctica y lectura de espacios",
+        "Excepcional calidad técnica y control de balón",
+        "Precisión en el pase progresivo y cambios de orientación",
+        "Capacidad para actuar como organizador desde el sector izquierdo"
+      ],
+      "targetOvr": 77,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Debilidad en duelos físicos individuales y juego aéreo",
+        "Vulnerabilidad defensiva ante extremos extremadamente veloces en 1v1"
+      ],
+      "weightKg": 62
+    },
+    {
+      "ageAsWritten": 22,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 85,
+        "BallControl": 82,
+        "Defense": 68,
+        "Dribbling": 83,
+        "Finishing": 68,
+        "Passing": 79,
+        "Shooting": 74,
+        "Speed": 82,
+        "Stamina": 83,
+        "Strength": 69,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Chelsea",
+      "confidence": "Medium-High",
+      "creativity": 80,
+      "dateOfBirth": "2004-07-23",
+      "fullName": "Valentín Barco",
+      "gameplayBehavior": "Mediocampista izquierdo dinámico y vertical que combina el desborde por la banda con la capacidad de interiorizar el juego. Aporta chispa ofensiva, regate y presión constante en campo contrario.",
+      "gameplayFeel": "With Ball: Ataca el espacio por el carril exterior o se infiltra hacia el pasillo interior para asociarse mediante paredes cortas y habilitar pases punzantes al área. Without Ball: Ejerce presión alta en banda, busca interceptar balones divididos y repliega con velocidad cuando el bloque defensivo es superado. Transition: Transición ofensiva explosiva mediante conducción vertical; transición defensiva rápida aunque con margen de mejora en la solidez del 1v1 puro.",
+      "heightCm": 172,
+      "name": "Valentín Barco",
+      "nationality": "Argentina",
+      "naturalPosition": "LB",
+      "playerId": "md-valentin-barco",
+      "polyvalenceNote": "Functional versatility: Alta capacidad para desequilibrar en banda y asociarse por dentro. | Hybrid type: Midfield-Wing Hybrid | Position confidence: Medium-High",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 85,
+          "role": "Winger"
+        },
+        {
+          "affinity": 82,
+          "role": "Creator"
+        },
+        {
+          "affinity": 76,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "LM",
+        "LWB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 4,
+      "shortName": "Barco",
+      "signatureActions": [
+        "Progressive Carry",
+        "Inside Movement",
+        "Press Resistance",
+        "Overlap",
+        "Support Run"
+      ],
+      "strengths": [
+        "Desequilibrio y regate en banda",
+        "Creatividad en la generación de ocasiones",
+        "Agilidad y aceleración notables",
+        "Personalidad para pedir el balón bajo presión"
+      ],
+      "targetOvr": 78,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Decisiones arriesgadas que pueden exponer al equipo en transiciones",
+        "Dificultad en duelos físicos ante rivales corpulentos"
+      ],
+      "weightKg": 68
+    },
+    {
+      "ageAsWritten": 22,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 81,
+        "Agility": 79,
+        "BallControl": 80,
+        "Defense": 72,
+        "Dribbling": 79,
+        "Finishing": 66,
+        "Passing": 78,
+        "Shooting": 71,
+        "Speed": 80,
+        "Stamina": 85,
+        "Strength": 74,
+        "Technique": 79
+      },
+      "bodyTypeLabel": "Athletic",
+      "confidence": "Medium",
+      "creativity": 70,
+      "dateOfBirth": "2004-05-12",
+      "fullName": "Nathan Brown",
+      "gameplayBehavior": "Mediocampista izquierdo equilibrado que destaca por su recorrido continuo. Conecta la banda con el centro del campo, ofrece seguridad en el pase y respalda defensivamente a su zaga con gran disciplina.",
+      "gameplayFeel": "With Ball: Oscila entre la banda izquierda y el interior del mediocampo, conduciendo el esférico de forma progresiva y ofreciendo apoyos seguros en la circulación. Without Ball: Realiza coberturas defensivas constantes ayudando al lateral, presiona la salida del rival y ocupa espacios en bloque medio. Transition: Transición rápida buscando opciones de pase en corto o conduciendo el balón para estirar el campo en ataque.",
+      "heightCm": 180,
+      "name": "Nathan Brown",
+      "nationality": "England",
+      "naturalPosition": "LM",
+      "playerId": "md-nathan-brown",
+      "polyvalenceNote": "Functional versatility: Despliegue constante entre la banda izquierda y el interior del mediocampo. | Hybrid type: Balanced Midfield Hybrid | Position confidence: Medium",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 83,
+          "role": "Engine"
+        },
+        {
+          "affinity": 80,
+          "role": "Builder"
+        },
+        {
+          "affinity": 74,
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "LW"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 11,
+      "shortName": "Brown",
+      "signatureActions": [
+        "Progressive Carry",
+        "Support Run",
+        "Wide Progression",
+        "Pressing",
+        "Half-Space Movement"
+      ],
+      "strengths": [
+        "Despliegue físico incansable",
+        "Versatilidad entre banda y mediocampo",
+        "Compromiso con las tareas defensivas",
+        "Solidez en la circulación del esférico"
+      ],
+      "targetOvr": 80,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Menor impacto creativo en los metros finales",
+        "Consistencia en la toma de decisiones bajo presión alta"
+      ],
+      "weightKg": 73
+    },
+    {
+      "ageAsWritten": 20,
+      "aggression": 76,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 83,
+        "BallControl": 84,
+        "Defense": 80,
+        "Dribbling": 83,
+        "Finishing": 62,
+        "Passing": 82,
+        "Shooting": 68,
+        "Speed": 81,
+        "Stamina": 85,
+        "Strength": 76,
+        "Technique": 83
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Arsenal FC",
+      "confidence": "High",
+      "creativity": 75,
+      "dateOfBirth": "2006-09-26",
+      "fullName": "Myles Anthony Lewis-Skelly",
+      "gameplayBehavior": "Mediocampista izquierdo híbrido de corte defensivo y constructor. Se desplaza fluidamente hacia el interior del campo para gobernar el mediocampo, aportar solidez en la recuperación y garantizar una salida de balón limpia.",
+      "gameplayFeel": "With Ball: Se desplaza desde la posición de lateral hacia el centro del campo para actuar como un mediocampista de contención y construcción, organizando el juego desde la base. Without Ball: Defiende con agresividad controlada, cierra espacios en el carril central, anticipa pases filtrados y aplica presión tras pérdida con eficacia. Transition: Transición defensiva inmediata cubriendo las espaldas del mediocampo; transición ofensiva mediante pases limpios o conducción vertical.",
+      "heightCm": 181,
+      "name": "Myles Lewis-Skelly",
+      "nationality": "England",
+      "naturalPosition": "LB",
+      "playerId": "md-myles-lewis-skelly",
+      "polyvalenceNote": "Functional versatility: Excepcional capacidad táctica para operar en el doble pivote desde el perfil izquierdo. | Hybrid type: Midfield-Defense Hybrid | Position confidence: High",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 58,
+      "roles": [
+        {
+          "affinity": 87,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 84,
+          "role": "Engine"
+        },
+        {
+          "affinity": 81,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 49,
+      "shortName": "Lewis-Skelly",
+      "signatureActions": [
+        "Inside Movement",
+        "Defensive Cover",
+        "Progressive Pass",
+        "Counterpressing",
+        "Support Run"
+      ],
+      "strengths": [
+        "Inteligencia táctica y lectura posicional sobresalientes",
+        "Capacidad para actuar como pivote invertido con total naturalidad",
+        "Solidez defensiva y duelos ganados",
+        "Calidad técnica en la salida de balón"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Experiencia en la élite profesional en fase de consolidación",
+        "Menor participación en la finalización ofensiva directa"
+      ],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 22,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 78,
+        "BallControl": 82,
+        "Defense": 77,
+        "Dribbling": 80,
+        "Finishing": 64,
+        "Passing": 80,
+        "Shooting": 70,
+        "Speed": 78,
+        "Stamina": 84,
+        "Strength": 75,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Newcastle United FC",
+      "confidence": "High",
+      "creativity": 74,
+      "dateOfBirth": "2004-09-08",
+      "fullName": "Lewis Hall",
+      "gameplayBehavior": "Mediocampista izquierdo híbrido que combina la solidez defensiva de un lateral con la visión de un constructor de juego. Se desplaza hacia el interior para organizar la posesión y aporta equilibrio táctico constante.",
+      "gameplayFeel": "With Ball: Participa activamente en la construcción de jugadas desplazándose hacia zonas interiores del mediocampo, aportando pases medidos y cambios de orientación precisos. Without Ball: Mantiene una alta disciplina táctica defensiva, realizando coberturas escalonadas y cerrando espacios cuando el equipo defiende en bloque. Transition: Transición rápida hacia labores defensivas tras pérdida; transición ofensiva apoyando mediante pases seguros y proyección por banda.",
+      "heightCm": 178,
+      "name": "Lewis Hall",
+      "nationality": "England",
+      "naturalPosition": "LB",
+      "playerId": "md-lewis-hall",
+      "polyvalenceNote": "Functional versatility: Capacidad demostrada para influir en la construcción desde el carril izquierdo e interior. | Hybrid type: Midfield-Defense Hybrid | Position confidence: High",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 85,
+          "role": "Builder"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 77,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "LWB"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 20,
+      "shortName": "Hall",
+      "signatureActions": [
+        "Progressive Pass",
+        "Inside Movement",
+        "Defensive Cover",
+        "Support Run",
+        "Recovery Run"
+      ],
+      "strengths": [
+        "Visión de juego y precisión en el pase largo",
+        "Inteligencia táctica para interiorizar su posición",
+        "Disciplina defensiva y rigor en la marca",
+        "Resistencia física y compromiso colectivo"
+      ],
+      "targetOvr": 79,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Punta de velocidad explosiva limitada frente a extremos muy vertiginosos",
+        "Menor participación en acciones directas de uno contra uno ofensivo"
+      ],
+      "weightKg": 72
+    },
+    {
+      "ageAsWritten": 21,
+      "aggression": 69,
+      "attributes": {
+        "Acceleration": 78,
+        "Agility": 80,
+        "BallControl": 84,
+        "Defense": 74,
+        "Dribbling": 82,
+        "Finishing": 70,
+        "Passing": 82,
+        "Shooting": 75,
+        "Speed": 79,
+        "Stamina": 86,
+        "Strength": 77,
+        "Technique": 83
+      },
+      "bodyTypeLabel": "Tall",
+      "club": "Manchester City FC",
+      "confidence": "High",
+      "creativity": 79,
+      "dateOfBirth": "2005-03-21",
+      "fullName": "Nico O'Reilly",
+      "gameplayBehavior": "Mediocampista izquierdo híbrido de gran estatura y calidad técnica superior. Domina los espacios entre líneas, conduce con elegancia protegiendo el balón y conecta la banda con la zona de creación con gran visión.",
+      "gameplayFeel": "With Ball: Actúa como conector clave entre el mediocampo y la banda izquierda, ofreciendo líneas de pase claras, conduciendo con autoridad y habilitando compañeros al espacio. Without Ball: Ocupa espacios estratégicos en la medular durante la fase defensiva, cerrando líneas de pase y aplicando presión coordinada. Transition: Transición ofensiva fluida mediante conducción potente; transición defensiva rápida ocupando su demarcación zonal con disciplina.",
+      "heightCm": 191,
+      "name": "Nico O'Reilly",
+      "nationality": "England",
+      "naturalPosition": "CM",
+      "playerId": "md-nico-o-reilly",
+      "polyvalenceNote": "Functional versatility: Gran envergadura física combinada con técnica fina para ocupar la banda y el interior. | Hybrid type: Balanced Midfield Hybrid | Position confidence: High",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 68,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Creator"
+        },
+        {
+          "affinity": 83,
+          "role": "Builder"
+        },
+        {
+          "affinity": 78,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "LM",
+        "AM"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 33,
+      "shortName": "O'Reilly",
+      "signatureActions": [
+        "Progressive Carry",
+        "Inside Movement",
+        "Half-Space Movement",
+        "Support Run",
+        "Press Resistance"
+      ],
+      "strengths": [
+        "Combinación única de altura imponente y técnica refinada",
+        "Visión creativa y capacidad de pase en el último tercio",
+        "Control del balón bajo presión intensa",
+        "Amenaza constante llegando desde segunda línea"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Menor explosividad en arranques cortos frente a rivales muy livianos",
+        "Margen de mejora en la intensidad de los duelos defensivos duros"
+      ],
+      "weightKg": 78
+    },
+    {
+      "ageAsWritten": 26,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 77,
+        "BallControl": 82,
+        "Defense": 81,
+        "Dribbling": 79,
+        "Finishing": 70,
+        "Passing": 83,
+        "Shooting": 76,
+        "Speed": 80,
+        "Stamina": 82,
+        "Strength": 84,
+        "Technique": 82
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Chelsea FC",
+      "confidence": "High",
+      "creativity": 74,
+      "dateOfBirth": "1999-12-08",
+      "fullName": "Reece James",
+      "gameplayBehavior": "Mediocampista derecho híbrido que combina solidez defensiva con capacidad de construir desde el interior o el carril. Se asocia con fluidez en la medular y aporta balance defensivo absoluto.",
+      "gameplayFeel": "With Ball: Actúa frecuentemente como un mediocampista invertido desde la banda derecha. Realiza movimientos hacia el pasillo interior para ofrecer línea de pase limpia, ejecutando cambios de orientación profundos. Without Ball: Defiende con rigor táctico, ocupando espacios interiores cuando el equipo bascula o cerrando la banda derecha con autoridad física. Realiza coberturas de urgencia. Transition: En transición ofensiva conduce con potencia o habilita rápidamente al espacio; en transición defensiva repliega con disciplina y aplica presión tras pérdida.",
+      "heightCm": 182,
+      "name": "Reece James",
+      "nationality": "England",
+      "naturalPosition": "RB",
+      "playerId": "md-reece-james",
+      "polyvalenceNote": "Functional versatility: Alta en zona de construcción interior y banda derecha. | Hybrid type: Midfield-Defense Hybrid | Position confidence: High",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 84,
+          "role": "Engine"
+        },
+        {
+          "affinity": 80,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "RWB",
+        "CM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 24,
+      "shortName": "James",
+      "signatureActions": [
+        "Inside Movement",
+        "Progressive Pass",
+        "Switch of Play",
+        "Defensive Cover",
+        "Press Resistance"
+      ],
+      "strengths": [
+        "Versatilidad táctica medio-banda-defensa",
+        "Calidad de pase y golpeo de balón",
+        "Fortaleza física y duelos individuales",
+        "Inteligencia táctica posicional"
+      ],
+      "targetOvr": 84,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Historial de lesiones y continuidad física",
+        "Agilidad lateral frente a extremos extremadamente explosivos"
+      ],
+      "weightKg": 88
+    },
+    {
+      "ageAsWritten": 31,
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 80,
+        "BallControl": 86,
+        "Defense": 81,
+        "Dribbling": 82,
+        "Finishing": 71,
+        "Passing": 87,
+        "Shooting": 77,
+        "Speed": 76,
+        "Stamina": 89,
+        "Strength": 74,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "FC Bayern München",
+      "confidence": "High",
+      "creativity": 86,
+      "dateOfBirth": "1995-02-08",
+      "fullName": "Joshua Kimmich",
+      "gameplayBehavior": "Mediocampista derecho híbrido de categoría mundial. Organiza el juego con precisión milimétrica, bascula constantemente entre el centro del campo y la banda, y comanda la presión defensiva con intensidad.",
+      "gameplayFeel": "With Ball: Dirige la orquesta del equipo desde el mediocampo o incrustándose en la banda derecha para iniciar la construcción, dictando el tempo y filtrando pases clave. Without Ball: Ejerce una presión intensa y agresiva, recuperando balones en zonas críticas y cerrando pasillos interiores con rigor táctico. Transition: Transición ofensiva rápida mediante distribución milimétrica; transición defensiva con repliegue inmediato y liderazgo posicional.",
+      "heightCm": 177,
+      "name": "Joshua Kimmich",
+      "nationality": "Germany",
+      "naturalPosition": "CM",
+      "playerId": "md-joshua-kimmich",
+      "polyvalenceNote": "Functional versatility: Dominio absoluto alternando la dirección del mediocampo y la banda derecha. | Hybrid type: Midfield-Defense Hybrid | Position confidence: High",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 91,
+          "role": "Architect"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        },
+        {
+          "affinity": 84,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "RB",
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 6,
+      "shortName": "Kimmich",
+      "signatureActions": [
+        "Switch of Play",
+        "Progressive Pass",
+        "Counterpressing",
+        "Support Run",
+        "Inside Movement"
+      ],
+      "strengths": [
+        "Visión de juego y capacidad de organización de élite mundial",
+        "Despliegue físico inagotable y liderazgo absoluto",
+        "Precisión quirúrgica en pases y saques de esquina",
+        "Polivalencia total entre mediocampo y lateral derecho"
+      ],
+      "targetOvr": 85,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Velocidad lineal pura limitada frente a extremos hiper-explosivos",
+        "Tendencia a asumir un riesgo elevado en conducciones centrales"
+      ],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 25,
+      "aggression": 73,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 83,
+        "BallControl": 85,
+        "Defense": 72,
+        "Dribbling": 84,
+        "Finishing": 77,
+        "Passing": 86,
+        "Shooting": 82,
+        "Speed": 85,
+        "Stamina": 89,
+        "Strength": 78,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Liverpool FC",
+      "confidence": "High",
+      "creativity": 85,
+      "dateOfBirth": "2000-10-25",
+      "fullName": "Dominik Szoboszlai",
+      "gameplayBehavior": "Mediocampista derecho híbrido de perfil ofensivo y dinámico. Combina una velocidad imponente con un golpeo de balón letal, transitando fluidamente entre la banda y la medular con una presión incansable.",
+      "gameplayFeel": "With Ball: Despliega su juego abarcando desde la banda derecha hacia el pasillo interior, conduciendo con potencia, disparando desde media distancia y asistiendo al espacio. Without Ball: Lidera la presión alta del equipo, asfixiando la salida del rival y recuperando balones en zonas avanzadas del mediocampo. Transition: Transición ofensiva supersónica aprovechando los espacios al contragolpe; transición defensiva con repliegue rápido e intenso.",
+      "heightCm": 186,
+      "name": "Dominik Szoboszlai",
+      "nationality": "Hungary",
+      "naturalPosition": "CM",
+      "playerId": "md-dominik-szoboszlai",
+      "polyvalenceNote": "Functional versatility: Alta capacidad para ocupar la banda derecha y el interior con desborde y llegada. | Hybrid type: Midfield-Wing Hybrid | Position confidence: High",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Creator"
+        },
+        {
+          "affinity": 85,
+          "role": "Engine"
+        },
+        {
+          "affinity": 80,
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "RW",
+        "AM"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 8,
+      "shortName": "Szoboszlai",
+      "signatureActions": [
+        "Progressive Carry",
+        "Switch of Play",
+        "Pressing",
+        "Half-Space Movement",
+        "Support Run"
+      ],
+      "strengths": [
+        "Golpeo de balón devastador desde media distancia",
+        "Despliegue físico colosal y capacidad de presión",
+        "Creatividad y visión en el último tercio",
+        "Versatilidad entre la banda derecha y el interior"
+      ],
+      "targetOvr": 85,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Ocasionales pérdidas por arriesgar en pases directos muy verticales",
+        "Menor rigor en tareas de marcaje posicional profundo en área propia"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 85,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 81,
+        "BallControl": 83,
+        "Defense": 84,
+        "Dribbling": 81,
+        "Finishing": 63,
+        "Passing": 82,
+        "Shooting": 69,
+        "Speed": 81,
+        "Stamina": 90,
+        "Strength": 80,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Chelsea FC",
+      "confidence": "High",
+      "creativity": 68,
+      "dateOfBirth": "2001-11-02",
+      "fullName": "Moisés Isaac Caicedo Corozo",
+      "gameplayBehavior": "Mediocampista derecho híbrido de vocación defensiva y equilibrio. Destaca por su capacidad para barrer el centro del campo y el carril derecho, asfixiar al rival en la recuperación y asegurar una salida de balón pulida.",
+      "gameplayFeel": "With Ball: Actúa como eje de seguridad en la base del mediocampo, ofreciendo salida limpia, circulando con rapidez y desplazándose hacia la banda para dar superioridad numérica. Without Ball: Destruye el juego rival con una lectura impecable, realizando coberturas defensivas amplias hacia los costados y aplicando una presión agresiva e inteligente. Transition: Transición defensiva inmediata cortando contragolpes rivales; transición ofensiva simple entregando el balón al creador con precisión.",
+      "heightCm": 178,
+      "name": "Moisés Caicedo",
+      "nationality": "Ecuador",
+      "naturalPosition": "DM",
+      "playerId": "md-moises-caicedo",
+      "polyvalenceNote": "Functional versatility: Cobertura total del mediocampo con capacidad de tapar el carril derecho. | Hybrid type: Midfield-Defense Hybrid | Position confidence: High",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 55,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 87,
+          "role": "Engine"
+        },
+        {
+          "affinity": 79,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "RB"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 25,
+      "shortName": "Caicedo",
+      "signatureActions": [
+        "Defensive Cover",
+        "Pressing",
+        "Recovery Run",
+        "Progressive Pass",
+        "Counterpressing"
+      ],
+      "strengths": [
+        "Capacidad de recuperación y lectura defensiva de élite",
+        "Despliegue físico inagotable cubriendo todo el ancho del campo",
+        "Seguridad y limpieza en la distribución del esférico",
+        "Solidez en los duelos individuales y coberturas a bandas"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Aporte ofensivo directo y volumen de remates limitado",
+        "Tendencia a acumular tarjetas por intensidad en los cruces"
+      ],
+      "weightKg": 73
+    },
+    {
+      "ageAsWritten": 20,
+      "aggression": 70,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 80,
+        "BallControl": 82,
+        "Defense": 77,
+        "Dribbling": 81,
+        "Finishing": 67,
+        "Passing": 80,
+        "Shooting": 71,
+        "Speed": 81,
+        "Stamina": 85,
+        "Strength": 78,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Paris Saint-Germain",
+      "confidence": "High",
+      "creativity": 68,
+      "dateOfBirth": "2006-03-08",
+      "fullName": "Warren Zaïre-Emery",
+      "gameplayBehavior": "Mediocampista derecho equilibrado y dinámico que oscila constantemente entre el centro del campo y la banda. Destaca por su capacidad de transporte de balón y su incansable trabajo sin él.",
+      "gameplayFeel": "With Ball: Conduce el balón de área a área con gran naturalidad. Ocupa la banda derecha o el pasillo interior según las necesidades del equipo, asociándose en corto y proyectando líneas de ataque. Without Ball: Realiza un trabajo defensivo encomiable, cerrando líneas de pase, presionando alto y corriendo en repliegue defensivo con máxima intensidad. Transition: Transición ofensiva rápida mediante conducción vertical; transición defensiva inmediata con repliegue táctico disciplinado.",
+      "heightCm": 178,
+      "name": "Warren Zaïre-Emery",
+      "nationality": "France",
+      "naturalPosition": "CM",
+      "playerId": "md-warren-zaire-emery",
+      "polyvalenceNote": "Functional versatility: Despliegue absoluto entre el mediocampo central y la banda derecha. | Hybrid type: Balanced Midfield Hybrid | Position confidence: High",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 50,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Engine"
+        },
+        {
+          "affinity": 84,
+          "role": "Builder"
+        },
+        {
+          "affinity": 77,
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "RM",
+        "RB"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 33,
+      "shortName": "Zaïre-Emery",
+      "signatureActions": [
+        "Progressive Carry",
+        "Support Run",
+        "Counterpressing",
+        "Half-Space Movement",
+        "Recovery Run"
+      ],
+      "strengths": [
+        "Resistencia física y despliegue inagotable",
+        "Capacidad de progresión en conducción",
+        "Inteligencia táctica impropia de su edad",
+        "Versatilidad entre mediocampo y banda"
+      ],
+      "targetOvr": 80,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Experiencia internacional en partidos límite en desarrollo",
+        "Volumen de gol directo limitado"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 84,
+      "attributes": {
+        "Acceleration": 89,
+        "Agility": 84,
+        "BallControl": 84,
+        "Defense": 81,
+        "Dribbling": 83,
+        "Finishing": 75,
+        "Passing": 83,
+        "Shooting": 81,
+        "Speed": 88,
+        "Stamina": 92,
+        "Strength": 82,
+        "Technique": 84
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Real Madrid CF",
+      "confidence": "High",
+      "creativity": 78,
+      "dateOfBirth": "1998-07-22",
+      "fullName": "Federico Santiago Valverde Dipetta",
+      "gameplayBehavior": "Mediocampista derecho híbrido de categoría estelar. Destaca por su velocidad demoledora, su capacidad de abarcar todo el campo (box-to-box), su pegada desde fuera del área y su entrega defensiva inquebrantable por la banda.",
+      "gameplayFeel": "With Ball: Abarca todo el sector derecho del campo, conduciendo el balón a velocidad de vértigo desde la medular hasta la línea de fondo, o buscando posiciones interiores para disparar con potencia. Without Ball: Realiza coberturas defensivas defensivas estelares cubriendo las espaldas del lateral derecho, aplicando una presión asfixiante y recuperando balones con vigor. Transition: Transición ofensiva letal mediante contragolpes vertiginosos; transición defensiva con un repliegue defensivo a máxima velocidad para neutralizar ocasiones rivales.",
+      "heightCm": 182,
+      "name": "Federico Valverde",
+      "nationality": "Uruguay",
+      "naturalPosition": "CM",
+      "playerId": "md-federico-valverde",
+      "polyvalenceNote": "Functional versatility: Dominio absoluto del carril derecho y la medular gracias a su potencia física descomunal. | Hybrid type: Balanced Midfield Hybrid | Position confidence: High",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 93,
+          "role": "Engine"
+        },
+        {
+          "affinity": 88,
+          "role": "Winger"
+        },
+        {
+          "affinity": 84,
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "RM",
+        "RW"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 8,
+      "shortName": "Valverde",
+      "signatureActions": [
+        "Progressive Carry",
+        "Wide Progression",
+        "Recovery Run",
+        "Pressing",
+        "Box-to-Box Run"
+      ],
+      "strengths": [
+        "Despliegue físico y velocidad supersónica de área a área",
+        "Potencia de disparo descomunal de media distancia",
+        "Versatilidad total para dominar el mediocampo y la banda derecha",
+        "Compromiso defensivo y sacrificio colectivo extraordinario"
+      ],
+      "targetOvr": 84,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Menor pausa táctica en posesiones estáticas ultra-controladas",
+        "Desgaste físico extremo por su constante recorrido total"
+      ],
+      "weightKg": 78
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

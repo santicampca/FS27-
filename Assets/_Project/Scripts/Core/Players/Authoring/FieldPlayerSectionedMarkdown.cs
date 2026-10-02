@@ -74,7 +74,7 @@ namespace FS27.Core
             if (rec != null) result.Records.Add(rec);
         }
 
-        private static List<string> Cells(string line)
+        internal static List<string> Cells(string line)
         {
             var list = new List<string>();
             foreach (string c in line.Trim('|').Split('|')) list.Add(c.Trim());
@@ -168,13 +168,13 @@ namespace FS27.Core
             }
         }
 
-        private static IEnumerable<string> Positions(string text)
+        internal static IEnumerable<string> Positions(string text)
         {
             if (string.IsNullOrWhiteSpace(text) || text.Trim().Equals("None", StringComparison.OrdinalIgnoreCase)) yield break;
             foreach (string p in text.Split(new[] { ',', '/' })) { string t = p.Trim(); if (t.Length > 0) yield return t; }
         }
 
-        private static string Value(string line) { int i = line.IndexOf(':'); return i < 0 ? "" : line.Substring(i + 1).Trim(); }
+        internal static string Value(string line) { int i = line.IndexOf(':'); return i < 0 ? "" : line.Substring(i + 1).Trim(); }
 
         private static int? Int(string text, string where, FieldPlayerParseResult result)
         {
@@ -185,9 +185,9 @@ namespace FS27.Core
 
         // ------------------------------------------------------------------ cross-check
 
-        private static string N(string s) { return GoalkeeperRecordImporter.Normalize(s); }
+        internal static string N(string s) { return GoalkeeperRecordImporter.Normalize(s); }
 
-        private static void CrossCheck(FieldPlayerParseResult result, string table, List<Dictionary<string, string>> rows)
+        internal static void CrossCheck(FieldPlayerParseResult result, string table, List<Dictionary<string, string>> rows)
         {
             if (rows.Count != result.Records.Count) { result.Problems.Add(table + ": " + rows.Count + " rows for " + result.Records.Count + " players."); return; }
             for (int i = 0; i < rows.Count; i++)

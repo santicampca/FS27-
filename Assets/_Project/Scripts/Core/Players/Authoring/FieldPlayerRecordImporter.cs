@@ -139,6 +139,20 @@ namespace FS27.Core
             };
         }
 
+        /// <summary>Hybrid midfielders (the MDI / MDD database): Midfield as the primary zone, Defense or Wing as the one optional secondary zone, any of the 12 official roles, midfield-play action vocabulary.</summary>
+        public static FieldPlayerImportOptions HybridMidfielder()
+        {
+            return new FieldPlayerImportOptions
+            {
+                Role = PlayerRole.Midfielder,
+                AllowedRoles = null,
+                AllowedPrimaryZones = new HashSet<PitchZone> { PitchZone.Midfield },
+                AllowedSecondaryZones = new HashSet<PitchZone> { PitchZone.Defense, PitchZone.Wing },
+                ActionVocabulary = MidfieldPlayVocabulary.Create(),
+                TagBehaviors = MidfieldPlayVocabulary.TagBehaviors()
+            };
+        }
+
         public static FieldPlayerImportOptions Defender()
         {
             return new FieldPlayerImportOptions
