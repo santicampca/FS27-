@@ -80,7 +80,7 @@ namespace FS27.Core
                         if (key == "Primary Zone") rec.PrimaryZone = v;
                         else if (key == "Secondary Zone") rec.SecondaryZone = v.Equals("None", StringComparison.OrdinalIgnoreCase) ? "" : v;
                         break;
-                    case "MCD Type": case "MC Type": mcdType = line; break;
+                    case "MCD Type": case "MC Type": case "MCO Type": mcdType = line; break;
                     case "Roles":
                         {
                             List<string> c = FieldPlayerSectionedMarkdown.Cells(line);
@@ -128,13 +128,21 @@ namespace FS27.Core
             for (int i = 0; i < result.Records.Count; i++)
             {
                 FieldPlayerDataRecord r = result.Records[i];
-                r.Name = i < names.Count && names[i].ContainsKey("Player") ? names[i]["Player"] : "";
+                r.Name = i < names.Count && names[i].ContainsKey("Player") ? DisplayName(names[i]["Player"]) : "";
                 r.PlayerId = idPrefix + "-" + AuthoringIds.Slug(r.Name);
                 if (string.IsNullOrEmpty(r.Name)) result.Problems.Add("Card " + (i + 1) + " has no name.");
                 CheckPolyvalence(r, polyvalence[i], result);
             }
             foreach (KeyValuePair<string, List<Dictionary<string, string>>> t in tables) CrossCheck(result, t.Key, t.Value);
             return result;
+        }
+
+        /// <summary>"Smith (John Smith)" names the player twice: when the parenthesis holds the outer text, the parenthesis is the full name. Any other parenthesis is dropped.</summary>
+        private static string DisplayName(string written)
+        {
+            Match m = Regex.Match(written ?? "", @"^(.*?)\s*\((.*)\)\s*$");
+            if (!m.Success) return written ?? "";
+            return m.Groups[2].Value.IndexOf(m.Groups[1].Value, StringComparison.OrdinalIgnoreCase) >= 0 ? m.Groups[2].Value.Trim() : m.Groups[1].Value.Trim();
         }
 
         private static void ReadIdentity(FieldPlayerDataRecord r, string key, string v, string heading, FieldPlayerParseResult result)
@@ -152,10 +160,10 @@ namespace FS27.Core
                     else result.Problems.Add(heading + ": cannot read the date of birth '" + v + "'.");
                     break;
                 case "Age": r.AgeAsWritten = Int(v, heading + " age", result); break;
-                case "Height": { Match m = Regex.Match(v, @"^(\d+)\s*cm$"); if (m.Success) r.HeightCm = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture); else result.Problems.Add(heading + ": cannot read the height '" + v + "'."); break; }
-                case "Weight": { Match m = Regex.Match(v, @"^(\d+)\s*kg$"); if (m.Success) r.WeightKg = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture); else result.Problems.Add(heading + ": cannot read the weight '" + v + "'."); break; }
+                case "Height": { Match m = Regex.Match(v, @"^(\d+)\s*cm(?:\s*\(.*\))?$"); if (m.Success) r.HeightCm = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture); else result.Problems.Add(heading + ": cannot read the height '" + v + "'."); break; }
+                case "Weight": { Match m = Regex.Match(v, @"^(\d+)\s*kg(?:\s*\(.*\))?$"); if (m.Success) r.WeightKg = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture); else result.Problems.Add(heading + ": cannot read the weight '" + v + "'."); break; }
                 case "Current Club": r.Club = v; break;
-                case "Shirt Number": r.ShirtNumber = Int(v, heading + " shirt number", result); break;
+                case "Shirt Number": r.ShirtNumber = Int(Regex.Replace(v, @"\s*\(.*\)\s*$", ""), heading + " shirt number", result); break;
                 case "Preferred Foot": r.PreferredFoot = v; break;
             }
         }
@@ -188,6 +196,7 @@ namespace FS27.Core
             {
                 Dictionary<string, string> row = rows[i];
                 FieldPlayerDataRecord r = result.Records[i];
+                if (row.TryGetValue("Player", out string written)) row["Player"] = DisplayName(written);
                 if (row.TryGetValue("Nation", out string nation)) { if (FieldPlayerSectionedMarkdown.N(nation) != FieldPlayerSectionedMarkdown.N(r.Nationality)) result.Problems.Add(r.Name + ": " + table + " says nation '" + nation + "' but the card says '" + r.Nationality + "'."); row.Remove("Nation"); }
                 if (row.TryGetValue("Club", out string club)) { if (FieldPlayerSectionedMarkdown.N(club) != FieldPlayerSectionedMarkdown.N(r.Club)) result.Problems.Add(r.Name + ": " + table + " says club '" + club + "' but the card says '" + r.Club + "'."); row.Remove("Club"); }
                 if (row.TryGetValue("Third Role", out string third)) { string mine = r.Roles.Count > 2 ? r.Roles[2].Role : ""; if (third != mine) result.Problems.Add(r.Name + ": " + table + " says Third Role = '" + third + "' but the card says '" + mine + "'."); row.Remove("Third Role"); }

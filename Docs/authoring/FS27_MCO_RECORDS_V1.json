@@ -1,0 +1,754 @@
+{
+  "players": [
+    {
+      "ageAsWritten": 23,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 85,
+        "BallControl": 87,
+        "Defense": 75,
+        "Dribbling": 86,
+        "Finishing": 81,
+        "Passing": 85,
+        "Shooting": 83,
+        "Speed": 83,
+        "Stamina": 91,
+        "Strength": 83,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Real Madrid",
+      "confidence": "High",
+      "creativity": 87,
+      "dateOfBirth": "2003-06-29",
+      "fullName": "Jude Victor William Bellingham",
+      "gameplayFeel": "MCO potente, físico y con instinto de llegador estelar. Se desplaza entre líneas con autoridad, rompe hacia el área como un delantero sorpresa y presiona con máxima intensidad.",
+      "heightCm": 186,
+      "name": "Jude Bellingham",
+      "nationality": "England",
+      "naturalPosition": "AM",
+      "playerId": "mo-jude-bellingham",
+      "polyvalenceNote": "Functional versatility: Mediocampista ofensivo de llegada masiva al área y desmarques de ruptura, con capacidad de actuar como segundo delantero. | Emergency cover: DM | Type: MCO de Llegada / Híbrido MCO-SD",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Creator"
+        },
+        {
+          "affinity": 86,
+          "role": "Engine"
+        },
+        {
+          "affinity": 84,
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 5,
+      "shortName": "Bellingham",
+      "signatureActions": [
+        "LateBoxArrival",
+        "ProgressiveCarry",
+        "PressResistance",
+        "LineBreakingPass",
+        "CounterPress"
+      ],
+      "strengths": [
+        "Llegada masiva y letal desde segunda línea al área rival",
+        "Despliegue físico, potencia y resistencia inagotables (Stamina 91)",
+        "Capacidad para proteger el balón bajo presión gracias a su corpulencia",
+        "Liderazgo e impacto directo en el marcador"
+      ],
+      "targetOvr": 85,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Tendencia a la fatiga por acumulación de recorridos de área a área",
+        "Menor pausa táctica en posesiones extremadamente estáticas"
+      ],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 81,
+        "Agility": 86,
+        "BallControl": 90,
+        "Defense": 66,
+        "Dribbling": 89,
+        "Finishing": 82,
+        "Passing": 88,
+        "Shooting": 84,
+        "Speed": 79,
+        "Stamina": 87,
+        "Strength": 72,
+        "Technique": 90
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Chelsea FC",
+      "confidence": "High",
+      "creativity": 89,
+      "dateOfBirth": "2002-05-06",
+      "fullName": "Cole Jermaine Palmer",
+      "gameplayFeel": "MCO elegante, cerebral y letal. Recibe entre líneas con absoluta calma, filtra balones imposibles y define con una tranquilidad pasmosa desde la frontal.",
+      "heightCm": 189,
+      "name": "Cole Palmer",
+      "nationality": "England",
+      "naturalPosition": "AM",
+      "playerId": "mo-cole-palmer",
+      "polyvalenceNote": "Functional versatility: Mediapunta creativo de perfil zurdo, control pausado, exquisito último pase y definición fría. | Emergency cover: CM | Type: Playmaker Ofensivo / Creador entre Líneas",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Creator"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        },
+        {
+          "affinity": 85,
+          "role": "Architect"
+        }
+      ],
+      "secondaryPositions": [
+        "RW",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 20,
+      "shortName": "Palmer",
+      "signatureActions": [
+        "LineBreakingPass",
+        "PrecisionShot",
+        "PressResistance",
+        "TurnAndAccelerate",
+        "HalfSpaceMovement"
+      ],
+      "strengths": [
+        "Exquisito último pase y visión de juego entre líneas",
+        "Calidad técnica y control orientado de nivel superior",
+        "Frialdad y precisión quirúrgica en la definición y lanzamientos",
+        "Creatividad constante para desarticular defensas cerradas"
+      ],
+      "targetOvr": 84,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Menor despliegue en duelos físicos de choque puro",
+        "Intensidad defensiva baja en comparación con mediocampistas de recorrido mixto"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 70,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 86,
+        "BallControl": 91,
+        "Defense": 72,
+        "Dribbling": 87,
+        "Finishing": 74,
+        "Passing": 91,
+        "Shooting": 80,
+        "Speed": 77,
+        "Stamina": 92,
+        "Strength": 70,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Arsenal FC",
+      "confidence": "High",
+      "creativity": 91,
+      "dateOfBirth": "1998-12-17",
+      "fullName": "Martin Ødegaard",
+      "gameplayFeel": "MCO cerebral, asociativo y líder indiscutible. Dirige la presión desde arriba, encuentra espacios donde no los hay y filtra balones con precisión milimétrica.",
+      "heightCm": 178,
+      "name": "Martin Ødegaard",
+      "nationality": "Norway",
+      "naturalPosition": "AM",
+      "playerId": "mo-martin-odegaard",
+      "polyvalenceNote": "Functional versatility: Mediocampista ofensivo organizador, capitán, excelente en la presión alta coordinada y asociación por banda derecha e interior. | Emergency cover: RW | Type: Playmaker Ofensivo / Creador entre Líneas",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Architect"
+        },
+        {
+          "affinity": 90,
+          "role": "Creator"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 8,
+      "shortName": "Ødegaard",
+      "signatureActions": [
+        "LineBreakingPass",
+        "Pressing",
+        "TempoControl",
+        "HalfSpaceMovement",
+        "CounterPress"
+      ],
+      "strengths": [
+        "Visión de juego panorámica y precisión quirúrgica en el último pase",
+        "Liderazgo absoluto y compromiso defensivo en la presión alta (Stamina 92)",
+        "Calidad técnica y control orientado impecable",
+        "Clarividencia para organizar el ataque posicional"
+      ],
+      "targetOvr": 84,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Menor desborde individual en 1v1 explosivo por velocidad pura",
+        "Dificultad en forcejeos físicos frontales contra pivotes muy corpulentos"
+      ],
+      "weightKg": 68
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 82,
+        "BallControl": 88,
+        "Defense": 74,
+        "Dribbling": 84,
+        "Finishing": 78,
+        "Passing": 90,
+        "Shooting": 84,
+        "Speed": 78,
+        "Stamina": 93,
+        "Strength": 74,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Manchester United",
+      "confidence": "High",
+      "creativity": 90,
+      "dateOfBirth": "1994-09-08",
+      "fullName": "Bruno Miguel Borges Fernandes",
+      "gameplayFeel": "MCO vertical, incisivo y de un perfil muy arriesgado. Busca constantemente el pase definitivo que rompa el partido, dispara con potencia y presiona con máxima energía.",
+      "heightCm": 179,
+      "name": "Bruno Fernandes",
+      "nationality": "Portugal",
+      "naturalPosition": "AM",
+      "playerId": "mo-bruno-fernandes",
+      "polyvalenceNote": "Functional versatility: Mediapunta de alto riesgo y máxima producción ofensiva, especialista en pases clave verticales y disparo exterior. | Emergency cover: LW | Type: Playmaker Ofensivo / Creador Vertical",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 85,
+      "roles": [
+        {
+          "affinity": 93,
+          "role": "Creator"
+        },
+        {
+          "affinity": 89,
+          "role": "Architect"
+        },
+        {
+          "affinity": 86,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 8,
+      "shortName": "Fernandes",
+      "signatureActions": [
+        "VerticalPass",
+        "LongSwitch",
+        "CounterPress",
+        "PrecisionShot",
+        "LateBoxArrival"
+      ],
+      "strengths": [
+        "Producción ofensiva masiva y valentía en el último pase de riesgo",
+        "Resistencia física colosal e implicación defensiva (Stamina 93)",
+        "Golpeo letal de media distancia y máxima seguridad en penaltis",
+        "Liderazgo competitivo e intensidad constante"
+      ],
+      "targetOvr": 85,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Alto índice de riesgo en sus pases que puede propiciar pérdidas en transición",
+        "Exceso de revoluciones en momentos de tensión competitiva"
+      ],
+      "weightKg": 69
+    },
+    {
+      "ageAsWritten": 23,
+      "aggression": 62,
+      "attributes": {
+        "Acceleration": 87,
+        "Agility": 93,
+        "BallControl": 92,
+        "Defense": 65,
+        "Dribbling": 93,
+        "Finishing": 76,
+        "Passing": 85,
+        "Shooting": 80,
+        "Speed": 85,
+        "Stamina": 86,
+        "Strength": 68,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Bayern Munich",
+      "confidence": "High",
+      "creativity": 92,
+      "dateOfBirth": "2003-02-26",
+      "fullName": "Jamal Musiala",
+      "gameplayFeel": "MCO eléctrico, escurridizo y de regate fascinante. Baila entre los defensores contrarios con una agilidad prodigiosa, rompe líneas conduciendo y genera ocasiones de la nada.",
+      "heightCm": 184,
+      "name": "Jamal Musiala",
+      "nationality": "Germany",
+      "naturalPosition": "AM",
+      "playerId": "mo-jamal-musiala",
+      "polyvalenceNote": "Functional versatility: Mediocampista ofensivo hiper-regateador, agilidad de movimientos endiablada en espacios reducidos y llegada letal. | Emergency cover: CM | Type: MCO de Conducción / Playmaker Ofensivo",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Explosive"
+        },
+        {
+          "affinity": 90,
+          "role": "Creator"
+        },
+        {
+          "affinity": 85,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "LW",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 42,
+      "shortName": "Musiala",
+      "signatureActions": [
+        "ProgressiveCarry",
+        "CloseControlDribble",
+        "LineBreakingPass",
+        "TurnAndAccelerate",
+        "LateBoxArrival"
+      ],
+      "strengths": [
+        "Capacidad de regate y agilidad en espacios reducidos de nivel mundial (Agility 93)",
+        "Conducciones eléctricas imparables que desorganizan defensas",
+        "Visión de juego y precisión en el último tercio",
+        "Frialdad y eficacia resolutiva en el área"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Vulnerabilidad en duelos de contacto físico directo ante defensas muy férreas",
+        "Menor participación en labores de contención defensiva profunda"
+      ],
+      "weightKg": 72
+    },
+    {
+      "ageAsWritten": 34,
+      "aggression": 58,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 88,
+        "BallControl": 92,
+        "Defense": 62,
+        "Dribbling": 90,
+        "Finishing": 74,
+        "Passing": 88,
+        "Shooting": 78,
+        "Speed": 74,
+        "Stamina": 80,
+        "Strength": 66,
+        "Technique": 93
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Real Betis",
+      "confidence": "High",
+      "creativity": 92,
+      "dateOfBirth": "1992-04-21",
+      "fullName": "Francisco Román Alarcón Suárez",
+      "gameplayFeel": "MCO mágico, técnico y de una finura soberbia. Imposible de robar el balón en espacios cortos, protege la posesión con genialidad y habilita a sus compañeros con talento puro.",
+      "heightCm": 176,
+      "name": "Isco",
+      "nationality": "Spain",
+      "naturalPosition": "AM",
+      "playerId": "mo-isco",
+      "polyvalenceNote": "Functional versatility: Mediocampista ofensivo de magia técnica, protección de balón inigualable en espacios microscópicos y pausa organizativa. | Emergency cover: LW | Type: Playmaker Ofensivo / Creador entre Líneas",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Creator"
+        },
+        {
+          "affinity": 88,
+          "role": "Architect"
+        },
+        {
+          "affinity": 85,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 22,
+      "shortName": "Isco",
+      "signatureActions": [
+        "CloseControlDribble",
+        "PressResistance",
+        "LineBreakingPass",
+        "TurnAndAccelerate",
+        "TempoControl"
+      ],
+      "strengths": [
+        "Protección de balón y magia técnica inigualables en espacios reducidos",
+        "Creatividad artística y visión para filtrar el último pase",
+        "Habilidad para escapar de múltiples presiones mediante regate estético",
+        "Experiencia y liderazgo en la pausa ofensiva"
+      ],
+      "targetOvr": 80,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Velocidad punta lineal limitada frente a transiciones muy rápidas",
+        "Desgaste físico condicionado por su perfil técnico de posesión"
+      ],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 37,
+      "aggression": 60,
+      "attributes": {
+        "Acceleration": 78,
+        "Agility": 82,
+        "BallControl": 85,
+        "Defense": 61,
+        "Dribbling": 83,
+        "Finishing": 81,
+        "Passing": 83,
+        "Shooting": 82,
+        "Speed": 76,
+        "Stamina": 82,
+        "Strength": 70,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Light",
+      "club": "LA Galaxy",
+      "confidence": "High",
+      "creativity": 85,
+      "dateOfBirth": "1989-05-31",
+      "fullName": "Marco Reus",
+      "gameplayFeel": "MCO inteligente, clínico y con destellos de pura clase. Se desmarca con maestría quirúrgica entre líneas, define con absoluta frialdad y asiste con precisión quirúrgica.",
+      "heightCm": 180,
+      "name": "Marco Reus",
+      "nationality": "Germany",
+      "naturalPosition": "AM",
+      "playerId": "mo-marco-reus",
+      "polyvalenceNote": "Functional versatility: Mediapunta histórico de inteligencia táctica brillante, golpeo exquisito y llegada al área con instinto goleador. | Emergency cover: RW | Type: Playmaker Ofensivo / MCO de Llegada",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Creator"
+        },
+        {
+          "affinity": 85,
+          "role": "Finisher"
+        },
+        {
+          "affinity": 82,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "LW",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 18,
+      "shortName": "Reus",
+      "signatureActions": [
+        "PrecisionShot",
+        "LineBreakingPass",
+        "LateBoxArrival",
+        "DeadBallSpecialist",
+        "CounterPress"
+      ],
+      "strengths": [
+        "Inteligencia táctica y lectura perfecta de los espacios libres",
+        "Precisión clínica en la definición y disparo de media distancia",
+        "Calidad técnica en el último pase y balón parado",
+        "Experiencia y jerarquía ofensiva incalculable"
+      ],
+      "targetOvr": 79,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Limitación en la velocidad explosiva pura debido a su veteranía",
+        "Resistencia física adaptada a esfuerzos dosificados"
+      ],
+      "weightKg": 71
+    },
+    {
+      "ageAsWritten": 35,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 83,
+        "BallControl": 91,
+        "Defense": 68,
+        "Dribbling": 86,
+        "Finishing": 80,
+        "Passing": 94,
+        "Shooting": 86,
+        "Speed": 78,
+        "Stamina": 86,
+        "Strength": 76,
+        "Technique": 93
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Napoli",
+      "confidence": "High",
+      "creativity": 96,
+      "dateOfBirth": "1991-06-28",
+      "fullName": "Kevin De Bruyne",
+      "gameplayFeel": "MCO superlativo y el mejor asistente del mundo. Destruye defensas cerradas con centros tensos imposibles, pases filtrados de fantasía y un disparo exterior temible.",
+      "heightCm": 181,
+      "name": "Kevin De Bruyne",
+      "nationality": "Belgium",
+      "naturalPosition": "AM",
+      "playerId": "mo-kevin-de-bruyne",
+      "polyvalenceNote": "Functional versatility: Creador de juego de clase mundial absoluta, centros milimétricos en carrera, visión periférica sin igual y golpeo devastador. | Type: Playmaker Ofensivo / Creador de Élite Global",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "affinity": 96,
+          "role": "Architect"
+        },
+        {
+          "affinity": 94,
+          "role": "Creator"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "RW"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 11,
+      "shortName": "De Bruyne",
+      "signatureActions": [
+        "MilimeterCross",
+        "ProgressivePass",
+        "LongSwitch",
+        "PrecisionShot",
+        "CounterPress"
+      ],
+      "strengths": [
+        "Visión periférica y precisión milimétrica en el pase de categoría histórica (Passing 94)",
+        "Golpeo de balón devastador tanto en centros tensos como en disparos lejanos",
+        "Creatividad absoluta en la generación de ocasiones de gol (Creativity 96)",
+        "Capacidad para decidir partidos cerrados en una sola acción"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Historial médico de lesiones musculares recurrentes por exigencia competitiva",
+        "Menor vocación de marcaje defensivo estático profundo"
+      ],
+      "weightKg": 76
+    },
+    {
+      "ageAsWritten": 23,
+      "aggression": 64,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 90,
+        "BallControl": 91,
+        "Defense": 68,
+        "Dribbling": 90,
+        "Finishing": 77,
+        "Passing": 90,
+        "Shooting": 81,
+        "Speed": 82,
+        "Stamina": 88,
+        "Strength": 69,
+        "Technique": 91
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Liverpool",
+      "confidence": "High",
+      "creativity": 92,
+      "dateOfBirth": "2003-05-03",
+      "fullName": "Florian Richard Wirtz",
+      "gameplayFeel": "MCO moderno, ultra-técnico y brillante. Lee los espacios con una clarividencia asombrosa, filtra pases definitivos y desequilibra con conducciones eléctricas y sutiles.",
+      "heightCm": 177,
+      "name": "Florian Wirtz",
+      "nationality": "Germany",
+      "naturalPosition": "AM",
+      "playerId": "mo-florian-wirtz",
+      "polyvalenceNote": "Functional versatility: Mediapunta asociativo de talento descomunal, lectura de espacios brillante, control orientado y definición con sutileza. | Emergency cover: CM | Type: Playmaker Ofensivo / Creador entre Líneas",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Creator"
+        },
+        {
+          "affinity": 89,
+          "role": "Architect"
+        },
+        {
+          "affinity": 86,
+          "role": "Explosive"
+        }
+      ],
+      "secondaryPositions": [
+        "LW",
+        "SD"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 7,
+      "shortName": "Wirtz",
+      "signatureActions": [
+        "LineBreakingPass",
+        "ProgressiveCarry",
+        "PressResistance",
+        "TurnAndAccelerate",
+        "CounterPress"
+      ],
+      "strengths": [
+        "Inteligencia espacial y lectura de los huecos entre líneas sobresalientes",
+        "Calidad técnica y control orientado de nivel mundial superior",
+        "Precisión quirúrgica en el último pase y creatividad desbordante",
+        "Capacidad de desequilibrio mediante conducciones sutiles y rápidas"
+      ],
+      "targetOvr": 81,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Menor corpulencia física en duelos de choque directo contra centrales corpulentos",
+        "Experiencia en la élite absoluta en proceso de consolidación global definitiva"
+      ],
+      "weightKg": 68
+    },
+    {
+      "ageAsWritten": 17,
+      "aggression": 60,
+      "attributes": {
+        "Acceleration": 83,
+        "Agility": 86,
+        "BallControl": 85,
+        "Defense": 60,
+        "Dribbling": 86,
+        "Finishing": 72,
+        "Passing": 81,
+        "Shooting": 76,
+        "Speed": 80,
+        "Stamina": 83,
+        "Strength": 65,
+        "Technique": 84
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Club Tijuana",
+      "confidence": "Medium-High",
+      "creativity": 86,
+      "dateOfBirth": "2008-10-14",
+      "fullName": "Gilberto Rafael Mora Zambrano",
+      "gameplayFeel": "MCO joven, eléctrico y sumamente descarado. Aporta una chispa creativa inmensa, escapa de la presión con agilidad y asiste con notable talento desde la medular ofensiva.",
+      "heightCm": 168,
+      "name": "Gilberto Mora",
+      "nationality": "Mexico",
+      "naturalPosition": "AM",
+      "playerId": "mo-gilberto-mora",
+      "polyvalenceNote": "Functional versatility: Mediocampista ofensivo juvenil de prodigiosa precocidad, excelente manejo de perfil zurdo, visión de juego y desequilibrio en tres cuartos. | Emergency cover: CM | Type: Playmaker Ofensivo / Creador Juvenil Dinámico",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 76,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Creator"
+        },
+        {
+          "affinity": 82,
+          "role": "Builder"
+        },
+        {
+          "affinity": 80,
+          "role": "Explosive"
+        }
+      ],
+      "secondaryPositions": [
+        "LM",
+        "RW"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 10,
+      "shortName": "Mora",
+      "signatureActions": [
+        "ProgressiveCarry",
+        "LineBreakingPass",
+        "PressResistance",
+        "TurnAndAccelerate",
+        "SupportRun"
+      ],
+      "strengths": [
+        "Excepcional talento precoz y visión de juego entre líneas",
+        "Agilidad y capacidad de desequilibrio en conducción (Agility 86)",
+        "Calidad técnica con la pierna izquierda",
+        "Personalidad y atrevimiento para pedir el balón en escenarios mayores"
+      ],
+      "targetOvr": 78,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Envergadura y fuerza física en plena fase de maduración corporal juvenil",
+        "Experiencia en la élite absoluta en proceso inicial de consolidación"
+      ],
+      "weightKg": 64
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

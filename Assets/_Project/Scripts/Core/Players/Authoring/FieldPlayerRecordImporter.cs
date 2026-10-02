@@ -164,6 +164,9 @@ namespace FS27.Core
             return o;
         }
 
+        /// <summary>Offensive midfielders (the MCO database): the same contract as <see cref="CentralMidfielder"/> (Midfield primary; Defense, Wing or Attack secondary; any of the 12 roles).</summary>
+        public static FieldPlayerImportOptions OffensiveMidfielder() { return CentralMidfielder(); }
+
         public static FieldPlayerImportOptions Defender()
         {
             return new FieldPlayerImportOptions

@@ -30,7 +30,11 @@ namespace FS27.Core
             new[] { "TurnAndAccelerate", "TurnAndAccelerate", "Turn And Accelerate" },
             new[] { "OutsideOfFootPass", "OutsideOfFootPass", "Outside-Of-Foot Pass" },
             new[] { "TempoControl", "TempoControl", "Tempo Control" },
-            new[] { "AerialThreat", "AerialThreat", "Aerial Threat" }
+            new[] { "AerialThreat", "AerialThreat", "Aerial Threat" },
+            new[] { "PrecisionShot", "PrecisionShot", "Precision Shot" },
+            new[] { "VerticalPass", "VerticalPass", "Vertical Pass" },
+            new[] { "CloseControlDribble", "CloseControlDribble", "Close-Control Dribble" },
+            new[] { "DeadBallSpecialist", "DeadBallSpecialist", "Dead-Ball Specialist" }
         };
 
         // a hybrid midfielder's spelling of a tag the wing vocabulary already has
@@ -38,7 +42,8 @@ namespace FS27.Core
         {
             new[] { "OverlappingRun", "Overlap" },
             new[] { "Counterpressing", "CounterPress" },
-            new[] { "SwitchOfPlay", "LongSwitch" }
+            new[] { "SwitchOfPlay", "LongSwitch" },
+            new[] { "PrecisionCross", "MilimeterCross", "MillimeterCross" } // the source spells "Milimeter"
         };
 
         public static IReadOnlyDictionary<string, string> Create()
