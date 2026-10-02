@@ -239,6 +239,8 @@ namespace FS27.Core
             d.AddSense(Gam, Any, "", ConceptEffect.U(UnsupportedReason.RequiresFutureRuntime, "Height is only a look; it changes no attribute. Use strength or reach words for gameplay."));
             d = Add(c, "mass", ConceptKind.Scalar, Vis, "How heavy / thick the body is.", "body.mass");
             d.AddSense(Vis, Any, "", ConceptEffect.P("body.mass"), ConceptEffect.P("body.torsoWidth", 0.5f, false));
+            d = Add(c, "overallSize", ConceptKind.Scalar, Vis, "Overall size of the character (taller and bigger, or shorter and smaller).", "body.height", "body.mass");
+            d.AddSense(Vis, Any, "", ConceptEffect.P("body.height"), ConceptEffect.P("body.mass", 0.5f, false), ConceptEffect.P("body.shoulderWidth", 0.3f, false));
             d = Add(c, "build", ConceptKind.Scalar, Vis, "Slim vs broad: mass and muscle together.", "body.mass", "body.muscularity");
             d.AddSense(Vis, Any, "", ConceptEffect.P("body.mass"), ConceptEffect.P("body.muscularity", 0.6f, false), ConceptEffect.P("body.shoulderWidth", 0.3f, false));
             d = Add(c, "muscularity", ConceptKind.Scalar, Vis, "How muscular the body looks.", "body.muscularity");

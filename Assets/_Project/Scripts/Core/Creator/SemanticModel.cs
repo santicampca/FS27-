@@ -105,11 +105,15 @@ namespace FS27.Core
         public SemanticPhase Phase;
         /// <summary>The direction of the change: Increase/Decrease/Set/Add/Remove/Replace/Reset/Preserve. Usually equals the intent.</summary>
         public SemanticIntent Operation;
+        /// <summary>For Set: which end of the concept is meant (+1 tall, -1 short). Increase/Decrease already say it, so it stays +1 there.</summary>
+        public int Direction = 1;
         public MagnitudeLevel Magnitude;
         /// <summary>True when the person negated it ("no demasiado musculoso"). The compiler applies the negation rule; the parser does not.</summary>
         public bool Negated;
         /// <summary>An explicit choice (hair style id/word, colour word, role). Empty when the command is only about direction/amount.</summary>
         public string Value = "";
+        /// <summary>A finer reading of the concept ("tendency": plays it often; "ability": is good at it). Empty = the default one.</summary>
+        public string Sense = "";
         public EntityReference Reference;
         public string ReferenceName = "";
         /// <summary>0..1.</summary>
@@ -162,6 +166,8 @@ namespace FS27.Core
         public List<SemanticConstraint> Constraints = new List<SemanticConstraint>();
         /// <summary>The parts of the text no rule explained.</summary>
         public List<string> Unparsed = new List<string>();
+        /// <summary>Things the words allowed more than one reading of, that the parser could not settle ("largo": hair or legs?).</summary>
+        public List<string> Ambiguities = new List<string>();
         public string ParserName = "";
 
         public bool IsEmpty => Commands.Count == 0 && Constraints.Count == 0;
@@ -203,6 +209,38 @@ namespace FS27.Core
                 if (!string.IsNullOrEmpty(k.Target) && concepts != null && !concepts.Contains(k.Target))
                     r.Error(CreatorIssueCode.SemanticTargetUnknown, "constraints", "Unknown constraint target '" + k.Target + "'.");
             return r;
+        }
+    }
+}
+
+namespace FS27.Core
+{
+    /// <summary>A compact one-line-per-command description of a program, for debug reports and test failures.</summary>
+    public static class SemanticProgramPrinter
+    {
+        public static string Describe(SemanticProgram p)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (SemanticCommand c in p.Commands)
+            {
+                sb.Append('#').Append(c.Id).Append(' ').Append(c.Intent);
+                if (c.Operation != c.Intent) sb.Append('/').Append(c.Operation);
+                if (!string.IsNullOrEmpty(c.Target)) sb.Append(' ').Append(c.Target);
+                if (c.Operation == SemanticIntent.Set && c.Direction < 0) sb.Append(" (-)");
+                if (c.Magnitude != MagnitudeLevel.Unspecified) sb.Append(' ').Append(c.Magnitude);
+                if (c.Negated) sb.Append(" NEG");
+                if (c.Domain != SemanticDomain.Unspecified) sb.Append(" [").Append(c.Domain).Append(']');
+                if (c.Phase != SemanticPhase.Any) sb.Append(" @").Append(c.Phase);
+                if (!string.IsNullOrEmpty(c.Sense)) sb.Append(" sense=").Append(c.Sense);
+                if (!string.IsNullOrEmpty(c.Value)) sb.Append(" =").Append(c.Value);
+                if (c.Reference != EntityReference.Current) sb.Append(" ref=").Append(c.Reference);
+                sb.Append('\n');
+            }
+            foreach (SemanticRelation r in p.Relations) sb.Append(r.Kind).Append(' ').Append(r.From).Append("->").Append(r.To).Append('\n');
+            foreach (SemanticConstraint k in p.Constraints) sb.Append("constraint ").Append(k.Intent).Append(' ').Append(k.Target).Append(k.AllElse ? " ALLELSE" : "").Append(k.OnlyThese ? " ONLY" : "").Append('\n');
+            foreach (string u in p.Unparsed) sb.Append("unparsed: ").Append(u).Append('\n');
+            foreach (string a in p.Ambiguities) sb.Append("ambiguous: ").Append(a).Append('\n');
+            return sb.ToString();
         }
     }
 }
