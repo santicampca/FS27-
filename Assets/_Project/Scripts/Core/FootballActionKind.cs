@@ -4,7 +4,7 @@ namespace FS27.Core
     /// The football actions of the game. Gameplay requests one (<see cref="PlayerIntent.Action"/>), animation shows it, and the BALL stays independent.
     /// It lives here, not in the Creator, because it is a gameplay contract the Creator merely reads.
     /// The numbers are explicit and FIXED: the first 16 are the original values and must never be reordered or reused; new actions are only ever
-    /// appended at the end.
+    /// appended at the end (Tackle stays the standing tackle; Intercept and Block are the two outcomes of the intercept/block control).
     /// </summary>
     public enum FootballActionKind
     {
@@ -40,6 +40,16 @@ namespace FS27.Core
         /// <summary>A lofted pass with a technical flourish (C, swipe down). Only for players who own the skill.</summary>
         SkillLobPass = 21,
         /// <summary>Order the goalkeeper to come out (C, tap). The goalkeeper may refuse.</summary>
-        GoalkeeperRush = 22
+        GoalkeeperRush = 22,
+
+        // ---- added in Phase 4 (the defensive controls decided in the architecture) ----
+        /// <summary>Pressure / contain the ball carrier (A, tap, without the ball). Sustained: it lasts a short time.</summary>
+        Pressure = 23,
+        /// <summary>A sliding tackle (A, swipe up, without the ball): more reach, more commitment, more risk.</summary>
+        SlidingTackle = 24,
+        /// <summary>A shoulder-to-shoulder challenge against the ball carrier (B, tap, without the ball).</summary>
+        PhysicalChallenge = 25,
+        /// <summary>Send the ball away from danger (B, swipe up, without the ball): a distinct physical action, not a pass.</summary>
+        Clearance = 26
     }
 }

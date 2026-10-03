@@ -57,7 +57,7 @@ namespace FS27.Core
     /// state. The only inputs that touch the ball from outside are explicit API calls (<see cref="ApplyBallImpulse"/>, <see cref="GiveBallTo"/>...).
     /// Nothing here reads Unity time or randomness: the same calls in the same order give the same match.
     /// </summary>
-    public sealed class MatchController
+    public sealed partial class MatchController
     {
         private readonly FieldDimensions field;
         private readonly MatchSettings settings;
@@ -84,7 +84,7 @@ namespace FS27.Core
         public event Action<RestartRequest> RestartRequested;
         public event Action<MatchResult> MatchFinished;
 
-        public MatchController(FieldDimensions field, MatchSettings settings, MatchSquad home = null, MatchSquad away = null, BallParameters ballParameters = null, string matchId = "match", LocomotionTuning locomotionTuning = null, IPlayerLookup players = null)
+        public MatchController(FieldDimensions field, MatchSettings settings, MatchSquad home = null, MatchSquad away = null, BallParameters ballParameters = null, string matchId = "match", LocomotionTuning locomotionTuning = null, IPlayerLookup players = null, ActionTuning actionTuning = null)
         {
             this.field = field ?? throw new ArgumentNullException(nameof(field));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -93,7 +93,7 @@ namespace FS27.Core
             if (away != null && !away.IsValid(out problem)) throw new ArgumentException("Away squad: " + problem, nameof(away));
 
             rules = GameModeRules.For(settings.Mode);
-            this.ballParameters = ballParameters ?? new BallParameters();
+            this.ballParameters = ballParameters ?? new BallParameters { MagnusCoefficient = ActionDefaults.MagnusCoefficient };
             colliders = rules.CreateBoundaryColliders(field, settings);
             foreach (IBallCollider c in colliders) if (c is ArenaWalls w) walls = w;
             Events = new GameplayEventBus(rules);
@@ -109,7 +109,12 @@ namespace FS27.Core
                     PlayerDefinition def = null;
                     bool known = players != null && players.TryGet(p.PlayerId, out def) && def != null;
                     p.LocomotionProfile = known ? LocomotionProfile.Resolve(def.Attributes, locomotion) : LocomotionProfile.Resolve(neutral, locomotion);
+                    GoalkeeperProfile keeper = null;
+                    if (known && players != null) players.TryGetGoalkeeperProfile(p.PlayerId, out keeper);
+                    p.ActionProfile = known ? ActionProfile.Resolve(def.Attributes, def.PreferredFoot, def.WeakFootQuality, keeper) : ActionProfile.Neutral(keeper);
                 }
+            actions = actionTuning ?? new ActionTuning();
+            actionRandom = SeedMixer.Create(settings.Seed, 4);
         }
 
         // ------------------------------------------------------------------ flow
@@ -163,6 +168,7 @@ namespace FS27.Core
                 }
             }
             if (State.Phase == MatchPhase.Playing) StepLocomotion(dt);
+            if (State.Phase == MatchPhase.Playing) StepBallInteractions(dt);
             Tick(dt, new BallObservation(State.Ball.Physics.Position, ballParameters.Radius));
         }
 
@@ -204,7 +210,7 @@ namespace FS27.Core
             for (int i = 0; i < players.Count; i++)
             {
                 MatchPlayer p = players[i];
-                if (p.IsActive) LocomotionStepper.Step(ref p.Locomotion, p.LocomotionProfile, locomotion, p.PendingInput, dt);
+                if (p.IsActive && !StepActionMovement(p, dt)) LocomotionStepper.Step(ref p.Locomotion, p.LocomotionProfile, locomotion, p.PendingInput, dt);
             }
         }
 
@@ -694,8 +700,8 @@ namespace FS27.Core
             // pausing and resuming do not change what the ball is doing; any other interruption stops it
             if (next != MatchPhase.Paused && previous != MatchPhase.Paused)
             {
-                if (next != MatchPhase.Playing) State.Ball.Mode = BallMode.Dead;
-                else if (State.Ball.Mode == BallMode.Dead) State.Ball.Mode = State.Ball.HasPossession ? BallMode.Controlled : BallMode.Free;
+                if (next != MatchPhase.Playing) State.Ball.Mode = next == MatchPhase.GoalCelebration ? BallMode.Goal : BallMode.Dead;
+                else if (State.Ball.Mode == BallMode.Dead || State.Ball.Mode == BallMode.Goal) State.Ball.Mode = State.Ball.HasPossession ? BallMode.Controlled : BallMode.Free;
             }
             PhaseChanged?.Invoke(previous, next);
         }

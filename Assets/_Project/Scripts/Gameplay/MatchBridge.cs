@@ -1,3 +1,4 @@
+using System;
 using FS27.Core;
 using UnityEngine;
 
@@ -29,10 +30,14 @@ namespace FS27.Gameplay
         /// <summary>The Core match. Read its State; call its API; never copy state out of Unity back into it.</summary>
         public MatchController Match => match;
 
+        /// <summary>Raised for every action the Core answered (requested or automatic touches). Animation, sound and effects listen here; nothing decides anything from it.</summary>
+        public event Action<ActionResult> ActionPerformed;
+
         private void Awake()
         {
             settings = mode == GameMode.Arena ? MatchSettings.CreateArena(competition) : MatchSettings.CreateClassic(competition);
             match = new MatchController(field, settings);
+            Hook(match);
             clock = new SimulationClock(settings.SimulationStepSeconds);
             if (ball != null)
             {
@@ -49,7 +54,13 @@ namespace FS27.Gameplay
         public void Configure(MatchSquad home, MatchSquad away, IPlayerLookup players)
         {
             match = new MatchController(field, settings, home, away, null, "match", null, players);
+            Hook(match);
             Present();
+        }
+
+        private void Hook(MatchController m)
+        {
+            m.ActionPerformed += r => ActionPerformed?.Invoke(r);
         }
 
         /// <summary>Starts the match and takes the opening kick-off (there are no players to place yet).</summary>

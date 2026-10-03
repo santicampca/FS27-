@@ -1,0 +1,309 @@
+using System;
+
+namespace FS27.Core
+{
+    /// <summary>
+    /// EVERY number of the Phase-4 actions-and-ball model, in one place (the same rule as <see cref="LocomotionDefaults"/>): starting values of tuning, copied into an editable
+    /// <see cref="ActionTuning"/>. Nothing else repeats them. Units: metres, seconds, m/s, degrees only where named. Every one of them was chosen during Phase 4 (DECISION MADE DURING PHASE 4):
+    /// the architecture fixed the controls and the attributes, not these values; they are meant to be re-tuned in a balance pass.
+    /// </summary>
+    public static class ActionDefaults
+    {
+
+        // ---- geometry (metres): who can touch the ball
+        /// <summary>A player within this horizontal distance of the ball (and low enough) can touch it on his own: the automatic first touch.</summary>
+        public const float TouchReach = 1.0f;
+        /// <summary>Reach for kicking actions (pass, shot, chip, clearance): the ball must be this close to the player's feet.</summary>
+        public const float KickReach = 1.2f;
+        /// <summary>Reach of a standing tackle, measured to the ball.</summary>
+        public const float TackleReach = 1.0f;
+        /// <summary>Reach of a sliding tackle.</summary>
+        public const float SlideReach = 1.9f;
+        /// <summary>Reach of a physical challenge, measured to the ball carrier.</summary>
+        public const float ChallengeReach = 1.6f;
+        /// <summary>Reach of the intercept/block control, measured to the ball.</summary>
+        public const float InterceptReach = 2.2f;
+        /// <summary>Highest the lowest point of the ball may be for a foot/body touch.</summary>
+        public const float MaxTouchHeight = 1.1f;
+        /// <summary>The last player to touch the ball cannot take it automatically again for this long (seconds): a kicker does not re-collect his own pass.</summary>
+        public const float ReTouchCooldown = 0.3f;
+        // ---- control, first touch and dribbling
+        /// <summary>How far in front of the player the controlled ball sits at rest.</summary>
+        public const float ControlDistance = 0.8f;
+        /// <summary>Extra distance of the ball in front of the player per m/s of his speed.</summary>
+        public const float LeadPerSpeed = 0.1f;
+        /// <summary>Beyond this distance from his feet a dribbler loses control of the ball.</summary>
+        public const float LooseBallDistance = 2.2f;
+        /// <summary>Largest speed (m/s) a first touch leaves the ball with relative to the player.</summary>
+        public const float ControlSpeed = 6.0f;
+        /// <summary>Largest acceleration (m/s^2) with which the ball can follow a dribbling player at control quality 1; scaled down for worse control.</summary>
+        public const float CatchUpAcceleration = 18.0f;
+        /// <summary>Share of the catch-up acceleration kept at control quality 0.</summary>
+        public const float CatchUpFloor = 0.35f;
+        /// <summary>How strongly the ball is pulled back towards its place in front of the player (1/s).</summary>
+        public const float PullGain = 8.0f;
+        /// <summary>Where a heavy (poorly controlled) first touch sends the ball, in metres in front of the player.</summary>
+        public const float FirstTouchDistance = 1.0f;
+        /// <summary>Beyond this angle between the player's facing and the ball a touch cannot be controlled (it deflects the ball).</summary>
+        public const float MaxControlAngleDegrees = 130.0f;
+        /// <summary>Ball speed (m/s) at which a first touch is hardest.</summary>
+        public const float FirstTouchMaxBallSpeed = 20.0f;
+        /// <summary>First-touch score at or above which the ball is controlled cleanly.</summary>
+        public const float CleanControlThreshold = 0.2f;
+        /// <summary>First-touch score at or above which the player still gets the ball, but heavily (it runs away from him).</summary>
+        public const float HeavyTouchThreshold = -0.05f;
+        /// <summary>Half-width of the seeded noise added to a first-touch score.</summary>
+        public const float FirstTouchNoise = 0.1f;
+        /// <summary>Speed (m/s) a mis-controlled ball bounces away with.</summary>
+        public const float DeflectSpeed = 3.5f;
+        /// <summary>A pressing opponent within this distance reduces a dribbler's control.</summary>
+        public const float PressureRadius = 3.0f;
+        /// <summary>Control quality lost per pressing opponent (at most two count).</summary>
+        public const float PressureEffect = 0.25f;
+        /// <summary>How long the pressure/contain action lasts.</summary>
+        public const float PressureSeconds = 1.5f;
+        /// <summary>Extra stamina per second while pressing.</summary>
+        public const float PressureDrainPerSecond = 0.6f;
+        // ---- kicking: speeds (m/s), errors (degrees)
+        /// <summary>Power used when an action input carries none.</summary>
+        public const float DefaultPower = 0.6f;
+        /// <summary>Short pass at power 0.</summary>
+        public const float PassMinSpeed = 5.0f;
+        /// <summary>Short pass at power 1 (with perfect passing).</summary>
+        public const float PassMaxSpeed = 17.0f;
+        /// <summary>A through ball is hit this much harder.</summary>
+        public const float ThroughSpeedBoost = 1.15f;
+        /// <summary>Lofted pass at power 0.</summary>
+        public const float LongPassMinSpeed = 9.0f;
+        /// <summary>Lofted pass at power 1.</summary>
+        public const float LongPassMaxSpeed = 22.0f;
+        /// <summary>Vertical speed of a lofted pass as a share of its horizontal speed.</summary>
+        public const float LongPassLoft = 0.55f;
+        /// <summary>Shot at power 0.</summary>
+        public const float ShotMinSpeed = 12.0f;
+        /// <summary>Shot at power 1 (with perfect shooting).</summary>
+        public const float ShotMaxSpeed = 30.0f;
+        /// <summary>Horizontal speed of a chip at power 0.</summary>
+        public const float ChipMinSpeed = 5.0f;
+        /// <summary>Horizontal speed of a chip at power 1.</summary>
+        public const float ChipMaxSpeed = 13.0f;
+        /// <summary>Vertical speed of a chip.</summary>
+        public const float ChipVerticalSpeed = 5.5f;
+        /// <summary>Clearance at power 0.</summary>
+        public const float ClearanceMinSpeed = 12.0f;
+        /// <summary>Clearance at power 1.</summary>
+        public const float ClearanceMaxSpeed = 26.0f;
+        /// <summary>Vertical speed of a clearance as a share of its horizontal speed.</summary>
+        public const float ClearanceLoft = 0.45f;
+        /// <summary>Largest angular error of a short pass (degrees) for the worst passer at full power.</summary>
+        public const float PassMaxError = 12.0f;
+        /// <summary>Extra error share of a through ball (riskier).</summary>
+        public const float ThroughExtraError = 0.5f;
+        /// <summary>Largest angular error of a lofted pass.</summary>
+        public const float LongPassMaxError = 18.0f;
+        /// <summary>Largest angular error of a shot.</summary>
+        public const float ShotMaxError = 16.0f;
+        /// <summary>Extra error share of a curved shot.</summary>
+        public const float CurveExtraError = 0.25f;
+        /// <summary>Largest angular error of a chip.</summary>
+        public const float ChipMaxError = 14.0f;
+        /// <summary>Largest angular error of a clearance.</summary>
+        public const float ClearanceMaxError = 35.0f;
+        /// <summary>How much of the error depends on power (error x (1 - share + share x power)).</summary>
+        public const float PowerErrorShare = 0.6f;
+        /// <summary>A kick this far towards the weak side of the body uses the weak foot.</summary>
+        public const float WeakFootAngleDegrees = 45.0f;
+        /// <summary>Weak-foot quality factor at weak foot 0 (it is 1 at weak foot 100).</summary>
+        public const float WeakFootFloor = 0.6f;
+        /// <summary>A tired player kicks worse: factor = Base + (1 - Base) x performance.</summary>
+        public const float StaminaQualityBase = 0.85f;
+        /// <summary>Spin (rad/s) of a curved shot at technique quality 1.</summary>
+        public const float CurveSpinRate = 14.0f;
+        /// <summary>Curve strength of the match ball (acceleration = coefficient x spin x velocity).</summary>
+        public const float MagnusCoefficient = 0.012f;
+        /// <summary>Within this distance of the goal Finishing counts more than Shooting.</summary>
+        public const float ShotCloseRange = 12.0f;
+        // ---- defending
+        /// <summary>Half-width of the seeded noise added to a tackle margin.</summary>
+        public const float TackleNoise = 0.12f;
+        /// <summary>Margin at or above which a tackle wins the ball cleanly.</summary>
+        public const float TackleCleanMargin = 0.05f;
+        /// <summary>Margin at or above which a tackle at least knocks the ball loose.</summary>
+        public const float TackleDeflectMargin = -0.08f;
+        /// <summary>Sliding is a bigger commitment: margin modifier.</summary>
+        public const float SlideBonus = -0.05f;
+        /// <summary>A standing tackle failing by this much from behind is a foul.</summary>
+        public const float StandingFoulMargin = -0.3f;
+        /// <summary>A sliding tackle failing by this much is a foul.</summary>
+        public const float SlideFoulMargin = -0.15f;
+        /// <summary>Speed (m/s) a sliding player carries.</summary>
+        public const float SlideSpeed = 6.0f;
+        /// <summary>A slider cannot act or steer for this long.</summary>
+        public const float SlideLockSeconds = 0.7f;
+        /// <summary>A failed standing tackle leaves the player unbalanced for this long.</summary>
+        public const float FailedTackleLockSeconds = 0.25f;
+        /// <summary>Speed (m/s) the ball squirts out with after a won challenge.</summary>
+        public const float ChallengeLooseSpeed = 2.5f;
+        /// <summary>Intercept score at or above which the ball is taken.</summary>
+        public const float InterceptCleanThreshold = 0.25f;
+        /// <summary>Intercept score at or above which the ball is at least blocked/deflected.</summary>
+        public const float InterceptBlockThreshold = 0.05f;
+        /// <summary>Half-width of the seeded noise on an intercept score.</summary>
+        public const float InterceptNoise = 0.1f;
+        /// <summary>A blocked ball keeps this share of its speed.</summary>
+        public const float BlockSpeedFactor = 0.3f;
+        /// <summary>A ball faster than this is blocked rather than controlled.</summary>
+        public const float ShotSpeedForBlock = 14.0f;
+        // ---- goalkeeper rush
+        /// <summary>A rush is only reasonable when the ball is this close to the goalkeeper.</summary>
+        public const float RushMaxDistance = 12.0f;
+        /// <summary>How long an accepted rush request stays active.</summary>
+        public const float RushSeconds = 1.2f;
+        /// <summary>After a kick the same player cannot start another action for this long.</summary>
+        public const float KickCooldownSeconds = 0.25f;
+        /// <summary>Vertical speed of a normal shot as a share of its horizontal speed (a driven shot).</summary>
+        public const float ShotLoft = 0.06f;
+        /// <summary>Vertical speed of a curved shot as a share of its horizontal speed (it must be in the air for the curve to act).</summary>
+        public const float CurveLift = 0.14f;
+        /// <summary>How long a shield (A tap with the ball) lasts.</summary>
+        public const float ShieldSeconds = 1.0f;
+        /// <summary>Dribble skill added to a carrier who is shielding the ball.</summary>
+        public const float ShieldBonus = 0.15f;
+        /// <summary>A deliberate control action adds this to the first-touch score.</summary>
+        public const float ControlActionBonus = 0.1f;
+        /// <summary>A goalkeeper in goal reaches this many times the normal touch reach with no diving ability...</summary>
+        public const float KeeperReachBase = 1.2f;
+        /// <summary>...and this many more with perfect diving.</summary>
+        public const float KeeperReachRange = 0.8f;
+        /// <summary>A parried ball keeps this share of its speed.</summary>
+        public const float KeeperParryFactor = 0.5f;
+        /// <summary>A ball in flight (pass, shot, deflection) slower than this is simply free.</summary>
+        public const float FreeBallSpeed = 1.0f;
+        /// <summary>How much the dribbler's own skill adds to the ball control quality while he runs with the ball.</summary>
+        public const float DribbleGainRange = 0.5f;
+        /// <summary>A plain shot may carry a curve up to this share of the full curve (the full curve needs the curved-shot skill).</summary>
+        public const float BasicCurveLimit = 0.5f;
+        // ---- stamina cost per action (points of 0..100)
+        /// <summary>Pass at full power (half at zero power).</summary>
+        public const float PassStaminaCost = 0.5f;
+        /// <summary>Shot at full power.</summary>
+        public const float ShotStaminaCost = 1.5f;
+        /// <summary>Clearance at full power.</summary>
+        public const float ClearanceStaminaCost = 1.5f;
+        /// <summary>Standing tackle.</summary>
+        public const float TackleStaminaCost = 2.5f;
+        /// <summary>Sliding tackle.</summary>
+        public const float SlideStaminaCost = 6.0f;
+        /// <summary>Physical challenge.</summary>
+        public const float ChallengeStaminaCost = 3.0f;
+        /// <summary>Intercept/block.</summary>
+        public const float InterceptStaminaCost = 1.5f;
+        /// <summary>Goalkeeper rush.</summary>
+        public const float RushStaminaCost = 1.0f;
+    }
+
+    /// <summary>The editable copy of <see cref="ActionDefaults"/>.</summary>
+    [Serializable]
+    public sealed class ActionTuning
+    {
+
+        // ---- geometry (metres): who can touch the ball
+        public float TouchReach = ActionDefaults.TouchReach;
+        public float KickReach = ActionDefaults.KickReach;
+        public float TackleReach = ActionDefaults.TackleReach;
+        public float SlideReach = ActionDefaults.SlideReach;
+        public float ChallengeReach = ActionDefaults.ChallengeReach;
+        public float InterceptReach = ActionDefaults.InterceptReach;
+        public float MaxTouchHeight = ActionDefaults.MaxTouchHeight;
+        public float ReTouchCooldown = ActionDefaults.ReTouchCooldown;
+        // ---- control, first touch and dribbling
+        public float ControlDistance = ActionDefaults.ControlDistance;
+        public float LeadPerSpeed = ActionDefaults.LeadPerSpeed;
+        public float LooseBallDistance = ActionDefaults.LooseBallDistance;
+        public float ControlSpeed = ActionDefaults.ControlSpeed;
+        public float CatchUpAcceleration = ActionDefaults.CatchUpAcceleration;
+        public float CatchUpFloor = ActionDefaults.CatchUpFloor;
+        public float PullGain = ActionDefaults.PullGain;
+        public float FirstTouchDistance = ActionDefaults.FirstTouchDistance;
+        public float MaxControlAngleDegrees = ActionDefaults.MaxControlAngleDegrees;
+        public float FirstTouchMaxBallSpeed = ActionDefaults.FirstTouchMaxBallSpeed;
+        public float CleanControlThreshold = ActionDefaults.CleanControlThreshold;
+        public float HeavyTouchThreshold = ActionDefaults.HeavyTouchThreshold;
+        public float FirstTouchNoise = ActionDefaults.FirstTouchNoise;
+        public float DeflectSpeed = ActionDefaults.DeflectSpeed;
+        public float PressureRadius = ActionDefaults.PressureRadius;
+        public float PressureEffect = ActionDefaults.PressureEffect;
+        public float PressureSeconds = ActionDefaults.PressureSeconds;
+        public float PressureDrainPerSecond = ActionDefaults.PressureDrainPerSecond;
+        // ---- kicking: speeds (m/s), errors (degrees)
+        public float DefaultPower = ActionDefaults.DefaultPower;
+        public float PassMinSpeed = ActionDefaults.PassMinSpeed;
+        public float PassMaxSpeed = ActionDefaults.PassMaxSpeed;
+        public float ThroughSpeedBoost = ActionDefaults.ThroughSpeedBoost;
+        public float LongPassMinSpeed = ActionDefaults.LongPassMinSpeed;
+        public float LongPassMaxSpeed = ActionDefaults.LongPassMaxSpeed;
+        public float LongPassLoft = ActionDefaults.LongPassLoft;
+        public float ShotMinSpeed = ActionDefaults.ShotMinSpeed;
+        public float ShotMaxSpeed = ActionDefaults.ShotMaxSpeed;
+        public float ChipMinSpeed = ActionDefaults.ChipMinSpeed;
+        public float ChipMaxSpeed = ActionDefaults.ChipMaxSpeed;
+        public float ChipVerticalSpeed = ActionDefaults.ChipVerticalSpeed;
+        public float ClearanceMinSpeed = ActionDefaults.ClearanceMinSpeed;
+        public float ClearanceMaxSpeed = ActionDefaults.ClearanceMaxSpeed;
+        public float ClearanceLoft = ActionDefaults.ClearanceLoft;
+        public float PassMaxError = ActionDefaults.PassMaxError;
+        public float ThroughExtraError = ActionDefaults.ThroughExtraError;
+        public float LongPassMaxError = ActionDefaults.LongPassMaxError;
+        public float ShotMaxError = ActionDefaults.ShotMaxError;
+        public float CurveExtraError = ActionDefaults.CurveExtraError;
+        public float ChipMaxError = ActionDefaults.ChipMaxError;
+        public float ClearanceMaxError = ActionDefaults.ClearanceMaxError;
+        public float PowerErrorShare = ActionDefaults.PowerErrorShare;
+        public float WeakFootAngleDegrees = ActionDefaults.WeakFootAngleDegrees;
+        public float WeakFootFloor = ActionDefaults.WeakFootFloor;
+        public float StaminaQualityBase = ActionDefaults.StaminaQualityBase;
+        public float CurveSpinRate = ActionDefaults.CurveSpinRate;
+        public float MagnusCoefficient = ActionDefaults.MagnusCoefficient;
+        public float ShotCloseRange = ActionDefaults.ShotCloseRange;
+        // ---- defending
+        public float TackleNoise = ActionDefaults.TackleNoise;
+        public float TackleCleanMargin = ActionDefaults.TackleCleanMargin;
+        public float TackleDeflectMargin = ActionDefaults.TackleDeflectMargin;
+        public float SlideBonus = ActionDefaults.SlideBonus;
+        public float StandingFoulMargin = ActionDefaults.StandingFoulMargin;
+        public float SlideFoulMargin = ActionDefaults.SlideFoulMargin;
+        public float SlideSpeed = ActionDefaults.SlideSpeed;
+        public float SlideLockSeconds = ActionDefaults.SlideLockSeconds;
+        public float FailedTackleLockSeconds = ActionDefaults.FailedTackleLockSeconds;
+        public float ChallengeLooseSpeed = ActionDefaults.ChallengeLooseSpeed;
+        public float InterceptCleanThreshold = ActionDefaults.InterceptCleanThreshold;
+        public float InterceptBlockThreshold = ActionDefaults.InterceptBlockThreshold;
+        public float InterceptNoise = ActionDefaults.InterceptNoise;
+        public float BlockSpeedFactor = ActionDefaults.BlockSpeedFactor;
+        public float ShotSpeedForBlock = ActionDefaults.ShotSpeedForBlock;
+        // ---- goalkeeper rush
+        public float RushMaxDistance = ActionDefaults.RushMaxDistance;
+        public float RushSeconds = ActionDefaults.RushSeconds;
+        // ---- stamina cost per action (points of 0..100)
+        public float PassStaminaCost = ActionDefaults.PassStaminaCost;
+        public float ShotStaminaCost = ActionDefaults.ShotStaminaCost;
+        public float ClearanceStaminaCost = ActionDefaults.ClearanceStaminaCost;
+        public float TackleStaminaCost = ActionDefaults.TackleStaminaCost;
+        public float SlideStaminaCost = ActionDefaults.SlideStaminaCost;
+        public float ChallengeStaminaCost = ActionDefaults.ChallengeStaminaCost;
+        public float InterceptStaminaCost = ActionDefaults.InterceptStaminaCost;
+        public float RushStaminaCost = ActionDefaults.RushStaminaCost;
+        public float KickCooldownSeconds = ActionDefaults.KickCooldownSeconds;
+        public float ShotLoft = ActionDefaults.ShotLoft;
+        public float CurveLift = ActionDefaults.CurveLift;
+        public float ShieldSeconds = ActionDefaults.ShieldSeconds;
+        public float ShieldBonus = ActionDefaults.ShieldBonus;
+        public float ControlActionBonus = ActionDefaults.ControlActionBonus;
+        public float KeeperReachBase = ActionDefaults.KeeperReachBase;
+        public float KeeperReachRange = ActionDefaults.KeeperReachRange;
+        public float KeeperParryFactor = ActionDefaults.KeeperParryFactor;
+        public float FreeBallSpeed = ActionDefaults.FreeBallSpeed;
+        public float DribbleGainRange = ActionDefaults.DribbleGainRange;
+        public float BasicCurveLimit = ActionDefaults.BasicCurveLimit;
+    }
+}

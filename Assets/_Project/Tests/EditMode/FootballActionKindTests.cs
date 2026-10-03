@@ -25,7 +25,10 @@ namespace FS27.Core.Tests
             string[] added = { "CurvedShot", "Chip", "WallPass", "ThroughPass", "SkillMove", "SkillLobPass", "GoalkeeperRush" };
             for (int i = 0; i < added.Length; i++)
                 Assert.AreEqual(16 + i, (int)Enum.Parse(typeof(FootballActionKind), added[i]), added[i]);
-            Assert.AreEqual(23, Enum.GetValues(typeof(FootballActionKind)).Length, "no filler values");
+            string[] phase4 = { "Pressure", "SlidingTackle", "PhysicalChallenge", "Clearance" };
+            for (int i = 0; i < phase4.Length; i++)
+                Assert.AreEqual(23 + i, (int)Enum.Parse(typeof(FootballActionKind), phase4[i]), phase4[i]);
+            Assert.AreEqual(27, Enum.GetValues(typeof(FootballActionKind)).Length, "no filler values: 16 original + 7 (Phase 1 closure) + 4 (Phase 4)");
         }
 
         [Test]

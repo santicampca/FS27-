@@ -114,6 +114,10 @@ namespace FS27.Core
             Act(c, "skill_move", FootballActionKind.SkillMove, MovementStyle.Feint, 0f, 6f, false, 0.7f, "feint", "skill");
             Act(c, "pass_skill_lob", FootballActionKind.SkillLobPass, MovementStyle.Default, 0f, 6f, false, 0.7f, "pass", "skill");
             Act(c, "gk_rush", FootballActionKind.GoalkeeperRush, MovementStyle.Default, 0f, 7f, false, 0.8f, "rush");
+            Act(c, "press_contain", FootballActionKind.Pressure, MovementStyle.Press, 0f, 7f, true, 0.9f, "press", "contain");
+            Act(c, "tackle_slide", FootballActionKind.SlidingTackle, MovementStyle.Default, 3f, 7f, false, 0.8f, "tackle", "slide");
+            Act(c, "challenge_shoulder", FootballActionKind.PhysicalChallenge, MovementStyle.Default, 0f, 7f, false, 0.6f, "tackle", "challenge");
+            Act(c, "clearance_kick", FootballActionKind.Clearance, MovementStyle.Default, 0f, 7f, false, 0.65f, "clearance");
             return c;
         }
 

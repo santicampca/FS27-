@@ -88,6 +88,21 @@ namespace FS27.Core
         public LocomotionState Locomotion;
         /// <summary>His movement abilities, resolved from his attributes when the match is created.</summary>
         public LocomotionProfile LocomotionProfile { get; internal set; }
+        /// <summary>His action abilities, resolved from his attributes when the match is created.</summary>
+        public ActionProfile ActionProfile { get; internal set; }
+        /// <summary>Seconds he cannot start another action nor steer (a slide, a lost tackle).</summary>
+        public float ActionLockRemaining { get; internal set; }
+        /// <summary>Seconds before he may kick again.</summary>
+        public float KickCooldownRemaining { get; internal set; }
+        public float PressureRemaining { get; internal set; }
+        public float ShieldRemaining { get; internal set; }
+        /// <summary>A goalkeeper rush that was accepted and is still active (contract only: Phase 5 moves the keeper).</summary>
+        public float RushRemaining { get; internal set; }
+        public float SlideRemaining { get; internal set; }
+        internal Vec2 SlideDirection;
+        public bool IsSliding => SlideRemaining > 0f;
+        public bool IsPressing => PressureRemaining > 0f;
+        public bool IsShielding => ShieldRemaining > 0f;
         /// <summary>The joystick the engine will apply on the next steps (set through <see cref="MatchController.SetPlayerInput"/>).</summary>
         internal Vec2 PendingInput;
 

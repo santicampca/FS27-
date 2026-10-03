@@ -46,6 +46,7 @@ namespace FS27.Core
 
         public static Vec2 operator +(Vec2 a, Vec2 b) { return new Vec2(a.X + b.X, a.Y + b.Y); }
         public static Vec2 operator -(Vec2 a, Vec2 b) { return new Vec2(a.X - b.X, a.Y - b.Y); }
+        public static Vec2 operator -(Vec2 a) { return new Vec2(-a.X, -a.Y); }
         public static Vec2 operator *(Vec2 a, float s) { return new Vec2(a.X * s, a.Y * s); }
         public static Vec2 operator *(float s, Vec2 a) { return new Vec2(a.X * s, a.Y * s); }
     }

@@ -180,6 +180,8 @@ namespace FS27.Core
         public float ArenaWallFriction = MatchDefaults.ArenaWallFriction;
 
         // ---- simulation ----
+        /// <summary>Seed of the match's deterministic randomness (first touches, errors, duels). The same seed and the same inputs give the same match.</summary>
+        public int Seed = 1;
         /// <summary>Fixed simulation step (seconds). The Core never uses a variable step.</summary>
         public float SimulationStepSeconds = MatchDefaults.SimulationStepSeconds;
 

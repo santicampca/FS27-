@@ -23,6 +23,12 @@ namespace FS27.Core
         public TeamSide PreviousTouchTeam { get; internal set; }
         public string PreviousTouchPlayerId { get; internal set; }
 
+        /// <summary>The last action that moved the ball (a kick, a tackle...), with its player. None until one happens.</summary>
+        public FootballActionKind LastAction { get; internal set; }
+        public string LastActionPlayerId { get; internal set; }
+        /// <summary>Seconds since the last touch (Core time). Large until the first touch.</summary>
+        public float SecondsSinceTouch { get; internal set; } = 999f;
+
         /// <summary>Height of the ball's lowest point above the ground, derived from the position (never stored twice).</summary>
         public float Height(float radius) { return Physics.Position.Y - radius; }
 
@@ -37,6 +43,7 @@ namespace FS27.Core
             HasLastTouch = true;
             LastTouchTeam = team;
             LastTouchPlayerId = playerId;
+            SecondsSinceTouch = 0f;
         }
 
         internal void ClearTouches()

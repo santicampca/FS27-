@@ -1328,7 +1328,7 @@ namespace FS27.Core.Tests
         [Test]
         public void ActionKindValues_StayUntouched()
         {
-            Assert.AreEqual(23, Enum.GetValues(typeof(FootballActionKind)).Length);
+            Assert.AreEqual(27, Enum.GetValues(typeof(FootballActionKind)).Length);
             Assert.AreEqual(15, (int)FootballActionKind.GoalkeeperDistribution);
             Assert.AreEqual(22, (int)FootballActionKind.GoalkeeperRush);
         }

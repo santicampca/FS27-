@@ -31,7 +31,17 @@ namespace FS27.Core
         PenaltyShootoutStarted,
         PenaltyKickTaken,
         PenaltyShootoutEnded,
-        MatchEnded
+        MatchEnded,
+        // ---- Phase 4: actions and ball (appended; the numbers above are unchanged) ----
+        /// <summary>A player touched the ball (a first touch, a kick, a tackle that reached it...).</summary>
+        BallTouched,
+        PassPerformed,
+        ShotPerformed,
+        /// <summary>The ball was knocked away by a touch that did not control it (a block, a parry, a bad first touch).</summary>
+        BallDeflected,
+        TacklePerformed,
+        InterceptionPerformed,
+        ClearancePerformed
     }
 
     /// <summary>One thing that happened. Plain data, stamped with the Core time, never with Unity time.</summary>

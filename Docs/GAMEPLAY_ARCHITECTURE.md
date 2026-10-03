@@ -537,3 +537,12 @@ Detalle y fórmulas en [LOCOMOTION_STAMINA.md](LOCOMOTION_STAMINA.md). Lo que af
 - El estado de movimiento vive en el `MatchState` (`MatchPlayer.Locomotion`); el motor lo avanza a 60 Hz solo con el balón vivo; Unity solo lo refleja.
 - Recuperación de intervalos: las mismas fracciones de la Fase 1 (Classic 25 %, Arena 10 %), aplicadas también a la stamina 0–100.
 - **No implementado (fases posteriores):** pases, tiros, regates, entradas, control del balón, skills, IA, formaciones, contacto entre jugadores, límites del campo, animaciones.
+
+---
+
+## Q. FASE 4 — acciones y balón (resumen)
+Detalle y fórmulas en [ACTIONS_AND_BALL.md](ACTIONS_AND_BALL.md). Lo que afecta a este documento:
+- Cumple la fase 4 de la hoja de ruta (acciones base: control, pase, tiro normal/efecto/vaselina, conducción, protección, contactos y duelos) y las acciones defensivas del enum de la fase 5 (se añadieron al final de `FootballActionKind`: `Pressure`, `SlidingTackle`, `PhysicalChallenge`, `Clearance`). El pad con gestos A/B se reduce a un contrato neutro (`ActionInput` + `ActionMapper`); la capa táctil de Unity sigue pendiente.
+- El Core es la autoridad: `Input → MatchController → acción → balón (BallSimulator) → MatchState → Unity`. La deuda M.2 (jugadores y balón en Unity) queda resuelta a nivel de Core: el contacto jugador–balón es determinista y vive en el motor; Unity solo refleja.
+- Posesión: una sola fuente en `MatchBall`; el balón nunca está pegado al jugador. El portero usa el mismo sistema (rush solo contrato). Arena y Classic respetan sus reglas.
+- **No implementado (fases posteriores):** IA, tácticas, formaciones, entrenadores, catálogo de skills, árbitro y reanudaciones por falta, cabezazo/centro/tiro colocado, animaciones, cámara, UI.

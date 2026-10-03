@@ -48,7 +48,10 @@ namespace FS27.Core
         InsufficientPlayers
     }
 
-    /// <summary>What the ball is doing in the match, as far as the rules are concerned.</summary>
+    /// <summary>
+    /// What the ball is doing in the match, as far as the rules are concerned. The Phase-4 ball model maps onto these names:
+    /// Free = free, Controlled = controlled by a player, InPass = passed, InShot = shot, Deflected = deflected (Rebound = off a wall), Dead = out of play, Goal = goal.
+    /// </summary>
     public enum BallMode
     {
         Free = 0,
@@ -57,8 +60,10 @@ namespace FS27.Core
         InShot,
         Rebound,
         Deflected,
-        /// <summary>Not in play (waiting for a restart, break, celebration, finished).</summary>
-        Dead
+        /// <summary>Not in play (waiting for a restart, break, finished). This is the "out of play" state of the ball model.</summary>
+        Dead,
+        /// <summary>The ball went in: the goal is being celebrated. Appended in Phase 4 (the values above keep their numbers).</summary>
+        Goal
     }
 
     /// <summary>Every default number the architecture decided, in ONE place. Settings and factories read these; no system repeats them.</summary>
