@@ -257,7 +257,7 @@ namespace FS27.Core
                     detail = ActionDetail.Lofted; eventKind = GameplayEventKind.ClearancePerformed;
                     break;
                 default: // goalkeeper distribution
-                    baseQuality = r.Long ? 0.6f * prof.KeeperKicking + 0.4f * prof.KeeperDistribution : 0.7f * prof.KeeperDistribution + 0.3f * prof.KeeperKicking;
+                    baseQuality = r.Long ? actions.KeeperLongKickShare * prof.KeeperKicking + (1f - actions.KeeperLongKickShare) * prof.KeeperDistribution : actions.KeeperShortDistributionShare * prof.KeeperDistribution + (1f - actions.KeeperShortDistributionShare) * prof.KeeperKicking;
                     minSpeed = r.Long ? actions.LongPassMinSpeed : actions.PassMinSpeed; maxSpeed = r.Long ? actions.LongPassMaxSpeed : actions.PassMaxSpeed;
                     loft = r.Long ? actions.LongPassLoft : 0f; maxError = r.Long ? actions.LongPassMaxError : actions.PassMaxError; cost = actions.PassStaminaCost;
                     detail = r.Long ? ActionDetail.Lofted : ActionDetail.Kicked;
@@ -267,12 +267,12 @@ namespace FS27.Core
             float quality = ActionModel.Clamp01(baseQuality * footFactor * stamina);
             float errorDegrees = ActionModel.KickError(maxError, quality, power, extraError, Noise(), actions);
             Vec2 aimed = ActionModel.Rotate(dir, errorDegrees);
-            float speed = ActionModel.Lerp(minSpeed, maxSpeed, power) * (0.85f + 0.15f * quality);
+            float speed = ActionModel.Lerp(minSpeed, maxSpeed, power) * (actions.KickSpeedQualityBase + (1f - actions.KickSpeedQualityBase) * quality);
             Vec3 velocity = new Vec3(aimed.X * speed, speed * loft, aimed.Y * speed);
 
             if (carrier) ClearPossession();
             SetBallVelocity(velocity);
-            b.Physics.Spin = curve != 0f ? new Vec3(0f, curve * actions.CurveSpinRate * (0.5f + 0.5f * quality), 0f) : Vec3.Zero;
+            b.Physics.Spin = curve != 0f ? new Vec3(0f, curve * actions.CurveSpinRate * (actions.CurveSpinQualityBase + (1f - actions.CurveSpinQualityBase) * quality), 0f) : Vec3.Zero;
             b.Mode = (eventKind == GameplayEventKind.PassPerformed) ? BallMode.InPass : (eventKind == GameplayEventKind.ClearancePerformed ? BallMode.Free : BallMode.InShot);
             if (b.Mode == BallMode.Free && velocity.Magnitude > actions.FreeBallSpeed) b.Mode = BallMode.InPass;
 
@@ -286,7 +286,7 @@ namespace FS27.Core
             res.Quality = quality;
             res.Direction = aimed;
             res.BallVelocity = velocity;
-            res.StaminaCost = SpendStamina(p, cost * (0.5f + 0.5f * power));
+            res.StaminaCost = SpendStamina(p, cost * (actions.PowerCostBase + (1f - actions.PowerCostBase) * power));
             res.GainedPossession = false;
             return res;
         }
@@ -357,8 +357,8 @@ namespace FS27.Core
             float score;
             if (keeper)
             {
-                float quality = 0.6f * prof.KeeperHandling + 0.4f * prof.KeeperReflexes;
-                float eased = relSpeed * (1.2f - 0.6f * prof.KeeperReflexes);
+                float quality = actions.KeeperHandlingShare * prof.KeeperHandling + (1f - actions.KeeperHandlingShare) * prof.KeeperReflexes;
+                float eased = relSpeed * (actions.KeeperReflexEaseBase - actions.KeeperReflexEaseRange * prof.KeeperReflexes);
                 score = ActionModel.FirstTouchScore(quality, 1f, StaminaFactorOf(p), eased, 0f, bonus, Noise(), actions);
             }
             else
@@ -385,9 +385,9 @@ namespace FS27.Core
                 if (score >= actions.HeavyTouchThreshold)
                 {
                     // parry: the ball is pushed away, slower and to a side
-                    Vec2 away = ActionModel.Rotate(ActionModel.DirectionOr(-Flat(b.Physics.Velocity), -AttackDirectionOf(p.Team)), (Noise() >= 0f ? 1f : -1f) * (35f + 25f * Math.Abs(Noise())));
+                    Vec2 away = ActionModel.Rotate(ActionModel.DirectionOr(-Flat(b.Physics.Velocity), -AttackDirectionOf(p.Team)), (Noise() >= 0f ? 1f : -1f) * (actions.ParryAngleMinDegrees + actions.ParryAngleRangeDegrees * Math.Abs(Noise())));
                     float speed = Math.Max(actions.DeflectSpeed, b.Physics.Speed * actions.KeeperParryFactor);
-                    SetBallVelocity(new Vec3(away.X * speed, 2f, away.Y * speed));
+                    SetBallVelocity(new Vec3(away.X * speed, actions.ParryLift, away.Y * speed));
                     res.Kind = FootballActionKind.GoalkeeperSave;
                     res.Outcome = ActionOutcome.Completed;
                     res.Detail = ActionDetail.Parried;
@@ -416,8 +416,8 @@ namespace FS27.Core
 
             // bad touch: the ball bounces off him
             Vec2 off = ActionModel.DirectionOr(toBall, ActionModel.DirectionOr(-Flat(b.Physics.Velocity), facing));
-            Vec2 carry = Flat(b.Physics.Velocity) * 0.25f;
-            SetBallVelocity(new Vec3(off.X * actions.DeflectSpeed + carry.X, Math.Max(0f, vy * 0.2f), off.Y * actions.DeflectSpeed + carry.Y));
+            Vec2 carry = Flat(b.Physics.Velocity) * actions.DeflectCarryShare;
+            SetBallVelocity(new Vec3(off.X * actions.DeflectSpeed + carry.X, Math.Max(0f, vy * actions.DeflectLiftShare), off.Y * actions.DeflectSpeed + carry.Y));
             res.Kind = FootballActionKind.Control;
             res.Outcome = ActionOutcome.Failed;
             res.Detail = ActionDetail.Deflected;
@@ -501,7 +501,7 @@ namespace FS27.Core
             float attack = p.ActionProfile.TackleSkill * PerformanceOf(p);
             float defend = target.ActionProfile.DribbleSkill * PerformanceOf(target) + (target.IsShielding ? actions.ShieldBonus : 0f);
             float margin = attack - defend + DuelNoise() + (slide ? actions.SlideBonus : 0f);
-            res.Quality = ActionModel.Clamp01(0.5f + margin);
+            res.Quality = ActionModel.Clamp01(actions.QualityReportBase + margin);
             if (slide) StartSlide(p, dir);
 
             return ResolveDuel(res, p, target, margin, slide ? actions.SlideFoulMargin : actions.StandingFoulMargin, GameplayEventKind.TacklePerformed);
@@ -518,7 +518,7 @@ namespace FS27.Core
             float attack = p.ActionProfile.ChallengeStrength * PerformanceOf(p);
             float defend = target.ActionProfile.ResistStrength * PerformanceOf(target) + (target.IsShielding ? actions.ShieldBonus : 0f);
             float margin = attack - defend + DuelNoise();
-            res.Quality = ActionModel.Clamp01(0.5f + margin);
+            res.Quality = ActionModel.Clamp01(actions.QualityReportBase + margin);
             return ResolveDuel(res, p, target, margin, actions.StandingFoulMargin, GameplayEventKind.TacklePerformed);
         }
 
@@ -570,13 +570,13 @@ namespace FS27.Core
             if (b.Mode == BallMode.Dead || b.Mode == BallMode.Goal) return Reject(res, ActionRejection.MatchNotLive);
             if (b.HasPossession) return Reject(res, ActionRejection.BallNotAvailable);
             if (b.HasLastTouch && b.LastTouchTeam == p.Team && (b.Mode == BallMode.InPass || b.Mode == BallMode.InShot)) return Reject(res, ActionRejection.BallNotAvailable);
-            if (BallDistanceTo(p) > actions.InterceptReach || BallHeight() > actions.MaxTouchHeight * 1.6f) return Reject(res, ActionRejection.BallOutOfReach);
+            if (BallDistanceTo(p) > actions.InterceptReach || BallHeight() > actions.MaxTouchHeight * actions.InterceptHeightFactor) return Reject(res, ActionRejection.BallOutOfReach);
 
             res.StaminaCost = SpendStamina(p, actions.InterceptStaminaCost);
             float speed = b.Physics.Speed;
-            float difficulty = ActionModel.Clamp01(speed / actions.ShotSpeedForBlock) * 0.5f;
+            float difficulty = ActionModel.Clamp01(speed / actions.ShotSpeedForBlock) * actions.InterceptDifficultyWeight;
             float score = p.ActionProfile.InterceptQuality * PerformanceOf(p) - difficulty + Noise() * actions.InterceptNoise;
-            res.Quality = ActionModel.Clamp01(score + 0.5f);
+            res.Quality = ActionModel.Clamp01(score + actions.QualityReportBase);
             bool tooFastToTake = speed > actions.ShotSpeedForBlock;
 
             if (!block && !tooFastToTake && score >= actions.InterceptCleanThreshold)
@@ -591,9 +591,9 @@ namespace FS27.Core
             if (score >= actions.InterceptBlockThreshold)
             {
                 Vec2 incoming = Flat(b.Physics.Velocity);
-                Vec2 away = ActionModel.Rotate(ActionModel.DirectionOr(-incoming, -AttackDirectionOf(p.Team)), Noise() * 55f);
+                Vec2 away = ActionModel.Rotate(ActionModel.DirectionOr(-incoming, -AttackDirectionOf(p.Team)), Noise() * actions.BlockAngleSpreadDegrees);
                 float newSpeed = Math.Max(actions.DeflectSpeed, speed * actions.BlockSpeedFactor);
-                SetBallVelocity(new Vec3(away.X * newSpeed, Math.Min(2f, speed * 0.1f), away.Y * newSpeed));
+                SetBallVelocity(new Vec3(away.X * newSpeed, Math.Min(actions.BlockMaxLift, speed * actions.BlockLiftShare), away.Y * newSpeed));
                 res.BallVelocity = b.Physics.Velocity;
                 res.Direction = away;
                 ReleaseTouchedBall(p, res.Kind, true);
@@ -713,7 +713,7 @@ namespace FS27.Core
                 if (o.IsActive && o.IsPressing && (o.Locomotion.Position - p.Locomotion.Position).Magnitude <= actions.PressureRadius) pressing++;
             }
             ActionProfile prof = p.ActionProfile;
-            float q = 0.5f * prof.ControlQuality + 0.5f * prof.DribbleSkill;
+            float q = actions.DribbleControlShare * prof.ControlQuality + (1f - actions.DribbleControlShare) * prof.DribbleSkill;
             return ActionModel.Clamp01(q * StaminaFactorOf(p) - actions.PressureEffect * pressing + (p.IsShielding ? actions.ShieldBonus : 0f));
         }
 

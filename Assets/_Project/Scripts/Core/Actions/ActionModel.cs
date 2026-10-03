@@ -77,8 +77,8 @@ namespace FS27.Core
         /// </summary>
         public static float FirstTouchScore(float quality, float footFactor, float staminaFactor, float relativeBallSpeed, float angleDegrees, float bonus, float noise, ActionTuning t)
         {
-            float difficulty = Clamp01(relativeBallSpeed / t.FirstTouchMaxBallSpeed) * 0.8f + Math.Abs(angleDegrees) / 180f * 0.25f;
-            if (Math.Abs(angleDegrees) > t.MaxControlAngleDegrees) difficulty += 0.3f;
+            float difficulty = Clamp01(relativeBallSpeed / t.FirstTouchMaxBallSpeed) * t.FirstTouchSpeedWeight + Math.Abs(angleDegrees) / 180f * t.FirstTouchAngleWeight;
+            if (Math.Abs(angleDegrees) > t.MaxControlAngleDegrees) difficulty += t.FirstTouchBehindPenalty;
             return quality * footFactor * staminaFactor - difficulty + bonus + noise * t.FirstTouchNoise;
         }
     }

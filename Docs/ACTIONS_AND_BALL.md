@@ -13,7 +13,7 @@ Flujo único: **Input → `MatchController` → acción del jugador → balón (
 Sin cambios de física propios. Un ajuste **DECISION MADE DURING PHASE 4**: el balón que crea el motor usa `MagnusCoefficient = 0.012` (antes 0) para que el efecto de un tiro con curva tenga fuerza; un `BallParameters` explícito del llamador se respeta tal cual. Con el balón sin spin el Magnus no hace nada, así que el resto del juego no cambia. Los toques se aplican con `ApplyVelocityChange` (la velocidad la decide la acción, el simulador solo la aplica). Estados: `BallMode` ya existía y se mapea así — Libre=`Free`, Controlado=`Controlled`, Pasado=`InPass`, Disparado=`InShot`, Desviado=`Deflected` (`Rebound` = rebote en pared), Fuera de juego=`Dead`, Gol=`Goal` (**nuevo, añadido al final**; el motor lo pone durante la celebración). Un balón en vuelo que se detiene pasa a `Free`.
 
 ## 3. Posesión
-Una sola fuente: `MatchBall.HasPossession / PossessingTeam / PossessingPlayerId` (`MatchController.BallCarrier` es solo una lectura). **El balón nunca está pegado al jugador**: tiene su propia posición y velocidad; "controlado" significa que el paso de conducción lo mantiene cerca y que puede perderse. Se adquiere por control limpio, entrada ganada o intercepción; se pierde al patear, perder el control (balón a más de `LooseBallDistance`), por una entrada o choque ajeno, o si el poseedor deja de estar activo (sustituido o expulsado). Cambiar de equipo emite `PossessionChanged`. Se guardan último y penúltimo toque (para el asistente) y la última acción del balón (`LastAction`, `LastActionPlayerId`, `SecondsSinceTouch`).
+Una sola fuente: `MatchBall.HasPossession / PossessingTeam / PossessingPlayerId` (`MatchController.BallCarrier` es solo una lectura). **El balón nunca está pegado al jugador**: tiene su propia posición y velocidad; "controlado" significa que el paso de conducción lo mantiene cerca y que puede perderse. Se adquiere por control limpio, entrada ganada o intercepción; se pierde al patear, perder el control (balón a más de `LooseBallDistance`), por una entrada o choque ajeno, o al salir del campo el jugador. Cambiar de equipo emite `PossessionChanged`. Se guardan último y penúltimo toque (para el asistente) y la última acción del balón (`LastAction`, `LastActionPlayerId`, `SecondsSinceTouch`).
 
 ## 4. Control
 Un jugador activo toca solo el balón si está a ≤ `TouchReach` y el balón está bajo (`MaxTouchHeight`); el más cercano gana el toque (empate: orden del plantel, local antes que visitante); el último en tocar no lo recoge solo hasta pasados `ReTouchCooldown` s; un balón controlado por otro solo se disputa con entradas. Calidad de control = Control 55 % + Technique 20 % + Agility 15 % + Speed 10 % (todo /99). La acción deliberada `Control` suma `ControlActionBonus`. No existe ningún atributo nuevo: el perfil (`ActionProfile`) se **deriva** de los 12 atributos oficiales al crear el partido (por `IPlayerLookup`, como en la Fase 3) y no se guarda ningún atributo en el motor.
@@ -73,7 +73,7 @@ Resultados explícitos: `ActionOutcome` Accepted / Rejected / Failed / Completed
 Las acciones no frenan al jugador (se puede pasar o disparar corriendo); la entrada deslizante y la entrada fallida bloquean el input unos instantes (`ActionLockRemaining`) con el mismo `LocomotionStepper`. El estado de acción (`PressureRemaining`, `ShieldRemaining`, `SlideRemaining`, `RushRemaining`, `KickCooldownRemaining`) vive en `MatchPlayer`. La velocidad del jugador entra en el primer toque (velocidad relativa) y en la conducción (el balón sigue su velocidad).
 
 ## 18. Presentación en Unity
-`ActionBridge` (nuevo) reenvía el input neutro al Core y devuelve su respuesta; `MatchBridge` expone `ActionPerformed` y sigue reflejando `MatchState.Ball` en el rigidbody. No hay lógica de decisión en Unity. **Honestidad sobre la verificación:** el código de Unity solo se compiló contra stubs de UnityEngine escritos a mano; **no se ha ejecutado en el editor de Unity**.
+`ActionBridge` (nuevo) reenvía el input neutro al Core y devuelve su respuesta; `MatchBridge` expone `ActionPerformed` y sigue reflejando `MatchState.Ball` en el rigidbody. No hay lógica de decisión en Unity. Tras la auditoría: `MatchBridge.RequestTouch` (el toque antiguo de `BallInteractor`) se ignora cuando el Core tiene jugadores, y con plantillas `StartMatch` ya no confirma el saque solo (el host coloca a los jugadores con `PlacePlayer` y llama a `MatchBridge.ConfirmRestartReady`). **Honestidad sobre la verificación:** el código de Unity solo se compiló contra stubs de UnityEngine escritos a mano; **no se ha ejecutado en el editor de Unity**.
 
 ## 19. Límites de la Fase 4
 Sin IA (no se elige destinatario de pase ni compañero de pared), sin tácticas/formaciones/entrenadores, sin catálogo de skills (solo contratos), sin cabezazo/centro/tiro colocado (`NotSupported`), sin árbitro ni reanudaciones por falta, sin fuera de juego, sin animaciones ni arte (los perfiles son `Planned`), sin movimiento propio del portero, sin colisión entre jugadores, sin regla de pase atrás al portero. Los valores son iniciales y se reafinan en una fase de balance.
@@ -206,6 +206,34 @@ Sin IA (no se elige destinatario de pase ni compañero de pared), sin tácticas/
 | `FreeBallSpeed` | 1.0 | A ball in flight (pass, shot, deflection) slower than this is simply free. |
 | `DribbleGainRange` | 0.5 | How much the dribbler's own skill adds to the ball control quality while he runs with the ball. |
 | `BasicCurveLimit` | 0.5 | A plain shot may carry a curve up to this share of the full curve (the full curve needs the curved-shot skill). |
+
+**formula weights (the shapes of the formulas; the weights of the attributes are in ActionProfile)**
+
+| Parámetro | Valor | Qué es |
+|---|---|---|
+| `KeeperLongKickShare` | 0.6 | Long distribution quality: this share Kicking, the rest Distribution. |
+| `KeeperShortDistributionShare` | 0.7 | Short distribution quality: this share Distribution, the rest Kicking. |
+| `KickSpeedQualityBase` | 0.85 | A kick's speed is scaled by Base + (1 - Base) x quality. |
+| `CurveSpinQualityBase` | 0.5 | A curve's spin is scaled by Base + (1 - Base) x quality. |
+| `PowerCostBase` | 0.5 | A kick costs Base of its stamina at power 0 and all of it at power 1. |
+| `QualityReportBase` | 0.5 | Duel margins are reported as a 0..1 quality around this value. |
+| `KeeperHandlingShare` | 0.6 | Goalkeeper touch quality: this share Handling, the rest Reflexes. |
+| `KeeperReflexEaseBase` | 1.2 | A keeper's reflexes ease the ball: difficulty speed x (Base - Range x reflexes). |
+| `KeeperReflexEaseRange` | 0.6 | See KeeperReflexEaseBase. |
+| `ParryAngleMinDegrees` | 35.0 | A parry sends the ball at least this far off the line it came on. |
+| `ParryAngleRangeDegrees` | 25.0 | ...and up to this much further. |
+| `ParryLift` | 2.0 | Vertical speed (m/s) of a parried ball. |
+| `DeflectCarryShare` | 0.25 | A bad first touch keeps this share of the ball's own horizontal velocity. |
+| `DeflectLiftShare` | 0.2 | A bad first touch keeps this share of the ball's vertical velocity. |
+| `InterceptHeightFactor` | 1.6 | An intercept reaches this many times the normal touch height. |
+| `InterceptDifficultyWeight` | 0.5 | Weight of the ball's speed in the intercept difficulty. |
+| `BlockAngleSpreadDegrees` | 55.0 | A block sends the ball off up to this angle either side of straight back. |
+| `BlockMaxLift` | 2.0 | Largest vertical speed (m/s) of a blocked ball. |
+| `BlockLiftShare` | 0.1 | Share of the ball's speed that becomes lift when blocked. |
+| `DribbleControlShare` | 0.5 | Dribbling control: this share first-touch control quality, the rest dribble skill. |
+| `FirstTouchSpeedWeight` | 0.8 | Weight of the relative ball speed in the first-touch difficulty. |
+| `FirstTouchAngleWeight` | 0.25 | Weight of the approach angle in the first-touch difficulty. |
+| `FirstTouchBehindPenalty` | 0.3 | Extra difficulty when the ball comes from beyond the maximum control angle. |
 
 **stamina cost per action (points of 0..100)**
 

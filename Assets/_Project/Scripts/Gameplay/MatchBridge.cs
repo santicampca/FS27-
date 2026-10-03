@@ -67,8 +67,20 @@ namespace FS27.Gameplay
         public void StartMatch()
         {
             match.Start();
-            match.ConfirmRestartReady();
+            // With squads the players still stand at the origin: confirming now would let the Core's automatic touch hand the kick-off ball to whoever is first in the list.
+            // The host places the players (MatchController.PlacePlayer) and then calls ConfirmRestartReady.
+            if (!HasPlayers) match.ConfirmRestartReady();
             Present();
+        }
+
+        private bool HasPlayers => match.State.Home.HasSquad || match.State.Away.HasSquad;
+
+        /// <summary>The players are in place for the pending restart: play begins.</summary>
+        public bool ConfirmRestartReady()
+        {
+            bool started = match.ConfirmRestartReady();
+            Present();
+            return started;
         }
 
         private void FixedUpdate()
@@ -89,6 +101,8 @@ namespace FS27.Gameplay
 
         public void RequestTouch(Vector3 desiredHorizontalVelocity, float strength)
         {
+            // When the Core has players, contact with the ball is the Core's own (first touch, dribbling, actions): the older Unity-side touch would steal possession from it.
+            if (HasPlayers) return;
             Vec3 v = match.State.Ball.Physics.Velocity;
             float k = Mathf.Clamp01(strength);
             var delta = new Vec3((desiredHorizontalVelocity.x - v.X) * k, 0f, (desiredHorizontalVelocity.z - v.Z) * k);

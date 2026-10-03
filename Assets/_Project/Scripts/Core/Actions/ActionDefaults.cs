@@ -183,6 +183,53 @@ namespace FS27.Core
         public const float DribbleGainRange = 0.5f;
         /// <summary>A plain shot may carry a curve up to this share of the full curve (the full curve needs the curved-shot skill).</summary>
         public const float BasicCurveLimit = 0.5f;
+        // ---- formula weights (the shapes of the formulas; the weights of the attributes are in ActionProfile)
+        /// <summary>Long distribution quality: this share Kicking, the rest Distribution.</summary>
+        public const float KeeperLongKickShare = 0.6f;
+        /// <summary>Short distribution quality: this share Distribution, the rest Kicking.</summary>
+        public const float KeeperShortDistributionShare = 0.7f;
+        /// <summary>A kick's speed is scaled by Base + (1 - Base) x quality.</summary>
+        public const float KickSpeedQualityBase = 0.85f;
+        /// <summary>A curve's spin is scaled by Base + (1 - Base) x quality.</summary>
+        public const float CurveSpinQualityBase = 0.5f;
+        /// <summary>A kick costs Base of its stamina at power 0 and all of it at power 1.</summary>
+        public const float PowerCostBase = 0.5f;
+        /// <summary>Duel margins are reported as a 0..1 quality around this value.</summary>
+        public const float QualityReportBase = 0.5f;
+        /// <summary>Goalkeeper touch quality: this share Handling, the rest Reflexes.</summary>
+        public const float KeeperHandlingShare = 0.6f;
+        /// <summary>A keeper's reflexes ease the ball: difficulty speed x (Base - Range x reflexes).</summary>
+        public const float KeeperReflexEaseBase = 1.2f;
+        /// <summary>See KeeperReflexEaseBase.</summary>
+        public const float KeeperReflexEaseRange = 0.6f;
+        /// <summary>A parry sends the ball at least this far off the line it came on.</summary>
+        public const float ParryAngleMinDegrees = 35.0f;
+        /// <summary>...and up to this much further.</summary>
+        public const float ParryAngleRangeDegrees = 25.0f;
+        /// <summary>Vertical speed (m/s) of a parried ball.</summary>
+        public const float ParryLift = 2.0f;
+        /// <summary>A bad first touch keeps this share of the ball's own horizontal velocity.</summary>
+        public const float DeflectCarryShare = 0.25f;
+        /// <summary>A bad first touch keeps this share of the ball's vertical velocity.</summary>
+        public const float DeflectLiftShare = 0.2f;
+        /// <summary>An intercept reaches this many times the normal touch height.</summary>
+        public const float InterceptHeightFactor = 1.6f;
+        /// <summary>Weight of the ball's speed in the intercept difficulty.</summary>
+        public const float InterceptDifficultyWeight = 0.5f;
+        /// <summary>A block sends the ball off up to this angle either side of straight back.</summary>
+        public const float BlockAngleSpreadDegrees = 55.0f;
+        /// <summary>Largest vertical speed (m/s) of a blocked ball.</summary>
+        public const float BlockMaxLift = 2.0f;
+        /// <summary>Share of the ball's speed that becomes lift when blocked.</summary>
+        public const float BlockLiftShare = 0.1f;
+        /// <summary>Dribbling control: this share first-touch control quality, the rest dribble skill.</summary>
+        public const float DribbleControlShare = 0.5f;
+        /// <summary>Weight of the relative ball speed in the first-touch difficulty.</summary>
+        public const float FirstTouchSpeedWeight = 0.8f;
+        /// <summary>Weight of the approach angle in the first-touch difficulty.</summary>
+        public const float FirstTouchAngleWeight = 0.25f;
+        /// <summary>Extra difficulty when the ball comes from beyond the maximum control angle.</summary>
+        public const float FirstTouchBehindPenalty = 0.3f;
         // ---- stamina cost per action (points of 0..100)
         /// <summary>Pass at full power (half at zero power).</summary>
         public const float PassStaminaCost = 0.5f;
@@ -305,5 +352,28 @@ namespace FS27.Core
         public float FreeBallSpeed = ActionDefaults.FreeBallSpeed;
         public float DribbleGainRange = ActionDefaults.DribbleGainRange;
         public float BasicCurveLimit = ActionDefaults.BasicCurveLimit;
+        public float KeeperLongKickShare = ActionDefaults.KeeperLongKickShare;
+        public float KeeperShortDistributionShare = ActionDefaults.KeeperShortDistributionShare;
+        public float KickSpeedQualityBase = ActionDefaults.KickSpeedQualityBase;
+        public float CurveSpinQualityBase = ActionDefaults.CurveSpinQualityBase;
+        public float PowerCostBase = ActionDefaults.PowerCostBase;
+        public float QualityReportBase = ActionDefaults.QualityReportBase;
+        public float KeeperHandlingShare = ActionDefaults.KeeperHandlingShare;
+        public float KeeperReflexEaseBase = ActionDefaults.KeeperReflexEaseBase;
+        public float KeeperReflexEaseRange = ActionDefaults.KeeperReflexEaseRange;
+        public float ParryAngleMinDegrees = ActionDefaults.ParryAngleMinDegrees;
+        public float ParryAngleRangeDegrees = ActionDefaults.ParryAngleRangeDegrees;
+        public float ParryLift = ActionDefaults.ParryLift;
+        public float DeflectCarryShare = ActionDefaults.DeflectCarryShare;
+        public float DeflectLiftShare = ActionDefaults.DeflectLiftShare;
+        public float InterceptHeightFactor = ActionDefaults.InterceptHeightFactor;
+        public float InterceptDifficultyWeight = ActionDefaults.InterceptDifficultyWeight;
+        public float BlockAngleSpreadDegrees = ActionDefaults.BlockAngleSpreadDegrees;
+        public float BlockMaxLift = ActionDefaults.BlockMaxLift;
+        public float BlockLiftShare = ActionDefaults.BlockLiftShare;
+        public float DribbleControlShare = ActionDefaults.DribbleControlShare;
+        public float FirstTouchSpeedWeight = ActionDefaults.FirstTouchSpeedWeight;
+        public float FirstTouchAngleWeight = ActionDefaults.FirstTouchAngleWeight;
+        public float FirstTouchBehindPenalty = ActionDefaults.FirstTouchBehindPenalty;
     }
 }

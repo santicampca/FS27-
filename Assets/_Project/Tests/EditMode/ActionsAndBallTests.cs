@@ -1742,6 +1742,33 @@ namespace FS27.Core.Tests
         }
 
         [Test]
+        public void TheFormulaNumbers_AreCentralised_NoLooseTuningLiteralsInTheActionCode()
+        {
+            var literal = new System.Text.RegularExpressions.Regex(@"(?<![\w.])\d+\.\d+f|(?<![\w.])\d{2,}f");
+            foreach (string file in new[] { Path.Combine(CoreDir(), "Match", "MatchController.Actions.cs"), Path.Combine(CoreDir(), "Actions", "ActionModel.cs") })
+            {
+                foreach (string raw in File.ReadAllLines(file))
+                {
+                    string line = raw.Trim();
+                    if (line.StartsWith("//") || line.StartsWith("///")) continue;
+                    foreach (System.Text.RegularExpressions.Match m in literal.Matches(line))
+                    {
+                        bool allowed = (m.Value == "0.5f" && line.Contains("field.Length")) || (m.Value == "180f" && line.Contains("angleDegrees")) || m.Value == "999f" || m.Value == "0.0f";
+                        Assert.IsTrue(allowed, Path.GetFileName(file) + ": loose number " + m.Value + " in: " + line);
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void TheUnityBridge_DoesNotLetTheOlderTouchStealTheBall_NorHandTheKickOffToWhoeverIsFirst()
+        {
+            string src = File.ReadAllText(Path.Combine(CoreDir(), "..", "Gameplay", "MatchBridge.cs"));
+            Assert.IsTrue(src.Contains("if (HasPlayers) return;"), "RequestTouch must yield to the Core when it has players");
+            Assert.IsTrue(src.Contains("if (!HasPlayers) match.ConfirmRestartReady();"), "with squads the host places the players first");
+        }
+
+        [Test]
         public void TheEventKinds_OfPhase4_AreAppended_AndTheArenaKeepsThem()
         {
             Assert.AreEqual(25, (int)GameplayEventKind.MatchEnded);
