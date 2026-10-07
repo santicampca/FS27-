@@ -8,6 +8,9 @@ namespace FS27.Core.Tests
     /// <summary>Phase 10: twelve real players, real rosters and formations, roles, defence and the attack without the ball, for two minutes in each mode. Measured, not balanced; compared with the same match with the attack layer off (Phase 9).</summary>
     public partial class AiInfrastructureTests
     {
+        /// <summary>The driver of the last simulation (so that diagnostics can be checked against the driver's own counters).</summary>
+        private static BasicDecisionDriver LastDriver;
+
         private sealed class AttackSim
         {
             public string Fingerprint, Assignment;
@@ -19,7 +22,7 @@ namespace FS27.Core.Tests
             public int[] Kinds = new int[17]; public int Dribbles, Protects, Holds, SpacePasses, ShotOpportunities, CarrierDecisions; public long PassCandidates; public int[] Chosen = new int[8]; public double[] ChosenScore = new double[8];
         }
 
-        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f, bool carrierLayer = true)
+        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f, bool carrierLayer = true, AiDiagnostics diagnostics = null)
         {
             MatchSettings s = mode == GameMode.Arena ? MatchSettings.CreateArena() : MatchSettings.CreateClassic();
             MatchController c = RealRoles(homeTeam, awayTeam, seed, s);
@@ -27,6 +30,7 @@ namespace FS27.Core.Tests
             r.Assignment = string.Join(",", c.GetRoleAssignment(TeamSide.Home).FieldPlayerIds) + "|" + string.Join(",", c.GetRoleAssignment(TeamSide.Away).FieldPlayerIds);
             Assert.IsTrue(c.ConfirmRestart());
             var driver = new BasicDecisionDriver(c, null, null, null, new AttackPositioningTuning { Enabled = attackLayer }, new BallCarrierTuning { Enabled = carrierLayer });
+            if (diagnostics != null) { diagnostics.Attach(c); driver.Diagnostics = diagnostics; }
             var world = new WorldState();
             bool hasLast = false; TeamSide last = TeamSide.Home;
             int steps = (int)(seconds * 60f);
@@ -87,6 +91,8 @@ namespace FS27.Core.Tests
                     }
                 }
             }
+            if (diagnostics != null) { diagnostics.Finish(); diagnostics.Detach(); }
+            LastDriver = driver;
             r.Decisions = driver.Decisions; r.Actions = driver.ActionsAttempted; r.Passes = driver.PassesCompleted; r.Shots = driver.ShotsCompleted; r.Recoveries = driver.Recoveries; r.Fouls = driver.Fouls;
             r.Support = driver.CountOf(DecisionKind.Support); r.Forward = driver.CountOf(DecisionKind.ForwardRun); r.Width = driver.CountOf(DecisionKind.HoldWidth); r.GetOpen = driver.CountOf(DecisionKind.GetOpen);
             r.AttackSamples = driver.AttackSamples; r.PassLanes = driver.PassLaneSum; r.Spread = driver.TeammateSpreadSum; r.PassDecisions = driver.PassDecisions; r.PassDistance = driver.PassDistanceSum;

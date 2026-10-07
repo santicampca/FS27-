@@ -57,6 +57,13 @@ namespace FS27.Core
         /// <summary>How many carrier decisions were won by each kind of candidate, and the sum of their winning scores.</summary>
         public int ChosenCount(CandidateType type) { return chosen[(int)type]; }
         public double ChosenScoreSum(CandidateType type) { return chosenScore[(int)type]; }
+        private AiDiagnostics diagnostics;
+        /// <summary>The observer of this driver (Phase 12), or null. It only reads: attaching it changes nothing about how the match is played.</summary>
+        public AiDiagnostics Diagnostics
+        {
+            get { return diagnostics; }
+            set { diagnostics = value; engine.Carrier.CollectRejections = value != null && value.Config.Enabled; }
+        }
         public int DecisionSteps => intervalSteps;
         public int CountOf(DecisionKind kind) { return kindCounts[(int)kind]; }
 
@@ -79,6 +86,7 @@ namespace FS27.Core
         public void Step(MatchController match)
         {
             step++;
+            if (diagnostics != null) diagnostics.BeginStep(step);
             if (!match.State.IsBallLive) return;
 
             bool any = false;
@@ -107,6 +115,7 @@ namespace FS27.Core
                     if (!p.IsOnPitch || p.IsControlled || !IsDue(side, i)) continue;
                     PlayerDecision d = engine.Decide(view, p.PlayerId);
                     last[start + i] = d; decided[start + i] = true;
+                    if (diagnostics != null) diagnostics.OnDecision(step, view, start + i, d, engine.Carrier, p.HasBall && !p.IsGoalkeeper && engine.Carrier.Tuning.Enabled);
                     Decisions++; kindCounts[(int)d.Kind]++;
                     if (p.HasBall && !p.IsGoalkeeper && engine.Carrier.Tuning.Enabled) { CarrierDecisions++; PassCandidateSum += engine.Carrier.Summary.PassCandidates; if (engine.Carrier.Summary.ShootValid) ShotOpportunities++; chosen[(int)engine.Carrier.Summary.Best]++; chosenScore[(int)engine.Carrier.Summary.Best] += engine.Carrier.Summary.BestScore; }
                     if (d.HasAction && d.Action.Kind == FootballActionKind.ThroughPass) SpacePasses++;
@@ -120,6 +129,7 @@ namespace FS27.Core
                     {
                         ActionsAttempted++;
                         ActionResult r = match.PerformIntent(d.Action);
+                        if (diagnostics != null) diagnostics.OnAction(step, view, start + i, d, r, this);
                         switch (d.Action.Kind)
                         {
                             case FootballActionKind.Tackle: TackleAttempts++; break;

@@ -602,3 +602,8 @@ Detalle en [ATTACK_SUPPORT_RUNS.md](ATTACK_SUPPORT_RUNS.md). `AttackSupport` rep
 ## X. FASE 11 — Inteligencia del portador (resumen)
 Detalle en [BALL_CARRIER_INTELLIGENCE.md](BALL_CARRIER_INTELLIGENCE.md). El portador compara tiro, pase (seguro o adelante), pase al espacio, regate, proteger y esperar con puntuaciones comparables; lee las carreras de la Fase 10 mediante una interfaz mínima; sigue produciendo solo intents. Medido, no balanceado: decisiones más variadas, pases al espacio y esperas; no hay mejora general demostrada (menos pases y tiros, más faltas en Classic).
 - **No implementado:** tácticas, marcaje, cobertura, presión coordinada, contrapresión, GK AI avanzada, skills diferidas, balance.
+
+---
+
+## Y. FASE 12 — Diagnóstico de la IA (resumen)
+Detalle y datos en [AI_DIAGNOSTICS.md](AI_DIAGNOSTICS.md). `AiDiagnostics` observa (solo lectura) el portador, los pases, los tiros, los duelos y las faltas, y los explica; el partido es idéntico con o sin él. Hallazgos medidos: solo ≈ 30–34 % de las patadas de pase llegan a un compañero; F11 pasa menos porque el regate puntúa más que el pase sencillo con camino libre; el aumento de faltas en Classic viene de la exposición a portadores que protegen, no de una mayor probabilidad por contacto; los pases al espacio llegan en un 14 % y 15 de 49 acaban en el portero rival. Nada de esto se ha corregido: son los candidatos de la Fase 13.

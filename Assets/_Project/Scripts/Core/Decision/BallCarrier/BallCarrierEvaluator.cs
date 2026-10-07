@@ -13,6 +13,21 @@ namespace FS27.Core
         public bool HoldAllowed;
         public CandidateType Best;
         public float BestScore;
+        // ---- Phase 12: what it saw and how clear the win was
+        /// <summary>The best candidate of a DIFFERENT type, and its score (type None / minus infinity when there is none).</summary>
+        public CandidateType RunnerUpType;
+        public float RunnerUpScore;
+        /// <summary>BestScore minus RunnerUpScore (the margin of the decision between kinds of action); infinity when the winner stood alone.</summary>
+        public float Margin;
+        /// <summary>Bit per <see cref="CandidateType"/> (1 &lt;&lt; type): there was at least one candidate of it.</summary>
+        public int AvailableMask;
+        /// <summary>Bit per <see cref="RunKind"/>: a team-mate of this kind of run was on the pitch.</summary>
+        public int RunMask;
+        public float Pressure, Stamina, DistanceToGoal;
+        /// <summary>What the carrier saw ahead of him: free distance over the clear distance (0..1), how well the way goes to goal (0..1), and whether a free way existed.</summary>
+        public float DribbleSpace, DribbleProgress;
+        public bool DribbleFree;
+        public int CandidateCount;
     }
 
     /// <summary>
@@ -28,6 +43,17 @@ namespace FS27.Core
         private readonly BallCarrierTuning b;
         private readonly ActionCandidate[] candidates = new ActionCandidate[2 * WorldState.MaxPlayers + 8];
         private int count;
+        private readonly int[] rejected = new int[8 * (int)CandidateRejection.Count];
+
+        /// <summary>Count rejections of the next evaluations (diagnostics): off by default, so that normal play pays nothing for it.</summary>
+        public bool CollectRejections { get; set; }
+        /// <summary>How many things of this kind were NOT candidates in the last evaluation, for this reason (only when <see cref="CollectRejections"/> is on).</summary>
+        public int RejectionCount(CandidateType type, CandidateRejection why) { return rejected[(int)type * (int)CandidateRejection.Count + (int)why]; }
+
+        private void Reject(CandidateType type, CandidateRejection why)
+        {
+            if (CollectRejections && why != CandidateRejection.NotApplicable && why != CandidateRejection.None) rejected[(int)type * (int)CandidateRejection.Count + (int)why]++;
+        }
 
         public BallCarrierTuning Tuning => b;
         public CarrierSummary Summary { get; private set; }
@@ -57,14 +83,16 @@ namespace FS27.Core
         public ActionCandidate Evaluate(WorldView view, int idx, ITeammateRuns runs, bool canKick)
         {
             count = 0;
+            if (CollectRejections) Array.Clear(rejected, 0, rejected.Length);
             var summary = new CarrierSummary();
             WorldPlayer me = view[idx];
             float pressure = PressureOn(view, me);
             Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
             Vec2 attack = (goal - WorldGeometry.OwnGoal(view.Match, view.Field, me.Team)).Normalized;
             ITeammateRuns reading = runs ?? NoRuns.Instance;
+            summary.Pressure = pressure; summary.Stamina = me.Stamina; summary.DistanceToGoal = (goal - me.Position).Magnitude;
 
-            if (canKick) AddShot(view, me, goal, pressure, ref summary);
+            if (canKick) AddShot(view, me, goal, pressure, ref summary); else Reject(CandidateType.Shoot, CandidateRejection.CannotKick);
             bool anyRun = false, anyPass = false;
             for (int i = 0; i < view.PlayerCount; i++)
             {
@@ -72,8 +100,9 @@ namespace FS27.Core
                 WorldPlayer r = view[i];
                 if (!r.IsOnPitch || r.Team != me.Team) continue;
                 RunKind run = reading.RunOf(i);
+                if (run != RunKind.None) summary.RunMask |= 1 << (int)run;
                 if (run == RunKind.Forward) anyRun = true;
-                if (!canKick) continue;
+                if (!canKick) { Reject(CandidateType.Pass, CandidateRejection.CannotKick); continue; }
                 if (AddPass(view, idx, me, i, r, run, pressure, ref summary)) anyPass = true;
             }
             if (canKick)
@@ -84,22 +113,27 @@ namespace FS27.Core
                     if (!r.IsOnPitch || r.Team != me.Team || r.IsGoalkeeper) continue;
                     AddThrough(view, me, i, r, reading.RunOf(i), attack, ref summary);
                 }
+            else Reject(CandidateType.ThroughPass, CandidateRejection.CannotKick);
             AddDribble(view, me, goal, canKick, pressure, ref summary);
             AddProtect(view, me, pressure, anyPass, anyRun);
             AddHold(view, me, pressure, anyRun, ref summary);
 
             ActionCandidate best = default(ActionCandidate);
             best.Score = float.NegativeInfinity; best.ReceiverIndex = -1;
-            for (int k = 0; k < count; k++) if (candidates[k].Score > best.Score) best = candidates[k];
-            summary.Best = best.Type; summary.BestScore = best.Score;
+            for (int k = 0; k < count; k++) { summary.AvailableMask |= 1 << (int)candidates[k].Type; if (candidates[k].Score > best.Score) best = candidates[k]; }
+            // the best candidate of any OTHER kind of action: how clearly the decision was won
+            float runnerUp = float.NegativeInfinity; CandidateType runnerType = CandidateType.None;
+            for (int k = 0; k < count; k++) if (candidates[k].Type != best.Type && candidates[k].Score > runnerUp) { runnerUp = candidates[k].Score; runnerType = candidates[k].Type; }
+            summary.Best = best.Type; summary.BestScore = best.Score; summary.CandidateCount = count;
+            summary.RunnerUpType = runnerType; summary.RunnerUpScore = runnerUp; summary.Margin = best.Score - runnerUp;
             Summary = summary;
             return best;
         }
 
-        private void Add(CandidateType type, float score, int receiver, Vec2 target, RunKind run, DecisionReason reason)
+        private void Add(CandidateType type, float score, int receiver, Vec2 target, RunKind run, DecisionReason reason, in CandidateParts parts)
         {
             if (count >= candidates.Length) return;
-            candidates[count++] = new ActionCandidate { Type = type, Score = score, ReceiverIndex = receiver, Target = target, Run = run, Reason = reason };
+            candidates[count++] = new ActionCandidate { Type = type, Score = score, ReceiverIndex = receiver, Target = target, Run = run, Reason = reason, Parts = parts };
         }
 
         // ------------------------------------------------------------------ the shot
@@ -107,10 +141,10 @@ namespace FS27.Core
         private void AddShot(WorldView view, in WorldPlayer me, Vec2 goal, float pressure, ref CarrierSummary summary)
         {
             float distance = (goal - me.Position).Magnitude;
-            if (distance > t.ShootRange) return;
+            if (distance > t.ShootRange) { Reject(CandidateType.Shoot, CandidateRejection.OutOfRange); return; }
             float angle = Math.Abs(WorldGeometry.RelativeAngle(me.Facing, me.Position, goal));
-            if (angle > t.ShootMaxAngleDegrees) return;
-            if (!WorldGeometry.IsLaneClear(view, me.Team, me.Position, goal, t.ShootLaneClearance, true)) return;
+            if (angle > t.ShootMaxAngleDegrees) { Reject(CandidateType.Shoot, CandidateRejection.BadAngle); return; }
+            if (!WorldGeometry.IsLaneClear(view, me.Team, me.Position, goal, t.ShootLaneClearance, true)) { Reject(CandidateType.Shoot, CandidateRejection.LaneBlocked); return; }
 
             float room = WorldGeometry.PassLaneRoom(view, me.Team, me.Position, goal, true);
             float laneTerm = float.IsPositiveInfinity(room) ? 1f : Clamp01(room / b.ShootLaneCap);
@@ -120,10 +154,14 @@ namespace FS27.Core
                 WorldPlayer o = view[i];
                 if (o.IsOnPitch && o.Team != me.Team && o.IsGoalkeeper) { keeperTerm = Clamp01(WorldGeometry.DistanceToSegment(o.Position, me.Position, goal) / b.ShootKeeperCap); break; }
             }
-            float threat = b.ShootDistanceWeight * (1f - distance / t.ShootRange) + b.ShootAngleWeight * (1f - angle / t.ShootMaxAngleDegrees) + b.ShootLaneWeight * laneTerm + b.ShootKeeperWeight * keeperTerm;
-            float score = b.ShootScale * threat - b.ShootPressureWeight * pressure;
+            float proximity = b.ShootDistanceWeight * (1f - distance / t.ShootRange), angleTerm = b.ShootAngleWeight * (1f - angle / t.ShootMaxAngleDegrees);
+            float lineTerm = b.ShootLaneWeight * laneTerm, keeperPart = b.ShootKeeperWeight * keeperTerm;
+            float threat = proximity + angleTerm + lineTerm + keeperPart;
+            float pressurePenalty = b.ShootPressureWeight * pressure;
+            float score = b.ShootScale * threat - pressurePenalty;
             summary.ShootValid = true; summary.ShootScore = score;
-            Add(CandidateType.Shoot, score, -1, goal, RunKind.None, score > 0f ? DecisionReason.ClearShot : DecisionReason.ClearShot);
+            var parts = new CandidateParts { P0 = b.ShootScale * proximity, P1 = b.ShootScale * angleTerm, P2 = b.ShootScale * lineTerm, P3 = b.ShootScale * keeperPart, P4 = -pressurePenalty };
+            Add(CandidateType.Shoot, score, -1, goal, RunKind.None, DecisionReason.ClearShot, parts);
         }
 
         // ------------------------------------------------------------------ the passes
@@ -148,10 +186,11 @@ namespace FS27.Core
         private bool AddPass(WorldView view, int idx, in WorldPlayer me, int i, in WorldPlayer r, RunKind run, float pressure, ref CarrierSummary summary)
         {
             bool allowKeeper = pressure >= b.KeeperPassPressure;
-            float baseScore = ReceiverScore.Evaluate(view, idx, i, true, allowKeeper, t, a, out float gain);
-            if (float.IsNegativeInfinity(baseScore)) return false;
+            float baseScore = ReceiverScore.Evaluate(view, idx, i, true, allowKeeper, t, a, out float gain, out ReceiverParts rp, out CandidateRejection why);
+            if (float.IsNegativeInfinity(baseScore)) { Reject(CandidateType.Pass, why); return false; }
             Vec2 attack = (WorldGeometry.AttackGoal(view.Match, view.Field, me.Team) - WorldGeometry.OwnGoal(view.Match, view.Field, me.Team)).Normalized;
-            float score = b.PassWeight * baseScore + RunBonus(run, r, attack);
+            float runBonus = RunBonus(run, r, attack);
+            float score = b.PassWeight * baseScore + runBonus;
             bool forward = gain >= b.ForwardPassGain;
             if (forward) score += b.ForwardPassBonus;
 
@@ -159,15 +198,23 @@ namespace FS27.Core
             float space = WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position);
             float room = WorldGeometry.PassLaneRoom(view, me.Team, me.Position, r.Position);
             float safety = Clamp01(space / b.SafeSpaceCap) * (float.IsPositiveInfinity(room) ? 1f : Clamp01(room / b.SafeLaneCap));
-            score += b.SafePassWeight * pressure * safety;
+            float safePass = b.SafePassWeight * pressure * safety;
+            score += safePass;
 
             // a receiver who has his back to the passer and an opponent at his heels
             Vec2 dir = ActionModel.DirectionOr(r.Position - me.Position, me.Facing);
-            if (r.Facing.X * dir.X + r.Facing.Y * dir.Y > b.BackTurnedCosine && WorldGeometry.OpponentsWithin(view, me.Team, r.Position, a.ReceiverPressureRadius) > 0) score -= b.BackTurnedPenalty;
+            float backTurned = 0f;
+            if (r.Facing.X * dir.X + r.Facing.Y * dir.Y > b.BackTurnedCosine && WorldGeometry.OpponentsWithin(view, me.Team, r.Position, a.ReceiverPressureRadius) > 0) { backTurned = b.BackTurnedPenalty; score -= backTurned; }
 
             summary.PassCandidates++;
+            float w = b.PassWeight;
+            var parts = new CandidateParts
+            {
+                P0 = w * rp.Advance, P1 = w * rp.Space, P2 = w * rp.Distance, P3 = w * rp.Angle, P4 = w * rp.Lane, P5 = w * rp.Pressure, P6 = w * rp.Move,
+                P7 = runBonus, P8 = forward ? b.ForwardPassBonus : 0f, P9 = safePass, P10 = -backTurned
+            };
             Add(forward ? CandidateType.ForwardPass : CandidateType.Pass, score, i, r.Position, run,
-                run == RunKind.Forward ? DecisionReason.RunnerPass : (pressure > 0f ? DecisionReason.UnderPressurePass : DecisionReason.FreePass));
+                run == RunKind.Forward ? DecisionReason.RunnerPass : (pressure > 0f ? DecisionReason.UnderPressurePass : DecisionReason.FreePass), parts);
             return true;
         }
 
@@ -178,22 +225,22 @@ namespace FS27.Core
         private void AddThrough(WorldView view, in WorldPlayer me, int i, in WorldPlayer r, RunKind run, Vec2 attack, ref CarrierSummary summary)
         {
             float along = r.Velocity.X * attack.X + r.Velocity.Y * attack.Y;
-            if (run != RunKind.Forward && along < b.ThroughMinRunnerSpeed) return;
-            if (!view.CanUse(me.PlayerId, FootballActionKind.ThroughPass).Allowed) return;
+            if (run != RunKind.Forward && along < b.ThroughMinRunnerSpeed) { Reject(CandidateType.ThroughPass, CandidateRejection.NotRunner); return; }
+            if (!view.CanUse(me.PlayerId, FootballActionKind.ThroughPass).Allowed) { Reject(CandidateType.ThroughPass, CandidateRejection.CannotUse); return; }
             Vec2 heading = r.Speed >= b.ThroughMinRunnerSpeed ? r.Velocity.Normalized : attack;
             float lead = b.ThroughLeadDistance + r.Speed * b.ThroughLeadSeconds;
             Vec2 point = r.Position + heading * lead;
             float halfL = view.Field.Length / 2f - a.SearchPitchMargin, halfW = view.Field.Width / 2f - a.SearchPitchMargin;
-            if (Math.Abs(point.X) > halfL || Math.Abs(point.Y) > halfW) return;
+            if (Math.Abs(point.X) > halfL || Math.Abs(point.Y) > halfW) { Reject(CandidateType.ThroughPass, CandidateRejection.OutsidePitch); return; }
 
             float distance = (point - me.Position).Magnitude;
-            if (distance < t.PassMinDistance || distance > t.PassMaxDistance) return;
+            if (distance < t.PassMinDistance || distance > t.PassMaxDistance) { Reject(CandidateType.ThroughPass, CandidateRejection.OutOfRange); return; }
             float gain = ((point - me.Position).X * attack.X + (point - me.Position).Y * attack.Y) / view.Field.Length;
-            if (gain < b.ThroughMinGain) return;
+            if (gain < b.ThroughMinGain) { Reject(CandidateType.ThroughPass, CandidateRejection.NoGain); return; }
             float room = WorldGeometry.PassLaneRoom(view, me.Team, me.Position, point);
-            if (room < view.Tuning.PassLaneClearance) return;
+            if (room < view.Tuning.PassLaneClearance) { Reject(CandidateType.ThroughPass, CandidateRejection.LaneBlocked); return; }
             float space = WorldGeometry.NearestOpponentDistanceTo(view, me.Team, point);
-            if (space < b.ThroughMinSpace) return;
+            if (space < b.ThroughMinSpace) { Reject(CandidateType.ThroughPass, CandidateRejection.NoSpace); return; }
 
             // who gets there first: the runner and the ball, or the nearest opponent
             float runner = r.MaxSpeed > 0f ? (point - r.Position).Magnitude / (r.MaxSpeed * b.ThroughSpeedShare) : float.PositiveInfinity;
@@ -208,12 +255,14 @@ namespace FS27.Core
                 if (time < opponent) opponent = time;
             }
             float margin = opponent - arrival;
-            if (margin < b.ThroughRaceMargin) return;
+            if (margin < b.ThroughRaceMargin) { Reject(CandidateType.ThroughPass, CandidateRejection.LostRace); return; }
 
             float raceTerm = float.IsPositiveInfinity(margin) ? 1f : Clamp01(margin / b.ThroughRaceCap);
-            float score = b.ThroughBase + b.ThroughProgressWeight * gain + b.ThroughSpaceWeight * Clamp01(space / b.ThroughSpaceCap) + b.ThroughRaceWeight * raceTerm + RunBonus(RunKind.Forward, r, attack) - b.ThroughRisk;
+            float progress = b.ThroughProgressWeight * gain, spaceTerm = b.ThroughSpaceWeight * Clamp01(space / b.ThroughSpaceCap), raceScore = b.ThroughRaceWeight * raceTerm, runBonus = RunBonus(RunKind.Forward, r, attack);
+            float score = b.ThroughBase + progress + spaceTerm + raceScore + runBonus - b.ThroughRisk;
             summary.ThroughCandidates++;
-            Add(CandidateType.ThroughPass, score, i, point, run, DecisionReason.SpacePass);
+            var parts = new CandidateParts { P0 = b.ThroughBase, P1 = progress, P2 = spaceTerm, P3 = raceScore, P4 = runBonus, P5 = -b.ThroughRisk };
+            Add(CandidateType.ThroughPass, score, i, point, run, DecisionReason.SpacePass, parts);
         }
 
         // ------------------------------------------------------------------ carrying, shielding, holding
@@ -221,9 +270,11 @@ namespace FS27.Core
         private void AddDribble(WorldView view, in WorldPlayer me, Vec2 goal, bool canKick, float pressure, ref CarrierSummary summary)
         {
             DribbleAssessment d = DribbleSpace.Assess(view, me, goal, canKick, t);
+            summary.DribbleFree = d.Free; summary.DribbleProgress = d.Progress; summary.DribbleSpace = Clamp01(d.FreeDistance / t.DribbleClearDistance);
             if (d.SkillMove)
             {
-                Add(CandidateType.Dribble, b.SkillMoveScore - b.DribblePressureWeight * pressure, -1, me.Position + d.SkillDirection, RunKind.None, DecisionReason.SkillMoveAvailable);
+                float pressurePenalty = b.DribblePressureWeight * pressure;
+                Add(CandidateType.Dribble, b.SkillMoveScore - pressurePenalty, -1, me.Position + d.SkillDirection, RunKind.None, DecisionReason.SkillMoveAvailable, new CandidateParts { P1 = -pressurePenalty, P4 = b.SkillMoveScore });
                 summary.DribbleValid = true;
             }
             if (d.Free)
@@ -231,27 +282,34 @@ namespace FS27.Core
                 float own = Clamp01(1f - WorldGeometry.DistanceToOwnGoal(view, me) / b.DribbleOwnGoalZone);
                 float tired = me.Stamina < b.DribbleTiredStamina ? 1f - me.Stamina / b.DribbleTiredStamina : 0f;
                 float space = Clamp01(d.FreeDistance / t.DribbleClearDistance);
-                float score = b.DribbleScale * d.Progress * space - b.DribblePressureWeight * pressure - b.DribbleOwnGoalWeight * own - b.DribbleTiredWeight * tired;
-                Add(CandidateType.Dribble, score, -1, me.Position + d.Direction * t.DribbleLookahead, RunKind.None, DecisionReason.SpaceToDribble);
+                float advance = b.DribbleScale * d.Progress * space, pressurePenalty = b.DribblePressureWeight * pressure, ownPenalty = b.DribbleOwnGoalWeight * own, tiredPenalty = b.DribbleTiredWeight * tired;
+                float score = advance - pressurePenalty - ownPenalty - tiredPenalty;
+                Add(CandidateType.Dribble, score, -1, me.Position + d.Direction * t.DribbleLookahead, RunKind.None, DecisionReason.SpaceToDribble, new CandidateParts { P0 = advance, P1 = -pressurePenalty, P2 = -ownPenalty, P3 = -tiredPenalty });
                 summary.DribbleValid = true;
             }
             else if (!d.SkillMove)
-                Add(CandidateType.Dribble, b.DribbleFallbackScore, -1, goal, RunKind.None, DecisionReason.NoActionFallback);
+            {
+                Reject(CandidateType.Dribble, CandidateRejection.NoFreeWay);
+                Add(CandidateType.Dribble, b.DribbleFallbackScore, -1, goal, RunKind.None, DecisionReason.NoActionFallback, new CandidateParts { P0 = b.DribbleFallbackScore });
+            }
         }
 
         private void AddProtect(WorldView view, in WorldPlayer me, float pressure, bool anyPass, bool anyRun)
         {
-            if (WorldGeometry.NearestOpponentDistanceTo(view, me.Team, me.Position) >= t.PressureRadius) return;
-            float score = b.ProtectBase + b.ProtectPressureWeight * pressure + (!anyPass && anyRun ? b.ProtectWaitBonus : 0f);
-            Add(CandidateType.Protect, score, -1, me.Position, RunKind.None, DecisionReason.UnderPressureProtect);
+            if (WorldGeometry.NearestOpponentDistanceTo(view, me.Team, me.Position) >= t.PressureRadius) { Reject(CandidateType.Protect, CandidateRejection.NoOpponentNear); return; }
+            float pressureTerm = b.ProtectPressureWeight * pressure, wait = !anyPass && anyRun ? b.ProtectWaitBonus : 0f;
+            float score = b.ProtectBase + pressureTerm + wait;
+            Add(CandidateType.Protect, score, -1, me.Position, RunKind.None, DecisionReason.UnderPressureProtect, new CandidateParts { P0 = b.ProtectBase, P1 = pressureTerm, P2 = wait });
         }
 
         private void AddHold(WorldView view, in WorldPlayer me, float pressure, bool anyRun, ref CarrierSummary summary)
         {
             float phase = view.Match.MatchTime - b.HoldCycleSeconds * (float)Math.Floor(view.Match.MatchTime / b.HoldCycleSeconds);
-            if (pressure > b.HoldMaxPressure || phase >= b.HoldWindowSeconds) return;
+            if (pressure > b.HoldMaxPressure) { Reject(CandidateType.Hold, CandidateRejection.TooMuchPressure); return; }
+            if (phase >= b.HoldWindowSeconds) { Reject(CandidateType.Hold, CandidateRejection.OutsideHoldWindow); return; }
             summary.HoldAllowed = true;
-            Add(CandidateType.Hold, b.HoldBase + (anyRun ? b.HoldRunBonus : 0f), -1, me.Position, RunKind.None, DecisionReason.HoldForRun);
+            float run = anyRun ? b.HoldRunBonus : 0f;
+            Add(CandidateType.Hold, b.HoldBase + run, -1, me.Position, RunKind.None, DecisionReason.HoldForRun, new CandidateParts { P0 = b.HoldBase, P1 = run });
         }
     }
 }

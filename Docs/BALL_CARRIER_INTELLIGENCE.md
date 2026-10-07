@@ -83,3 +83,6 @@ Utility AI general, BT, GOAP, ML, planificación a varios pasos, Monte Carlo, xG
 
 ## 12. Legado (auditado; sin cambios)
 `PlayerIntent` (10 archivos en Core, 3 en Unity), `IIntentSource` (3/3), `PlayerIntentProvider` (1/4), `PlayerLocomotion` (2/1), `StaminaSystem` (2/0), `DribbleTouchModel` (1/0), `BallInteractor` (1/2): ningún consumidor nuevo en esta fase. Limpieza para la fase de cierre Core/Unity.
+
+## 13. Fase 12 — diagnóstico
+Ver [AI_DIAGNOSTICS.md](AI_DIAGNOSTICS.md). Las puntuaciones exponen ahora sus términos (`ActionCandidate.Parts`) y los motivos por los que algo no es candidato (`CandidateRejection`) sin cambiar el cálculo (huellas idénticas bit a bit). **Corrección de lectura de las secciones anteriores:** las cifras de «pases» de las fases 10 y 11 cuentan patadas ejecutadas; los pases que llegan a un compañero son ≈ 30–34 % de ellas. Las cifras de la §10 de este documento siguen siendo válidas como lo que son (decisiones y acciones del portador).

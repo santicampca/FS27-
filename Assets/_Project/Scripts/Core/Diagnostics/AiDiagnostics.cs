@@ -1,0 +1,229 @@
+using System;
+
+namespace FS27.Core
+{
+    /// <summary>
+    /// The observer of the AI (Phase 12): it explains what the carrier chose and why, follows passes and shots to their end, and records every duel for the ball and every foul. It is a pure OBSERVER: it
+    /// reads the world view, the decisions, the action results and the published events, and writes only to its own counters. It changes no decision, no action, no position, no ball, no stamina and uses no
+    /// random number, so a match plays exactly the same with it attached or not (a test shows it). Counters are doubles in ONE flat array (so that several matches add up by adding arrays); the logs (passes into
+    /// space, duels, a trace of the carrier) are fixed-size arrays that stop filling when full and count what they dropped. Nothing is allocated while playing.
+    /// </summary>
+    public sealed partial class AiDiagnostics
+    {
+        // ---- sizes
+        public const int Types = 8;                                   // CandidateType: None..Hold
+        public const int Parts = CandidateParts.Capacity;
+        private static readonly int Rejections = (int)CandidateRejection.Count;
+        public static readonly int ActionKinds = MaxOf(typeof(FootballActionKind)) + 1;
+        private static readonly int ActionRejections = MaxOf(typeof(ActionRejection)) + 1;
+        private static readonly int DecisionKinds = MaxOf(typeof(DecisionKind)) + 1;
+        private static readonly int PassOutcomes = MaxOf(typeof(PassOutcome)) + 1;
+        private static readonly int WindowOutcomes = MaxOf(typeof(WindowOutcome)) + 1;
+        private static readonly int ShotOutcomes = MaxOf(typeof(ShotOutcome)) + 1;
+        private const int Archetypes = 16;
+        private const int Roles = 4;
+        public const int DuelKinds = 3; // 0 standing tackle, 1 sliding tackle, 2 physical challenge
+
+        private static int MaxOf(Type enumType)
+        {
+            int max = 0;
+            foreach (int v in Enum.GetValues(enumType)) if (v > max) max = v;
+            return max;
+        }
+
+        // ---- the flat counter array: every block is allocated once, in this order
+        private static int cursor;
+        private static int Alloc(int n) { int o = cursor; cursor += n; return o; }
+        private static readonly int oDecisions = Alloc(1);
+        private static readonly int oKinds = Alloc(DecisionKinds);
+        private static readonly int oCarrier = Alloc(1);
+        private static readonly int oChosen = Alloc(Types);
+        private static readonly int oChosenScore = Alloc(Types);
+        private static readonly int oChosenPressure = Alloc(Types);
+        private static readonly int oChosenStamina = Alloc(Types);
+        private static readonly int oChosenGoal = Alloc(Types);
+        private static readonly int oChosenMargin = Alloc(Types);
+        private static readonly int oChosenMarginN = Alloc(Types);
+        private static readonly int oRunnerUp = Alloc(Types);
+        private static readonly int oAvailable = Alloc(Types);
+        private static readonly int oSecond = Alloc(Types * Types);
+        private static readonly int oBestN = Alloc(Types);
+        private static readonly int oBestScore = Alloc(Types);
+        private static readonly int oBestParts = Alloc(Types * Parts);
+        private static readonly int oWinnerParts = Alloc(Types * Parts);
+        private static readonly int oRejected = Alloc(Types * Rejections);
+        private static readonly int oMarginBuckets = Alloc(5);
+        private static readonly int oMargin = Alloc(2);
+        private static readonly int oRunPresent = Alloc(5);
+        private static readonly int oDribble = Alloc(3);
+        private static readonly int oWindow = Alloc(Types * 6);
+        private static readonly int oEpisodes = Alloc(Types);
+        private static readonly int oPassAttempts = Alloc(1);
+        private static readonly int oPassKind = Alloc(ActionKinds);
+        private static readonly int oPassOutcome = Alloc(PassOutcomes);
+        private static readonly int oPassKindOutcome = Alloc(ActionKinds * 10);
+        private static readonly int oPassReceiver = Alloc(2);
+        private static readonly int oPassTime = Alloc(PassOutcomes * 2);
+        private static readonly int oReturnTime = Alloc(4);
+        private static readonly int oChase = Alloc(PassOutcomes);
+        private static readonly int oToKeeper = Alloc(PassOutcomes * 2);
+        private static readonly int oPassFeat = Alloc(PassOutcomes * 7);
+        private static readonly int oSpaceAttempts = Alloc(1);
+        private static readonly int oSpaceOutcome = Alloc(PassOutcomes);
+        private static readonly int oSpaceFeatures = Alloc(PassOutcomes * 6);
+        private static readonly int oShotAttempts = Alloc(1);
+        private static readonly int oShotOutcome = Alloc(ShotOutcomes);
+        private static readonly int oActRequested = Alloc(ActionKinds);
+        private static readonly int oActAccepted = Alloc(ActionKinds);
+        private static readonly int oActRejected = Alloc(ActionKinds);
+        private static readonly int oActCompleted = Alloc(ActionKinds);
+        private static readonly int oActFailed = Alloc(ActionKinds);
+        private static readonly int oActStamina = Alloc(ActionKinds);
+        private static readonly int oActReason = Alloc(ActionRejections);
+        private static readonly int oDuelRequested = Alloc(DuelKinds);
+        private static readonly int oContacts = Alloc(DuelKinds);
+        private static readonly int oWon = Alloc(DuelKinds);
+        private static readonly int oLooseWin = Alloc(DuelKinds);
+        private static readonly int oFailed = Alloc(DuelKinds);
+        private static readonly int oFouls = Alloc(DuelKinds);
+        private static readonly int oNoContact = Alloc(DuelKinds);
+        private static readonly int oAggrContacts = Alloc(DuelKinds * 2);
+        private static readonly int oAggrFouls = Alloc(DuelKinds * 2);
+        private static readonly int oBehindContacts = Alloc(DuelKinds * 2);
+        private static readonly int oBehindFailed = Alloc(DuelKinds * 2);
+        private static readonly int oBehindFouls = Alloc(DuelKinds * 2);
+        private static readonly int oCarrierKindContacts = Alloc(DecisionKinds + 1);
+        private static readonly int oCarrierKindFouls = Alloc(DecisionKinds + 1);
+        private static readonly int oMovingContacts = Alloc(2);
+        private static readonly int oMovingFouls = Alloc(2);
+        private static readonly int oShieldContacts = Alloc(2);
+        private static readonly int oShieldFouls = Alloc(2);
+        private static readonly int oQuality = Alloc(4);
+        private static readonly int oArchContacts = Alloc(Archetypes);
+        private static readonly int oArchFouls = Alloc(Archetypes);
+        private static readonly int oArchSuffered = Alloc(Archetypes);
+        private static readonly int oRoleContacts = Alloc(Roles);
+        private static readonly int oRoleFouls = Alloc(Roles);
+        private static readonly int oMatch = Alloc(14);
+        private static readonly int Size = cursor;
+
+        // indexes into the small oMatch block
+        private const int mSteps = 0, mSwitches = 1, mGainsHome = 2, mGainsAway = 3, mRecoveries = 4, mGoals = 5, mFoulEvents = 6, mInterceptEvents = 7, mOutEvents = 8, mInterceptions = 9, mBlocks = 10, mMatches = 11, mGoalsAfterShot = 12, mGoalsOther = 13;
+
+        private readonly double[] a = new double[Size];
+        public DiagnosticsConfig Config { get; }
+        /// <summary>A name for the run (mode, seed, teams): only for reports.</summary>
+        public string Label { get; set; }
+
+        private readonly SpaceAttempt[] space;
+        private readonly ContactRecord[] contacts;
+        private readonly CarrierTrace[] trace;
+        public int SpaceCount { get; private set; }
+        public int ContactCount { get; private set; }
+        public int TraceCount { get; private set; }
+        public int SpaceDropped { get; private set; }
+        public int ContactsDropped { get; private set; }
+        public int TraceDropped { get; private set; }
+
+        public AiDiagnostics(DiagnosticsConfig config = null, int spaceCapacity = 128, int contactCapacity = 512, int traceCapacity = 256)
+        {
+            Config = config ?? new DiagnosticsConfig();
+            space = new SpaceAttempt[spaceCapacity];
+            contacts = new ContactRecord[contactCapacity];
+            trace = new CarrierTrace[Config.TraceEnabled ? traceCapacity : 0];
+            for (int i = 0; i < players.Length; i++) players[i].ArchetypeIndex = -1;
+        }
+
+        public SpaceAttempt SpaceAt(int i) { return space[i]; }
+        public ContactRecord ContactAt(int i) { return contacts[i]; }
+        public CarrierTrace TraceAt(int i) { return trace[i]; }
+
+        // ------------------------------------------------------------------ counters (read)
+        public double Steps { get { return a[oMatch + mSteps]; } }
+        public double Seconds { get { return a[oMatch + mSteps] * LocomotionDefaults.FixedDeltaTime; } }
+        public double Matches { get { return a[oMatch + mMatches]; } }
+        public double PossessionSwitches { get { return a[oMatch + mSwitches]; } }
+        public double Recoveries { get { return a[oMatch + mRecoveries]; } }
+        public double Goals { get { return a[oMatch + mGoals]; } }
+        /// <summary>Goals scored while a shot of the scoring team was still being followed (3 s), and goals with none (carried in, a deflection, a rebound after the shot was settled).</summary>
+        public double GoalsAfterShot { get { return a[oMatch + mGoalsAfterShot]; } }
+        public double GoalsOther { get { return a[oMatch + mGoalsOther]; } }
+        public double FoulEvents { get { return a[oMatch + mFoulEvents]; } }
+        public double Decisions { get { return a[oDecisions]; } }
+        public double KindCount(DecisionKind k) { return a[oKinds + (int)k]; }
+        public double CarrierDecisions { get { return a[oCarrier]; } }
+        public double Chosen(CandidateType t) { return a[oChosen + (int)t]; }
+        public double ChosenAverageScore(CandidateType t) { return Div(a[oChosenScore + (int)t], a[oChosen + (int)t]); }
+        public double ChosenAveragePressure(CandidateType t) { return Div(a[oChosenPressure + (int)t], a[oChosen + (int)t]); }
+        public double ChosenAverageStamina(CandidateType t) { return Div(a[oChosenStamina + (int)t], a[oChosen + (int)t]); }
+        public double ChosenAverageMargin(CandidateType t) { return Div(a[oChosenMargin + (int)t], a[oChosenMarginN + (int)t]); }
+        public double RunnerUp(CandidateType t) { return a[oRunnerUp + (int)t]; }
+        public double Available(CandidateType t) { return a[oAvailable + (int)t]; }
+        /// <summary>Decisions in which <paramref name="winner"/> won and <paramref name="second"/> was the best of another kind.</summary>
+        public double Second(CandidateType winner, CandidateType second) { return a[oSecond + (int)winner * Types + (int)second]; }
+        public double Rejected(CandidateType t, CandidateRejection why) { return a[oRejected + (int)t * Rejections + (int)why]; }
+        /// <summary>How many decisions had a candidate of this kind, and the mean score of the best one of that kind (winner or not).</summary>
+        public double BestOfKindAverage(CandidateType t) { return Div(a[oBestScore + (int)t], a[oBestN + (int)t]); }
+        public double BestOfKindPartAverage(CandidateType t, int part) { return Div(a[oBestParts + (int)t * Parts + part], a[oBestN + (int)t]); }
+        public double WinnerPartAverage(CandidateType t, int part) { return Div(a[oWinnerParts + (int)t * Parts + part], a[oChosen + (int)t]); }
+        /// <summary>Margin buckets: below 0.10, below 0.25, below 0.50, 0.50 and above, and decisions where nothing else of another kind existed.</summary>
+        public double MarginBucket(int i) { return a[oMarginBuckets + i]; }
+        public double MarginAverage { get { return Div(a[oMargin], a[oMargin + 1]); } }
+        public double MarginMin { get; private set; } = double.PositiveInfinity;
+        public double MarginMax { get; private set; } = double.NegativeInfinity;
+        public double RunPresent(RunKind k) { return a[oRunPresent + (int)k]; }
+        public double DribbleFreeDecisions { get { return a[oDribble]; } }
+        public double DribbleAverageSpace { get { return Div(a[oDribble + 1], a[oChosen + (int)CandidateType.Dribble]); } }
+        public double DribbleAverageProgress { get { return Div(a[oDribble + 2], a[oChosen + (int)CandidateType.Dribble]); } }
+        /// <summary>Episodes of a kind (a dribble, a protect or a hold that begins) and what became of possession a short time after.</summary>
+        public double Episodes(CandidateType t) { return a[oEpisodes + (int)t]; }
+        public double WindowCount(CandidateType t, WindowOutcome o) { return a[oWindow + (int)t * 6 + (int)o]; }
+
+        /// <summary>Passes of this outcome whose passer, before it was settled, decided to go to the ball (MoveToBall: he chased his own pass).</summary>
+        public double PassesChasedByPasser(PassOutcome o) { return a[oChase + (int)o]; }
+
+        /// <summary>Passes of this outcome that ended with the ball in the hands of an opponent GOALKEEPER (all passes, and the ones into space).</summary>
+        public double PassesEndingWithKeeper(PassOutcome o, bool intoSpace) { return a[oToKeeper + (int)o * 2 + (intoSpace ? 1 : 0)]; }
+
+        /// <summary>Passes that came back to the passer: within 0.1 s, 0.25 s, 0.5 s, later.</summary>
+        public double ReturnedBucket(int i) { return a[oReturnTime + i]; }
+
+        private static double Div(double x, double n) { return n > 0.0 ? x / n : 0.0; }
+
+        // ------------------------------------------------------------------ per player
+        public struct PlayerStats
+        {
+            public string PlayerId;
+            public TeamSide Team;
+            public PlayerRole Role;
+            /// <summary>His most defining role, or -1 when the match had no playing profiles.</summary>
+            public int ArchetypeIndex;
+            public int Decisions, CarrierDecisions, Passes, PassesCompleted, SpacePasses, Dribbles, Protects, Holds, Shots, Goals;
+            public int Possessions, FoulsCommitted, FoulsSuffered, ContactsMade, ContactsSuffered, Tackles, DuelsWon, Interceptions;
+        }
+
+        private readonly PlayerStats[] players = new PlayerStats[WorldState.MaxPlayers];
+        public PlayerStats PlayerAt(int worldIndex) { return players[worldIndex]; }
+        public int PlayerSlots { get { return players.Length; } }
+
+        private ref PlayerStats Player(WorldView view, int idx)
+        {
+            ref PlayerStats p = ref players[idx];
+            if (p.PlayerId == null)
+            {
+                WorldPlayer w = view[idx];
+                p.PlayerId = w.PlayerId; p.Team = w.Team; p.Role = w.Role;
+                p.ArchetypeIndex = w.Roles != null && w.Roles.Count > 0 ? (int)w.Roles[0].Role : -1;
+            }
+            return ref p;
+        }
+
+        /// <summary>The stats of a player by id (a copy; the default when he was never seen).</summary>
+        public bool TryGetPlayer(string playerId, out PlayerStats stats)
+        {
+            for (int i = 0; i < players.Length; i++) if (players[i].PlayerId == playerId && playerId != null) { stats = players[i]; return true; }
+            stats = default(PlayerStats);
+            return false;
+        }
+    }
+}

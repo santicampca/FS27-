@@ -1,0 +1,338 @@
+== Arena F10 seeds 301..308 ==
+MATCH   matches 8  seconds 960.00  possession gains H/A 297/292  switches 581  recoveries 403  goals 18 (after a followed shot 11, other 7)  fouls 0
+DECIDED all 76775  carrier 0
+DECISION KINDS (all players): Idle 19874 MoveToPoint 31658 MoveToBall 9054 Support 2032 Pass 899 Shoot 75 Dribble 1210 Protect 100 CloseDown 2020 Tackle 120 SlidingTackle 20 Challenge 228 Intercept 3191 GetOpen 3185 ForwardRun 1066 HoldWidth 2043
+CARRIER type: chosen | share | avgScore | avgMargin | available | bestOfKindAvg | runnerUp | avgPressure | avgStamina
+  Pass             0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  ForwardPass      0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  ThroughPass      0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Shoot            0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Dribble          0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Protect          0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Hold             0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+MARGIN  avg 0.00  min 0.00  max 0.00  <0.10 0  <0.25 0  <0.50 0  >=0.50 0  alone 0
+RUNS    decisions with a run of kind support/forward/width/getopen present: 0/0/0/0
+SCORE PARTS (average of the best candidate of each kind; winner average in brackets)
+  Pass: advance 0.00[0.00] space 0.00[0.00] distance 0.00[0.00] angle 0.00[0.00] lane 0.00[0.00] receiverPressure 0.00[0.00] receiverMove 0.00[0.00] run 0.00[0.00] forwardBonus 0.00[0.00] safePass 0.00[0.00] backTurned 0.00[0.00]
+  ForwardPass: advance 0.00[0.00] space 0.00[0.00] distance 0.00[0.00] angle 0.00[0.00] lane 0.00[0.00] receiverPressure 0.00[0.00] receiverMove 0.00[0.00] run 0.00[0.00] forwardBonus 0.00[0.00] safePass 0.00[0.00] backTurned 0.00[0.00]
+  ThroughPass: base 0.00[0.00] progress 0.00[0.00] space 0.00[0.00] race 0.00[0.00] run 0.00[0.00] risk 0.00[0.00]
+  Shoot: proximity 0.00[0.00] angle 0.00[0.00] line 0.00[0.00] goalkeeper 0.00[0.00] pressure 0.00[0.00]
+  Dribble: advanceSpace 0.00[0.00] pressure 0.00[0.00] ownGoal 0.00[0.00] fatigue 0.00[0.00] skillMove 0.00[0.00]
+  Protect: base 0.00[0.00] pressure 0.00[0.00] waitForRun 0.00[0.00]
+  Hold: base 0.00[0.00] runDeveloping 0.00[0.00]
+WON BY (winner -> best of another kind): 
+  Pass ->
+  ForwardPass ->
+  ThroughPass ->
+  Shoot ->
+  Dribble ->
+  Protect ->
+  Hold ->
+NOT CANDIDATE (kind: reason count)
+  Pass:
+  ForwardPass:
+  ThroughPass:
+  Shoot:
+  Dribble:
+  Protect:
+  Hold:
+DRIBBLE free-way decisions 0  chosen avg space 0.00  avg progress 0.00
+  Dribble episodes 0  retained 0  lost 0  loose 0  released 0  unknown 0  retention(of those not released) -
+  Protect episodes 0  retained 0  lost 0  loose 0  released 0  unknown 0  retention(of those not released) -
+  Hold episodes 0  retained 0  lost 0  loose 0  released 0  unknown 0  retention(of those not released) -
+PASSES  attempts 848  completed 286 (to intended 216, to other 70)  intercepted 162  lostOther 210  missed 2  outOfPlay 0  invalidated 6  returnedToPasser 178  unknown 0  notObserved 4
+  ShortPass attempts 608 completed 240 intercepted 123 lostOther 142 missed 0 other 103
+  LongPass attempts 92 completed 11 intercepted 17 lostOther 41 missed 0 other 23
+  SkillLobPass attempts 9 completed 2 intercepted 1 lostOther 4 missed 0 other 2
+  GoalkeeperDistribution attempts 139 completed 33 intercepted 21 lostOther 23 missed 2 other 60
+RETURNED TO PASSER within <0.1s/<0.25s/<0.5s/later: 92/25/38/23
+PASSER CHASED HIS OWN PASS (MoveToBall decided before the pass settled), by outcome: Completed 179/286 Intercepted 110/162 MissedTarget 2/2 Invalidated 2/6 PossessionLostOther 99/210 ReturnedToPasser 41/178 NotObserved 2/4
+ENDED IN AN OPPONENT KEEPERS HANDS (all passes / into space): intercepted 0/0  lostOther 50/0
+PASS TIME to settle (s): Completed 0.62 Intercepted 0.82 MissedTarget 6.02 Invalidated 1.79 PossessionLostOther 0.76 ReturnedToPasser 0.24 NotObserved 0.34
+  Completed passerSpeed 3.55  ballSpeed 12.54  targetDist 7.78  power 0.66  quality 0.64  opponentNearPasser 2.55
+  Intercepted passerSpeed 4.68  ballSpeed 13.28  targetDist 8.57  power 0.69  quality 0.68  opponentNearPasser 2.50
+  MissedTarget passerSpeed 6.49  ballSpeed 18.37  targetDist 0.00  power 0.80  quality 0.65  opponentNearPasser 7.70
+  Invalidated passerSpeed 4.05  ballSpeed 19.34  targetDist 15.21  power 0.83  quality 0.85  opponentNearPasser 1.57
+  PossessionLostOther passerSpeed 4.11  ballSpeed 14.13  targetDist 9.49  power 0.70  quality 0.68  opponentNearPasser 2.07
+  ReturnedToPasser passerSpeed 3.90  ballSpeed 14.21  targetDist 8.44  power 0.72  quality 0.69  opponentNearPasser 2.52
+  NotObserved passerSpeed 2.70  ballSpeed 15.77  targetDist 7.52  power 0.74  quality 0.78  opponentNearPasser 5.03
+SPACE   attempts 0  logged 0  dropped 0
+SHOTS   opportunities(decisions with a shot candidate) 0  chosen 0  attempts(actions) 75  goal 11  opponentPossession 31  teamPossession 28  outOfPlay 0  unknown 5
+DEFENCE interceptions(events) 309  blocks 104  contacts 363  fouls(actions) 0  foul/contact 0.0%
+  Tackle    requested 120  contacts 117  won 19  loose 38  failed 60  fouls 0  foul/contact 0.0%  noContact 0  | aggressive 0/1  not 0/116  | from behind: contacts 13 failed 6 fouls 0  front: contacts 104 failed 54
+  Sliding   requested 20  contacts 20  won 2  loose 6  failed 12  fouls 0  foul/contact 0.0%  noContact 0  | aggressive 0/4  not 0/16  | from behind: contacts 0 failed 0 fouls 0  front: contacts 20 failed 12
+  Challenge requested 228  contacts 226  won 73  loose 76  failed 77  fouls 0  foul/contact 0.0%  noContact 0  | aggressive 0/11  not 0/215  | from behind: contacts 153 failed 54 fouls 0  front: contacts 73 failed 23
+  carrier standing/moving contacts 32/331 fouls 0/0  shielding contacts 37 fouls 0  quality foul 0.00 failed-no-foul 0.31
+  by what the carrier had decided (contacts/fouls): Idle 9/0 MoveToPoint 6/0 MoveToBall 22/0 Pass 48/0 Dribble 141/0 Protect 27/0 Tackle 7/0 SlidingTackle 2/0 Challenge 18/0 Intercept 81/0 GetOpen 1/0 ForwardRun 1/0
+  by defender archetype (contacts/fouls): Explosive 23/0 Creator 91/0 Finisher 32/0 Anchor 24/0 Engine 37/0 Guardian 30/0 Wall 32/0 Builder 20/0 Architect 15/0 Winger 19/0 GoalHunter 39/0 Target 1/0
+  by defender position (contacts/fouls): Defender 92/0 Midfielder 128/0 Forward 143/0
+ACTIONS (requested/accepted/rejected/completed/failed, stamina)
+  ShortPass           609/0/1/608/0  stamina 210.04
+  LongPass            92/0/0/92/0  stamina 37.05
+  Shot                75/0/0/75/0  stamina 65.17
+  Tackle              120/0/3/57/60  stamina 292.50
+  Intercept           488/0/0/413/75  stamina 569.66
+  Shield              100/97/3/0/0  stamina 0.00
+  GoalkeeperDistribution189/0/50/139/0  stamina 62.55
+  SkillMove           9/0/3/5/1  stamina 11.10
+  SkillLobPass        9/0/0/9/0  stamina 13.22
+  SlidingTackle       20/0/0/8/12  stamina 120.00
+  PhysicalChallenge   228/0/2/149/77  stamina 678.00
+  rejections: ActionLocked 46 BallNotAvailable 1 NotInPossession 10 NoTarget 5
+
+== Arena F11 seeds 301..308 ==
+MATCH   matches 8  seconds 960.00  possession gains H/A 236/233  switches 461  recoveries 301  goals 6 (after a followed shot 4, other 2)  fouls 0
+DECIDED all 76791  carrier 2319
+DECISION KINDS (all players): Idle 19099 MoveToPoint 31328 MoveToBall 8642 Support 2322 Pass 739 Shoot 58 Dribble 1145 Protect 401 CloseDown 2379 Tackle 126 SlidingTackle 13 Challenge 316 Intercept 2859 GetOpen 3685 ForwardRun 1179 HoldWidth 2328 Hold 172
+CARRIER type: chosen | share | avgScore | avgMargin | available | bestOfKindAvg | runnerUp | avgPressure | avgStamina
+  Pass           232   10.0%   2.43   0.77  avail   37.3%  best   1.76  second   306  pressure 0.44  stamina 42.26
+  ForwardPass    273   11.8%   3.33   1.05  avail   19.7%  best   2.80  second   112  pressure 0.31  stamina 38.53
+  ThroughPass     23    1.0%   3.72   1.08  avail    1.1%  best   3.69  second     2  pressure 0.30  stamina 46.38
+  Shoot           64    2.8%   2.66   0.33  avail   10.3%  best   2.02  second   111  pressure 0.14  stamina 25.86
+  Dribble       1148   49.5%   2.41   0.73  avail  100.0%  best   1.92  second   964  pressure 0.25  stamina 37.16
+  Protect        403   17.4%   1.59   0.77  avail   71.3%  best   1.13  second   501  pressure 0.74  stamina 48.96
+  Hold           176    7.6%   2.13   0.59  avail   28.8%  best   1.93  second   240  pressure 0.09  stamina 47.33
+MARGIN  avg 0.76  min 0.00  max 3.79  <0.10 150  <0.25 254  <0.50 472  >=0.50 1360  alone 83
+RUNS    decisions with a run of kind support/forward/width/getopen present: 2309/1234/2319/2319
+SCORE PARTS (average of the best candidate of each kind; winner average in brackets)
+  Pass: advance -0.06[-0.07] space 0.67[0.75] distance -0.07[-0.07] angle 0.26[0.29] lane 0.41[0.51] receiverPressure -0.13[-0.03] receiverMove 0.03[0.05] run 0.52[0.55] forwardBonus 0.00[0.00] safePass 0.21[0.45] backTurned -0.09[-0.00]
+  ForwardPass: advance 0.50[0.54] space 0.64[0.72] distance -0.09[-0.09] angle 0.31[0.30] lane 0.35[0.39] receiverPressure -0.13[-0.01] receiverMove 0.08[0.11] run 0.55[0.59] forwardBonus 0.50[0.50] safePass 0.22[0.31] backTurned -0.14[-0.01]
+  ThroughPass: base 1.50[1.50] progress 0.69[0.71] space 0.80[0.80] race 0.26[0.26] run 1.04[1.04] risk -0.60[-0.60]
+  Shoot: proximity 0.56[0.64] angle 1.07[1.21] line 0.97[0.99] goalkeeper 0.15[0.18] pressure -0.72[-0.36]
+  Dribble: advanceSpace 2.54[3.00] pressure -0.29[-0.25] ownGoal -0.02[-0.01] fatigue -0.31[-0.34] skillMove 0.00[0.00]
+  Protect: base 0.40[0.40] pressure 0.59[0.89] waitForRun 0.15[0.30]
+  Hold: base 1.60[1.60] runDeveloping 0.33[0.53]
+WON BY (winner -> best of another kind): 
+  Pass -> ForwardPass 8 Shoot 2 Dribble 153 Protect 52 Hold 17
+  ForwardPass -> Pass 28 ThroughPass 2 Dribble 211 Protect 13 Hold 19
+  ThroughPass -> Pass 2 ForwardPass 2 Dribble 17 Protect 1 Hold 1
+  Shoot -> Pass 2 Dribble 57 Protect 2 Hold 3
+  Dribble -> Pass 251 ForwardPass 97 Shoot 105 Protect 412 Hold 200
+  Protect -> Pass 5 ForwardPass 1 Shoot 3 Dribble 394
+  Hold -> Pass 18 ForwardPass 4 Shoot 1 Dribble 132 Protect 21
+NOT CANDIDATE (kind: reason count)
+  Pass: CannotKick 235 OutOfRange 1304 LaneBlocked 4974 NoSpace 482 NotForward 1510 KeeperNotAllowed 1493
+  ForwardPass:
+  ThroughPass: CannotKick 47 OutOfRange 329 LaneBlocked 764 NoSpace 77 NotRunner 5253 OutsidePitch 170 NoGain 1835 LostRace 635
+  Shoot: CannotKick 47 OutOfRange 1755 BadAngle 240 LaneBlocked 38
+  Dribble: NoFreeWay 210
+  Protect: NoOpponentNear 665
+  Hold: TooMuchPressure 1062 OutsideHoldWindow 589
+DRIBBLE free-way decisions 2104  chosen avg space 1.00  avg progress 0.94
+  Dribble episodes 414  retained 62  lost 72  loose 25  released 254  unknown 1  retention(of those not released) 39.0%
+  Protect episodes 130  retained 24  lost 18  loose 10  released 78  unknown 0  retention(of those not released) 46.2%
+  Hold episodes 95  retained 19  lost 11  loose 4  released 61  unknown 0  retention(of those not released) 55.9%
+PASSES  attempts 675  completed 204 (to intended 168, to other 36)  intercepted 104  lostOther 201  missed 4  outOfPlay 0  invalidated 2  returnedToPasser 156  unknown 0  notObserved 4
+  ShortPass attempts 412 completed 162 intercepted 69 lostOther 113 missed 0 other 68
+  LongPass attempts 74 completed 5 intercepted 8 lostOther 38 missed 0 other 23
+  ThroughPass attempts 23 completed 3 intercepted 5 lostOther 12 missed 0 other 3
+  SkillLobPass attempts 9 completed 4 intercepted 2 lostOther 1 missed 0 other 2
+  GoalkeeperDistribution attempts 157 completed 30 intercepted 20 lostOther 37 missed 4 other 66
+RETURNED TO PASSER within <0.1s/<0.25s/<0.5s/later: 85/22/28/21
+PASSER CHASED HIS OWN PASS (MoveToBall decided before the pass settled), by outcome: Completed 150/204 Intercepted 72/104 MissedTarget 4/4 Invalidated 2/2 PossessionLostOther 108/201 ReturnedToPasser 32/156 NotObserved 4/4
+ENDED IN AN OPPONENT KEEPERS HANDS (all passes / into space): intercepted 0/0  lostOther 65/11
+PASS TIME to settle (s): Completed 0.72 Intercepted 0.94 MissedTarget 6.02 Invalidated 1.82 PossessionLostOther 0.91 ReturnedToPasser 0.25 NotObserved 1.03
+  Completed passerSpeed 3.28  ballSpeed 12.77  targetDist 7.66  power 0.67  quality 0.65  opponentNearPasser 2.63
+  Intercepted passerSpeed 4.36  ballSpeed 13.68  targetDist 9.40  power 0.71  quality 0.70  opponentNearPasser 2.75
+  MissedTarget passerSpeed 4.05  ballSpeed 18.55  targetDist 17.09  power 0.80  quality 0.71  opponentNearPasser 4.26
+  Invalidated passerSpeed 3.56  ballSpeed 19.77  targetDist 15.83  power 0.85  quality 0.93  opponentNearPasser 1.36
+  PossessionLostOther passerSpeed 3.63  ballSpeed 14.60  targetDist 9.81  power 0.73  quality 0.70  opponentNearPasser 2.34
+  ReturnedToPasser passerSpeed 3.04  ballSpeed 15.19  targetDist 8.49  power 0.75  quality 0.72  opponentNearPasser 2.13
+  NotObserved passerSpeed 3.72  ballSpeed 16.62  targetDist 15.74  power 0.82  quality 0.73  opponentNearPasser 6.13
+SPACE   attempts 23  logged 23  dropped 0
+  Completed 3 (13.0%)  avg runner->target 4.88  opponent->target 8.50  passer->target 11.99  finalBall->target 3.60  runnerSpeed 3.77
+  Intercepted 5 (21.7%)  avg runner->target 5.24  opponent->target 7.68  passer->target 9.12  finalBall->target 5.35  runnerSpeed 4.48
+  PossessionLostOther 12 (52.2%)  avg runner->target 4.65  opponent->target 7.04  passer->target 8.78  finalBall->target 6.51  runnerSpeed 3.31
+  ReturnedToPasser 3 (13.0%)  avg runner->target 4.96  opponent->target 7.28  passer->target 7.64  finalBall->target 10.92  runnerSpeed 3.93
+SHOTS   opportunities(decisions with a shot candidate) 239  chosen 64  attempts(actions) 58  goal 4  opponentPossession 24  teamPossession 24  outOfPlay 0  unknown 6
+DEFENCE interceptions(events) 254  blocks 108  contacts 449  fouls(actions) 0  foul/contact 0.0%
+  Tackle    requested 126  contacts 124  won 20  loose 28  failed 76  fouls 0  foul/contact 0.0%  noContact 0  | aggressive 0/5  not 0/119  | from behind: contacts 11 failed 7 fouls 0  front: contacts 113 failed 69
+  Sliding   requested 13  contacts 13  won 2  loose 5  failed 6  fouls 0  foul/contact 0.0%  noContact 0  | aggressive 0/1  not 0/12  | from behind: contacts 0 failed 0 fouls 0  front: contacts 13 failed 6
+  Challenge requested 316  contacts 312  won 25  loose 93  failed 194  fouls 0  foul/contact 0.0%  noContact 0  | aggressive 0/10  not 0/302  | from behind: contacts 244 failed 155 fouls 0  front: contacts 68 failed 39
+  carrier standing/moving contacts 36/413 fouls 0/0  shielding contacts 190 fouls 0  quality foul 0.00 failed-no-foul 0.29
+  by what the carrier had decided (contacts/fouls): Idle 7/0 MoveToPoint 1/0 MoveToBall 16/0 Pass 43/0 Dribble 130/0 Protect 149/0 CloseDown 2/0 Tackle 10/0 Challenge 13/0 Intercept 68/0 Hold 10/0
+  by defender archetype (contacts/fouls): Explosive 69/0 Creator 111/0 Finisher 13/0 Anchor 52/0 Engine 28/0 Guardian 48/0 Wall 29/0 Builder 20/0 Architect 11/0 Winger 29/0 GoalHunter 36/0 Target 3/0
+  by defender position (contacts/fouls): Defender 138/0 Midfielder 127/0 Forward 184/0
+ACTIONS (requested/accepted/rejected/completed/failed, stamina)
+  ShortPass           412/0/0/412/0  stamina 146.55
+  LongPass            74/0/0/74/0  stamina 30.31
+  Shot                57/0/0/57/0  stamina 64.08
+  Tackle              126/0/2/48/76  stamina 310.00
+  Intercept           430/0/0/362/68  stamina 499.81
+  Shield              401/391/10/0/0  stamina 0.00
+  GoalkeeperDistribution221/0/64/157/0  stamina 70.65
+  CurvedShot          1/0/0/1/0  stamina 3.00
+  ThroughPass         23/0/0/23/0  stamina 9.22
+  SkillMove           2/0/0/1/1  stamina 6.30
+  SkillLobPass        9/0/0/9/0  stamina 12.40
+  SlidingTackle       13/0/0/7/6  stamina 78.00
+  PhysicalChallenge   316/0/4/118/194  stamina 936.00
+  rejections: ActionLocked 68 NotInPossession 6 NoTarget 6
+
+== Classic F10 seeds 321..328 ==
+MATCH   matches 8  seconds 960.00  possession gains H/A 291/284  switches 567  recoveries 365  goals 10 (after a followed shot 7, other 3)  fouls 7
+DECIDED all 76786  carrier 0
+DECISION KINDS (all players): Idle 18245 MoveToPoint 33892 MoveToBall 9729 Support 1848 Pass 833 Shoot 64 Dribble 1094 Protect 72 CloseDown 1827 Tackle 84 SlidingTackle 18 Challenge 185 Intercept 3200 GetOpen 2793 ForwardRun 1044 HoldWidth 1858
+CARRIER type: chosen | share | avgScore | avgMargin | available | bestOfKindAvg | runnerUp | avgPressure | avgStamina
+  Pass             0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  ForwardPass      0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  ThroughPass      0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Shoot            0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Dribble          0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Protect          0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+  Hold             0       -   0.00   0.00  avail       -  best   0.00  second     0  pressure 0.00  stamina 0.00
+MARGIN  avg 0.00  min 0.00  max 0.00  <0.10 0  <0.25 0  <0.50 0  >=0.50 0  alone 0
+RUNS    decisions with a run of kind support/forward/width/getopen present: 0/0/0/0
+SCORE PARTS (average of the best candidate of each kind; winner average in brackets)
+  Pass: advance 0.00[0.00] space 0.00[0.00] distance 0.00[0.00] angle 0.00[0.00] lane 0.00[0.00] receiverPressure 0.00[0.00] receiverMove 0.00[0.00] run 0.00[0.00] forwardBonus 0.00[0.00] safePass 0.00[0.00] backTurned 0.00[0.00]
+  ForwardPass: advance 0.00[0.00] space 0.00[0.00] distance 0.00[0.00] angle 0.00[0.00] lane 0.00[0.00] receiverPressure 0.00[0.00] receiverMove 0.00[0.00] run 0.00[0.00] forwardBonus 0.00[0.00] safePass 0.00[0.00] backTurned 0.00[0.00]
+  ThroughPass: base 0.00[0.00] progress 0.00[0.00] space 0.00[0.00] race 0.00[0.00] run 0.00[0.00] risk 0.00[0.00]
+  Shoot: proximity 0.00[0.00] angle 0.00[0.00] line 0.00[0.00] goalkeeper 0.00[0.00] pressure 0.00[0.00]
+  Dribble: advanceSpace 0.00[0.00] pressure 0.00[0.00] ownGoal 0.00[0.00] fatigue 0.00[0.00] skillMove 0.00[0.00]
+  Protect: base 0.00[0.00] pressure 0.00[0.00] waitForRun 0.00[0.00]
+  Hold: base 0.00[0.00] runDeveloping 0.00[0.00]
+WON BY (winner -> best of another kind): 
+  Pass ->
+  ForwardPass ->
+  ThroughPass ->
+  Shoot ->
+  Dribble ->
+  Protect ->
+  Hold ->
+NOT CANDIDATE (kind: reason count)
+  Pass:
+  ForwardPass:
+  ThroughPass:
+  Shoot:
+  Dribble:
+  Protect:
+  Hold:
+DRIBBLE free-way decisions 0  chosen avg space 0.00  avg progress 0.00
+  Dribble episodes 0  retained 0  lost 0  loose 0  released 0  unknown 0  retention(of those not released) -
+  Protect episodes 0  retained 0  lost 0  loose 0  released 0  unknown 0  retention(of those not released) -
+  Hold episodes 0  retained 0  lost 0  loose 0  released 0  unknown 0  retention(of those not released) -
+PASSES  attempts 798  completed 247 (to intended 188, to other 59)  intercepted 142  lostOther 272  missed 0  outOfPlay 0  invalidated 3  returnedToPasser 129  unknown 0  notObserved 5
+  ShortPass attempts 524 completed 200 intercepted 121 lostOther 140 missed 0 other 63
+  LongPass attempts 96 completed 4 intercepted 4 lostOther 70 missed 0 other 18
+  SkillLobPass attempts 7 completed 0 intercepted 0 lostOther 6 missed 0 other 1
+  GoalkeeperDistribution attempts 171 completed 43 intercepted 17 lostOther 56 missed 0 other 55
+RETURNED TO PASSER within <0.1s/<0.25s/<0.5s/later: 51/16/25/37
+PASSER CHASED HIS OWN PASS (MoveToBall decided before the pass settled), by outcome: Completed 183/247 Intercepted 95/142 Invalidated 2/3 PossessionLostOther 173/272 ReturnedToPasser 44/129 NotObserved 4/5
+ENDED IN AN OPPONENT KEEPERS HANDS (all passes / into space): intercepted 0/0  lostOther 83/0
+PASS TIME to settle (s): Completed 0.58 Intercepted 0.48 Invalidated 1.82 PossessionLostOther 1.22 ReturnedToPasser 0.39 NotObserved 0.87
+  Completed passerSpeed 3.54  ballSpeed 12.52  targetDist 7.92  power 0.67  quality 0.65  opponentNearPasser 2.94
+  Intercepted passerSpeed 4.45  ballSpeed 12.66  targetDist 8.23  power 0.67  quality 0.68  opponentNearPasser 2.46
+  Invalidated passerSpeed 2.74  ballSpeed 19.97  targetDist 16.89  power 0.87  quality 0.88  opponentNearPasser 2.57
+  PossessionLostOther passerSpeed 3.47  ballSpeed 15.34  targetDist 11.12  power 0.74  quality 0.72  opponentNearPasser 3.57
+  ReturnedToPasser passerSpeed 3.34  ballSpeed 14.29  targetDist 9.07  power 0.74  quality 0.72  opponentNearPasser 3.58
+  NotObserved passerSpeed 1.05  ballSpeed 18.03  targetDist 15.11  power 0.82  quality 0.83  opponentNearPasser 6.91
+SPACE   attempts 0  logged 0  dropped 0
+SHOTS   opportunities(decisions with a shot candidate) 0  chosen 0  attempts(actions) 63  goal 7  opponentPossession 22  teamPossession 33  outOfPlay 0  unknown 1
+DEFENCE interceptions(events) 291  blocks 92  contacts 286  fouls(actions) 7  foul/contact 2.4%
+  Tackle    requested 84  contacts 84  won 11  loose 24  failed 49  fouls 1  foul/contact 1.2%  noContact 0  | aggressive 0/3  not 1/81  | from behind: contacts 10 failed 6 fouls 1  front: contacts 74 failed 43
+  Sliding   requested 18  contacts 18  won 3  loose 3  failed 12  fouls 0  foul/contact 0.0%  noContact 0  | aggressive 0/2  not 0/16  | from behind: contacts 0 failed 0 fouls 0  front: contacts 18 failed 12
+  Challenge requested 185  contacts 184  won 60  loose 56  failed 68  fouls 6  foul/contact 3.3%  noContact 0  | aggressive 0/4  not 6/180  | from behind: contacts 125 failed 44 fouls 6  front: contacts 59 failed 24
+  carrier standing/moving contacts 16/270 fouls 1/6  shielding contacts 29 fouls 6  quality foul 0.16 failed-no-foul 0.31
+  by what the carrier had decided (contacts/fouls): Idle 7/0 MoveToPoint 3/0 MoveToBall 20/0 Pass 20/0 Dribble 105/4 Protect 18/3 CloseDown 3/0 Tackle 6/0 SlidingTackle 1/0 Challenge 18/0 Intercept 84/0 GetOpen 1/0
+  by defender archetype (contacts/fouls): Explosive 28/0 Creator 57/6 Finisher 21/1 Anchor 24/0 Engine 24/0 Guardian 37/0 Wall 19/0 Builder 10/0 Architect 33/0 Winger 4/0 GoalHunter 27/0 Target 2/0
+  by defender position (contacts/fouls): Defender 74/1 Midfielder 107/2 Forward 105/4
+ACTIONS (requested/accepted/rejected/completed/failed, stamina)
+  ShortPass           527/0/3/524/0  stamina 181.07
+  LongPass            96/0/0/96/0  stamina 39.25
+  Shot                64/0/1/63/0  stamina 49.02
+  Tackle              84/0/0/35/49  stamina 210.00
+  Intercept           444/0/0/383/61  stamina 532.31
+  Shield              72/71/1/0/0  stamina 0.00
+  GoalkeeperDistribution203/0/32/171/0  stamina 76.95
+  SkillLobPass        7/0/0/7/0  stamina 7.21
+  SlidingTackle       18/0/0/6/12  stamina 108.00
+  PhysicalChallenge   185/0/1/116/68  stamina 552.00
+  rejections: ActionLocked 29 BallNotAvailable 4 NotInPossession 4 NoTarget 1
+
+== Classic F11 seeds 321..328 ==
+MATCH   matches 8  seconds 960.00  possession gains H/A 255/253  switches 500  recoveries 253  goals 12 (after a followed shot 10, other 2)  fouls 18
+DECIDED all 76784  carrier 2327
+DECISION KINDS (all players): Idle 17207 MoveToPoint 33552 MoveToBall 9021 Support 2257 Pass 707 Shoot 54 Dribble 1350 Protect 223 CloseDown 2094 Tackle 81 SlidingTackle 13 Challenge 214 Intercept 2690 GetOpen 3880 ForwardRun 962 HoldWidth 2310 Hold 169
+CARRIER type: chosen | share | avgScore | avgMargin | available | bestOfKindAvg | runnerUp | avgPressure | avgStamina
+  Pass           185    8.0%   2.31   0.67  avail   40.0%  best   1.66  second   367  pressure 0.35  stamina 38.38
+  ForwardPass    315   13.5%   3.22   0.84  avail   23.1%  best   2.68  second   139  pressure 0.26  stamina 34.05
+  ThroughPass     26    1.1%   3.71   1.01  avail    1.2%  best   3.70  second     3  pressure 0.18  stamina 45.18
+  Shoot           54    2.3%   2.48   0.28  avail    8.2%  best   2.03  second    99  pressure 0.15  stamina 16.89
+  Dribble       1353   58.1%   2.36   0.75  avail  100.0%  best   2.03  second   771  pressure 0.16  stamina 27.94
+  Protect        225    9.7%   1.47   0.66  avail   54.7%  best   1.03  second   406  pressure 0.69  stamina 46.18
+  Hold           169    7.3%   1.96   0.57  avail   35.1%  best   1.85  second   367  pressure 0.05  stamina 28.04
+MARGIN  avg 0.72  min 0.00  max 3.63  <0.10 193  <0.25 229  <0.50 424  >=0.50 1306  alone 175
+RUNS    decisions with a run of kind support/forward/width/getopen present: 2266/961/2327/2327
+SCORE PARTS (average of the best candidate of each kind; winner average in brackets)
+  Pass: advance -0.08[-0.10] space 0.68[0.76] distance -0.08[-0.07] angle 0.28[0.30] lane 0.44[0.55] receiverPressure -0.14[-0.04] receiverMove -0.01[0.02] run 0.50[0.53] forwardBonus 0.00[0.00] safePass 0.14[0.37] backTurned -0.07[-0.01]
+  ForwardPass: advance 0.46[0.49] space 0.63[0.72] distance -0.09[-0.09] angle 0.31[0.30] lane 0.39[0.44] receiverPressure -0.15[-0.03] receiverMove 0.04[0.06] run 0.54[0.57] forwardBonus 0.50[0.50] safePass 0.18[0.27] backTurned -0.14[-0.02]
+  ThroughPass: base 1.50[1.50] progress 0.62[0.63] space 0.80[0.80] race 0.31[0.31] run 1.07[1.06] risk -0.60[-0.60]
+  Shoot: proximity 0.47[0.48] angle 1.06[1.22] line 0.95[0.99] goalkeeper 0.16[0.15] pressure -0.62[-0.37]
+  Dribble: advanceSpace 2.68[3.01] pressure -0.20[-0.16] ownGoal -0.01[-0.01] fatigue -0.43[-0.49] skillMove 0.01[0.00]
+  Protect: base 0.40[0.40] pressure 0.51[0.83] waitForRun 0.12[0.24]
+  Hold: base 1.60[1.60] runDeveloping 0.25[0.36]
+WON BY (winner -> best of another kind): 
+  Pass -> ForwardPass 5 Dribble 121 Protect 32 Hold 27
+  ForwardPass -> Pass 37 ThroughPass 3 Dribble 243 Protect 9 Hold 23
+  ThroughPass -> Pass 7 ForwardPass 3 Shoot 1 Dribble 14 Protect 1
+  Shoot -> Dribble 49 Protect 3 Hold 2
+  Dribble -> Pass 295 ForwardPass 125 Shoot 94 Protect 349 Hold 315
+  Protect -> Pass 4 Shoot 4 Dribble 217
+  Hold -> Pass 24 ForwardPass 6 Dribble 127 Protect 12
+NOT CANDIDATE (kind: reason count)
+  Pass: CannotKick 190 OutOfRange 1109 LaneBlocked 4332 NoSpace 545 NotForward 1837 KeeperNotAllowed 1816
+  ForwardPass:
+  ThroughPass: CannotKick 38 OutOfRange 382 LaneBlocked 717 NoSpace 93 NotRunner 5139 OutsidePitch 175 NoGain 1986 LostRace 634
+  Shoot: CannotKick 38 OutOfRange 1967 BadAngle 119 LaneBlocked 12
+  Dribble: NoFreeWay 179
+  Protect: NoOpponentNear 1055
+  Hold: TooMuchPressure 735 OutsideHoldWindow 776
+DRIBBLE free-way decisions 2141  chosen avg space 1.00  avg progress 0.95
+  Dribble episodes 408  retained 89  lost 89  loose 20  released 203  unknown 7  retention(of those not released) 44.9%
+  Protect episodes 90  retained 18  lost 22  loose 2  released 47  unknown 1  retention(of those not released) 42.9%
+  Hold episodes 81  retained 21  lost 14  loose 3  released 43  unknown 0  retention(of those not released) 55.3%
+PASSES  attempts 669  completed 224 (to intended 186, to other 38)  intercepted 95  lostOther 237  missed 0  outOfPlay 0  invalidated 1  returnedToPasser 111  unknown 0  notObserved 1
+  ShortPass attempts 388 completed 173 intercepted 71 lostOther 94 missed 0 other 50
+  LongPass attempts 88 completed 6 intercepted 2 lostOther 71 missed 0 other 9
+  ThroughPass attempts 26 completed 4 intercepted 2 lostOther 19 missed 0 other 1
+  SkillLobPass attempts 10 completed 0 intercepted 0 lostOther 9 missed 0 other 1
+  GoalkeeperDistribution attempts 157 completed 41 intercepted 20 lostOther 44 missed 0 other 52
+RETURNED TO PASSER within <0.1s/<0.25s/<0.5s/later: 54/11/21/25
+PASSER CHASED HIS OWN PASS (MoveToBall decided before the pass settled), by outcome: Completed 179/224 Intercepted 69/95 Invalidated 1/1 PossessionLostOther 159/237 ReturnedToPasser 36/111 NotObserved 0/1
+ENDED IN AN OPPONENT KEEPERS HANDS (all passes / into space): intercepted 0/0  lostOther 75/4
+PASS TIME to settle (s): Completed 0.55 Intercepted 0.69 Invalidated 1.82 PossessionLostOther 1.35 ReturnedToPasser 0.31 NotObserved 0.02
+  Completed passerSpeed 2.52  ballSpeed 12.78  targetDist 8.26  power 0.68  quality 0.66  opponentNearPasser 3.20
+  Intercepted passerSpeed 3.68  ballSpeed 13.02  targetDist 8.76  power 0.70  quality 0.69  opponentNearPasser 2.81
+  Invalidated passerSpeed 5.95  ballSpeed 19.66  targetDist 16.21  power 0.86  quality 0.85  opponentNearPasser 0.83
+  PossessionLostOther passerSpeed 2.80  ballSpeed 16.11  targetDist 11.75  power 0.76  quality 0.74  opponentNearPasser 3.51
+  ReturnedToPasser passerSpeed 2.89  ballSpeed 14.28  targetDist 9.22  power 0.74  quality 0.72  opponentNearPasser 3.31
+  NotObserved passerSpeed 1.42  ballSpeed 10.80  targetDist 3.89  power 0.55  quality 0.56  opponentNearPasser 2.98
+SPACE   attempts 26  logged 26  dropped 0
+  Completed 4 (15.4%)  avg runner->target 4.59  opponent->target 8.20  passer->target 9.22  finalBall->target 5.04  runnerSpeed 3.17
+  Intercepted 2 (7.7%)  avg runner->target 4.66  opponent->target 6.90  passer->target 7.76  finalBall->target 5.49  runnerSpeed 3.32
+  PossessionLostOther 19 (73.1%)  avg runner->target 4.87  opponent->target 8.25  passer->target 10.09  finalBall->target 7.13  runnerSpeed 3.73
+  ReturnedToPasser 1 (3.8%)  avg runner->target 5.54  opponent->target 8.19  passer->target 11.26  finalBall->target 10.64  runnerSpeed 5.09
+SHOTS   opportunities(decisions with a shot candidate) 191  chosen 54  attempts(actions) 54  goal 10  opponentPossession 15  teamPossession 28  outOfPlay 0  unknown 1
+DEFENCE interceptions(events) 199  blocks 101  contacts 304  fouls(actions) 18  foul/contact 5.9%
+  Tackle    requested 81  contacts 80  won 11  loose 14  failed 55  fouls 1  foul/contact 1.2%  noContact 0  | aggressive 0/3  not 1/77  | from behind: contacts 8 failed 6 fouls 1  front: contacts 72 failed 49
+  Sliding   requested 13  contacts 12  won 0  loose 5  failed 7  fouls 0  foul/contact 0.0%  noContact 1  | aggressive 0/1  not 0/11  | from behind: contacts 0 failed 0 fouls 0  front: contacts 12 failed 7
+  Challenge requested 214  contacts 212  won 43  loose 64  failed 105  fouls 17  foul/contact 8.0%  noContact 0  | aggressive 0/12  not 17/200  | from behind: contacts 141 failed 77 fouls 17  front: contacts 71 failed 28
+  carrier standing/moving contacts 25/279 fouls 0/18  shielding contacts 94 fouls 17  quality foul 0.15 failed-no-foul 0.30
+  by what the carrier had decided (contacts/fouls): Idle 9/0 MoveToPoint 1/0 MoveToBall 12/1 Pass 26/0 Dribble 93/4 Protect 76/13 CloseDown 3/0 Tackle 3/0 Challenge 18/0 Intercept 59/0 GetOpen 1/0 Hold 3/0
+  by defender archetype (contacts/fouls): Explosive 50/5 Creator 40/2 Finisher 24/3 Anchor 32/0 Engine 24/1 Guardian 41/0 Wall 20/1 Builder 9/0 Architect 26/2 Winger 2/0 GoalHunter 33/4 Target 3/0
+  by defender position (contacts/fouls): Defender 78/1 Midfielder 105/5 Forward 121/12
+ACTIONS (requested/accepted/rejected/completed/failed, stamina)
+  ShortPass           389/0/1/388/0  stamina 124.70
+  LongPass            88/0/0/88/0  stamina 33.65
+  Shot                54/0/0/54/0  stamina 38.28
+  Tackle              81/0/1/25/55  stamina 200.00
+  Intercept           364/0/0/300/64  stamina 382.28
+  Shield              223/212/11/0/0  stamina 0.00
+  GoalkeeperDistribution194/0/37/157/0  stamina 70.65
+  ThroughPass         26/0/0/26/0  stamina 10.57
+  SkillMove           3/0/1/1/1  stamina 2.69
+  SkillLobPass        10/0/0/10/0  stamina 13.07
+  SlidingTackle       13/0/0/6/7  stamina 78.00
+  PhysicalChallenge   214/0/2/107/105  stamina 636.00
+  rejections: ActionLocked 40 BallOutOfReach 1 NotInPossession 9 NoTarget 3
+
