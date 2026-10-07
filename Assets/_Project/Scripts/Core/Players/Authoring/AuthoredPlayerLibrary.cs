@@ -13,6 +13,16 @@ namespace FS27.Core
         /// <summary>Source inconsistencies the readers noticed (already handled by the documented corrections); informational.</summary>
         public readonly List<string> Notes = new List<string>();
         public bool IsValid { get { return Problems.Count == 0; } }
+
+        // ---- Phase 5: what the importers knew about each field player, kept instead of thrown away (additive; nothing above changes) ----
+        /// <summary>The normalised signature tags of each field player, in source order (the vocabularies of the importers; at most <see cref="FieldPlayerImportOptions.MaxSignatureActions"/>). Authoring information.</summary>
+        public readonly Dictionary<string, List<string>> SignatureTags = new Dictionary<string, List<string>>();
+        /// <summary>Raw signature labels the vocabularies do not know (so they were left out), as "playerId: label".</summary>
+        public readonly List<string> UnknownSignatureLabels = new List<string>();
+        /// <summary>Raw signature labels dropped because a player already had the maximum number of tags, as "playerId: label".</summary>
+        public readonly List<string> TrimmedSignatureLabels = new List<string>();
+        /// <summary>Every value the importers had to default (a value the source lacks), field players only.</summary>
+        public readonly List<DefaultedValue> Defaulted = new List<DefaultedValue>();
     }
 
     /// <summary>
@@ -69,7 +79,18 @@ namespace FS27.Core
         {
             if (batch.Failed > 0) result.Problems.Add(label + ": " + batch.Failed + " players failed to import.");
             foreach (string p in batch.ReaderProblems) result.Notes.Add(label + ": " + p);
-            foreach (FieldPlayerImportResult r in batch.Results) if (r.Profile != null) result.Profiles.TryAdd(r.Profile);
+            foreach (FieldPlayerImportResult r in batch.Results)
+            {
+                if (r.Profile != null) result.Profiles.TryAdd(r.Profile);
+                if (r.Player == null) continue;
+                result.SignatureTags[r.PlayerId] = new List<string>(r.SignatureTags);
+                result.Defaulted.AddRange(r.Defaulted);
+                foreach (FieldPlayerImportIssue i in r.Issues)
+                {
+                    if (i.Code == FieldPlayerImportCode.SignatureActionUnknown) result.UnknownSignatureLabels.Add(r.PlayerId + ": " + i.Value);
+                    else if (i.Code == FieldPlayerImportCode.SignatureActionsTrimmed) result.TrimmedSignatureLabels.Add(r.PlayerId + ": " + i.Value);
+                }
+            }
         }
     }
 }

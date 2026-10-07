@@ -170,7 +170,9 @@ namespace FS27.Core.Tests
             string[] names = { "RefereeDefinition", "RefereeProfile", "RefereeDatabase", "RefereeStyleDefinition", "RefereeDataRecord", "RefereeJson", "RefereeRecordImporter" };
             foreach (string file in Directory.GetFiles(core, "*.cs", SearchOption.AllDirectories))
             {
-                if (file.Replace('\\', '/').Contains("/Referees/")) continue;
+                // Phase 5: the closed-database layer (DataLock) is the one place that loads and validates referees; gameplay code still must not know them
+                string normalized = file.Replace('\\', '/');
+                if (normalized.Contains("/Referees/") || normalized.Contains("/DataLock/")) continue;
                 string src = File.ReadAllText(file);
                 foreach (string n in names) Assert.IsFalse(src.Contains(n), Path.GetFileName(file) + " must not depend on " + n);
             }

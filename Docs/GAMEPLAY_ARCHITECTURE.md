@@ -546,3 +546,12 @@ Detalle y fórmulas en [ACTIONS_AND_BALL.md](ACTIONS_AND_BALL.md). Lo que afecta
 - El Core es la autoridad: `Input → MatchController → acción → balón (BallSimulator) → MatchState → Unity`. La deuda M.2 (jugadores y balón en Unity) queda resuelta a nivel de Core: el contacto jugador–balón es determinista y vive en el motor; Unity solo refleja.
 - Posesión: una sola fuente en `MatchBall`; el balón nunca está pegado al jugador. El portero usa el mismo sistema (rush solo contrato). Arena y Classic respetan sus reglas.
 - **No implementado (fases posteriores):** IA, tácticas, formaciones, entrenadores, catálogo de skills, árbitro y reanudaciones por falta, cabezazo/centro/tiro colocado, animaciones, cámara, UI.
+
+---
+
+## R. FASE 5 — Data lock (resumen)
+Detalle en [DATA_LOCK.md](DATA_LOCK.md). Lo que afecta a este documento:
+- La base está cerrada y validada (`GameDatabaseLoader` + `DataLockValidator`): 160 jugadores con identidad ficticia y `ShortName`, 37 skills y un `PlayerSkillSet` por jugador de campo, 12 equipos con formación, 20 coaches (53 variantes), 5 árbitros y 5 niveles de dificultad.
+- Las skills usan los contratos de la Fase 2 (`SkillDefinition`, `PlayerSkillSet`); 3 tipos desbloquean las acciones de skill de la Fase 4 (`SkillMove`, `SkillLobPass`, `CurvedShot`).
+- Sin cambios de comportamiento de partido. No implementado: IA, tácticas de gameplay, árbitro funcional, competición.
+

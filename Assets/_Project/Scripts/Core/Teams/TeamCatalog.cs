@@ -43,7 +43,11 @@ namespace FS27.Core
         OfficialWithoutCoach,
         UnknownCoach,
         DuplicateCoach,
-        TeamHoldsLegacyPlayerIds
+        TeamHoldsLegacyPlayerIds,
+        /// <summary>Phase 5: the team has no formation (only checked when the formations are known).</summary>
+        MissingFormation,
+        /// <summary>Phase 5: the formation id is neither a base formation nor a variant of a coach, or it is not a playable 6v6 formation.</summary>
+        UnknownFormation
     }
 
     public sealed class TeamIssue
@@ -75,7 +79,7 @@ namespace FS27.Core
     /// </summary>
     public static class TeamCatalogValidator
     {
-        public static TeamReport Validate(IReadOnlyList<TeamDefinition> teams, CoachLibrary coaches)
+        public static TeamReport Validate(IReadOnlyList<TeamDefinition> teams, CoachLibrary coaches, FormationLibrary formations = null)
         {
             var r = new TeamReport();
             if (teams.Count != RosterRules.TeamCount) r.Add(TeamIssueCode.WrongTeamCount, "", teams.Count + " teams, " + RosterRules.TeamCount + " expected.");
@@ -92,6 +96,16 @@ namespace FS27.Core
                 if (string.IsNullOrWhiteSpace(t.ShortName) || t.ShortName.Length > 4) r.Add(TeamIssueCode.InvalidShortName, id, "Short name must be 1-4 characters.");
                 else if (!shorts.Add(t.ShortName.Trim().ToUpperInvariant())) r.Add(TeamIssueCode.DuplicateShortName, id, "Short name repeated.");
                 if (t.PlayerIds != null && t.PlayerIds.Count > 0) r.Add(TeamIssueCode.TeamHoldsLegacyPlayerIds, id, "A team's players are its roster, not the legacy lineup list.");
+                if (formations != null)
+                {
+                    if (string.IsNullOrEmpty(t.FormationId)) r.Add(TeamIssueCode.MissingFormation, id, "Every team has a formation (a base formation or a variant of its coach).");
+                    else if (!TeamFormationResolver.TryResolve(t, coaches, formations, out FormationDefinition resolved)) r.Add(TeamIssueCode.UnknownFormation, id, "Formation '" + t.FormationId + "' is not a base formation nor a variant of a coach.");
+                    else
+                    {
+                        ValidationResult fv = DataValidator.ValidateFormation(resolved);
+                        if (!fv.IsValid) r.Add(TeamIssueCode.UnknownFormation, id, "Formation '" + t.FormationId + "' is not playable 6v6: " + fv.Issues[0].Message);
+                    }
+                }
 
                 if (t.Kind == TeamKind.User)
                 {
@@ -133,7 +147,7 @@ namespace FS27.Core
                 o.Set("kind", JsonValue.Of(t.Kind.ToString())).Set("level", JsonValue.Of(t.Level.ToString()));
                 o.Set("primary", Rgb(t.Colors.Primary)).Set("secondary", Rgb(t.Colors.Secondary));
                 o.Set("badgeRef", JsonValue.Of(t.BadgeRef)).Set("coachId", JsonValue.Of(t.CoachId));
-                o.Set("theme", JsonValue.Of(t.Theme)).Set("description", JsonValue.Of(t.Description));
+                o.Set("theme", JsonValue.Of(t.Theme)).Set("description", JsonValue.Of(t.Description)).Set("formationId", JsonValue.Of(t.FormationId ?? ""));
                 list.Add(o);
             }
             root.Set("teams", list);
@@ -156,7 +170,7 @@ namespace FS27.Core
                     var t = new TeamDefinition
                     {
                         Id = Str(o, "teamId"), Name = Str(o, "name"), ShortName = Str(o, "shortName"), BadgeRef = Str(o, "badgeRef"), CoachId = Str(o, "coachId"),
-                        Theme = Str(o, "theme"), Description = Str(o, "description")
+                        Theme = Str(o, "theme"), Description = Str(o, "description"), FormationId = OptStr(o, "formationId")
                     };
                     if (!Enum.TryParse(Str(o, "kind"), false, out TeamKind kind) || !Enum.IsDefined(typeof(TeamKind), kind)) throw new FormatException("Invalid kind '" + Str(o, "kind") + "'.");
                     if (!Enum.TryParse(Str(o, "level"), false, out TeamLevel level) || !Enum.IsDefined(typeof(TeamLevel), level)) throw new FormatException("Invalid level '" + Str(o, "level") + "'.");
@@ -172,6 +186,14 @@ namespace FS27.Core
         private static string Str(JsonValue o, string key)
         {
             if (o.Kind != JsonKind.Object || !o.TryGet(key, out JsonValue v) || v.Kind != JsonKind.String) throw new FormatException("'" + key + "' must be a string.");
+            return v.String;
+        }
+
+        /// <summary>A string that may be absent (older files have no formation): absent means "".</summary>
+        private static string OptStr(JsonValue o, string key)
+        {
+            if (o.Kind != JsonKind.Object || !o.TryGet(key, out JsonValue v)) return "";
+            if (v.Kind != JsonKind.String) throw new FormatException("'" + key + "' must be a string.");
             return v.String;
         }
 

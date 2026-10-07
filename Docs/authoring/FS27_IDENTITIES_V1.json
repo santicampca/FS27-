@@ -1,0 +1,1855 @@
+{
+  "identities": [
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Bruno Tagliaferri",
+      "id": "cb-alessandro-bastoni",
+      "kind": "Player",
+      "name": "Bruno Tagliaferri",
+      "originalName": "Alessandro Bastoni",
+      "shortName": "Tagliaferri"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Florian Hellwig",
+      "id": "cb-antonio-rudiger",
+      "kind": "Player",
+      "name": "Florian Hellwig",
+      "originalName": "Antonio Rüdiger",
+      "shortName": "Hellwig"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Eloy Hontoria Ferreiro",
+      "id": "cb-aymeric-laporte",
+      "kind": "Player",
+      "name": "Eloy Hontoria",
+      "originalName": "Aymeric Laporte",
+      "shortName": "Hontoria"
+    },
+    {
+      "culture": "WestAfricanEnglish",
+      "edited": false,
+      "fullName": "Tetteh Jegede",
+      "id": "cb-calvin-bassey",
+      "kind": "Player",
+      "name": "Tetteh Jegede",
+      "originalName": "Calvin Bassey",
+      "shortName": "Jegede"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Gaspard Aubry",
+      "id": "cb-castello-lukeba",
+      "kind": "Player",
+      "name": "Gaspard Aubry",
+      "originalName": "Castello Lukeba",
+      "shortName": "Aubry"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Camilo Funes Echegaray",
+      "id": "cb-cristian-romero",
+      "kind": "Player",
+      "name": "Camilo Funes",
+      "originalName": "Cristian Romero",
+      "shortName": "Funes"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Rutger Nijhuis",
+      "id": "cb-daley-blind",
+      "kind": "Player",
+      "name": "Rutger Nijhuis",
+      "originalName": "Daley Blind",
+      "shortName": "Nijhuis"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Ilija Ilić",
+      "id": "cb-david-hancko",
+      "kind": "Player",
+      "name": "Ilija Ilić",
+      "originalName": "Dávid Hancko",
+      "shortName": "Ilić"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Rémi Gerbier",
+      "id": "cb-dayot-upamecano",
+      "kind": "Player",
+      "name": "Rémi Gerbier",
+      "originalName": "Dayot Upamecano",
+      "shortName": "Gerbier"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Rodrigo Narváez Galindo",
+      "id": "cb-dean-huijsen",
+      "kind": "Player",
+      "name": "Rodrigo Narváez",
+      "originalName": "Dean Huijsen",
+      "shortName": "Narváez"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Isaac Ashworth",
+      "id": "cb-ezri-konsa",
+      "kind": "Player",
+      "name": "Isaac Ashworth",
+      "originalName": "Ezri Konsa",
+      "shortName": "Ashworth"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Duarte Zagalo",
+      "id": "cb-gabriel-magalhaes",
+      "kind": "Player",
+      "name": "Duarte Zagalo",
+      "originalName": "Gabriel Magalhães",
+      "shortName": "Zagalo"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Ramiro Maldonado Frías",
+      "id": "cb-gerard-martin",
+      "kind": "Player",
+      "name": "Ramiro Maldonado",
+      "originalName": "Gerard Martín",
+      "shortName": "Maldonado"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Lachlan Garrick",
+      "id": "cb-harry-maguire",
+      "kind": "Player",
+      "name": "Lachlan Garrick",
+      "originalName": "Harry Maguire",
+      "shortName": "Garrick"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Dante Naranjo Funes",
+      "id": "cb-jon-aramburu",
+      "kind": "Player",
+      "name": "Dante Naranjo",
+      "originalName": "Jon Aramburu",
+      "shortName": "Naranjo"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Gerrit Thalmann",
+      "id": "cb-jonathan-tah",
+      "kind": "Player",
+      "name": "Gerrit Thalmann",
+      "originalName": "Jonathan Tah",
+      "shortName": "Thalmann"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Hamza Vlahović",
+      "id": "cb-josko-gvardiol",
+      "kind": "Player",
+      "name": "Hamza Vlahović",
+      "originalName": "Joško Gvardiol",
+      "shortName": "Vlahović"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Florian Dupuis",
+      "id": "cb-jules-kounde",
+      "kind": "Player",
+      "name": "Florian Dupuis",
+      "originalName": "Jules Koundé",
+      "shortName": "Dupuis"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Arjen Faber",
+      "id": "cb-jurrien-timber",
+      "kind": "Player",
+      "name": "Arjen Faber",
+      "originalName": "Jurriën Timber",
+      "shortName": "Faber"
+    },
+    {
+      "culture": "WestAfricanFrench",
+      "edited": false,
+      "fullName": "Kalidou Ndiaye",
+      "id": "cb-kalidou-koulibaly",
+      "kind": "Player",
+      "name": "Kalidou Ndiaye",
+      "originalName": "Kalidou Koulibaly",
+      "shortName": "Ndiaye"
+    },
+    {
+      "culture": "Korean",
+      "edited": false,
+      "fullName": "Changmin Hong",
+      "id": "cb-kim-min-jae",
+      "kind": "Player",
+      "name": "Changmin Hong",
+      "originalName": "Kim Min-jae",
+      "shortName": "Hong"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Patricio Vallejos Jiménez",
+      "id": "cb-lisandro-martinez",
+      "kind": "Player",
+      "name": "Patricio Vallejos",
+      "originalName": "Lisandro Martínez",
+      "shortName": "Vallejos"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Fabrice Lemaire",
+      "id": "cb-lucas-hernandez",
+      "kind": "Player",
+      "name": "Fabrice Lemaire",
+      "originalName": "Lucas Hernández",
+      "shortName": "Lemaire"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Jonty Nuttall",
+      "id": "cb-marc-guehi",
+      "kind": "Player",
+      "name": "Jonty Nuttall",
+      "originalName": "Marc Guéhi",
+      "shortName": "Nuttall"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Damián Toledano Palencia",
+      "id": "cb-marc-pubill",
+      "kind": "Player",
+      "name": "Damián Toledano",
+      "originalName": "Marc Pubill",
+      "shortName": "Toledano"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Telmo Evangelista",
+      "id": "cb-marquinhos",
+      "kind": "Player",
+      "name": "Telmo Evangelista",
+      "originalName": "Marquinhos",
+      "shortName": "Evangelista"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Olaf Peeters",
+      "id": "cb-matthijs-de-ligt",
+      "kind": "Player",
+      "name": "Olaf Peeters",
+      "originalName": "Matthijs de Ligt",
+      "shortName": "Peeters"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Lodewijk Jonker",
+      "id": "cb-micky-van-de-ven",
+      "kind": "Player",
+      "name": "Lodewijk Jonker",
+      "originalName": "Micky van de Ven",
+      "shortName": "Jonker"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Torsten Detmers",
+      "id": "cb-nico-schlotterbeck",
+      "kind": "Player",
+      "name": "Torsten Detmers",
+      "originalName": "Nico Schlotterbeck",
+      "shortName": "Detmers"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Nicanor Ferreiro Ordóñez",
+      "id": "cb-pau-cubarsi",
+      "kind": "Player",
+      "name": "Nicanor Ferreiro",
+      "originalName": "Pau Cubarsí",
+      "shortName": "Ferreiro"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Wilmer Ramos Rivadeneira",
+      "id": "cb-piero-hincapie",
+      "kind": "Player",
+      "name": "Wilmer Ramos",
+      "originalName": "Piero Hincapié",
+      "shortName": "Ramos"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Bastien Jouvet",
+      "id": "cb-pierre-kalulu",
+      "kind": "Player",
+      "name": "Bastien Jouvet",
+      "originalName": "Pierre Kalulu",
+      "shortName": "Jouvet"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Hugo Aragão",
+      "id": "cb-renato-veiga",
+      "kind": "Player",
+      "name": "Hugo Aragão",
+      "originalName": "Renato Veiga",
+      "shortName": "Aragão"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Piero Faccini",
+      "id": "cb-riccardo-calafiori",
+      "kind": "Player",
+      "name": "Piero Faccini",
+      "originalName": "Riccardo Calafiori",
+      "shortName": "Faccini"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Ramón Soria Uribe",
+      "id": "cb-ronald-araujo",
+      "kind": "Player",
+      "name": "Ramón Soria",
+      "originalName": "Ronald Araújo",
+      "shortName": "Soria"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Ulisses Eusébio",
+      "id": "cb-ruben-dias",
+      "kind": "Player",
+      "name": "Ulisses Eusébio",
+      "originalName": "Rúben Dias",
+      "shortName": "Eusébio"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Maarten Eijkelboom",
+      "id": "cb-sven-botman",
+      "kind": "Player",
+      "name": "Maarten Eijkelboom",
+      "originalName": "Sven Botman",
+      "shortName": "Eijkelboom"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Koen Everts",
+      "id": "cb-virgil-van-dijk",
+      "kind": "Player",
+      "name": "Koen Everts",
+      "originalName": "Virgil van Dijk",
+      "shortName": "Everts"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Yann Salmon",
+      "id": "cb-william-saliba",
+      "kind": "Player",
+      "name": "Yann Salmon",
+      "originalName": "William Saliba",
+      "shortName": "Salmon"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Diego Quiroga Zalazar",
+      "id": "cb-willian-pacho",
+      "kind": "Player",
+      "name": "Diego Quiroga",
+      "originalName": "Willian Pacho",
+      "shortName": "Quiroga"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Alberto Tedesco",
+      "id": "coach-carlo-ancelotti",
+      "kind": "Coach",
+      "name": "Alberto Tedesco",
+      "originalName": "Carlo Ancelotti",
+      "shortName": "Tedesco"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Pelayo Olmedo Fontanals",
+      "id": "coach-cesc-fabregas",
+      "kind": "Coach",
+      "name": "Pelayo Olmedo",
+      "originalName": "Cesc Fàbregas",
+      "shortName": "Olmedo"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Baltasar Yrigoyen Ramos",
+      "id": "coach-diego-simeone",
+      "kind": "Coach",
+      "name": "Baltasar Yrigoyen",
+      "originalName": "Diego Simeone",
+      "shortName": "Yrigoyen"
+    },
+    {
+      "culture": "Japanese",
+      "edited": false,
+      "fullName": "Ren Hayashida",
+      "id": "coach-hajime-moriyasu",
+      "kind": "Coach",
+      "name": "Ren Hayashida",
+      "originalName": "Hajime Moriyasu",
+      "shortName": "Hayashida"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Matthias Vogelsang",
+      "id": "coach-hansi-flick",
+      "kind": "Coach",
+      "name": "Matthias Vogelsang",
+      "originalName": "Hansi Flick",
+      "shortName": "Vogelsang"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Salvador Camarinha",
+      "id": "coach-jose-mourinho",
+      "kind": "Coach",
+      "name": "Salvador Camarinha",
+      "originalName": "José Mourinho",
+      "shortName": "Camarinha"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Facundo Peralta Naranjo",
+      "id": "coach-lionel-scaloni",
+      "kind": "Coach",
+      "name": "Facundo Peralta",
+      "originalName": "Lionel Scaloni",
+      "shortName": "Peralta"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Freek Hendriks",
+      "id": "coach-louis-van-gaal",
+      "kind": "Coach",
+      "name": "Freek Hendriks",
+      "originalName": "Louis van Gaal",
+      "shortName": "Hendriks"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Hilario Montalvo Bustamante",
+      "id": "coach-luis-de-la-fuente",
+      "kind": "Coach",
+      "name": "Hilario Montalvo",
+      "originalName": "Luis de la Fuente",
+      "shortName": "Montalvo"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Néstor Delgado Galindo",
+      "id": "coach-luis-enrique",
+      "kind": "Coach",
+      "name": "Néstor Delgado",
+      "originalName": "Luis Enrique",
+      "shortName": "Delgado"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Pablo Oyarzún Ibáñez",
+      "id": "coach-manuel-pellegrini",
+      "kind": "Coach",
+      "name": "Pablo Oyarzún",
+      "originalName": "Manuel Pellegrini",
+      "shortName": "Oyarzún"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Tullio Landolfi",
+      "id": "coach-massimiliano-allegri",
+      "kind": "Coach",
+      "name": "Tullio Landolfi",
+      "originalName": "Massimiliano Allegri",
+      "shortName": "Landolfi"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Abel Insúa Duarte",
+      "id": "coach-mauricio-pochettino",
+      "kind": "Coach",
+      "name": "Abel Insúa",
+      "originalName": "Mauricio Pochettino",
+      "shortName": "Insúa"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Octavio Galindo Landeira",
+      "id": "coach-mikel-arteta",
+      "kind": "Coach",
+      "name": "Octavio Galindo",
+      "originalName": "Mikel Arteta",
+      "shortName": "Galindo"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Efrén Espinosa Toledano",
+      "id": "coach-pep-guardiola",
+      "kind": "Coach",
+      "name": "Efrén Espinosa",
+      "originalName": "Pep Guardiola",
+      "shortName": "Espinosa"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Massimo Ruggeri",
+      "id": "coach-roberto-mancini",
+      "kind": "Coach",
+      "name": "Massimo Ruggeri",
+      "originalName": "Roberto Mancini",
+      "shortName": "Ruggeri"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Ansgar Eberhard",
+      "id": "coach-thomas-tuchel",
+      "kind": "Coach",
+      "name": "Ansgar Eberhard",
+      "originalName": "Thomas Tuchel",
+      "shortName": "Eberhard"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Pascal Pelletier",
+      "id": "coach-vincent-kompany",
+      "kind": "Coach",
+      "name": "Pascal Pelletier",
+      "originalName": "Vincent Kompany",
+      "shortName": "Pelletier"
+    },
+    {
+      "culture": "WestAfricanFrench",
+      "edited": false,
+      "fullName": "Famara Abena",
+      "id": "coach-yaya-toure",
+      "kind": "Coach",
+      "name": "Famara Abena",
+      "originalName": "Yaya Touré",
+      "shortName": "Abena"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Oscar Gaillard",
+      "id": "coach-zinedine-zidane",
+      "kind": "Coach",
+      "name": "Oscar Gaillard",
+      "originalName": "Zinedine Zidane",
+      "shortName": "Gaillard"
+    },
+    {
+      "culture": "Nordic",
+      "edited": false,
+      "fullName": "Karl Ulvestad",
+      "id": "dc-alexander-isak",
+      "kind": "Player",
+      "name": "Karl Ulvestad",
+      "originalName": "Alexander Isak",
+      "shortName": "Ulvestad"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Warren Fairbanks",
+      "id": "dc-chris-wood",
+      "kind": "Player",
+      "name": "Warren Fairbanks",
+      "originalName": "Chris Wood",
+      "shortName": "Fairbanks"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Gilberto Bettencourt",
+      "id": "dc-cristiano-ronaldo",
+      "kind": "Player",
+      "name": "Gilberto Bettencourt",
+      "originalName": "Cristiano Ronaldo",
+      "shortName": "Bettencourt"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Ruud Bosman",
+      "id": "dc-donyell-malen",
+      "kind": "Player",
+      "name": "Ruud Bosman",
+      "originalName": "Donyell Malen",
+      "shortName": "Bosman"
+    },
+    {
+      "culture": "Nordic",
+      "edited": false,
+      "fullName": "Gustav Wallin",
+      "id": "dc-erling-haaland",
+      "kind": "Player",
+      "name": "Gustav Wallin",
+      "originalName": "Erling Haaland",
+      "shortName": "Wallin"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Matteo Lunardi",
+      "id": "dc-francesco-pio-esposito",
+      "kind": "Player",
+      "name": "Matteo Lunardi",
+      "originalName": "Francesco Pio Esposito",
+      "shortName": "Lunardi"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Oakley Gresham",
+      "id": "dc-harry-kane",
+      "kind": "Player",
+      "name": "Oakley Gresham",
+      "originalName": "Harry Kane",
+      "shortName": "Gresham"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Edmundo Rebelo",
+      "id": "dc-joao-pedro",
+      "kind": "Player",
+      "name": "Edmundo Rebelo",
+      "originalName": "João Pedro",
+      "shortName": "Rebelo"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Lautaro Zalazar Soria",
+      "id": "dc-julian-alvarez",
+      "kind": "Player",
+      "name": "Lautaro Zalazar",
+      "originalName": "Julián Álvarez",
+      "shortName": "Zalazar"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Hannes Neumeier",
+      "id": "dc-kai-havertz",
+      "kind": "Player",
+      "name": "Hannes Neumeier",
+      "originalName": "Kai Havertz",
+      "shortName": "Neumeier"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Norbert Dorfmeister",
+      "id": "dc-karim-adeyemi",
+      "kind": "Player",
+      "name": "Norbert Dorfmeister",
+      "originalName": "Karim Adeyemi",
+      "shortName": "Dorfmeister"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Quentin Rochefort",
+      "id": "dc-kylian-mbappe",
+      "kind": "Player",
+      "name": "Quentin Rochefort",
+      "originalName": "Kylian Mbappé",
+      "shortName": "Rochefort"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Bruno Duarte Zárate",
+      "id": "dc-lautaro-martinez",
+      "kind": "Player",
+      "name": "Bruno Duarte",
+      "originalName": "Lautaro Martínez",
+      "shortName": "Duarte"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Severo Abellán Juncal",
+      "id": "dc-mikel-oyarzabal",
+      "kind": "Player",
+      "name": "Severo Abellán",
+      "originalName": "Mikel Oyarzabal",
+      "shortName": "Abellán"
+    },
+    {
+      "culture": "WestAfricanFrench",
+      "edited": false,
+      "fullName": "Jean-Luc Samb",
+      "id": "dc-pierre-emerick-aubameyang",
+      "kind": "Player",
+      "name": "Jean-Luc Samb",
+      "originalName": "Pierre-Emerick Aubameyang",
+      "shortName": "Samb"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Loïc Deschamps",
+      "id": "dc-romelu-lukaku",
+      "kind": "Player",
+      "name": "Loïc Deschamps",
+      "originalName": "Romelu Lukaku",
+      "shortName": "Deschamps"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Vaughn Cresswell",
+      "id": "dc-troy-parrott",
+      "kind": "Player",
+      "name": "Vaughn Cresswell",
+      "originalName": "Troy Parrott",
+      "shortName": "Cresswell"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Hristo Stanković",
+      "id": "dc-vedat-muriqi",
+      "kind": "Player",
+      "name": "Hristo Stanković",
+      "originalName": "Vedat Muriqi",
+      "shortName": "Stanković"
+    },
+    {
+      "culture": "WestAfricanEnglish",
+      "edited": false,
+      "fullName": "Dayo Eze",
+      "id": "dc-victor-osimhen",
+      "kind": "Player",
+      "name": "Dayo Eze",
+      "originalName": "Victor Osimhen",
+      "shortName": "Eze"
+    },
+    {
+      "culture": "Nordic",
+      "edited": false,
+      "fullName": "Emil Holmgren",
+      "id": "dc-viktor-gyokeres",
+      "kind": "Player",
+      "name": "Emil Holmgren",
+      "originalName": "Viktor Gyökeres",
+      "shortName": "Holmgren"
+    },
+    {
+      "culture": "Arabic",
+      "edited": false,
+      "fullName": "Ghali Ouazzani",
+      "id": "fb-achraf-hakimi",
+      "kind": "Player",
+      "name": "Ghali Ouazzani",
+      "originalName": "Achraf Hakimi",
+      "shortName": "Ouazzani"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Kit Kelsall",
+      "id": "fb-alphonso-davies",
+      "kind": "Player",
+      "name": "Kit Kelsall",
+      "originalName": "Alphonso Davies",
+      "shortName": "Kelsall"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Reuben Redfern",
+      "id": "fb-andy-robertson",
+      "kind": "Player",
+      "name": "Reuben Redfern",
+      "originalName": "Andy Robertson",
+      "shortName": "Redfern"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Ismael Escalante Herrera",
+      "id": "fb-dani-munoz",
+      "kind": "Player",
+      "name": "Ismael Escalante",
+      "originalName": "Dani Muñoz",
+      "shortName": "Escalante"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Luuk Brouwers",
+      "id": "fb-denzel-dumfries",
+      "kind": "Player",
+      "name": "Luuk Brouwers",
+      "originalName": "Denzel Dumfries",
+      "shortName": "Brouwers"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Pellegrino Mazzanti",
+      "id": "fb-federico-dimarco",
+      "kind": "Player",
+      "name": "Pellegrino Mazzanti",
+      "originalName": "Federico Dimarco",
+      "shortName": "Mazzanti"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Quirino Valadares",
+      "id": "fb-joao-cancelo",
+      "kind": "Player",
+      "name": "Quirino Valadares",
+      "originalName": "João Cancelo",
+      "shortName": "Valadares"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Leandro Carrasco Ibarra",
+      "id": "fb-marc-cucurella",
+      "kind": "Player",
+      "name": "Leandro Carrasco",
+      "originalName": "Marc Cucurella",
+      "shortName": "Carrasco"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Quico Dorado Heredia",
+      "id": "fb-marcos-llorente",
+      "kind": "Player",
+      "name": "Quico Dorado",
+      "originalName": "Marcos Llorente",
+      "shortName": "Dorado"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Nuno Teles",
+      "id": "fb-nuno-mendes",
+      "kind": "Player",
+      "name": "Nuno Teles",
+      "originalName": "Nuno Mendes",
+      "shortName": "Teles"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Mauro Salcedo Quintanilla",
+      "id": "fb-pedro-porro",
+      "kind": "Player",
+      "name": "Mauro Salcedo",
+      "originalName": "Pedro Porro",
+      "shortName": "Salcedo"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Nolan Holloway",
+      "id": "fb-trent-alexander-arnold",
+      "kind": "Player",
+      "name": "Nolan Holloway",
+      "originalName": "Trent Alexander-Arnold",
+      "shortName": "Holloway"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Linus Hargreave",
+      "id": "gk-aaron-ramsdale",
+      "kind": "Player",
+      "name": "Linus Hargreave",
+      "originalName": "Aaron Ramsdale",
+      "shortName": "Hargreave"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Nélson Quintela",
+      "id": "gk-alisson-becker",
+      "kind": "Player",
+      "name": "Nélson Quintela",
+      "originalName": "Alisson Becker",
+      "shortName": "Quintela"
+    },
+    {
+      "culture": "WestAfricanFrench",
+      "edited": false,
+      "fullName": "Abdou Diatta",
+      "id": "gk-andre-onana",
+      "kind": "Player",
+      "name": "Abdou Diatta",
+      "originalName": "André Onana",
+      "shortName": "Diatta"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Olegario Juncal Cordero",
+      "id": "gk-david-de-gea",
+      "kind": "Player",
+      "name": "Olegario Juncal",
+      "originalName": "David de Gea",
+      "shortName": "Juncal"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Valentín Navarrete Beltrán",
+      "id": "gk-david-raya",
+      "kind": "Player",
+      "name": "Valentín Navarrete",
+      "originalName": "David Raya",
+      "shortName": "Navarrete"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Cormac Kendrick",
+      "id": "gk-dean-henderson",
+      "kind": "Player",
+      "name": "Cormac Kendrick",
+      "originalName": "Dean Henderson",
+      "shortName": "Kendrick"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Iván Larrea Domínguez",
+      "id": "gk-emiliano-martinez",
+      "kind": "Player",
+      "name": "Iván Larrea",
+      "originalName": "Emiliano Martínez",
+      "shortName": "Larrea"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Domenico Del Moro",
+      "id": "gk-gianluigi-donnarumma",
+      "kind": "Player",
+      "name": "Domenico Del Moro",
+      "originalName": "Gianluigi Donnarumma",
+      "shortName": "Del Moro"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Lars Mahler",
+      "id": "gk-gregor-kobel",
+      "kind": "Player",
+      "name": "Lars Mahler",
+      "originalName": "Gregor Kobel",
+      "shortName": "Mahler"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Radek Filipović",
+      "id": "gk-jan-oblak",
+      "kind": "Player",
+      "name": "Radek Filipović",
+      "originalName": "Jan Oblak",
+      "shortName": "Filipović"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Ulises Roldán Abellán",
+      "id": "gk-joan-garcia",
+      "kind": "Player",
+      "name": "Ulises Roldán",
+      "originalName": "Joan García",
+      "shortName": "Roldán"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Rory Binnie",
+      "id": "gk-jordan-pickford",
+      "kind": "Player",
+      "name": "Rory Binnie",
+      "originalName": "Jordan Pickford",
+      "shortName": "Binnie"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Konrad Grabowski",
+      "id": "gk-manuel-neuer",
+      "kind": "Player",
+      "name": "Konrad Grabowski",
+      "originalName": "Manuel Neuer",
+      "shortName": "Grabowski"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Niklas Tiedemann",
+      "id": "gk-marc-andre-ter-stegen",
+      "kind": "Player",
+      "name": "Niklas Tiedemann",
+      "originalName": "Marc-André ter Stegen",
+      "shortName": "Tiedemann"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Harvey Dunmore",
+      "id": "gk-mathew-ryan",
+      "kind": "Player",
+      "name": "Harvey Dunmore",
+      "originalName": "Mathew Ryan",
+      "shortName": "Dunmore"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Zoran Tomić",
+      "id": "gk-matvey-safonov",
+      "kind": "Player",
+      "name": "Zoran Tomić",
+      "originalName": "Matvey Safonov",
+      "shortName": "Tomić"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Ilan Armand",
+      "id": "gk-mike-maignan",
+      "kind": "Player",
+      "name": "Ilan Armand",
+      "originalName": "Mike Maignan",
+      "shortName": "Armand"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Emiliano Jiménez Nogueira",
+      "id": "gk-pedro-gallese",
+      "kind": "Player",
+      "name": "Emiliano Jiménez",
+      "originalName": "Pedro Gallese",
+      "shortName": "Jiménez"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Mathis Quesnel",
+      "id": "gk-thibaut-courtois",
+      "kind": "Player",
+      "name": "Mathis Quesnel",
+      "originalName": "Thibaut Courtois",
+      "shortName": "Quesnel"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Gonzalo Valdivia Ferreiro",
+      "id": "gk-unai-simon",
+      "kind": "Player",
+      "name": "Gonzalo Valdivia",
+      "originalName": "Unai Simón",
+      "shortName": "Valdivia"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Osvaldo Esteves",
+      "id": "gk-vozinha",
+      "kind": "Player",
+      "name": "Osvaldo Esteves",
+      "originalName": "Vozinha",
+      "shortName": "Esteves"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Dirk Ullmann",
+      "id": "gk-yann-sommer",
+      "kind": "Player",
+      "name": "Dirk Ullmann",
+      "originalName": "Yann Sommer",
+      "shortName": "Ullmann"
+    },
+    {
+      "culture": "Arabic",
+      "edited": false,
+      "fullName": "Tarek Gamal",
+      "id": "gk-yassine-bounou",
+      "kind": "Player",
+      "name": "Tarek Gamal",
+      "originalName": "Yassine Bounou",
+      "shortName": "Gamal"
+    },
+    {
+      "culture": "Japanese",
+      "edited": false,
+      "fullName": "Jun Okabe",
+      "id": "gk-zion-suzuki",
+      "kind": "Player",
+      "name": "Jun Okabe",
+      "originalName": "Zion Suzuki",
+      "shortName": "Okabe"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Plácido Ferrão",
+      "id": "mc-bruno-guimaraes",
+      "kind": "Player",
+      "name": "Plácido Ferrão",
+      "originalName": "Bruno Guimarães",
+      "shortName": "Ferrão"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Leonel Ilharco",
+      "id": "mc-casemiro",
+      "kind": "Player",
+      "name": "Leonel Ilharco",
+      "originalName": "Casemiro",
+      "shortName": "Ilharco"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Declan Ellerby",
+      "id": "mc-elliot-anderson",
+      "kind": "Player",
+      "name": "Declan Ellerby",
+      "originalName": "Elliot Anderson",
+      "shortName": "Ellerby"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Eelco Kok",
+      "id": "mc-frenkie-de-jong",
+      "kind": "Player",
+      "name": "Eelco Kok",
+      "originalName": "Frenkie de Jong",
+      "shortName": "Kok"
+    },
+    {
+      "culture": "Turkish",
+      "edited": false,
+      "fullName": "Hakan Gökçe",
+      "id": "mc-hakan-calhanoglu",
+      "kind": "Player",
+      "name": "Hakan Gökçe",
+      "originalName": "Hakan Çalhanoğlu",
+      "shortName": "Gökçe"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Aurélio Gouveia",
+      "id": "mc-joao-neves",
+      "kind": "Player",
+      "name": "Aurélio Gouveia",
+      "originalName": "Joao Neves",
+      "shortName": "Gouveia"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Elías Olivera Vallejos",
+      "id": "mc-leandro-paredes",
+      "kind": "Player",
+      "name": "Elías Olivera",
+      "originalName": "Leandro Paredes",
+      "shortName": "Olivera"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Marcelo Landeira Uriarte",
+      "id": "mc-rodri",
+      "kind": "Player",
+      "name": "Marcelo Landeira",
+      "originalName": "Rodri",
+      "shortName": "Landeira"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Jelle Hoekstra",
+      "id": "mc-ryan-gravenberch",
+      "kind": "Player",
+      "name": "Jelle Hoekstra",
+      "originalName": "Ryan Gravenberch",
+      "shortName": "Hoekstra"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Tomé Guedes",
+      "id": "mc-vitinha",
+      "kind": "Player",
+      "name": "Tomé Guedes",
+      "originalName": "Vitinha",
+      "shortName": "Guedes"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Gheorghe Ionescu",
+      "id": "md-dominik-szoboszlai",
+      "kind": "Player",
+      "name": "Gheorghe Ionescu",
+      "originalName": "Dominik Szoboszlai",
+      "shortName": "Ionescu"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Agustín Jofré Naranjo",
+      "id": "md-federico-valverde",
+      "kind": "Player",
+      "name": "Agustín Jofré",
+      "originalName": "Federico Valverde",
+      "shortName": "Jofré"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Rainer Lindner",
+      "id": "md-joshua-kimmich",
+      "kind": "Player",
+      "name": "Rainer Lindner",
+      "originalName": "Joshua Kimmich",
+      "shortName": "Lindner"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Idris Strickland",
+      "id": "md-lewis-hall",
+      "kind": "Player",
+      "name": "Idris Strickland",
+      "originalName": "Lewis Hall",
+      "shortName": "Strickland"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Nicolás Bordón Vallejos",
+      "id": "md-moises-caicedo",
+      "kind": "Player",
+      "name": "Nicolás Bordón",
+      "originalName": "Moisés Caicedo",
+      "shortName": "Bordón"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Tristan Northcott",
+      "id": "md-myles-lewis-skelly",
+      "kind": "Player",
+      "name": "Tristan Northcott",
+      "originalName": "Myles Lewis-Skelly",
+      "shortName": "Northcott"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Sven Freudenberg",
+      "id": "md-nathaniel-brown",
+      "kind": "Player",
+      "name": "Sven Freudenberg",
+      "originalName": "Nathaniel Brown",
+      "shortName": "Freudenberg"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Fergus Wetherby",
+      "id": "md-nico-o-reilly",
+      "kind": "Player",
+      "name": "Fergus Wetherby",
+      "originalName": "Nico O'Reilly",
+      "shortName": "Wetherby"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Kamil Beridze",
+      "id": "md-oleksandr-zinchenko",
+      "kind": "Player",
+      "name": "Kamil Beridze",
+      "originalName": "Oleksandr Zinchenko",
+      "shortName": "Beridze"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Kieran Aldous",
+      "id": "md-reece-james",
+      "kind": "Player",
+      "name": "Kieran Aldous",
+      "originalName": "Reece James",
+      "shortName": "Aldous"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Lucio Cabrera Haro",
+      "id": "md-valentin-barco",
+      "kind": "Player",
+      "name": "Lucio Cabrera",
+      "originalName": "Valentín Barco",
+      "shortName": "Cabrera"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Étienne Delacroix",
+      "id": "md-warren-zaire-emery",
+      "kind": "Player",
+      "name": "Étienne Delacroix",
+      "originalName": "Warren Zaïre-Emery",
+      "shortName": "Delacroix"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Joel Amaral",
+      "id": "mo-bruno-fernandes",
+      "kind": "Player",
+      "name": "Joel Amaral",
+      "originalName": "Bruno Fernandes",
+      "shortName": "Amaral"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Orrin Irvine",
+      "id": "mo-cole-palmer",
+      "kind": "Player",
+      "name": "Orrin Irvine",
+      "originalName": "Cole Palmer",
+      "shortName": "Irvine"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Philipp Nowack",
+      "id": "mo-florian-wirtz",
+      "kind": "Player",
+      "name": "Philipp Nowack",
+      "originalName": "Florian Wirtz",
+      "shortName": "Nowack"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Nahuel Troncoso Olivera",
+      "id": "mo-gilberto-mora",
+      "kind": "Player",
+      "name": "Nahuel Troncoso",
+      "originalName": "Gilberto Mora",
+      "shortName": "Troncoso"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Fabián Bermejo Iglesias",
+      "id": "mo-isco",
+      "kind": "Player",
+      "name": "Fabián Bermejo",
+      "originalName": "Isco",
+      "shortName": "Bermejo"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Jens Zimmerer",
+      "id": "mo-jamal-musiala",
+      "kind": "Player",
+      "name": "Jens Zimmerer",
+      "originalName": "Jamal Musiala",
+      "shortName": "Zimmerer"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Wesley Egerton",
+      "id": "mo-jude-bellingham",
+      "kind": "Player",
+      "name": "Wesley Egerton",
+      "originalName": "Jude Bellingham",
+      "shortName": "Egerton"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Noé Besnard",
+      "id": "mo-kevin-de-bruyne",
+      "kind": "Player",
+      "name": "Noé Besnard",
+      "originalName": "Kevin De Bruyne",
+      "shortName": "Besnard"
+    },
+    {
+      "culture": "German",
+      "edited": false,
+      "fullName": "Dietmar Immel",
+      "id": "mo-marco-reus",
+      "kind": "Player",
+      "name": "Dietmar Immel",
+      "originalName": "Marco Reus",
+      "shortName": "Immel"
+    },
+    {
+      "culture": "Nordic",
+      "edited": false,
+      "fullName": "Ivar Sandvik",
+      "id": "mo-martin-odegaard",
+      "kind": "Player",
+      "name": "Ivar Sandvik",
+      "originalName": "Martin Ødegaard",
+      "shortName": "Sandvik"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Genaro Campos Jiménez",
+      "id": "mq-alexis-mac-allister",
+      "kind": "Player",
+      "name": "Genaro Campos",
+      "originalName": "Alexis Mac Allister",
+      "shortName": "Campos"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Nigel Blackwood",
+      "id": "mq-declan-rice",
+      "kind": "Player",
+      "name": "Nigel Blackwood",
+      "originalName": "Declan Rice",
+      "shortName": "Blackwood"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Uriel Fierro Vallejos",
+      "id": "mq-enzo-fernandez",
+      "kind": "Player",
+      "name": "Uriel Fierro",
+      "originalName": "Enzo Fernández",
+      "shortName": "Fierro"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Gael Yáñez Valdivia",
+      "id": "mq-fabian-ruiz",
+      "kind": "Player",
+      "name": "Gael Yáñez",
+      "originalName": "Fabián Ruiz",
+      "shortName": "Yáñez"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Barnaby Denholm",
+      "id": "mq-kobbie-mainoo",
+      "kind": "Player",
+      "name": "Barnaby Denholm",
+      "originalName": "Kobbie Mainoo",
+      "shortName": "Denholm"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Nikola Oprea",
+      "id": "mq-luka-modric",
+      "kind": "Player",
+      "name": "Nikola Oprea",
+      "originalName": "Luka Modrić",
+      "shortName": "Oprea"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Vittorio Lombardi",
+      "id": "mq-nicolo-barella",
+      "kind": "Player",
+      "name": "Vittorio Lombardi",
+      "originalName": "Nicolò Barella",
+      "shortName": "Lombardi"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Teodoro Tejedor Zamudio",
+      "id": "mq-pedri",
+      "kind": "Player",
+      "name": "Teodoro Tejedor",
+      "originalName": "Pedri",
+      "shortName": "Tejedor"
+    },
+    {
+      "culture": "Italian",
+      "edited": false,
+      "fullName": "Ippolito Vitale",
+      "id": "mq-sandro-tonali",
+      "kind": "Player",
+      "name": "Ippolito Vitale",
+      "originalName": "Sandro Tonali",
+      "shortName": "Vitale"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Finlay Whitcombe",
+      "id": "mq-scott-mctominay",
+      "kind": "Player",
+      "name": "Finlay Whitcombe",
+      "originalName": "Scott McTominay",
+      "shortName": "Whitcombe"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Damien Huet",
+      "id": "referee-clement-turpin",
+      "kind": "Referee",
+      "name": "Huet",
+      "originalName": "Clément Turpin",
+      "shortName": "HUE"
+    },
+    {
+      "culture": "Dutch",
+      "edited": false,
+      "fullName": "Teun Wester",
+      "id": "referee-danny-makkelie",
+      "kind": "Referee",
+      "name": "Wester",
+      "originalName": "Danny Makkelie",
+      "shortName": "WES"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Dragan Lazarević",
+      "id": "referee-istvan-kovacs",
+      "kind": "Referee",
+      "name": "Lazarević",
+      "originalName": "István Kovács",
+      "shortName": "LAZ"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Monty Calloway",
+      "id": "referee-michael-oliver",
+      "kind": "Referee",
+      "name": "Calloway",
+      "originalName": "Michael Oliver",
+      "shortName": "CAL"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Andrei Balog",
+      "id": "referee-szymon-marciniak",
+      "kind": "Referee",
+      "name": "Balog",
+      "originalName": "Szymon Marciniak",
+      "shortName": "BAL"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Xabier Pellicer Yáñez",
+      "id": "sd-fermin-lopez",
+      "kind": "Player",
+      "name": "Xabier Pellicer",
+      "originalName": "Fermín López",
+      "shortName": "Pellicer"
+    },
+    {
+      "culture": "EastEuropean",
+      "edited": false,
+      "fullName": "Vasyl Andrić",
+      "id": "sd-khvicha-kvaratskhelia",
+      "kind": "Player",
+      "name": "Vasyl Andrić",
+      "originalName": "Khvicha Kvaratskhelia",
+      "shortName": "Andrić"
+    },
+    {
+      "culture": "Spanish",
+      "edited": false,
+      "fullName": "Pascual Cordero Pellicer",
+      "id": "sd-lamine-yamal",
+      "kind": "Player",
+      "name": "Pascual Cordero",
+      "originalName": "Lamine Yamal",
+      "shortName": "Cordero"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Valentino Gallardo Aguilera",
+      "id": "sd-lionel-messi",
+      "kind": "Player",
+      "name": "Valentino Gallardo",
+      "originalName": "Lionel Messi",
+      "shortName": "Gallardo"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Jules Thibault",
+      "id": "sd-michael-olise",
+      "kind": "Player",
+      "name": "Jules Thibault",
+      "originalName": "Michael Olise",
+      "shortName": "Thibault"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Alistair Gilchrist",
+      "id": "sd-morgan-rogers",
+      "kind": "Player",
+      "name": "Alistair Gilchrist",
+      "originalName": "Morgan Rogers",
+      "shortName": "Gilchrist"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Mário Rangel",
+      "id": "sd-neymar-jr",
+      "kind": "Player",
+      "name": "Mário Rangel",
+      "originalName": "Neymar Jr",
+      "shortName": "Rangel"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Dorian Navarre",
+      "id": "sd-ousmane-dembele",
+      "kind": "Player",
+      "name": "Dorian Navarre",
+      "originalName": "Ousmane Dembélé",
+      "shortName": "Navarre"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Thiago Altamirano Zárate",
+      "id": "sd-paulo-dybala",
+      "kind": "Player",
+      "name": "Thiago Altamirano",
+      "originalName": "Paulo Dybala",
+      "shortName": "Altamirano"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Sérgio Lobato",
+      "id": "sd-raphinha",
+      "kind": "Player",
+      "name": "Sérgio Lobato",
+      "originalName": "Raphinha",
+      "shortName": "Lobato"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Dermot Eastwood",
+      "id": "wg-anthony-gordon",
+      "kind": "Player",
+      "name": "Dermot Eastwood",
+      "originalName": "Anthony Gordon",
+      "shortName": "Eastwood"
+    },
+    {
+      "culture": "WestAfricanEnglish",
+      "edited": false,
+      "fullName": "Ebuka Osei",
+      "id": "wg-antoine-semenyo",
+      "kind": "Player",
+      "name": "Ebuka Osei",
+      "originalName": "Antoine Semenyo",
+      "shortName": "Osei"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Zacharie Ollivier",
+      "id": "wg-bradley-barcola",
+      "kind": "Player",
+      "name": "Zacharie Ollivier",
+      "originalName": "Bradley Barcola",
+      "shortName": "Ollivier"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Percy Ashcroft",
+      "id": "wg-bukayo-saka",
+      "kind": "Player",
+      "name": "Percy Ashcroft",
+      "originalName": "Bukayo Saka",
+      "shortName": "Ashcroft"
+    },
+    {
+      "culture": "Anglo",
+      "edited": false,
+      "fullName": "Rhys Yardley",
+      "id": "wg-christian-pulisic",
+      "kind": "Player",
+      "name": "Rhys Yardley",
+      "originalName": "Christian Pulisic",
+      "shortName": "Yardley"
+    },
+    {
+      "culture": "French",
+      "edited": false,
+      "fullName": "Gautier Lacombe",
+      "id": "wg-desire-doue",
+      "kind": "Player",
+      "name": "Gautier Lacombe",
+      "originalName": "Désiré Doué",
+      "shortName": "Lacombe"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Rolando Faria",
+      "id": "wg-estevao",
+      "kind": "Player",
+      "name": "Rolando Faria",
+      "originalName": "Estêvão",
+      "shortName": "Faria"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Orlando Ibáñez Guzmán",
+      "id": "wg-giuliano-simeone",
+      "kind": "Player",
+      "name": "Orlando Ibáñez",
+      "originalName": "Giuliano Simeone",
+      "shortName": "Ibáñez"
+    },
+    {
+      "culture": "Japanese",
+      "edited": false,
+      "fullName": "Kenta Fujimoto",
+      "id": "wg-kaoru-mitoma",
+      "kind": "Player",
+      "name": "Kenta Fujimoto",
+      "originalName": "Kaoru Mitoma",
+      "shortName": "Fujimoto"
+    },
+    {
+      "culture": "LatinAmerican",
+      "edited": false,
+      "fullName": "Franco Medina Haro",
+      "id": "wg-luis-diaz",
+      "kind": "Player",
+      "name": "Franco Medina",
+      "originalName": "Luis Díaz",
+      "shortName": "Medina"
+    },
+    {
+      "culture": "Arabic",
+      "edited": false,
+      "fullName": "Elias Taher",
+      "id": "wg-mohamed-salah",
+      "kind": "Player",
+      "name": "Elias Taher",
+      "originalName": "Mohamed Salah",
+      "shortName": "Taher"
+    },
+    {
+      "culture": "Portuguese",
+      "edited": false,
+      "fullName": "Ivo Furtado",
+      "id": "wg-vinicius-junior",
+      "kind": "Player",
+      "name": "Ivo Furtado",
+      "originalName": "Vinícius Júnior",
+      "shortName": "Furtado"
+    }
+  ],
+  "schemaVersion": "FS27.Identities.v1"
+}
