@@ -93,6 +93,8 @@ namespace FS27.Core
         public Vec2 Target;
         public float PasserToTarget, RunnerToTarget, BallToTarget;
         public float RunnerSpeed, BallSpeed, Power;
+        /// <summary>Seconds the runner and the nearest opponent need to reach the target at their top speed (times the through-pass speed share), the distance of the opposing goalkeeper to it, and the distance of the target to the goal being attacked.</summary>
+        public float RunnerArrival, RivalArrival, KeeperDistance, TargetToGoal;
         public string NearestOpponentId;
         public float OpponentToTarget;
         public string SkillId;

@@ -8,6 +8,23 @@ namespace FS27.Core.Tests
     /// <summary>Phase 10: twelve real players, real rosters and formations, roles, defence and the attack without the ball, for two minutes in each mode. Measured, not balanced; compared with the same match with the attack layer off (Phase 9).</summary>
     public partial class AiInfrastructureTests
     {
+        private static void ApplyExploration(GameMode mode, BasicDecisionTuning basic, DefenseTuning defense, AttackPositioningTuning attack, BallCarrierTuning carrier)
+        {
+            string spec = Environment.GetEnvironmentVariable("FS27_EXP");
+            if (string.IsNullOrEmpty(spec)) return;
+            foreach (string item in spec.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                string[] kv = item.Split('='), path = kv[0].Trim().Split('.');
+                if (path.Length != 3 || (path[0] != "A" && path[0] != "C" && path[0] != "*")) throw new ArgumentException("bad exploration item " + item);
+                if (path[0] == "A" && mode != GameMode.Arena) continue;
+                if (path[0] == "C" && mode != GameMode.Classic) continue;
+                object target = path[1] == "Basic" ? (object)basic : path[1] == "Defense" ? defense : path[1] == "Attack" ? attack : path[1] == "BallCarrier" ? (object)carrier : throw new ArgumentException(item);
+                System.Reflection.FieldInfo f = target.GetType().GetField(path[2]);
+                if (f == null) throw new ArgumentException("no field " + item);
+                f.SetValue(target, f.FieldType == typeof(bool) ? (object)(kv[1].Trim() == "1" || kv[1].Trim() == "true") : f.FieldType == typeof(int) ? (object)int.Parse(kv[1]) : (object)float.Parse(kv[1], System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
+
         /// <summary>The driver of the last simulation (so that diagnostics can be checked against the driver's own counters).</summary>
         private static BasicDecisionDriver LastDriver;
 
@@ -29,7 +46,12 @@ namespace FS27.Core.Tests
             var r = new AttackSim();
             r.Assignment = string.Join(",", c.GetRoleAssignment(TeamSide.Home).FieldPlayerIds) + "|" + string.Join(",", c.GetRoleAssignment(TeamSide.Away).FieldPlayerIds);
             Assert.IsTrue(c.ConfirmRestart());
-            var driver = new BasicDecisionDriver(c, null, null, null, new AttackPositioningTuning { Enabled = attackLayer }, new BallCarrierTuning { Enabled = carrierLayer });
+            // the tunings of the mode (what the engine itself would use), with the switches of this run and, for Phase 13 exploration only, overrides from FS27_EXP ("A.BallCarrier.DribbleSpaceHorizon=7;C.Defense.X=1")
+            BasicDecisionTuning basicT = BasicDecisionTuning.ForMode(mode); DefenseTuning defenseT = DefenseTuning.ForMode(mode);
+            AttackPositioningTuning attackT = AttackPositioningTuning.ForMode(mode); attackT.Enabled = attackLayer;
+            BallCarrierTuning carrierT = BallCarrierTuning.ForMode(mode); carrierT.Enabled = carrierLayer;
+            ApplyExploration(mode, basicT, defenseT, attackT, carrierT);
+            var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT);
             if (diagnostics != null) { diagnostics.Attach(c); driver.Diagnostics = diagnostics; }
             var world = new WorldState();
             bool hasLast = false; TeamSide last = TeamSide.Home;

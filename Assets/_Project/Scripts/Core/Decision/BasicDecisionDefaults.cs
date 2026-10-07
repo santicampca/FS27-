@@ -13,6 +13,8 @@ namespace FS27.Core
         public const float DecisionIntervalSeconds = 0.15f;
 
         // ---- movement
+        /// <summary>The player who has just played a pass (the ball is still in flight from his foot) does not run after it: he takes his place. Off, he chases it as in Phase 12.</summary>
+        public const bool PasserStaysOffHisPass = true;
         public const float ChaseMagnitude = 1.0f;
         public const float PositionMagnitude = 0.6f;
         public const float ArriveRadius = 2.0f;
@@ -90,9 +92,21 @@ namespace FS27.Core
     }
 
     /// <summary>The editable copy of <see cref="BasicDecisionDefaults"/>.</summary>
-    public sealed class BasicDecisionTuning
+    public sealed partial class BasicDecisionTuning
     {
+        /// <summary>The tuning of a mode: the common defaults with that mode's own numbers (see the mode defaults). Arena and Classic differ in NUMBERS only, never in rules.</summary>
+        public static BasicDecisionTuning ForMode(GameMode mode)
+        {
+            var t = new BasicDecisionTuning();
+            ApplyMode(t, mode);
+            return t;
+        }
+
+        static partial void ApplyModeValues(BasicDecisionTuning t, GameMode mode);
+        private static void ApplyMode(BasicDecisionTuning t, GameMode mode) { ApplyModeValues(t, mode); }
+
         public float DecisionIntervalSeconds = BasicDecisionDefaults.DecisionIntervalSeconds;
+        public bool PasserStaysOffHisPass = BasicDecisionDefaults.PasserStaysOffHisPass;
         public float ChaseMagnitude = BasicDecisionDefaults.ChaseMagnitude;
         public float PositionMagnitude = BasicDecisionDefaults.PositionMagnitude;
         public float ArriveRadius = BasicDecisionDefaults.ArriveRadius;

@@ -162,7 +162,7 @@ namespace FS27.Core.Tests
         public void ARunnerWithSpaceAhead_GeneratesAPassIntoHisPath_ToThePointNotToHisFeet()
         {
             MatchController c = CarrierScene(0f, 0f);
-            Put(c, TeamSide.Home, "hs5", 6f, -4f, East); Run(c, "hs5", East, 4f);
+            Put(c, TeamSide.Home, "hs5", 0f, -4f, East); Run(c, "hs5", East, 4f);
             WorldView v = ViewOf(c);
             var runs = new StubRuns(); runs.Runs[v.IndexOf("hs5")] = RunKind.Forward;
             BallCarrierEvaluator e = NewEvaluator();
@@ -170,7 +170,7 @@ namespace FS27.Core.Tests
             ActionCandidate through = Find(e, CandidateType.ThroughPass);
             Assert.IsTrue(through.IsValid); Assert.AreEqual(1, e.Summary.ThroughCandidates);
             Assert.AreEqual(v.IndexOf("hs5"), through.ReceiverIndex);
-            Assert.Greater(through.Target.X, 6f + 2f, "ahead of where he is"); Assert.LessOrEqual(Math.Abs(through.Target.Y), 12.5f);
+            Assert.Greater(through.Target.X, 0f + 2f, "ahead of where he is"); Assert.LessOrEqual(Math.Abs(through.Target.Y), 12.5f);
             // as a decision, when it is the best option
             PlayerDecision d = new BasicDecisionEngine(c.Pitch, null, null, null, null, null).Decide(v, "hs3");
             if (d.HasAction && d.Action.Kind == FootballActionKind.ThroughPass)
@@ -374,7 +374,7 @@ namespace FS27.Core.Tests
                 var mirror = typeof(BallCarrierTuning).GetField(f.Name);
                 Assert.IsNotNull(mirror, f.Name + " has no tunable twin");
                 Assert.AreEqual(Convert.ToSingle(f.GetValue(null)), Convert.ToSingle(mirror.GetValue(new BallCarrierTuning())), f.Name);
-                Assert.Greater(Convert.ToSingle(f.GetValue(null)), 0f, f.Name);
+                Assert.GreaterOrEqual(Convert.ToSingle(f.GetValue(null)), 0f, f.Name);   // zero is allowed: it is how a Phase 13 rule is switched off
             }
             foreach (var f in typeof(BallCarrierTuning).GetFields()) Assert.IsNotNull(typeof(BallCarrierDefaults).GetField(f.Name), f.Name + " has no default");
             Assert.Less(BallCarrierDefaults.HoldWindowSeconds, BallCarrierDefaults.HoldCycleSeconds, "he never holds for the whole cycle");

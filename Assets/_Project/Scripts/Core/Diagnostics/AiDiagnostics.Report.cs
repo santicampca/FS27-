@@ -27,6 +27,12 @@ namespace FS27.Core
             string[] typeNames = { "None", "Pass", "ForwardPass", "ThroughPass", "Shoot", "Dribble", "Protect", "Hold" };
             sb.AppendLine("== " + (Label ?? "diagnostics") + " ==");
             sb.AppendLine("MATCH   matches " + Matches + "  seconds " + F(Seconds) + "  possession gains H/A " + GainsFor(TeamSide.Home) + "/" + GainsFor(TeamSide.Away) + "  switches " + PossessionSwitches + "  recoveries " + Recoveries + "  goals " + Goals + " (after a followed shot " + GoalsAfterShot + ", other " + GoalsOther + ")  fouls " + FoulEvents);
+            var stamina = new StringBuilder("STAMINA field players every 10 s (mean/share<20):");
+            for (int slot = 0; slot < 12; slot++) if (StaminaSamples(slot) > 0) stamina.Append(" " + F(StaminaMean(slot)) + "/" + F(StaminaExhausted(slot)));
+            sb.AppendLine(stamina.ToString());
+            var effort = new StringBuilder("EFFORT asked by decision kind (walk/run/sprint range):");
+            foreach (DecisionKind k in Enum.GetValues(typeof(DecisionKind))) if (EffortCount(k, 0) + EffortCount(k, 1) + EffortCount(k, 2) > 0) effort.Append(" " + k + " " + EffortCount(k, 0) + "/" + EffortCount(k, 1) + "/" + EffortCount(k, 2));
+            sb.AppendLine(effort.ToString());
             sb.AppendLine("DECIDED all " + Decisions + "  carrier " + CarrierDecisions);
             var kindLine = new StringBuilder("DECISION KINDS (all players):");
             foreach (DecisionKind k in Enum.GetValues(typeof(DecisionKind))) if (KindCount(k) > 0) kindLine.Append(" " + k + " " + KindCount(k));
@@ -65,6 +71,7 @@ namespace FS27.Core
                 sb.AppendLine(line.ToString());
             }
             sb.AppendLine("DRIBBLE free-way decisions " + DribbleFreeDecisions + "  chosen avg space " + F(DribbleAverageSpace) + "  avg progress " + F(DribbleAverageProgress));
+            sb.AppendLine("  free distance ahead of the dribble (<1.75/<3.5/<5/<7/<10/more) all: " + FreeDistanceBucket(0, false) + "/" + FreeDistanceBucket(1, false) + "/" + FreeDistanceBucket(2, false) + "/" + FreeDistanceBucket(3, false) + "/" + FreeDistanceBucket(4, false) + "/" + FreeDistanceBucket(5, false) + "   won: " + FreeDistanceBucket(0, true) + "/" + FreeDistanceBucket(1, true) + "/" + FreeDistanceBucket(2, true) + "/" + FreeDistanceBucket(3, true) + "/" + FreeDistanceBucket(4, true) + "/" + FreeDistanceBucket(5, true));
             foreach (CandidateType t in new[] { CandidateType.Dribble, CandidateType.Protect, CandidateType.Hold })
                 sb.AppendLine("  " + t + " episodes " + Episodes(t) + "  retained " + WindowCount(t, WindowOutcome.Retained) + "  lost " + WindowCount(t, WindowOutcome.Lost) + "  loose " + WindowCount(t, WindowOutcome.Loose) + "  released " + WindowCount(t, WindowOutcome.Released) + "  unknown " + WindowCount(t, WindowOutcome.Unknown)
                     + "  retention(of those not released) " + P(WindowCount(t, WindowOutcome.Retained), WindowCount(t, WindowOutcome.Retained) + WindowCount(t, WindowOutcome.Lost) + WindowCount(t, WindowOutcome.Loose)));
@@ -83,8 +90,23 @@ namespace FS27.Core
             foreach (PassOutcome o in Enum.GetValues(typeof(PassOutcome))) if (PassOutcomeCount(o) > 0) sb.AppendLine("  " + o + " passerSpeed " + F(PassFeature(o, 0)) + "  ballSpeed " + F(PassFeature(o, 1)) + "  targetDist " + F(PassFeature(o, 2)) + "  power " + F(PassFeature(o, 3)) + "  quality " + F(PassFeature(o, 4)) + "  opponentNearPasser " + F(PassFeature(o, 5)));
             sb.AppendLine("SPACE   attempts " + SpaceAttempts + "  logged " + SpaceCount + "  dropped " + SpaceDropped);
             foreach (PassOutcome o in new[] { PassOutcome.Completed, PassOutcome.Intercepted, PassOutcome.MissedTarget, PassOutcome.Invalidated, PassOutcome.PossessionLostOther, PassOutcome.OutOfPlay, PassOutcome.ReturnedToPasser, PassOutcome.Unknown, PassOutcome.NotObserved })
-                if (SpaceOutcomeCount(o) > 0) sb.AppendLine("  " + o + " " + SpaceOutcomeCount(o) + " (" + P(SpaceOutcomeCount(o), SpaceAttempts) + ")  avg runner->target " + F(SpaceFeature(o, 0)) + "  opponent->target " + F(SpaceFeature(o, 1)) + "  passer->target " + F(SpaceFeature(o, 2)) + "  finalBall->target " + F(SpaceFeature(o, 3)) + "  runnerSpeed " + F(SpaceFeature(o, 4)));
+                if (SpaceOutcomeCount(o) > 0) sb.AppendLine("  " + o + " " + SpaceOutcomeCount(o) + " (" + P(SpaceOutcomeCount(o), SpaceAttempts) + ")  avg runner->target " + F(SpaceFeature(o, 0)) + "  opponent->target " + F(SpaceFeature(o, 1)) + "  passer->target " + F(SpaceFeature(o, 2)) + "  finalBall->target " + F(SpaceFeature(o, 3)) + "  runnerSpeed " + F(SpaceFeature(o, 4)) + "  runnerArrival " + F(SpaceFeature(o, 5)) + "s  rivalArrival " + F(SpaceFeature(o, 6)) + "s  keeper->target " + F(SpaceFeature(o, 7)) + "  target->goal " + F(SpaceFeature(o, 8)));
             sb.AppendLine("SHOTS   opportunities(decisions with a shot candidate) " + Available(CandidateType.Shoot) + "  chosen " + Chosen(CandidateType.Shoot) + "  attempts(actions) " + ShotAttempts + "  goal " + ShotOutcomeCount(ShotOutcome.Goal) + "  opponentPossession " + ShotOutcomeCount(ShotOutcome.OpponentPossession) + "  teamPossession " + ShotOutcomeCount(ShotOutcome.TeamPossession) + "  outOfPlay " + ShotOutcomeCount(ShotOutcome.OutOfPlay) + "  unknown " + ShotOutcomeCount(ShotOutcome.Unknown));
+            var shotDist = new StringBuilder("  shots by distance (<4/<7/<9/<11/<13/more): attempts, goals ");
+            string[] edges = { "<4", "<7", "<9", "<11", "<13", "13+" };
+            for (int b = 0; b < 6; b++)
+            {
+                double n = 0.0; foreach (ShotOutcome o in Enum.GetValues(typeof(ShotOutcome))) if (o != ShotOutcome.Pending) n += ShotsAtDistance(b, o);
+                shotDist.Append(" " + edges[b] + ":" + n + "/" + ShotsAtDistance(b, ShotOutcome.Goal));
+            }
+            sb.AppendLine(shotDist.ToString());
+            var shotScore = new StringBuilder("  shots by the score they had when chosen (<1.5/<2/<2.5/<3/more): attempts/goals ");
+            for (int b = 0; b < 5; b++)
+            {
+                double n = 0.0; foreach (ShotOutcome o in Enum.GetValues(typeof(ShotOutcome))) if (o != ShotOutcome.Pending) n += ShotsAtScore(b, o);
+                shotScore.Append(" " + n + "/" + ShotsAtScore(b, ShotOutcome.Goal));
+            }
+            sb.AppendLine(shotScore.ToString());
             string[] duelNames = { "Tackle", "Sliding", "Challenge" };
             sb.AppendLine("DEFENCE interceptions(events) " + InterceptionEvents + "  blocks " + BlockEvents + "  contacts " + TotalContacts + "  fouls(actions) " + TotalFouls + "  foul/contact " + P(TotalFouls, TotalContacts));
             for (int d = 0; d < DuelKinds; d++)

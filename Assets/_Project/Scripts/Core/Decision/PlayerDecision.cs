@@ -82,7 +82,9 @@ namespace FS27.Core
         // Phase 11 (appended)
         RunnerPass,
         SpacePass,
-        HoldForRun
+        HoldForRun,
+        // Phase 13 (appended)
+        AfterPass
     }
 
     /// <summary>

@@ -6,13 +6,14 @@ namespace FS27.Core
     {
         private struct PendingPass { public bool Active; public bool PasserChased; public float OpponentDistance, PasserSpeed, BallSpeed, TargetDistance, Power, Quality; public int Step, PasserIdx, SpaceIndex; public string PasserId, IntendedId; public TeamSide Team; public FootballActionKind Kind; }
         private struct PendingWindow { public bool Active; public int Step, PlayerIdx; public TeamSide Team; public CandidateType Type; }
-        private struct PendingShot { public bool Active; public int Step, PlayerIdx, GoalsFor; public TeamSide Team; }
+        private struct PendingShot { public float Score, Distance; public bool Active; public int Step, PlayerIdx, GoalsFor; public TeamSide Team; }
 
         private readonly PendingPass[] passes = new PendingPass[16];
         private readonly PendingWindow[] windows = new PendingWindow[48];
         private readonly PendingShot[] shots = new PendingShot[8];
         private readonly CandidateType[] lastType = new CandidateType[WorldState.MaxPlayers];
         private readonly int[] lastTypeStep = new int[WorldState.MaxPlayers];
+        private readonly float[] lastShotScore = new float[WorldState.MaxPlayers];
         private readonly double[] bestOfType = new double[Types];
         private readonly int[] bestIndex = new int[Types];
 
@@ -93,6 +94,18 @@ namespace FS27.Core
                 }
                 if (ball.PossessingPlayerId != lastPossessor) { int who = IndexOf(ball.PossessingTeam, ball.PossessingPlayerId); if (who >= 0) players[who].Possessions++; }
                 hasPossession = true; lastTeam = ball.PossessingTeam; lastPossessor = ball.PossessingPlayerId;
+            }
+            if (step % ToSteps(10f) == 0)
+            {
+                int slot = Math.Min(11, step / ToSteps(10f));
+                foreach (TeamMatchState team in new[] { match.State.Home, match.State.Away })
+                    for (int i = 0; i < team.Players.Count; i++)
+                    {
+                        MatchPlayer p = team.Players[i];
+                        if (!p.IsActive || p.InGoal) continue;
+                        float st = p.Locomotion.CurrentStamina;
+                        a[oStamina + slot * 3] += st; if (st < 20f) a[oStamina + slot * 3 + 1] += 1.0; a[oStamina + slot * 3 + 2] += 1.0;
+                    }
             }
             FollowPasses(ball);
             FollowWindows(ball);
@@ -180,8 +193,8 @@ namespace FS27.Core
                 s.Outcome = outcome; s.ReceiverId = receiver; s.ResolvedStep = step; s.ReceivedByRunner = receiver != null && receiver == s.RunnerId;
                 Vec3 b = match.State.Ball.Physics.Position;
                 s.FinalBallToTarget = (new Vec2(b.X, b.Z) - s.Target).Magnitude;
-                int f = oSpaceFeatures + (int)outcome * 6;
-                a[f] += 1.0; a[f + 1] += s.RunnerToTarget; a[f + 2] += s.OpponentToTarget; a[f + 3] += s.PasserToTarget; a[f + 4] += s.FinalBallToTarget; a[f + 5] += s.RunnerSpeed;
+                int f = oSpaceFeatures + (int)outcome * 10;
+                a[f] += 1.0; a[f + 1] += s.RunnerToTarget; a[f + 2] += s.OpponentToTarget; a[f + 3] += s.PasserToTarget; a[f + 4] += s.FinalBallToTarget; a[f + 5] += s.RunnerSpeed; a[f + 6] += s.RunnerArrival; a[f + 7] += s.RivalArrival; a[f + 8] += s.KeeperDistance; a[f + 9] += s.TargetToGoal;
             }
         }
 
@@ -227,6 +240,9 @@ namespace FS27.Core
         {
             s.Active = false;
             a[oShotOutcome + (int)outcome] += 1.0;
+            int bucket = s.Distance < 4f ? 0 : (s.Distance < 7f ? 1 : (s.Distance < 9f ? 2 : (s.Distance < 11f ? 3 : (s.Distance < 13f ? 4 : 5))));
+            a[oShotDistance + bucket * ShotOutcomes + (int)outcome] += 1.0;
+            a[oShotScore + (s.Score < 1.5f ? 0 : (s.Score < 2f ? 1 : (s.Score < 2.5f ? 2 : (s.Score < 3f ? 3 : 4)))) * ShotOutcomes + (int)outcome] += 1.0;
         }
 
         // ------------------------------------------------------------------ the carrier's decision
@@ -237,9 +253,11 @@ namespace FS27.Core
             if (!Config.Enabled || match == null) return;
             a[oDecisions] += 1.0; a[oKinds + (int)d.Kind] += 1.0;
             players[idx].Decisions++;
+            { float m = d.HasMovement ? d.Movement.Magnitude : 0f; a[oEffort + (int)d.Kind * 3 + (m < LocomotionDefaults.WalkThreshold ? 0 : (m < LocomotionDefaults.SprintThreshold ? 1 : 2))] += 1.0; }
             if (d.Kind == DecisionKind.MoveToBall) for (int i = 0; i < passes.Length; i++) if (passes[i].Active && passes[i].PasserIdx == idx) passes[i].PasserChased = true;
             if (!wasCarrierDecision || carrier == null) return;
             players[idx].CarrierDecisions++;
+            lastShotScore[idx] = carrier.Summary.ShootValid ? carrier.Summary.ShootScore : 0f;
             switch (d.Kind)
             {
                 case DecisionKind.Dribble: players[idx].Dribbles++; break;
@@ -266,7 +284,12 @@ namespace FS27.Core
                 a[oMarginBuckets + (margin < 0.10 ? 0 : (margin < 0.25 ? 1 : (margin < 0.50 ? 2 : 3)))] += 1.0;
             }
             for (int k = 1; k < 5; k++) if ((s.RunMask & (1 << k)) != 0) a[oRunPresent + k] += 1.0;
-            if (s.DribbleFree) a[oDribble] += 1.0;
+            if (s.DribbleFree)
+            {
+                a[oDribble] += 1.0;
+                int bucket = s.DribbleFreeDistance < 1.75f ? 0 : (s.DribbleFreeDistance < 3.5f ? 1 : (s.DribbleFreeDistance < 5f ? 2 : (s.DribbleFreeDistance < 7f ? 3 : (s.DribbleFreeDistance < 10f ? 4 : 5))));
+                a[oFreeHist + bucket] += 1.0; if (s.Best == CandidateType.Dribble) a[oFreeHist + 6 + bucket] += 1.0;
+            }
             if (s.Best == CandidateType.Dribble) { a[oDribble + 1] += s.DribbleSpace; a[oDribble + 2] += s.DribbleProgress; }
 
             // the best candidate of every kind (winner or not): how often it existed, its score and what it was made of; which kinds were not candidates and why

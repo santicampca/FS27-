@@ -63,15 +63,19 @@ namespace FS27.Core
                     Vec2 target = d.Action.Target.Position;
                     var s = new SpaceAttempt { Step = stepNumber, PasserId = me.PlayerId, RunnerId = d.TargetPlayerId, Team = me.Team, Kind = r.Kind, Target = target, PasserToTarget = (target - me.Position).Magnitude, BallToTarget = (target - view.Ball.Ground).Magnitude,
                         BallSpeed = (float)Math.Sqrt(r.BallVelocity.X * r.BallVelocity.X + r.BallVelocity.Z * r.BallVelocity.Z), Power = r.Intensity, SkillId = r.SkillId, Outcome = PassOutcome.Pending };
-                    if (d.TargetPlayerId != null && view.TryGetPlayer(d.TargetPlayerId, out WorldPlayer runner)) { s.RunnerToTarget = (target - runner.Position).Magnitude; s.RunnerSpeed = runner.Speed; }
-                    s.OpponentToTarget = float.PositiveInfinity;
+                    s.RunnerArrival = float.PositiveInfinity;
+                    if (d.TargetPlayerId != null && view.TryGetPlayer(d.TargetPlayerId, out WorldPlayer runner)) { s.RunnerToTarget = (target - runner.Position).Magnitude; s.RunnerSpeed = runner.Speed; if (runner.MaxSpeed > 0f) s.RunnerArrival = s.RunnerToTarget / (runner.MaxSpeed * BallCarrierDefaults.ThroughSpeedShare); }
+                    s.OpponentToTarget = float.PositiveInfinity; s.RivalArrival = float.PositiveInfinity; s.KeeperDistance = float.PositiveInfinity;
                     for (int i = 0; i < view.PlayerCount; i++)
                     {
                         WorldPlayer o = view[i];
                         if (!o.IsOnPitch || o.Team == me.Team) continue;
                         float dist = (o.Position - target).Magnitude;
                         if (dist < s.OpponentToTarget) { s.OpponentToTarget = dist; s.NearestOpponentId = o.PlayerId; }
+                        if (o.MaxSpeed > 0f) { float arrival = dist / (o.MaxSpeed * BallCarrierDefaults.ThroughSpeedShare); if (arrival < s.RivalArrival) s.RivalArrival = arrival; }
+                        if (o.IsGoalkeeper) s.KeeperDistance = dist;
                     }
+                    s.TargetToGoal = (WorldGeometry.AttackGoal(view.Match, view.Field, me.Team) - target).Magnitude;
                     spaceIndex = SpaceCount;
                     space[SpaceCount++] = s;
                 }
@@ -96,7 +100,7 @@ namespace FS27.Core
             int slot = -1;
             for (int i = 0; i < shots.Length; i++) if (!shots[i].Active) { slot = i; break; }
             if (slot < 0) { slot = 0; for (int i = 1; i < shots.Length; i++) if (shots[i].Step < shots[slot].Step) slot = i; SettleShot(ref shots[slot], ShotOutcome.Unknown); }
-            shots[slot] = new PendingShot { Active = true, Step = stepNumber, PlayerIdx = idx, Team = team, GoalsFor = team == TeamSide.Home ? match.State.Score.Home : match.State.Score.Away };
+            shots[slot] = new PendingShot { Score = lastShotScore[idx], Distance = (WorldGeometry.AttackGoal(view.Match, view.Field, team) - view[idx].Position).Magnitude, Active = true, Step = stepNumber, PlayerIdx = idx, Team = team, GoalsFor = team == TeamSide.Home ? match.State.Score.Home : match.State.Score.Away };
         }
 
         // ------------------------------------------------------------------ duels for the ball and fouls
@@ -204,6 +208,10 @@ namespace FS27.Core
         public double SpaceOutcomeCount(PassOutcome o) { return a[oSpaceOutcome + (int)o]; }
         public double SpaceFeature(PassOutcome o, int feature) { return Div(a[oSpaceFeatures + (int)o * 6 + 1 + feature], a[oSpaceFeatures + (int)o * 6]); }
         public double ShotAttempts { get { return a[oShotAttempts]; } }
+        /// <summary>Shots by the distance to goal at which they were taken (below 4, 7, 9, 11, 13 m, and beyond) and what became of them.</summary>
+        public double ShotsAtDistance(int bucket, ShotOutcome o) { return a[oShotDistance + bucket * ShotOutcomes + (int)o]; }
+        /// <summary>Shots by the score the carrier gave the shot when he chose it (below 1.5, 2, 2.5, 3, and beyond) and what became of them.</summary>
+        public double ShotsAtScore(int bucket, ShotOutcome o) { return a[oShotScore + bucket * ShotOutcomes + (int)o]; }
         public double ShotOutcomeCount(ShotOutcome o) { return a[oShotOutcome + (int)o]; }
         public double GainsFor(TeamSide t) { return a[oMatch + (t == TeamSide.Home ? mGainsHome : mGainsAway)]; }
         public double PassesFollowing { get { int n = 0; for (int i = 0; i < passes.Length; i++) if (passes[i].Active) n++; return n; } }

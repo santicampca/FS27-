@@ -12,35 +12,62 @@ namespace FS27.Core
     public sealed class BasicDecisionEngine
     {
         private readonly PitchBounds bounds;
-        private readonly BasicDecisionTuning t;
         private readonly PlayerObservation obs = new PlayerObservation();
+        private readonly RolePositioningTuning pos;
+
+        // The tunings of the mode being played (Phase 13): Arena and Classic share this engine and every rule; only their numbers differ. A tuning given to the constructor is used for BOTH modes.
+        private sealed class ModeSet
+        {
+            public BasicDecisionTuning T; public DefenseTuning D; public AttackSupport Attack; public BallCarrierEvaluator Carrier;
+        }
+
+        private readonly ModeSet arenaSet, classicSet;
+        private ModeSet current;
+        private BasicDecisionTuning t;
+        private DefenseTuning d;
+        private AttackSupport attack;
+        private BallCarrierEvaluator carrier;
 
         public BasicDecisionTuning Tuning => t;
-
-        private readonly DefenseTuning d;
-        private readonly RolePositioningTuning pos;
-        private readonly AttackSupport attack;
-        private readonly BallCarrierEvaluator carrier;
-
         public DefenseTuning DefenseTuning => d;
-        /// <summary>The attack without the ball (Phase 10): who does which job, and where each stands.</summary>
+        /// <summary>The attack without the ball (Phase 10): who does which job, and where each stands (of the mode last played).</summary>
         public AttackSupport Attack => attack;
-        /// <summary>How the carrier compares what he could do (Phase 11).</summary>
+        /// <summary>How the carrier compares what he could do (Phase 11) (of the mode last played).</summary>
         public BallCarrierEvaluator Carrier => carrier;
+
+        /// <summary>Count the rejections of the carrier's candidates (diagnostics), for both modes.</summary>
+        public bool CollectRejections
+        {
+            get { return arenaSet.Carrier.CollectRejections; }
+            set { arenaSet.Carrier.CollectRejections = value; classicSet.Carrier.CollectRejections = value; }
+        }
+
+        /// <summary>Which tunings the engine reads from now on (it does this by itself at every decision, from the match it is shown).</summary>
+        public void UseMode(GameMode mode)
+        {
+            current = mode == GameMode.Arena ? arenaSet : classicSet;
+            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier;
+        }
 
         public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attackTuning = null, BallCarrierTuning carrierTuning = null)
         {
             this.bounds = bounds ?? throw new ArgumentNullException(nameof(bounds));
-            t = tuning ?? new BasicDecisionTuning();
-            d = defense ?? new DefenseTuning();
             pos = positioning ?? new RolePositioningTuning();
-            AttackPositioningTuning at = attackTuning ?? new AttackPositioningTuning();
-            attack = new AttackSupport(t, at);
-            carrier = new BallCarrierEvaluator(t, at, carrierTuning ?? new BallCarrierTuning());
+            arenaSet = BuildSet(GameMode.Arena, tuning, defense, attackTuning, carrierTuning);
+            classicSet = BuildSet(GameMode.Classic, tuning, defense, attackTuning, carrierTuning);
+            UseMode(GameMode.Classic);
+        }
+
+        private static ModeSet BuildSet(GameMode mode, BasicDecisionTuning tuning, DefenseTuning defense, AttackPositioningTuning attackTuning, BallCarrierTuning carrierTuning)
+        {
+            BasicDecisionTuning bt = tuning ?? BasicDecisionTuning.ForMode(mode);
+            AttackPositioningTuning at = attackTuning ?? AttackPositioningTuning.ForMode(mode);
+            return new ModeSet { T = bt, D = defense ?? DefenseTuning.ForMode(mode), Attack = new AttackSupport(bt, at), Carrier = new BallCarrierEvaluator(bt, at, carrierTuning ?? BallCarrierTuning.ForMode(mode)) };
         }
 
         public PlayerDecision Decide(WorldView view, string playerId)
         {
+            UseMode(view.Match.Mode);
             int idx = view.IndexOf(playerId);
             if (idx < 0) return PlayerDecision.Idle(playerId, DecisionReason.NotOnPitch);
             WorldPlayer me = view[idx];
@@ -69,15 +96,21 @@ namespace FS27.Core
             return new PlayerDecision { PlayerId = playerId, Kind = kind, Reason = reason, HasMovement = true, Movement = MovementIntent.TowardsTarget(me, goal, magnitude, t.ArriveRadius) };
         }
 
+        /// <summary>Did this player play the pass that is still travelling? (the ball is in a pass and his was the last touch; once it is deflected, free or won, it no longer is.)</summary>
+        private static bool JustPassed(in WorldBall ball, in WorldPlayer p)
+        {
+            return ball.Mode == BallMode.InPass && ball.HasLastTouch && ball.LastTouchTeam == p.Team && ball.LastTouchPlayerId == p.PlayerId;
+        }
+
         /// <summary>Am I the field player of my team nearest to the ball? (the goalkeeper in goal does not count; ties go to the earlier in the squad)</summary>
-        private static bool IsNearestFieldPlayerToBall(WorldView view, int idx, in WorldPlayer me)
+        private bool IsNearestFieldPlayerToBall(WorldView view, int idx, in WorldPlayer me)
         {
             float mine = WorldGeometry.DistanceToBall(me, view.Ball);
             for (int i = 0; i < view.PlayerCount; i++)
             {
                 if (i == idx) continue;
                 WorldPlayer o = view[i];
-                if (!o.IsOnPitch || o.Team != me.Team || o.IsGoalkeeper) continue;
+                if (!o.IsOnPitch || o.Team != me.Team || o.IsGoalkeeper || (t.PasserStaysOffHisPass && JustPassed(view.Ball, o))) continue;
                 float d = WorldGeometry.DistanceToBall(o, view.Ball);
                 if (d < mine || (d == mine && i < idx)) return false;
             }
@@ -112,6 +145,7 @@ namespace FS27.Core
             {
                 if (TryIntercept(view, idx, me, out PlayerDecision intercept)) return intercept;
                 if (ball.IntendedReceiverId == me.PlayerId) return MoveTo(me.PlayerId, me.Position, ball.Ground, t.ChaseMagnitude, DecisionKind.MoveToBall, DecisionReason.ReceiveBall);
+                if (t.PasserStaysOffHisPass && JustPassed(ball, me)) return Position(view, me, home, t.PositionBallPull, DecisionReason.AfterPass);
                 if (nearest) return MoveTo(me.PlayerId, me.Position, ball.Ground, t.ChaseMagnitude, DecisionKind.MoveToBall, DecisionReason.ClosestToLooseBall);
                 return Position(view, me, home, t.PositionBallPull, DecisionReason.LooseBallNotClosest);
             }
@@ -210,7 +244,7 @@ namespace FS27.Core
                     return Contest(me, DecisionKind.Tackle, FootballActionKind.Tackle, toBallDir, DecisionReason.TackleInRange);
                 if (SlideWindow(view, me, carrier, toBall, toCarrier, behind))
                     return Contest(me, DecisionKind.SlidingTackle, FootballActionKind.SlidingTackle, toBallDir, DecisionReason.SlideWindow);
-                if (toCarrier <= d.ChallengeDistance)
+                if (toCarrier <= d.ChallengeDistance && ChallengeRisk(me, carrier, fromCarrier) <= d.ChallengeMaxRisk)
                     return Contest(me, DecisionKind.Challenge, FootballActionKind.PhysicalChallenge, ActionModel.DirectionOr(carrier.Position - me.Position, me.Facing), DecisionReason.ChallengeContact);
             }
 
@@ -223,6 +257,19 @@ namespace FS27.Core
             }
             Vec2 goal = bounds.ClampPlayer(target);
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.CloseDown, Reason = DecisionReason.PrimaryDefender, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, goal, magnitude, t.ArriveRadius) };
+        }
+
+        /// <summary>
+        /// How risky a physical challenge is for this defender against this carrier: 0 from the front or the side, up to 1 from straight behind, more when the carrier is shielding the ball and when the defender comes in fast.
+        /// A challenge from behind is the kind that becomes a foul where the mode has fouls; <paramref name="fromCarrier"/> is the unit vector from the carrier to the defender.
+        /// </summary>
+        private float ChallengeRisk(in WorldPlayer me, in WorldPlayer carrier, Vec2 fromCarrier)
+        {
+            float behind = -(carrier.Facing.X * fromCarrier.X + carrier.Facing.Y * fromCarrier.Y);
+            if (behind <= 0f) return 0f;
+            Vec2 closingVelocity = me.Velocity - carrier.Velocity;
+            float closing = me.MaxSpeed > 0f ? Math.Max(0f, -(closingVelocity.X * fromCarrier.X + closingVelocity.Y * fromCarrier.Y)) / me.MaxSpeed : 0f;
+            return behind * (1f + (carrier.IsShielding ? d.ChallengeShieldRisk : 0f) + closing * d.ChallengeClosingRisk);
         }
 
         private PlayerDecision Contest(in WorldPlayer me, DecisionKind kind, FootballActionKind action, Vec2 dir, DecisionReason reason)

@@ -64,6 +64,10 @@ namespace FS27.Core
         OutsidePitch,
         NoGain,
         LostRace,
+        /// <summary>The point is where the opposing goalkeeper takes the ball.</summary>
+        NearKeeper,
+        /// <summary>It would be a candidate, but it scores below the minimum worth taking.</summary>
+        LowQuality,
         NoOpponentNear,
         TooMuchPressure,
         OutsideHoldWindow,

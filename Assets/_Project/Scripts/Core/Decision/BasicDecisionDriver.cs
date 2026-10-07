@@ -62,7 +62,7 @@ namespace FS27.Core
         public AiDiagnostics Diagnostics
         {
             get { return diagnostics; }
-            set { diagnostics = value; engine.Carrier.CollectRejections = value != null && value.Config.Enabled; }
+            set { diagnostics = value; engine.CollectRejections = value != null && value.Config.Enabled; }
         }
         public int DecisionSteps => intervalSteps;
         public int CountOf(DecisionKind kind) { return kindCounts[(int)kind]; }

@@ -42,6 +42,13 @@ namespace FS27.Core
         // ---- the contests (distances are a little inside what the Core's actions reach)
         public const float TackleDistance = 0.95f;
         public const float ChallengeDistance = 1.5f;
+        /// <summary>
+        /// The risk above which a physical challenge is not committed (the defender keeps closing instead). Risk = how far BEHIND the carrier he comes in (0 from the front or the side, 1 from straight behind) x (1 + the
+        /// carrier shielding x <see cref="ChallengeShieldRisk"/> + how fast he arrives x <see cref="ChallengeClosingRisk"/>). The common value is far above anything the formula gives: no limit.
+        /// </summary>
+        public const float ChallengeMaxRisk = 1000.0f;
+        public const float ChallengeShieldRisk = 0.5f;
+        public const float ChallengeClosingRisk = 0.5f;
         /// <summary>A contact from behind the carrier is not tried as a tackle: the carrier's facing against the direction to the defender must be at least this.</summary>
         public const float BehindCosine = -0.3f;
         public const float SlideMinDistance = 1.25f;
@@ -71,8 +78,19 @@ namespace FS27.Core
     }
 
     /// <summary>The editable copy of <see cref="DefenseDefaults"/>.</summary>
-    public sealed class DefenseTuning
+    public sealed partial class DefenseTuning
     {
+        /// <summary>The tuning of a mode: the common defaults with that mode's own numbers (see the mode defaults). Arena and Classic differ in NUMBERS only, never in rules.</summary>
+        public static DefenseTuning ForMode(GameMode mode)
+        {
+            var t = new DefenseTuning();
+            ApplyMode(t, mode);
+            return t;
+        }
+
+        static partial void ApplyModeValues(DefenseTuning t, GameMode mode);
+        private static void ApplyMode(DefenseTuning t, GameMode mode) { ApplyModeValues(t, mode); }
+
         public float ScoreDistanceWeight = DefenseDefaults.ScoreDistanceWeight;
         public float ScoreGoalSideWeight = DefenseDefaults.ScoreGoalSideWeight;
         public float ScoreHomeWeight = DefenseDefaults.ScoreHomeWeight;
@@ -94,6 +112,9 @@ namespace FS27.Core
         public float SecondaryMagnitude = DefenseDefaults.SecondaryMagnitude;
         public float TackleDistance = DefenseDefaults.TackleDistance;
         public float ChallengeDistance = DefenseDefaults.ChallengeDistance;
+        public float ChallengeMaxRisk = DefenseDefaults.ChallengeMaxRisk;
+        public float ChallengeShieldRisk = DefenseDefaults.ChallengeShieldRisk;
+        public float ChallengeClosingRisk = DefenseDefaults.ChallengeClosingRisk;
         public float BehindCosine = DefenseDefaults.BehindCosine;
         public float SlideMinDistance = DefenseDefaults.SlideMinDistance;
         public float SlideMaxDistance = DefenseDefaults.SlideMaxDistance;
@@ -111,5 +132,15 @@ namespace FS27.Core
         public float InterceptActionDistance = DefenseDefaults.InterceptActionDistance;
         public float InterceptSkillHorizonBonus = DefenseDefaults.InterceptSkillHorizonBonus;
         public float TransitionSeconds = DefenseDefaults.TransitionSeconds;
+    }
+
+    /// <summary>
+    /// The numbers in which ARENA and CLASSIC differ for the defence (Phase 13); named Arena&lt;Field&gt; / Classic&lt;Field&gt; after the tuning field they replace. Arena has no fouls and wants duels, so it keeps the common
+    /// values (no limit on the challenge). Classic has fouls: a challenge from behind, above all against a carrier who shields the ball, is where they come from, so it is only committed below this risk.
+    /// DECISIÓN FASE 13 (value chosen with the 16-match harness: Classic fouls 18 -> 4 of 8 matches with the physical-challenge contacts kept), see Docs/AI_BALANCE_PHASE13.md.
+    /// </summary>
+    public static class DefenseModeDefaults
+    {
+        public const float ClassicChallengeMaxRisk = 1.2f;
     }
 }

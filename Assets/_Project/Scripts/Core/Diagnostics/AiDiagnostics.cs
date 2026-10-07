@@ -56,6 +56,7 @@ namespace FS27.Core
         private static readonly int oMargin = Alloc(2);
         private static readonly int oRunPresent = Alloc(5);
         private static readonly int oDribble = Alloc(3);
+        private static readonly int oFreeHist = Alloc(12);
         private static readonly int oWindow = Alloc(Types * 6);
         private static readonly int oEpisodes = Alloc(Types);
         private static readonly int oPassAttempts = Alloc(1);
@@ -70,9 +71,11 @@ namespace FS27.Core
         private static readonly int oPassFeat = Alloc(PassOutcomes * 7);
         private static readonly int oSpaceAttempts = Alloc(1);
         private static readonly int oSpaceOutcome = Alloc(PassOutcomes);
-        private static readonly int oSpaceFeatures = Alloc(PassOutcomes * 6);
+        private static readonly int oSpaceFeatures = Alloc(PassOutcomes * 10);
         private static readonly int oShotAttempts = Alloc(1);
         private static readonly int oShotOutcome = Alloc(ShotOutcomes);
+        private static readonly int oShotDistance = Alloc(6 * ShotOutcomes);
+        private static readonly int oShotScore = Alloc(5 * ShotOutcomes);
         private static readonly int oActRequested = Alloc(ActionKinds);
         private static readonly int oActAccepted = Alloc(ActionKinds);
         private static readonly int oActRejected = Alloc(ActionKinds);
@@ -104,6 +107,8 @@ namespace FS27.Core
         private static readonly int oArchSuffered = Alloc(Archetypes);
         private static readonly int oRoleContacts = Alloc(Roles);
         private static readonly int oRoleFouls = Alloc(Roles);
+        private static readonly int oStamina = Alloc(12 * 3);
+        private static readonly int oEffort = Alloc(DecisionKinds * 3);
         private static readonly int oMatch = Alloc(14);
         private static readonly int Size = cursor;
 
@@ -187,6 +192,17 @@ namespace FS27.Core
 
         /// <summary>Passes that came back to the passer: within 0.1 s, 0.25 s, 0.5 s, later.</summary>
         public double ReturnedBucket(int i) { return a[oReturnTime + i]; }
+
+        /// <summary>Free distance ahead of the dribbles scored (decisions with a free way): below 1.75, 3.5, 5, 7, 10 m and beyond; all of them, then the ones that won.</summary>
+        public double FreeDistanceBucket(int bucket, bool winners) { return a[oFreeHist + (winners ? 6 : 0) + bucket]; }
+
+        /// <summary>Field players' stamina sampled every ten seconds of a match: for each ten-second slot (twelve of them, the last one holds the rest) the mean stamina, the share below 20 and the number of samples.</summary>
+        public double StaminaMean(int slot) { return Div(a[oStamina + slot * 3], a[oStamina + slot * 3 + 2]); }
+        public double StaminaExhausted(int slot) { return Div(a[oStamina + slot * 3 + 1], a[oStamina + slot * 3 + 2]); }
+        public double StaminaSamples(int slot) { return a[oStamina + slot * 3 + 2]; }
+
+        /// <summary>How hard the AI asks its players to move: decisions of a kind by the push of the stick they asked for (below the walk threshold, below the sprint threshold, in the sprint range).</summary>
+        public double EffortCount(DecisionKind k, int band) { return a[oEffort + (int)k * 3 + band]; }
 
         private static double Div(double x, double n) { return n > 0.0 ? x / n : 0.0; }
 

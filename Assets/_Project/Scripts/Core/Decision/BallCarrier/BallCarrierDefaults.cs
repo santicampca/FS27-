@@ -25,6 +25,8 @@ namespace FS27.Core
         public const float ShootLaneCap = 3.0f;
         public const float ShootKeeperCap = 3.0f;
         public const float ShootPressureWeight = 2.5f;
+        /// <summary>A shot that scores below this is not a candidate at all (not worth taking). 0 = every shot in range is one.</summary>
+        public const float ShootMinScore = 0.0f;
 
         // ---- a pass to a team-mate: the receiver score (Phase 8/10) plus what the carrier reads in his movement
         public const float PassWeight = 1.0f;
@@ -33,6 +35,8 @@ namespace FS27.Core
         public const float ForwardPassBonus = 0.5f;
         /// <summary>Under pressure a safe pass (free receiver, clear lane) is worth more: weight times the pressure times the safety.</summary>
         public const float SafePassWeight = 1.2f;
+        /// <summary>A safe pass (free receiver, clear lane) is worth this much whatever the pressure: circulation. 0 reproduces Phase 11.</summary>
+        public const float SafePassBaseWeight = 0.0f;
         public const float SafeSpaceCap = 4.0f;
         public const float SafeLaneCap = 2.0f;
         /// <summary>A receiver who faces away from the passer (cosine of his facing with the pass direction above this) with an opponent close to him loses this much.</summary>
@@ -53,6 +57,8 @@ namespace FS27.Core
         public const float ThroughMinRunnerSpeed = 1.5f;
         public const float ThroughLeadDistance = 3.0f;
         public const float ThroughLeadSeconds = 0.5f;
+        /// <summary>A pass into space never goes to a point nearer to the opposing goalkeeper than his reaction distance (<see cref="BasicDecisionDefaults.KeeperReactDistance"/>) plus this margin: that is where he takes the ball. 0 switches the rule off.</summary>
+        public const float ThroughKeeperMargin = 2.5f;
         public const float ThroughMinSpace = 2.5f;
         public const float ThroughSpeedShare = 0.85f;
         /// <summary>The runner and the ball must be at the point this much earlier than the nearest opponent.</summary>
@@ -71,6 +77,8 @@ namespace FS27.Core
         public const float DribbleScale = 3.2f;
         public const float DribblePressureWeight = 1.0f;
         /// <summary>Within this distance of his own goal losing the ball is dangerous: dribbling is worth less the nearer he is.</summary>
+        /// <summary>How far ahead the carrier looks for room when he scores a dribble (the free distance over this is the "space" of the dribble, 0..1). The same as the clear distance reproduces Phase 11.</summary>
+        public const float DribbleSpaceHorizon = 3.5f;
         public const float DribbleOwnGoalZone = 10.0f;
         public const float DribbleOwnGoalWeight = 1.5f;
         public const float DribbleTiredStamina = 35.0f;
@@ -97,8 +105,19 @@ namespace FS27.Core
     }
 
     /// <summary>The editable copy of <see cref="BallCarrierDefaults"/>.</summary>
-    public sealed class BallCarrierTuning
+    public sealed partial class BallCarrierTuning
     {
+        /// <summary>The tuning of a mode: the common defaults with that mode's own numbers (see the mode defaults). Arena and Classic differ in NUMBERS only, never in rules.</summary>
+        public static BallCarrierTuning ForMode(GameMode mode)
+        {
+            var t = new BallCarrierTuning();
+            ApplyMode(t, mode);
+            return t;
+        }
+
+        static partial void ApplyModeValues(BallCarrierTuning t, GameMode mode);
+        private static void ApplyMode(BallCarrierTuning t, GameMode mode) { ApplyModeValues(t, mode); }
+
         public bool Enabled = BallCarrierDefaults.Enabled;
         public float PressureExtraOpponent = BallCarrierDefaults.PressureExtraOpponent;
         public float ShootScale = BallCarrierDefaults.ShootScale;
@@ -109,10 +128,12 @@ namespace FS27.Core
         public float ShootLaneCap = BallCarrierDefaults.ShootLaneCap;
         public float ShootKeeperCap = BallCarrierDefaults.ShootKeeperCap;
         public float ShootPressureWeight = BallCarrierDefaults.ShootPressureWeight;
+        public float ShootMinScore = BallCarrierDefaults.ShootMinScore;
         public float PassWeight = BallCarrierDefaults.PassWeight;
         public float ForwardPassGain = BallCarrierDefaults.ForwardPassGain;
         public float ForwardPassBonus = BallCarrierDefaults.ForwardPassBonus;
         public float SafePassWeight = BallCarrierDefaults.SafePassWeight;
+        public float SafePassBaseWeight = BallCarrierDefaults.SafePassBaseWeight;
         public float SafeSpaceCap = BallCarrierDefaults.SafeSpaceCap;
         public float SafeLaneCap = BallCarrierDefaults.SafeLaneCap;
         public float BackTurnedCosine = BallCarrierDefaults.BackTurnedCosine;
@@ -126,6 +147,7 @@ namespace FS27.Core
         public float ThroughMinRunnerSpeed = BallCarrierDefaults.ThroughMinRunnerSpeed;
         public float ThroughLeadDistance = BallCarrierDefaults.ThroughLeadDistance;
         public float ThroughLeadSeconds = BallCarrierDefaults.ThroughLeadSeconds;
+        public float ThroughKeeperMargin = BallCarrierDefaults.ThroughKeeperMargin;
         public float ThroughMinSpace = BallCarrierDefaults.ThroughMinSpace;
         public float ThroughSpeedShare = BallCarrierDefaults.ThroughSpeedShare;
         public float ThroughRaceMargin = BallCarrierDefaults.ThroughRaceMargin;
@@ -140,6 +162,7 @@ namespace FS27.Core
         public float ThroughRisk = BallCarrierDefaults.ThroughRisk;
         public float DribbleScale = BallCarrierDefaults.DribbleScale;
         public float DribblePressureWeight = BallCarrierDefaults.DribblePressureWeight;
+        public float DribbleSpaceHorizon = BallCarrierDefaults.DribbleSpaceHorizon;
         public float DribbleOwnGoalZone = BallCarrierDefaults.DribbleOwnGoalZone;
         public float DribbleOwnGoalWeight = BallCarrierDefaults.DribbleOwnGoalWeight;
         public float DribbleTiredStamina = BallCarrierDefaults.DribbleTiredStamina;
@@ -154,5 +177,21 @@ namespace FS27.Core
         public float HoldMaxPressure = BallCarrierDefaults.HoldMaxPressure;
         public float HoldCycleSeconds = BallCarrierDefaults.HoldCycleSeconds;
         public float HoldWindowSeconds = BallCarrierDefaults.HoldWindowSeconds;
+    }
+
+    /// <summary>
+    /// The numbers in which ARENA and CLASSIC differ for the carrier (Phase 13). Each is named Arena&lt;Field&gt; or Classic&lt;Field&gt; after the tuning field it replaces; a field without an entry keeps its common default.
+    /// Arena keeps the carrier on the ball (conducting, quick); Classic asks more of the circulation. The rules are the same for both.
+    /// DECISIÓN FASE 13, chosen by running the 16-match harness (Arena 301-308, Classic 321-328) and reading the shares of the carrier's decisions, see Docs/AI_BALANCE_PHASE13.md.
+    /// </summary>
+    public static class BallCarrierModeDefaults
+    {
+        /// <summary>Arena: a safe pass is worth a little even without pressure; the dribble keeps its Phase 11 look-ahead.</summary>
+        public const float ArenaSafePassBaseWeight = 0.4f;
+        /// <summary>Classic: the dribble needs more open room ahead to score high (a longer look-ahead), and a safe pass is worth more: circulation.</summary>
+        public const float ClassicDribbleSpaceHorizon = 5.0f;
+        public const float ClassicSafePassBaseWeight = 0.8f;
+        /// <summary>Classic: more selective with the shot. In 96 matches the shots that scored below 2.0 when chosen were converted 2 or 3 times in a hundred, those above 3.0 thirteen.</summary>
+        public const float ClassicShootMinScore = 2.0f;
     }
 }

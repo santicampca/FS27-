@@ -24,6 +24,8 @@ namespace FS27.Core
         /// <summary>Bit per <see cref="RunKind"/>: a team-mate of this kind of run was on the pitch.</summary>
         public int RunMask;
         public float Pressure, Stamina, DistanceToGoal;
+        /// <summary>The free distance ahead of the dribble the carrier scored (up to the horizon), when there was one.</summary>
+        public float DribbleFreeDistance;
         /// <summary>What the carrier saw ahead of him: free distance over the clear distance (0..1), how well the way goes to goal (0..1), and whether a free way existed.</summary>
         public float DribbleSpace, DribbleProgress;
         public bool DribbleFree;
@@ -159,6 +161,7 @@ namespace FS27.Core
             float threat = proximity + angleTerm + lineTerm + keeperPart;
             float pressurePenalty = b.ShootPressureWeight * pressure;
             float score = b.ShootScale * threat - pressurePenalty;
+            if (score < b.ShootMinScore) { Reject(CandidateType.Shoot, CandidateRejection.LowQuality); return; }
             summary.ShootValid = true; summary.ShootScore = score;
             var parts = new CandidateParts { P0 = b.ShootScale * proximity, P1 = b.ShootScale * angleTerm, P2 = b.ShootScale * lineTerm, P3 = b.ShootScale * keeperPart, P4 = -pressurePenalty };
             Add(CandidateType.Shoot, score, -1, goal, RunKind.None, DecisionReason.ClearShot, parts);
@@ -198,7 +201,7 @@ namespace FS27.Core
             float space = WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position);
             float room = WorldGeometry.PassLaneRoom(view, me.Team, me.Position, r.Position);
             float safety = Clamp01(space / b.SafeSpaceCap) * (float.IsPositiveInfinity(room) ? 1f : Clamp01(room / b.SafeLaneCap));
-            float safePass = b.SafePassWeight * pressure * safety;
+            float safePass = b.SafePassWeight * pressure * safety + b.SafePassBaseWeight * safety;
             score += safePass;
 
             // a receiver who has his back to the passer and an opponent at his heels
@@ -233,6 +236,12 @@ namespace FS27.Core
             float halfL = view.Field.Length / 2f - a.SearchPitchMargin, halfW = view.Field.Width / 2f - a.SearchPitchMargin;
             if (Math.Abs(point.X) > halfL || Math.Abs(point.Y) > halfW) { Reject(CandidateType.ThroughPass, CandidateRejection.OutsidePitch); return; }
 
+            if (b.ThroughKeeperMargin > 0f)
+                for (int k = 0; k < view.PlayerCount; k++)
+                {
+                    WorldPlayer o = view[k];
+                    if (o.IsOnPitch && o.Team != me.Team && o.IsGoalkeeper && (point - o.Position).Magnitude < t.KeeperReactDistance + b.ThroughKeeperMargin) { Reject(CandidateType.ThroughPass, CandidateRejection.NearKeeper); return; }
+                }
             float distance = (point - me.Position).Magnitude;
             if (distance < t.PassMinDistance || distance > t.PassMaxDistance) { Reject(CandidateType.ThroughPass, CandidateRejection.OutOfRange); return; }
             float gain = ((point - me.Position).X * attack.X + (point - me.Position).Y * attack.Y) / view.Field.Length;
@@ -281,7 +290,9 @@ namespace FS27.Core
             {
                 float own = Clamp01(1f - WorldGeometry.DistanceToOwnGoal(view, me) / b.DribbleOwnGoalZone);
                 float tired = me.Stamina < b.DribbleTiredStamina ? 1f - me.Stamina / b.DribbleTiredStamina : 0f;
-                float space = Clamp01(d.FreeDistance / t.DribbleClearDistance);
+                float freeAhead = DribbleSpace.FreeAhead(view, me, d.ProbeDirection, t, b.DribbleSpaceHorizon);
+                summary.DribbleFreeDistance = freeAhead;
+                float space = Clamp01(freeAhead / b.DribbleSpaceHorizon);
                 float advance = b.DribbleScale * d.Progress * space, pressurePenalty = b.DribblePressureWeight * pressure, ownPenalty = b.DribbleOwnGoalWeight * own, tiredPenalty = b.DribbleTiredWeight * tired;
                 float score = advance - pressurePenalty - ownPenalty - tiredPenalty;
                 Add(CandidateType.Dribble, score, -1, me.Position + d.Direction * t.DribbleLookahead, RunKind.None, DecisionReason.SpaceToDribble, new CandidateParts { P0 = advance, P1 = -pressurePenalty, P2 = -ownPenalty, P3 = -tiredPenalty });

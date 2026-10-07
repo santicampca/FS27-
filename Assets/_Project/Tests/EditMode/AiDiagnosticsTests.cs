@@ -13,7 +13,7 @@ namespace FS27.Core.Tests
     {
         private static AiDiagnostics NewDiagnostics(DiagnosticsConfig config = null, string label = null) { return new AiDiagnostics(config, 256, 2048, 512) { Label = label }; }
 
-        private sealed class EightRun { public AiDiagnostics Diagnostics; public AttackSim Total; public int DriverFouls, DriverRecoveries, DriverTackles, DriverSlides, DriverChallenges, DriverShots, DriverCarrierDecisions, DriverSpacePasses; }
+        private sealed class EightRun { public List<string> Hashes = new List<string>(); public AiDiagnostics Diagnostics; public AttackSim Total; public int DriverFouls, DriverRecoveries, DriverTackles, DriverSlides, DriverChallenges, DriverShots, DriverCarrierDecisions, DriverSpacePasses; }
         private static readonly Dictionary<string, EightRun> eightCache = new Dictionary<string, EightRun>();
 
         /// <summary>Eight two-minute matches (the harness of Phase 10 and 11: the same teams and seeds), their diagnostics added up. Cached: several tests read the same run.</summary>
@@ -29,6 +29,7 @@ namespace FS27.Core.Tests
                 AiDiagnostics one = NewDiagnostics();
                 AttackSim x = SimulateAttack(mode, seed, true, seed % 12, (seed * 5 + 3) % 12, 120f, carrierLayer, one);
                 run.Diagnostics.Merge(one);
+                { uint h = 2166136261; foreach (char ch in x.Fingerprint) h = (h ^ ch) * 16777619; run.Hashes.Add(seed + ":" + h); }
                 AttackSim t = run.Total;
                 t.Passes += x.Passes; t.Shots += x.Shots; t.Goals += x.Goals; t.Possessions += x.Possessions; t.Losses += x.Losses; t.Recoveries += x.Recoveries; t.Fouls += x.Fouls; t.Issues += x.Issues; t.Decisions += x.Decisions;
                 BasicDecisionDriver d = LastDriver;
@@ -48,6 +49,45 @@ namespace FS27.Core.Tests
                 foreach (bool carrier in new[] { false, true })
                     text.AppendLine(Eight(mode, carrier).Diagnostics.Report());
             if (!string.IsNullOrEmpty(dir)) File.WriteAllText(Path.Combine(dir, "diagnostics_report.txt"), text.ToString());
+        }
+
+        /// <summary>Phase 13 tool: the eight-match harness of the current code for both modes, written to $DIAG_OUT/phase13_$DIAG_TAG.txt (full report + the fingerprint of every match).</summary>
+        [Test, Explicit]
+        public void Phase13Metrics_WriteTheReport()
+        {
+            string dir = Environment.GetEnvironmentVariable("DIAG_OUT"), tag = Environment.GetEnvironmentVariable("DIAG_TAG") ?? "run";
+            var text = new System.Text.StringBuilder();
+            foreach (GameMode mode in new[] { GameMode.Arena, GameMode.Classic })
+            {
+                EightRun r = Eight(mode, true);
+                text.AppendLine(r.Diagnostics.Report());
+                text.AppendLine("HASHES " + mode + " " + string.Join(" ", r.Hashes));
+                text.AppendLine("ISSUES " + r.Total.Issues);
+                for (int i = 0; i < r.Diagnostics.SpaceCount; i++) { SpaceAttempt q = r.Diagnostics.SpaceAt(i); text.AppendLine("SPACEROW " + mode + " " + q.Outcome + " passer->target " + q.PasserToTarget.ToString("F1") + " runner->target " + q.RunnerToTarget.ToString("F1") + " runnerArr " + q.RunnerArrival.ToString("F2") + " rivalArr " + q.RivalArrival.ToString("F2") + " keeper->target " + q.KeeperDistance.ToString("F1") + " target->goal " + q.TargetToGoal.ToString("F1") + " opp->target " + q.OpponentToTarget.ToString("F1") + " finalBall->target " + q.FinalBallToTarget.ToString("F1") + " receiver " + q.ReceiverId + " runner " + q.RunnerId + " ballSpeed " + q.BallSpeed.ToString("F1")); }
+            }
+            if (!string.IsNullOrEmpty(dir)) File.WriteAllText(Path.Combine(dir, "phase13_" + tag + ".txt"), text.ToString());
+        }
+
+        /// <summary>Phase 13 tool: MANY more matches than the harness (seeds 401..), for questions the eight-match harness is too small for (the conversion of shots). Writes $DIAG_OUT/phase13_wide_$DIAG_TAG.txt.</summary>
+        [Test, Explicit]
+        public void Phase13Wide_WriteTheReport()
+        {
+            string dir = Environment.GetEnvironmentVariable("DIAG_OUT"), tag = Environment.GetEnvironmentVariable("DIAG_TAG") ?? "run";
+            int count = int.Parse(Environment.GetEnvironmentVariable("DIAG_MATCHES") ?? "40");
+            var text = new System.Text.StringBuilder();
+            foreach (GameMode mode in new[] { GameMode.Arena, GameMode.Classic })
+            {
+                var sum = NewDiagnostics(null, mode + " wide " + count);
+                for (int k = 0; k < count; k++)
+                {
+                    int seed = 401 + k;
+                    AiDiagnostics one = NewDiagnostics();
+                    SimulateAttack(mode, seed, true, seed % 12, (seed * 5 + 3) % 12, 120f, true, one);
+                    sum.Merge(one);
+                }
+                text.AppendLine(sum.Report());
+            }
+            if (!string.IsNullOrEmpty(dir)) File.WriteAllText(Path.Combine(dir, "phase13_wide_" + tag + ".txt"), text.ToString());
         }
 
         // ================= attaching them changes nothing =================
@@ -80,12 +120,22 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void TheRefactoredScores_ReproduceThePhase11Matches_BitForBit()
+        public void TheRefactoredScores_ReproduceThePhase11Matches_BitForBit_WhenThePhase13SwitchesAreOff()
         {
-            // reference fingerprints taken from the Phase 11 commit (00186bb), before the score terms were exposed
+            // reference fingerprints taken from the Phase 11 commit (00186bb), before the score terms were exposed. Phase 13 changed the decisions on purpose; with its switches off the old matches come back exactly
             uint Hash(string s) { uint h = 2166136261; foreach (char ch in s) h = (h ^ ch) * 16777619; return h; }
-            Assert.AreEqual(2212894415u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, false).Fingerprint), "Arena 301, Phase 10 carrier");
-            Assert.AreEqual(3998311449u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, true).Fingerprint), "Arena 301, Phase 11 carrier");
+            string before = Environment.GetEnvironmentVariable("FS27_EXP");
+            try
+            {
+                Environment.SetEnvironmentVariable("FS27_EXP", "*.Basic.PasserStaysOffHisPass=0;*.BallCarrier.SafePassBaseWeight=0;*.BallCarrier.ThroughKeeperMargin=0;*.BallCarrier.ShootMinScore=0;*.Defense.ChallengeMaxRisk=1000");
+                Assert.AreEqual(2212894415u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, false).Fingerprint), "Arena 301, Phase 10 carrier");
+                Assert.AreEqual(3998311449u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, true).Fingerprint), "Arena 301, Phase 11 carrier");
+            }
+            finally { Environment.SetEnvironmentVariable("FS27_EXP", before); }
+            // and with them on (the real game) the match is different, and the same every time
+            string a = SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, true).Fingerprint;
+            Assert.AreNotEqual(3998311449u, Hash(a));
+            Assert.AreEqual(a, SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, true, NewDiagnostics()).Fingerprint, "the diagnostics do not change the match");
             AttackSim classic = SimulateAttack(GameMode.Classic, 321, true, 321 % 12, (321 * 5 + 3) % 12, 120f, true);
             Assert.AreEqual(classic.Fingerprint, SimulateAttack(GameMode.Classic, 321, true, 321 % 12, (321 * 5 + 3) % 12, 120f, true, NewDiagnostics()).Fingerprint);
         }
@@ -158,7 +208,7 @@ namespace FS27.Core.Tests
             var e = NewEvaluator();
             // a clear shot, a pass to a free runner, a through pass, a free dribble, a protected ball, a hold
             MatchController shoot = CarrierScene(15f, 0f); WorldView v = ViewOf(shoot); e.Evaluate(v, v.IndexOf("hs3"), NoRuns.Instance, true); AssertPartsAddUp(e, "shot"); Assert.IsTrue(Find(e, CandidateType.Shoot).IsValid);
-            MatchController run = CarrierScene(0f, 0f); Put(run, TeamSide.Home, "hs5", 6f, -4f, East); Put(run, TeamSide.Home, "hs4", 8f, 5f, East); Run(run, "hs5", East, 4f);
+            MatchController run = CarrierScene(0f, 0f); Put(run, TeamSide.Home, "hs5", 0f, -4f, East); Put(run, TeamSide.Home, "hs4", 8f, 5f, East); Run(run, "hs5", East, 4f);
             v = ViewOf(run); var runs = new StubRuns(); runs.Runs[v.IndexOf("hs5")] = RunKind.Forward; runs.Runs[v.IndexOf("hs4")] = RunKind.Support;
             e.Evaluate(v, v.IndexOf("hs3"), runs, true); AssertPartsAddUp(e, "runner"); Assert.IsTrue(Find(e, CandidateType.ThroughPass).IsValid); Assert.IsTrue(Find(e, CandidateType.Pass).IsValid || Find(e, CandidateType.ForwardPass).IsValid);
             MatchController drib = CarrierScene(-4f, 0f); Put(drib, TeamSide.Away, "as1", -4.5f, 1.2f, West); v = ViewOf(drib); e.Evaluate(v, v.IndexOf("hs3"), NoRuns.Instance, true); AssertPartsAddUp(e, "dribble"); Assert.IsTrue(Find(e, CandidateType.Dribble).IsValid);

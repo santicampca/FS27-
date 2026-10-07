@@ -88,8 +88,19 @@ namespace FS27.Core
     }
 
     /// <summary>The editable copy of <see cref="AttackPositioningDefaults"/>.</summary>
-    public sealed class AttackPositioningTuning
+    public sealed partial class AttackPositioningTuning
     {
+        /// <summary>The tuning of a mode: the common defaults with that mode's own numbers (see the mode defaults). Arena and Classic differ in NUMBERS only, never in rules.</summary>
+        public static AttackPositioningTuning ForMode(GameMode mode)
+        {
+            var t = new AttackPositioningTuning();
+            ApplyMode(t, mode);
+            return t;
+        }
+
+        static partial void ApplyModeValues(AttackPositioningTuning t, GameMode mode);
+        private static void ApplyMode(AttackPositioningTuning t, GameMode mode) { ApplyModeValues(t, mode); }
+
         public bool Enabled = AttackPositioningDefaults.Enabled;
         public int SupportRunners = AttackPositioningDefaults.SupportRunners;
         public int ForwardRunners = AttackPositioningDefaults.ForwardRunners;
