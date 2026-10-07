@@ -47,6 +47,8 @@ namespace FS27.Core
                 ActionContext context = new ActionContext { HasBall = IsCarrier(p), IsGoalkeeper = p.InGoal };
                 request.Kind = ActionMapper.Map(input, context);
                 request.Long = context.IsGoalkeeper && context.HasBall && input.Gesture == ActionGesture.SwipeUp;
+                request.Curve = input.Curve;
+                if (request.Kind == FootballActionKind.CurvedShot && request.Curve == 0f) request.Curve = (p.ActionProfile.PreferredFoot == PreferredFoot.Right ? 1f : -1f) * skillTuning.DefaultCurve;
             }
             return Perform(request);
         }
@@ -94,11 +96,13 @@ namespace FS27.Core
 
                 case FootballActionKind.SkillLobPass:
                 case FootballActionKind.CurvedShot:
-                    if (!r.SkillGranted) return Reject(res, ActionRejection.SkillNotGranted);
-                    return ResolveKick(res, p, r, dir, power);
-
                 case FootballActionKind.SkillMove:
-                    return Reject(res, r.SkillGranted ? ActionRejection.NotSupported : ActionRejection.SkillNotGranted);
+                    {
+                        SkillPermission permission = SkillResolver.CanUseAction(p.Skills, r.Kind, IsCarrier(p), r.SkillGranted, r.SkillId);
+                        if (!permission.Allowed) return Reject(res, permission.Rejection);
+                        if (r.Kind == FootballActionKind.SkillMove) return ResolveSkillMove(res, p, dir, power, permission.Effect, permission.SkillId);
+                        return ResolveKick(res, p, r, dir, power, permission.Effect);
+                    }
 
                 case FootballActionKind.Control: return ResolveControlAction(res, p);
                 case FootballActionKind.Dribble: return IsCarrier(p) ? Complete(res, ActionDetail.Dribbling) : Reject(res, ActionRejection.NotInPossession);
@@ -196,7 +200,7 @@ namespace FS27.Core
 
         // ------------------------------------------------------------------ kicks: passes, shots, chip, clearance, goalkeeper distribution
 
-        private ActionResult ResolveKick(ActionResult res, MatchPlayer p, ActionRequest r, Vec2 dir, float power)
+        private ActionResult ResolveKick(ActionResult res, MatchPlayer p, ActionRequest r, Vec2 dir, float power, SkillEffect style = SkillEffect.None)
         {
             MatchBall b = State.Ball;
             bool carrier = IsCarrier(p);
@@ -264,9 +268,14 @@ namespace FS27.Core
                     break;
             }
 
-            float quality = ActionModel.Clamp01(baseQuality * footFactor * stamina);
-            float errorDegrees = ActionModel.KickError(maxError, quality, power, extraError, Noise(), actions);
-            Vec2 aimed = ActionModel.Rotate(dir, errorDegrees);
+            // the skills of the kicker (none = the kick above, unchanged): quality, error, speed, loft, aim and cost
+            KickSkillAdjust skill = KickSkillsOf(p, r, style, carrier, dir, curve);
+            minSpeed *= skill.SpeedFactor; maxSpeed *= skill.SpeedFactor; loft *= skill.LoftFactor; maxError *= skill.ErrorFactor; extraError *= skill.ExtraErrorFactor; cost += skill.ExtraCost;
+
+            float quality = SkillQuality(ActionModel.Clamp01(baseQuality * footFactor * stamina), (baseQuality + skill.QualityBonus) * footFactor * stamina);
+            float noise = Noise();
+            float errorDegrees = ActionModel.KickError(maxError, quality, power, extraError, noise, actions) + noise * skill.ResidualErrorDegrees;
+            Vec2 aimed = ActionModel.Rotate(dir, errorDegrees + skill.AimDegrees);
             float speed = ActionModel.Lerp(minSpeed, maxSpeed, power) * (actions.KickSpeedQualityBase + (1f - actions.KickSpeedQualityBase) * quality);
             Vec3 velocity = new Vec3(aimed.X * speed, speed * loft, aimed.Y * speed);
 
@@ -283,7 +292,9 @@ namespace FS27.Core
             res.Outcome = ActionOutcome.Completed;
             res.Detail = detail;
             res.Foot = foot;
+            res.WeakFoot = IsWeakFoot(prof, foot);
             res.Quality = quality;
+            res.SkillId = skill.SkillId;
             res.Direction = aimed;
             res.BallVelocity = velocity;
             res.StaminaCost = SpendStamina(p, cost * (actions.PowerCostBase + (1f - actions.PowerCostBase) * power));
@@ -324,7 +335,7 @@ namespace FS27.Core
         private ActionResult ResolvePressure(ActionResult res, MatchPlayer p)
         {
             if (IsCarrier(p)) return Reject(res, ActionRejection.BallNotAvailable);
-            p.PressureRemaining = actions.PressureSeconds;
+            p.PressureRemaining = actions.PressureSeconds * SkillPressureSecondsFactor(p);
             res.Outcome = ActionOutcome.Accepted;
             res.Detail = ActionDetail.Pressing;
             return res;
@@ -363,7 +374,7 @@ namespace FS27.Core
             }
             else
             {
-                score = ActionModel.FirstTouchScore(prof.ControlQuality, footFactor, StaminaFactorOf(p), relSpeed, angle, bonus, Noise(), actions);
+                score = ActionModel.FirstTouchScore(prof.ControlQuality, footFactor, StaminaFactorOf(p), relSpeed, angle, bonus + SkillFirstTouchBonus(p), Noise(), actions);
             }
             res.Quality = ActionModel.Clamp01(score);
             res.Intensity = ActionModel.Clamp01(relSpeed / actions.FirstTouchMaxBallSpeed);
@@ -498,13 +509,13 @@ namespace FS27.Core
             res.OtherPlayerId = target.PlayerId;
             float cost = SpendStamina(p, slide ? actions.SlideStaminaCost : actions.TackleStaminaCost);
             res.StaminaCost = cost;
-            float attack = p.ActionProfile.TackleSkill * PerformanceOf(p);
-            float defend = target.ActionProfile.DribbleSkill * PerformanceOf(target) + (target.IsShielding ? actions.ShieldBonus : 0f);
+            float attack = p.ActionProfile.TackleSkill * PerformanceOf(p) + SkillTackleBonus(p, target, slide);
+            float defend = target.ActionProfile.DribbleSkill * PerformanceOf(target) + (target.IsShielding ? actions.ShieldBonus : 0f) + SkillResistBonus(target);
             float margin = attack - defend + DuelNoise() + (slide ? actions.SlideBonus : 0f);
             res.Quality = ActionModel.Clamp01(actions.QualityReportBase + margin);
             if (slide) StartSlide(p, dir);
 
-            return ResolveDuel(res, p, target, margin, slide ? actions.SlideFoulMargin : actions.StandingFoulMargin, GameplayEventKind.TacklePerformed);
+            return ResolveDuel(res, p, target, margin, (slide ? actions.SlideFoulMargin : actions.StandingFoulMargin) + SkillFoulShift(p), GameplayEventKind.TacklePerformed);
         }
 
         private ActionResult ResolveChallenge(ActionResult res, MatchPlayer p)
@@ -516,7 +527,7 @@ namespace FS27.Core
             res.OtherPlayerId = target.PlayerId;
             res.StaminaCost = SpendStamina(p, actions.ChallengeStaminaCost);
             float attack = p.ActionProfile.ChallengeStrength * PerformanceOf(p);
-            float defend = target.ActionProfile.ResistStrength * PerformanceOf(target) + (target.IsShielding ? actions.ShieldBonus : 0f);
+            float defend = target.ActionProfile.ResistStrength * PerformanceOf(target) + (target.IsShielding ? actions.ShieldBonus : 0f) + SkillResistBonus(target);
             float margin = attack - defend + DuelNoise();
             res.Quality = ActionModel.Clamp01(actions.QualityReportBase + margin);
             return ResolveDuel(res, p, target, margin, actions.StandingFoulMargin, GameplayEventKind.TacklePerformed);
@@ -545,7 +556,7 @@ namespace FS27.Core
                 return Complete(res, ActionDetail.Loose);
             }
 
-            attacker.ActionLockRemaining = Math.Max(attacker.ActionLockRemaining, actions.FailedTackleLockSeconds);
+            attacker.ActionLockRemaining = Math.Max(attacker.ActionLockRemaining, actions.FailedTackleLockSeconds * SkillFailLockFactor(attacker));
             res.Outcome = ActionOutcome.Failed;
             if (rules.HasFouls && margin <= foulMargin && FromBehind(attacker, carrier))
             {
@@ -570,12 +581,12 @@ namespace FS27.Core
             if (b.Mode == BallMode.Dead || b.Mode == BallMode.Goal) return Reject(res, ActionRejection.MatchNotLive);
             if (b.HasPossession) return Reject(res, ActionRejection.BallNotAvailable);
             if (b.HasLastTouch && b.LastTouchTeam == p.Team && (b.Mode == BallMode.InPass || b.Mode == BallMode.InShot)) return Reject(res, ActionRejection.BallNotAvailable);
-            if (BallDistanceTo(p) > actions.InterceptReach || BallHeight() > actions.MaxTouchHeight * actions.InterceptHeightFactor) return Reject(res, ActionRejection.BallOutOfReach);
+            if (BallDistanceTo(p) > actions.InterceptReach * SkillInterceptReachFactor(p) || BallHeight() > actions.MaxTouchHeight * actions.InterceptHeightFactor) return Reject(res, ActionRejection.BallOutOfReach);
 
             res.StaminaCost = SpendStamina(p, actions.InterceptStaminaCost);
             float speed = b.Physics.Speed;
             float difficulty = ActionModel.Clamp01(speed / actions.ShotSpeedForBlock) * actions.InterceptDifficultyWeight;
-            float score = p.ActionProfile.InterceptQuality * PerformanceOf(p) - difficulty + Noise() * actions.InterceptNoise;
+            float score = p.ActionProfile.InterceptQuality * PerformanceOf(p) + SkillInterceptBonus(p, block) - difficulty + Noise() * actions.InterceptNoise;
             res.Quality = ActionModel.Clamp01(score + actions.QualityReportBase);
             bool tooFastToTake = speed > actions.ShotSpeedForBlock;
 
@@ -624,13 +635,14 @@ namespace FS27.Core
         /// <summary>The timers of the actions and the slide. Returns true when the player's movement was handled here (he is sliding or locked).</summary>
         private bool StepActionMovement(MatchPlayer p, float dt)
         {
+            StepSkillTimers(p, dt);
             if (p.KickCooldownRemaining > 0f) p.KickCooldownRemaining = Math.Max(0f, p.KickCooldownRemaining - dt);
             if (p.ShieldRemaining > 0f) p.ShieldRemaining = Math.Max(0f, p.ShieldRemaining - dt);
             if (p.RushRemaining > 0f) p.RushRemaining = Math.Max(0f, p.RushRemaining - dt);
             if (p.PressureRemaining > 0f)
             {
                 p.PressureRemaining = Math.Max(0f, p.PressureRemaining - dt);
-                p.Locomotion.CurrentStamina = LocomotionStamina.Clamp(p.Locomotion.CurrentStamina - actions.PressureDrainPerSecond * dt, locomotion);
+                p.Locomotion.CurrentStamina = LocomotionStamina.Clamp(p.Locomotion.CurrentStamina - actions.PressureDrainPerSecond * SkillPressureDrainFactor(p) * dt, locomotion);
             }
 
             if (p.SlideRemaining > 0f)
@@ -705,16 +717,17 @@ namespace FS27.Core
         /// </summary>
         public float DribbleControlQuality(MatchPlayer p)
         {
-            int pressing = 0;
+            int counted = 0;
+            float pressing = 0f;
             TeamMatchState others = State.Team(p.Team.Opponent());
-            for (int i = 0; i < others.Players.Count && pressing < 2; i++)
+            for (int i = 0; i < others.Players.Count && counted < 2; i++)
             {
                 MatchPlayer o = others.Players[i];
-                if (o.IsActive && o.IsPressing && (o.Locomotion.Position - p.Locomotion.Position).Magnitude <= actions.PressureRadius) pressing++;
+                if (o.IsActive && o.IsPressing && (o.Locomotion.Position - p.Locomotion.Position).Magnitude <= actions.PressureRadius * SkillPressureRadiusFactor(o)) { counted++; pressing += SkillPresserWeight(o); }
             }
             ActionProfile prof = p.ActionProfile;
             float q = actions.DribbleControlShare * prof.ControlQuality + (1f - actions.DribbleControlShare) * prof.DribbleSkill;
-            return ActionModel.Clamp01(q * StaminaFactorOf(p) - actions.PressureEffect * pressing + (p.IsShielding ? actions.ShieldBonus : 0f));
+            return ActionModel.Clamp01(q * StaminaFactorOf(p) - actions.PressureEffect * pressing * SkillPressureLeft(p) + (p.IsShielding ? actions.ShieldBonus : 0f) + SkillCarryBonus(p));
         }
 
         private void StepDribble(float dt)

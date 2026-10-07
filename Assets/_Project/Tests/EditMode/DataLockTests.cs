@@ -49,6 +49,13 @@ namespace FS27.Core.Tests
 
         private static GameDatabase Fresh() { return GameDatabaseLoader.Load(Source); }
 
+        /// <summary>The real, complete database for other test fixtures (Phase 6 integration tests): loaded exactly as a host would.</summary>
+        internal static GameDatabase LoadRealDatabase()
+        {
+            if (root == null) root = new DirectoryInfo(DifficultyGuardTests.FindCoreSourceDirectory()).Parent.Parent.Parent.Parent.FullName;
+            return Fresh();
+        }
+
         [OneTimeSetUp]
         public void Load()
         {
@@ -534,7 +541,7 @@ namespace FS27.Core.Tests
             foreach (PlayerSkillSet s in db.PlayerSkills.All) Assert.AreEqual(typeof(PlayerSkillSet), s.GetType());
             Assert.IsNull(typeof(PlayerDefinition).GetField("Skills"), "PlayerDefinition still carries no skills: the set is looked up by id");
             string[] skillTypes = Directory.GetFiles(Path.Combine(DifficultyGuardTests.FindCoreSourceDirectory(), "Skills"), "*.cs").Select(Path.GetFileName).ToArray();
-            CollectionAssert.AreEquivalent(new[] { "SkillContracts.cs", "SkillCatalog.cs" }, skillTypes);
+            CollectionAssert.AreEquivalent(new[] { "SkillContracts.cs", "SkillCatalog.cs", "SkillDefaults.cs", "SkillBindings.cs", "SkillResolver.cs" }, skillTypes, "Phase 6 extends the Skills folder with the tuning, the behaviour table and the resolver: still ONE skill system");
         }
 
         [Test]

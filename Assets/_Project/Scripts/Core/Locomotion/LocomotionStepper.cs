@@ -16,6 +16,12 @@ namespace FS27.Core
     {
         public static void Step(ref LocomotionState s, in LocomotionProfile p, LocomotionTuning t, Vec2 input, float dt)
         {
+            Step(ref s, in p, t, input, dt, default(LocomotionModifiers));
+        }
+
+        /// <summary>The same step with the movement modifiers of the player's skills (Phase 6). All-zero modifiers give exactly the step above.</summary>
+        public static void Step(ref LocomotionState s, in LocomotionProfile p, LocomotionTuning t, Vec2 input, float dt, in LocomotionModifiers m)
+        {
             if (!(dt > 0f)) return;
 
             // 1. the intention
@@ -41,11 +47,13 @@ namespace FS27.Core
             float target = p.MaxSpeed * performance * intensity;
 
             // 4. turning (needs an input direction)
+            float turnError = 0f;
             if (magnitude > 0f)
             {
                 float error = MathUtil.DeltaAngle(s.Heading, direction.ToHeading());
+                turnError = error;
                 float speedRatio = p.MaxSpeed > 0f ? MathUtil.Clamp01(s.CurrentSpeed / p.MaxSpeed) : 0f;
-                float turnFactor = 1f - t.TurnSpeedPenalty * speedRatio;
+                float turnFactor = 1f - t.TurnSpeedPenalty * (1f - m.TurnPenaltyRelief) * speedRatio;
                 float rate = t.BaseTurnRateDegrees * MathUtil.Deg2Rad * p.AgilityFactor * turnFactor;
                 float maxTurn = rate * dt;
                 s.Heading += Math.Abs(error) <= maxTurn ? error : Math.Sign(error) * maxTurn;
@@ -56,6 +64,10 @@ namespace FS27.Core
             if (target > s.CurrentSpeed)
             {
                 float acceleration = p.MaxAcceleration * (t.FatigueAccelerationBase + t.FatigueAccelerationRange * performance);
+                float gain = 1f;
+                if (m.BurstGain > 0f && p.MaxSpeed > 0f && s.CurrentSpeed < p.MaxSpeed * m.BurstSpeedFraction) gain += m.BurstGain;
+                if (m.TurnGain > 0f && Math.Abs(turnError) > m.TurnAngleThreshold) gain += m.TurnGain;
+                acceleration *= gain;
                 s.CurrentSpeed = Math.Min(target, s.CurrentSpeed + acceleration * dt);
             }
             else

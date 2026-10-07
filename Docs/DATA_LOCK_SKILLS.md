@@ -540,3 +540,5 @@ Un jugador que supera 4 skills conserva las primeras según el orden de su ficha
 | `mo-kevin-de-bruyne` | `counter_press` | TrimmedByCap | More than 4 skills; left out. |
 | `mo-florian-wirtz` | `counter_press` | TrimmedByCap | More than 4 skills; left out. |
 | `mo-gilberto-mora` | `support_run` | TrimmedByCap | More than 4 skills; left out. |
+
+> **Fase 6:** este catálogo ya es comportamiento real en el Core (25 skills REAL, 12 DEFERRED). Ver [SKILLS_REAL.md](SKILLS_REAL.md).

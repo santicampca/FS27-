@@ -84,7 +84,8 @@ namespace FS27.Core
         public event Action<RestartRequest> RestartRequested;
         public event Action<MatchResult> MatchFinished;
 
-        public MatchController(FieldDimensions field, MatchSettings settings, MatchSquad home = null, MatchSquad away = null, BallParameters ballParameters = null, string matchId = "match", LocomotionTuning locomotionTuning = null, IPlayerLookup players = null, ActionTuning actionTuning = null)
+        public MatchController(FieldDimensions field, MatchSettings settings, MatchSquad home = null, MatchSquad away = null, BallParameters ballParameters = null, string matchId = "match", LocomotionTuning locomotionTuning = null, IPlayerLookup players = null, ActionTuning actionTuning = null,
+                               IPlayerSkillLookup skills = null, SkillCatalog skillCatalog = null, SkillTuning skillTuning = null)
         {
             this.field = field ?? throw new ArgumentNullException(nameof(field));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -115,6 +116,8 @@ namespace FS27.Core
                 }
             actions = actionTuning ?? new ActionTuning();
             actionRandom = SeedMixer.Create(settings.Seed, 4);
+            this.skillTuning = skillTuning ?? new SkillTuning();
+            ResolvePlayerSkills(players, skills, skillCatalog, neutral);
         }
 
         // ------------------------------------------------------------------ flow
@@ -210,7 +213,7 @@ namespace FS27.Core
             for (int i = 0; i < players.Count; i++)
             {
                 MatchPlayer p = players[i];
-                if (p.IsActive && !StepActionMovement(p, dt)) LocomotionStepper.Step(ref p.Locomotion, p.LocomotionProfile, locomotion, p.PendingInput, dt);
+                if (p.IsActive && !StepActionMovement(p, dt)) LocomotionStepper.Step(ref p.Locomotion, p.LocomotionProfile, locomotion, p.PendingInput, dt, p.LocomotionModifiers);
             }
         }
 

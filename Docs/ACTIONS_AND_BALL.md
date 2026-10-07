@@ -247,3 +247,8 @@ Sin IA (no se elige destinatario de pase ni compañero de pared), sin tácticas/
 | `ChallengeStaminaCost` | 3.0 | Physical challenge. |
 | `InterceptStaminaCost` | 1.5 | Intercept/block. |
 | `RushStaminaCost` | 1.0 | Goalkeeper rush. |
+
+---
+
+## Fase 6 — skills dentro de las acciones
+`SkillMove` deja de ser un contrato (`NotSupported`): es una acción real. `SkillLobPass` y `CurvedShot` siguen resolviéndose en `ResolveKick`, pero ahora con la maestría de la skill del jugador. `ActionRequest.SkillGranted` pasa a legado; el permiso lo decide `SkillResolver.CanUseAction`. Se añaden: botón `C`, `ActionInput.Curve`, `ActionRequest.SkillId`, `ActionResult.SkillId` y `ActionResult.WeakFoot`, y los detalles `Evaded`, `PartlyEvaded`, `Fumbled`. Sin skills, cada acción da **exactamente** el mismo resultado que en la Fase 4. Ver [SKILLS_REAL.md](SKILLS_REAL.md).

@@ -555,3 +555,12 @@ Detalle en [DATA_LOCK.md](DATA_LOCK.md). Lo que afecta a este documento:
 - Las skills usan los contratos de la Fase 2 (`SkillDefinition`, `PlayerSkillSet`); 3 tipos desbloquean las acciones de skill de la Fase 4 (`SkillMove`, `SkillLobPass`, `CurvedShot`).
 - Sin cambios de comportamiento de partido. No implementado: IA, tácticas de gameplay, árbitro funcional, competición.
 
+---
+
+## S. FASE 6 — Skills reales (resumen)
+Detalle en [SKILLS_REAL.md](SKILLS_REAL.md). Lo que afecta a este documento:
+- Las 37 skills del catálogo ya **cambian cómo se resuelven las acciones** dentro del pipeline de la Fase 4 (`ActionRequest → MatchController → BallSimulator → ActionResult`): **25 REAL, 0 solo-permiso, 12 DEFERRED** (dependen de IA, transiciones, centros, cabezazos o balón parado, que no existen aún).
+- Un solo permiso: `CanUseAction` (`SkillResolver`); `ActionRequest.SkillGranted` queda como legado solo para partidos sin datos de skills. Un solo catálogo, una sola tabla de comportamiento (`SkillBindings`), un solo resolutor, un solo `BallSimulator`.
+- Nueva acción real: `SkillMove` (regate con 3 estilos y 3 desenlaces). `CurvedShot` y `SkillLobPass` resueltos con la maestría del jugador, el pie y la stamina. Botón **C** (skill) añadido al esquema de controles (H): con balón, toque = skill move, arriba = pase por alto, abajo = tiro con efecto.
+- Las skills no cambian atributos, Overall, GRL ni Coach Boost; la stamina es la de locomoción; el azar sale solo del generador sembrado del partido.
+- **No implementado (fases posteriores):** IA, tácticas, transiciones, centros, cabezazos, balón parado, árbitro funcional, competición, Unity (HUD del botón C, animaciones).

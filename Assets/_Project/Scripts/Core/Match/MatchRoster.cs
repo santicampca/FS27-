@@ -99,6 +99,17 @@ namespace FS27.Core
         /// <summary>A goalkeeper rush that was accepted and is still active (contract only: Phase 5 moves the keeper).</summary>
         public float RushRemaining { get; internal set; }
         public float SlideRemaining { get; internal set; }
+        /// <summary>His skills as they are active in this match (Phase 6): derived from his skill set and attributes, never stored on the player.</summary>
+        public ResolvedSkills Skills { get; internal set; } = ResolvedSkills.None;
+        /// <summary>The movement modifiers of his skills (zero = none).</summary>
+        internal LocomotionModifiers LocomotionModifiers;
+        /// <summary>Seconds a skill move still protects the carrier (he has just beaten, or half beaten, his man).</summary>
+        public float EvadeRemaining { get; internal set; }
+        /// <summary>0..: how strong that protection is (style and quality of the move).</summary>
+        public float EvadeStrength { get; internal set; }
+        /// <summary>Seconds before he may try another skill move.</summary>
+        public float SkillMoveCooldownRemaining { get; internal set; }
+        public bool IsEvading => EvadeRemaining > 0f;
         internal Vec2 SlideDirection;
         public bool IsSliding => SlideRemaining > 0f;
         public bool IsPressing => PressureRemaining > 0f;

@@ -116,9 +116,9 @@ namespace FS27.Core.Tests
             var i = new ActionInput(ActionButton.A, ActionGesture.SwipeDown, new Vec2(1f, 2f), 0.7f);
             Assert.AreEqual(ActionButton.A, i.Button); Assert.AreEqual(ActionGesture.SwipeDown, i.Gesture);
             Assert.AreEqual(1f, i.Direction.X); Assert.AreEqual(0.7f, i.Magnitude);
-            Assert.AreEqual(3, Enum.GetValues(typeof(ActionButton)).Length, "None, A, B");
+            Assert.AreEqual(4, Enum.GetValues(typeof(ActionButton)).Length, "None, A, B and (Phase 6) the skill button C");
             Assert.AreEqual(3, Enum.GetValues(typeof(ActionGesture)).Length, "tap, swipe up, swipe down");
-            Assert.AreEqual(4, typeof(ActionInput).GetFields().Length, "button, gesture, direction, magnitude");
+            Assert.AreEqual(5, typeof(ActionInput).GetFields().Length, "button, gesture, direction, magnitude and (Phase 6) the curve of a curved shot");
         }
 
         private static FootballActionKind Map(ActionButton b, ActionGesture g, bool ball, bool keeper = false)
@@ -264,7 +264,7 @@ namespace FS27.Core.Tests
             foreach (FootballActionKind k in new[] { FootballActionKind.SkillMove, FootballActionKind.SkillLobPass, FootballActionKind.CurvedShot })
                 Assert.AreEqual(ActionRejection.SkillNotGranted, Do(c, TeamSide.Home, "hs1", k, East).Rejection, k.ToString());
             var granted = new ActionRequest(TeamSide.Home, "hs1", FootballActionKind.SkillMove, East) { SkillGranted = true };
-            Assert.AreEqual(ActionRejection.NotSupported, c.Perform(granted).Rejection, "the skill system does not exist yet");
+            Assert.AreEqual(ActionRejection.None, c.Perform(granted).Rejection, "Phase 6: a granted skill move is real now (it completes or fails, it is never refused)");
             var lob = new ActionRequest(TeamSide.Home, "hs1", FootballActionKind.SkillLobPass, East) { SkillGranted = true };
             ActionResult r = c.Perform(lob);
             Assert.AreEqual(ActionOutcome.Completed, r.Outcome); Assert.AreEqual(ActionDetail.Lofted, r.Detail); Assert.Greater(r.BallVelocity.Y, 0f);
