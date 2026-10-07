@@ -100,3 +100,6 @@ Ver [DEFENSE_AND_ROLE_POSITIONING.md](DEFENSE_AND_ROLE_POSITIONING.md). `Decisio
 
 ## 12. Fase 10 — lo que cambió aquí
 Ver [ATTACK_SUPPORT_RUNS.md](ATTACK_SUPPORT_RUNS.md). Con un compañero con balón, `WithoutBall` ya no manda a «los dos más cercanos» a apoyar: delega en `AttackSupport` (un apoyo, un corredor, un jugador de amplitud, el resto se desmarca cerca de su sitio). `DecisionKind` gana `GetOpen`, `ForwardRun`, `HoldWidth` (16 en total; el apoyo sigue siendo `Support`). `BestReceiver` pasa a `ReceiverScore` (línea de pase, presión, movimiento del receptor). `AttackPositioningTuning.Enabled = false` devuelve el comportamiento de la Fase 9.
+
+## 13. Fase 11 — lo que cambió aquí
+Ver [BALL_CARRIER_INTELLIGENCE.md](BALL_CARRIER_INTELLIGENCE.md). `WithBall` ya no es la jerarquía fija tiro → pase → regate → proteger: el portador puntúa siete tipos de candidato en una escala común (`BallCarrierEvaluator`) y hace el mejor, construyendo el intent con los mismos constructores. `DecisionKind` gana `Hold` (17). `BallCarrierTuning.Enabled = false` devuelve la regla de la Fase 8–10 (los tests de la Fase 8 que la describen la usan).

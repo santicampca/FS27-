@@ -542,7 +542,7 @@ namespace FS27.Core.Tests
         [Test]
         public void TheDecisionKinds_AreStillAShortClosedList_AndThePlayerRolesComeFromTheWorldView()
         {
-            Assert.AreEqual(16, Enum.GetValues(typeof(DecisionKind)).Length);
+            Assert.AreEqual(17, Enum.GetValues(typeof(DecisionKind)).Length);
             string core = DifficultyGuardTests.FindCoreSourceDirectory();
             string support = File.ReadAllText(Path.Combine(core, "Decision", "AttackSupport.cs"));
             StringAssert.DoesNotContain("PlayerDefinition", support); StringAssert.DoesNotContain("PlayerPlayingProfile", support); StringAssert.DoesNotContain("MatchState", support);

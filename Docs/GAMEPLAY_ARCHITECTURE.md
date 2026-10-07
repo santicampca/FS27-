@@ -596,3 +596,9 @@ Detalle en [DEFENSE_AND_ROLE_POSITIONING.md](DEFENSE_AND_ROLE_POSITIONING.md). L
 ## W. FASE 10 — Ataque sin balón (resumen)
 Detalle en [ATTACK_SUPPORT_RUNS.md](ATTACK_SUPPORT_RUNS.md). `AttackSupport` reparte, para el equipo con balón, un apoyo, un corredor y un jugador de amplitud (el resto se desmarca cerca de su sitio), con los roles como preferencia y no como regla; `ReceiverScore` mejora la elección de receptor; `WorldGeometry` gana `PassLaneRoom`, `IsPassLaneClear` y `FindBestOpenPoint`. Todo sigue siendo intents hacia el Core. Medido, no balanceado: más líneas de pase y más separación entre compañeros; sin mejora clara de tiros.
 - **No implementado (fases siguientes):** valoración de carreras por el portador, marcaje, cobertura, presión coordinada, línea defensiva, contrapresión, overlapping, half-space, llegada al área, GK AI, tácticas, skills diferidas, balance.
+
+---
+
+## X. FASE 11 — Inteligencia del portador (resumen)
+Detalle en [BALL_CARRIER_INTELLIGENCE.md](BALL_CARRIER_INTELLIGENCE.md). El portador compara tiro, pase (seguro o adelante), pase al espacio, regate, proteger y esperar con puntuaciones comparables; lee las carreras de la Fase 10 mediante una interfaz mínima; sigue produciendo solo intents. Medido, no balanceado: decisiones más variadas, pases al espacio y esperas; no hay mejora general demostrada (menos pases y tiros, más faltas en Classic).
+- **No implementado:** tácticas, marcaje, cobertura, presión coordinada, contrapresión, GK AI avanzada, skills diferidas, balance.

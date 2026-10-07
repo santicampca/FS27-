@@ -16,16 +16,17 @@ namespace FS27.Core.Tests
             public int AttackSamples, PassDecisions; public long PassLanes; public double Spread, PassDistance;
             public int MoreThanOnePerJob, JobSamples, SupportersNearBall;
             public int[] ToJob = new int[5];
+            public int[] Kinds = new int[17]; public int Dribbles, Protects, Holds, SpacePasses, ShotOpportunities, CarrierDecisions; public long PassCandidates; public int[] Chosen = new int[8]; public double[] ChosenScore = new double[8];
         }
 
-        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f)
+        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f, bool carrierLayer = true)
         {
             MatchSettings s = mode == GameMode.Arena ? MatchSettings.CreateArena() : MatchSettings.CreateClassic();
             MatchController c = RealRoles(homeTeam, awayTeam, seed, s);
             var r = new AttackSim();
             r.Assignment = string.Join(",", c.GetRoleAssignment(TeamSide.Home).FieldPlayerIds) + "|" + string.Join(",", c.GetRoleAssignment(TeamSide.Away).FieldPlayerIds);
             Assert.IsTrue(c.ConfirmRestart());
-            var driver = new BasicDecisionDriver(c, null, null, null, new AttackPositioningTuning { Enabled = attackLayer });
+            var driver = new BasicDecisionDriver(c, null, null, null, new AttackPositioningTuning { Enabled = attackLayer }, new BallCarrierTuning { Enabled = carrierLayer });
             var world = new WorldState();
             bool hasLast = false; TeamSide last = TeamSide.Home;
             int steps = (int)(seconds * 60f);
@@ -90,8 +91,10 @@ namespace FS27.Core.Tests
             r.Support = driver.CountOf(DecisionKind.Support); r.Forward = driver.CountOf(DecisionKind.ForwardRun); r.Width = driver.CountOf(DecisionKind.HoldWidth); r.GetOpen = driver.CountOf(DecisionKind.GetOpen);
             r.AttackSamples = driver.AttackSamples; r.PassLanes = driver.PassLaneSum; r.Spread = driver.TeammateSpreadSum; r.PassDecisions = driver.PassDecisions; r.PassDistance = driver.PassDistanceSum;
             for (int j = 0; j < 5; j++) r.ToJob[j] = driver.PassesToJob((AttackJob)j);
+            for (int j = 0; j < 17; j++) r.Kinds[j] = driver.CountOf((DecisionKind)j);
+            r.Dribbles = driver.CountOf(DecisionKind.Dribble); r.Protects = driver.CountOf(DecisionKind.Protect); r.Holds = driver.CountOf(DecisionKind.Hold); r.SpacePasses = driver.SpacePasses; r.ShotOpportunities = driver.ShotOpportunities; r.CarrierDecisions = driver.CarrierDecisions; r.PassCandidates = driver.PassCandidateSum; for (int j = 0; j < 8; j++) { r.Chosen[j] = driver.ChosenCount((CandidateType)j); r.ChosenScore[j] = driver.ChosenScoreSum((CandidateType)j); }
             r.Goals = c.State.Score.Home + c.State.Score.Away;
-            r.Fingerprint = Fingerprint(c) + "|" + r.Decisions + "|" + r.Actions + "|" + r.Passes + "|" + r.Shots + "|" + r.Recoveries + "|" + r.Fouls + "|" + r.Possessions + "|" + r.Losses + "|" + r.Support + "|" + r.Forward + "|" + r.Width + "|" + r.GetOpen + "|" + r.PassLanes + "|" + r.Spread.ToString("R") + "|" + c.State.Score.Home + "-" + c.State.Score.Away;
+            r.Fingerprint = Fingerprint(c) + "|" + r.Decisions + "|" + r.Actions + "|" + r.Passes + "|" + r.Shots + "|" + r.Recoveries + "|" + r.Fouls + "|" + r.Possessions + "|" + r.Losses + "|" + r.Support + "|" + r.Forward + "|" + r.Width + "|" + r.GetOpen + "|" + r.PassLanes + "|" + r.Spread.ToString("R") + "|" + r.Dribbles + "|" + r.Protects + "|" + r.Holds + "|" + r.SpacePasses + "|" + r.ShotOpportunities + "|" + c.State.Score.Home + "-" + c.State.Score.Away;
             return r;
         }
 
@@ -111,6 +114,77 @@ namespace FS27.Core.Tests
             Assert.Greater(r.AttackSamples, 20, label); Assert.Greater(r.PassLanes, 0L, label + ": passing lanes were open");
             Assert.Greater(r.PassDecisions, 5, label);
             Assert.Greater(r.Support + r.Forward + r.Width + r.GetOpen, r.Decisions / 20, label + ": the attack layer decides a good part of the time");
+        }
+
+        /// <summary>Eight matches of two minutes with different teams and seeds, added up.</summary>
+        private static AttackSim Aggregate(GameMode mode, bool carrierLayer, int firstSeed, int matches = 8)
+        {
+            var tot = new AttackSim();
+            for (int k = 0; k < matches; k++)
+            {
+                int seed = firstSeed + k;
+                AttackSim x = SimulateAttack(mode, seed, true, seed % 12, (seed * 5 + 3) % 12, 120f, carrierLayer);
+                tot.Decisions += x.Decisions; tot.Actions += x.Actions; tot.Passes += x.Passes; tot.Shots += x.Shots; tot.Goals += x.Goals; tot.Possessions += x.Possessions; tot.Losses += x.Losses; tot.Recoveries += x.Recoveries; tot.Fouls += x.Fouls;
+                tot.Support += x.Support; tot.Forward += x.Forward; tot.Width += x.Width; tot.GetOpen += x.GetOpen;
+                tot.AttackSamples += x.AttackSamples; tot.PassLanes += x.PassLanes; tot.Spread += x.Spread; tot.PassDecisions += x.PassDecisions; tot.PassDistance += x.PassDistance; tot.Issues += x.Issues;
+                tot.MoreThanOnePerJob += x.MoreThanOnePerJob; tot.JobSamples += x.JobSamples;
+                for (int j = 0; j < 5; j++) tot.ToJob[j] += x.ToJob[j];
+                for (int j = 0; j < 17; j++) tot.Kinds[j] += x.Kinds[j];
+                tot.Dribbles += x.Dribbles; tot.Protects += x.Protects; tot.Holds += x.Holds; tot.SpacePasses += x.SpacePasses; tot.ShotOpportunities += x.ShotOpportunities; tot.CarrierDecisions += x.CarrierDecisions; tot.PassCandidates += x.PassCandidates;
+                for (int j = 0; j < 8; j++) { tot.Chosen[j] += x.Chosen[j]; tot.ChosenScore[j] += x.ChosenScore[j]; }
+            }
+            return tot;
+        }
+
+        /// <summary>How varied the play with the ball is: the Shannon entropy (bits) of the kinds of decision a carrier takes (pass, shot, dribble, protect, hold).</summary>
+        private static double CarrierEntropy(AttackSim r)
+        {
+            int[] kinds = { (int)DecisionKind.Pass, (int)DecisionKind.Shoot, (int)DecisionKind.Dribble, (int)DecisionKind.Protect, (int)DecisionKind.Hold };
+            double total = kinds.Sum(k => (double)r.Kinds[k]), h = 0.0;
+            foreach (int k in kinds) if (r.Kinds[k] > 0) { double p = r.Kinds[k] / total; h -= p * Math.Log(p, 2.0); }
+            return h;
+        }
+
+        private static string Describe11(AttackSim r)
+        {
+            return string.Format("passes {0} (to support/runner/width/open {1}/{2}/{3}/{4}, into space {5}) shots {6} (opportunities {7}) goals {8} | dribble {9} protect {10} hold {11} pass-decisions {12} | possessions {13} losses {14} recoveries {15} fouls {16} | lanes {17:F2} passDist {18:F2} entropy {19:F2}",
+                r.Passes, r.ToJob[1], r.ToJob[2], r.ToJob[3], r.ToJob[4], r.SpacePasses, r.Shots, r.ShotOpportunities, r.Goals, r.Kinds[(int)DecisionKind.Dribble], r.Kinds[(int)DecisionKind.Protect], r.Kinds[(int)DecisionKind.Hold], r.Kinds[(int)DecisionKind.Pass],
+                r.Possessions, r.Losses, r.Recoveries, r.Fouls, (double)r.PassLanes / Math.Max(1, r.AttackSamples), r.PassDecisions > 0 ? r.PassDistance / r.PassDecisions : 0.0, CarrierEntropy(r));
+        }
+
+        private static void AssertCarrierPlays(GameMode mode, int firstSeed)
+        {
+            AttackSim f11 = Aggregate(mode, true, firstSeed);
+            Assert.AreEqual(0, f11.Issues, mode + ": invariants in all eight matches"); Assert.AreEqual(0, f11.MoreThanOnePerJob);
+            Assert.Greater(f11.Passes, 20); Assert.Greater(f11.Kinds[(int)DecisionKind.Dribble], 0); Assert.Greater(f11.Kinds[(int)DecisionKind.Protect], 0); Assert.Greater(f11.Kinds[(int)DecisionKind.Hold], 0);
+            Assert.Greater(f11.SpacePasses, 0, mode + ": passes into space happen"); Assert.Greater(f11.ShotOpportunities, 0); Assert.Greater(f11.Shots, 0);
+            Assert.Greater(f11.ToJob[2], 0, "passes to runners"); Assert.Greater(f11.ToJob[1], 0); Assert.Greater(f11.ToJob[3], 0); Assert.Greater(f11.ToJob[4], 0);
+            Assert.Greater(Enumerable.Range(1, 7).Count(j => f11.Chosen[j] > 0), 5, "the carrier does not always do the same thing");
+            Assert.Less(f11.Kinds[(int)DecisionKind.Hold], f11.CarrierDecisions / 2, "holding is an instant, not the game");
+            Assert.Less(f11.Kinds[(int)DecisionKind.Protect], f11.CarrierDecisions / 2, "protecting is not the answer to everything");
+            AttackSim f10 = Aggregate(mode, false, firstSeed);
+            Assert.AreEqual(0, f10.Issues); Assert.AreEqual(0, f10.Kinds[(int)DecisionKind.Hold], "the Phase 10 carrier never holds");
+            TestContext.Progress.WriteLine("PHASE11 " + mode + " F10: " + Describe11(f10));
+            TestContext.Progress.WriteLine("PHASE11 " + mode + " F11: " + Describe11(f11) + " chosen " + string.Join(" ", Enumerable.Range(1, 7).Select(j => (CandidateType)j + " " + f11.Chosen[j])));
+        }
+
+        [Test]
+        public void EightRealMatches_WithTheIntelligentCarrier_TwoMinutes_Arena()
+        {
+            AssertCarrierPlays(GameMode.Arena, 301);
+            AttackSim a = SimulateAttack(GameMode.Arena, 311, true), b = SimulateAttack(GameMode.Arena, 311, true);
+            Assert.AreEqual(a.Fingerprint, b.Fingerprint, "the same decisions, passes into space, holds, shots, goals and counters");
+            Assert.AreNotEqual(a.Fingerprint, SimulateAttack(GameMode.Arena, 312, true).Fingerprint);
+            Assert.AreEqual(0, a.Fouls, "Arena has no fouls");
+        }
+
+        [Test]
+        public void EightRealMatches_WithTheIntelligentCarrier_TwoMinutes_Classic()
+        {
+            AssertCarrierPlays(GameMode.Classic, 321);
+            AttackSim a = SimulateAttack(GameMode.Classic, 331, true), b = SimulateAttack(GameMode.Classic, 331, true);
+            Assert.AreEqual(a.Fingerprint, b.Fingerprint);
+            Assert.AreNotEqual(a.Fingerprint, SimulateAttack(GameMode.Classic, 332, true).Fingerprint);
         }
 
         [Test]

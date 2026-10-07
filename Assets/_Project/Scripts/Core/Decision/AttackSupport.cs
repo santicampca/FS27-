@@ -31,7 +31,7 @@ namespace FS27.Core
     /// never a rule. At most <see cref="AttackPositioningTuning.SupportRunners"/> / <see cref="AttackPositioningTuning.ForwardRunners"/> / <see cref="AttackPositioningTuning.WidthHolders"/> players do the three
     /// jobs; everybody else gets open near his place. It is not a tactic: it decides where a player WANTS to go; the Core's locomotion and separation decide what happens.
     /// </summary>
-    public sealed class AttackSupport
+    public sealed class AttackSupport : ITeammateRuns
     {
         private readonly BasicDecisionTuning t;
         private readonly AttackPositioningTuning a;
@@ -143,6 +143,19 @@ namespace FS27.Core
                     if (jobs[i] == AttackJob.GetOpen && scores[i] > bestScore) { bestScore = scores[i]; best = i; }
                 if (best < 0) return;
                 jobs[best] = job;
+            }
+        }
+
+        /// <summary>The run a player is making after <see cref="Assign"/> (what a carrier needs to know; he does not need to know how it was decided).</summary>
+        public RunKind RunOf(int playerIndex)
+        {
+            switch (JobOf(playerIndex))
+            {
+                case AttackJob.Support: return RunKind.Support;
+                case AttackJob.Forward: return RunKind.Forward;
+                case AttackJob.Width: return RunKind.Width;
+                case AttackJob.GetOpen: return RunKind.GetOpen;
+                default: return RunKind.None;
             }
         }
 

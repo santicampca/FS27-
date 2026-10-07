@@ -20,18 +20,23 @@ namespace FS27.Core
         private readonly DefenseTuning d;
         private readonly RolePositioningTuning pos;
         private readonly AttackSupport attack;
+        private readonly BallCarrierEvaluator carrier;
 
         public DefenseTuning DefenseTuning => d;
         /// <summary>The attack without the ball (Phase 10): who does which job, and where each stands.</summary>
         public AttackSupport Attack => attack;
+        /// <summary>How the carrier compares what he could do (Phase 11).</summary>
+        public BallCarrierEvaluator Carrier => carrier;
 
-        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attackTuning = null)
+        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attackTuning = null, BallCarrierTuning carrierTuning = null)
         {
             this.bounds = bounds ?? throw new ArgumentNullException(nameof(bounds));
             t = tuning ?? new BasicDecisionTuning();
             d = defense ?? new DefenseTuning();
             pos = positioning ?? new RolePositioningTuning();
-            attack = new AttackSupport(t, attackTuning ?? new AttackPositioningTuning());
+            AttackPositioningTuning at = attackTuning ?? new AttackPositioningTuning();
+            attack = new AttackSupport(t, at);
+            carrier = new BallCarrierEvaluator(t, at, carrierTuning ?? new BallCarrierTuning());
         }
 
         public PlayerDecision Decide(WorldView view, string playerId)
@@ -334,6 +339,7 @@ namespace FS27.Core
 
         private PlayerDecision WithBall(WorldView view, int idx, in WorldPlayer me)
         {
+            if (carrier.Tuning.Enabled) return CarrierDecision(view, idx, me);
             bool canKick = !me.KickCooldown;
             float nearestOpponent = obs.NearestOpponentDistance;
             bool pressed = nearestOpponent < t.PressureRadius;
@@ -366,7 +372,13 @@ namespace FS27.Core
             if (distance > t.ShootRange || nearestOpponent < t.ShootMinOpponentDistance) return false;
             if (Math.Abs(WorldGeometry.RelativeAngle(me.Facing, me.Position, goal)) > t.ShootMaxAngleDegrees) return false;
             if (!WorldGeometry.IsLaneClear(view, me.Team, me.Position, goal, t.ShootLaneClearance, true)) return false;
+            decision = BuildShot(view, me, goal, distance);
+            return true;
+        }
 
+        /// <summary>The shot itself: aimed at the side of the goal the keeper is not on, curved when the player may and the distance allows.</summary>
+        private PlayerDecision BuildShot(WorldView view, in WorldPlayer me, Vec2 goal, float distance)
+        {
             // aim for the side of the goal the goalkeeper is not on
             float side = 1f;
             for (int i = 0; i < view.PlayerCount; i++)
@@ -384,8 +396,7 @@ namespace FS27.Core
                 intent.Curve = (me.PreferredFoot == PreferredFoot.Right ? 1f : -1f) * t.CurveAmount;
                 reason = DecisionReason.CurvedShotAvailable;
             }
-            decision = new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Shoot, Reason = reason, HasAction = true, Action = intent, HasMovement = true, Movement = MovementIntent.Stand };
-            return true;
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Shoot, Reason = reason, HasAction = true, Action = intent, HasMovement = true, Movement = MovementIntent.Stand };
         }
 
         /// <summary>
@@ -417,52 +428,73 @@ namespace FS27.Core
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = reason, HasAction = true, Action = intent, TargetPlayerId = receiver.PlayerId, HasMovement = true, Movement = MovementIntent.Stand };
         }
 
-        /// <summary>Is there room ahead in this direction? (no opponent inside the cone within the clear distance)</summary>
-        private bool Clear(WorldView view, in WorldPlayer me, Vec2 dir, out int blocker)
-        {
-            blocker = -1;
-            float best = float.PositiveInfinity;
-            for (int i = 0; i < view.PlayerCount; i++)
-            {
-                WorldPlayer o = view[i];
-                if (!o.IsOnPitch || o.Team == me.Team) continue;
-                Vec2 off = o.Position - me.Position;
-                float d = off.Magnitude;
-                if (d > t.DribbleClearDistance || d <= 0f) continue;
-                if (WorldGeometry.AngleBetween(dir, off) > t.DribbleConeDegrees) continue;
-                if (d < best) { best = d; blocker = i; }
-            }
-            return blocker < 0;
-        }
-
         private bool TryDribble(WorldView view, in WorldPlayer me, Vec2 goal, bool canKick, bool pressed, out PlayerDecision decision)
         {
             decision = default(PlayerDecision);
-            Vec2 toGoal = ActionModel.DirectionOr(goal - me.Position, me.Facing);
-            Vec2 dir = toGoal;
-            bool space = Clear(view, me, toGoal, out int blocker);
-            if (!space)
+            DribbleAssessment d = DribbleSpace.Assess(view, me, goal, canKick, t);
+            if (d.SkillMove)
             {
-                // try the side away from whoever blocks the way
-                Vec2 off = view[blocker].Position - me.Position;
-                float sign = ActionModel.SignedAngle(toGoal, off) >= 0f ? -1f : 1f;
-                Vec2 alt = ActionModel.Rotate(toGoal, sign * t.DribbleAvoidDegrees);
-                if (Clear(view, me, alt, out _)) { dir = ActionModel.DirectionOr(toGoal + (alt - toGoal) * t.AvoidWeight, alt); space = true; }
-                else if (canKick && (off.Magnitude <= t.SkillMoveTriggerDistance) && view.CanUse(me.PlayerId, FootballActionKind.SkillMove).Allowed)
-                {
-                    var move = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.SkillMove, alt, ActionDefaults.DefaultPower);
-                    decision = new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Dribble, Reason = DecisionReason.SkillMoveAvailable, HasAction = true, Action = move, HasMovement = true, Movement = MovementIntent.Move(alt, t.DribbleMagnitude) };
-                    return true;
-                }
+                var move = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.SkillMove, d.SkillDirection, ActionDefaults.DefaultPower);
+                decision = new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Dribble, Reason = DecisionReason.SkillMoveAvailable, HasAction = true, Action = move, HasMovement = true, Movement = MovementIntent.Move(d.SkillDirection, t.DribbleMagnitude) };
+                return true;
             }
-            if (!space) return false;
-            Vec2 ahead = bounds.ClampPlayer(me.Position + dir * t.DribbleLookahead);
+            if (!d.Free) return false;
+            Vec2 ahead = bounds.ClampPlayer(me.Position + d.Direction * t.DribbleLookahead);
             decision = new PlayerDecision
             {
                 PlayerId = me.PlayerId, Kind = DecisionKind.Dribble, Reason = DecisionReason.SpaceToDribble, HasMovement = true,
                 Movement = MovementIntent.TowardsTarget(me.Position, ahead, t.DribbleMagnitude, 0f)
             };
             return true;
+        }
+
+        // ------------------------------------------------------------------ Phase 11: the carrier compares what he could do
+
+        /// <summary>
+        /// The player with the ball scores his options on one scale (<see cref="BallCarrierEvaluator"/>) and does the best one, building the intent with the same builders as before (the shot, the pass, the dribble,
+        /// the shield). The runs his team-mates make come from the attack layer through <see cref="ITeammateRuns"/>.
+        /// </summary>
+        private PlayerDecision CarrierDecision(WorldView view, int idx, in WorldPlayer me)
+        {
+            bool canKick = !me.KickCooldown;
+            Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
+            ITeammateRuns runs = NoRuns.Instance;
+            if (attack.Tuning.Enabled) { attack.Assign(view, idx); runs = attack; }
+            ActionCandidate best = carrier.Evaluate(view, idx, runs, canKick);
+            bool pressed = obs.NearestOpponentDistance < t.PressureRadius;
+            PlayerDecision decision;
+            switch (best.Type)
+            {
+                case CandidateType.Shoot:
+                    return BuildShot(view, me, goal, (goal - me.Position).Magnitude);
+                case CandidateType.Pass:
+                case CandidateType.ForwardPass:
+                    return PassTo(view, me, view[best.ReceiverIndex], best.Reason);
+                case CandidateType.ThroughPass:
+                    return ThroughTo(view, me, view[best.ReceiverIndex], best.Target);
+                case CandidateType.Dribble:
+                    if (TryDribble(view, me, goal, canKick, pressed, out decision)) return decision;
+                    break;
+                case CandidateType.Hold:
+                    return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Hold, Reason = DecisionReason.HoldForRun, HasMovement = true, Movement = MovementIntent.Stand };
+            }
+            if (pressed && best.Type != CandidateType.Dribble) return Protect(view, me);
+            if (best.Type == CandidateType.Protect) return Protect(view, me);
+            return new PlayerDecision
+            {
+                PlayerId = me.PlayerId, Kind = DecisionKind.Dribble, Reason = DecisionReason.NoActionFallback, HasMovement = true,
+                Movement = MovementIntent.TowardsTarget(me.Position, bounds.ClampPlayer(goal), t.DribbleMagnitude, 0f)
+            };
+        }
+
+        /// <summary>A pass into the space a runner is running to: the ball goes to the point, the runner goes with it.</summary>
+        private PlayerDecision ThroughTo(WorldView view, in WorldPlayer me, in WorldPlayer runner, Vec2 point)
+        {
+            Vec2 dir = ActionModel.DirectionOr(point - me.Position, me.Facing);
+            float d = (point - me.Position).Magnitude;
+            float power = Math.Min(1f, t.PassPowerBase + (1f - t.PassPowerBase) * d / t.PassPowerRefDistance);
+            var intent = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.ThroughPass, dir, power) { Target = PassTarget.ToPosition(point) };
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.SpacePass, HasAction = true, Action = intent, TargetPlayerId = runner.PlayerId, HasMovement = true, Movement = MovementIntent.Stand };
         }
 
         private PlayerDecision Protect(WorldView view, in WorldPlayer me)

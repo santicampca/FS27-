@@ -34,6 +34,12 @@ namespace FS27.Core.Tests
             return new BasicDecisionEngine(c.Pitch, tuning).Decide(WorldState.Capture(c).View, id);
         }
 
+        /// <summary>The Phase 8-10 carrier (shoot if possible, else the best receiver, else dribble, else protect): the rules those tests describe. The Phase 11 carrier has its own suite.</summary>
+        private static PlayerDecision DecideLegacy(MatchController c, string id, BasicDecisionTuning tuning = null)
+        {
+            return new BasicDecisionEngine(c.Pitch, tuning, null, null, null, new BallCarrierTuning { Enabled = false }).Decide(WorldState.Capture(c).View, id);
+        }
+
         private static Vec2 PosOf(MatchController c, string id, TeamSide side) { return c.State.Team(side).Find(id).Locomotion.Position; }
 
         private static MatchController QuietWithSkills(params string[] ownerSkills)
@@ -212,14 +218,14 @@ namespace FS27.Core.Tests
         [Test]
         public void NoShot_WhenItIsTooFar_BadlyFacing_BlockedByAnOpponent_OrWithAnOpponentOnTop()
         {
-            Assert.AreNotEqual(DecisionKind.Shoot, Decide(WithBallAt(-5f, 0f, East), "hs2").Kind, "too far");
-            Assert.AreNotEqual(DecisionKind.Shoot, Decide(WithBallAt(14f, 0f, West), "hs2").Kind, "facing away from the goal");
+            Assert.AreNotEqual(DecisionKind.Shoot, DecideLegacy(WithBallAt(-5f, 0f, East), "hs2").Kind, "too far");
+            Assert.AreNotEqual(DecisionKind.Shoot, DecideLegacy(WithBallAt(14f, 0f, West), "hs2").Kind, "facing away from the goal");
             MatchController blocked = WithBallAt(14f, 0f, East); Put(blocked, TeamSide.Away, "as3", 17f, 0.3f, West);
-            Assert.AreNotEqual(DecisionKind.Shoot, Decide(blocked, "hs2").Kind, "an opponent stands on the line");
+            Assert.AreNotEqual(DecisionKind.Shoot, DecideLegacy(blocked, "hs2").Kind, "an opponent stands on the line");
             MatchController pressed = WithBallAt(14f, 0f, East); Put(pressed, TeamSide.Away, "as3", 14.8f, 4f, West); Put(pressed, TeamSide.Away, "as4", 14f, 1.0f, West);
-            Assert.AreNotEqual(DecisionKind.Shoot, Decide(pressed, "hs2").Kind, "an opponent is almost on him");
+            Assert.AreNotEqual(DecisionKind.Shoot, DecideLegacy(pressed, "hs2").Kind, "an opponent is almost on him");
             MatchController keeperOnly = WithBallAt(14f, 0f, East);
-            Assert.AreEqual(DecisionKind.Shoot, Decide(keeperOnly, "hs2").Kind, "the keeper in goal does not make a shot a blocked one");
+            Assert.AreEqual(DecisionKind.Shoot, DecideLegacy(keeperOnly, "hs2").Kind, "the keeper in goal does not make a shot a blocked one");
         }
 
         [Test]
@@ -246,7 +252,7 @@ namespace FS27.Core.Tests
             MatchController c = WithBallAt(-3f, 0f, East);
             Put(c, TeamSide.Home, "hs3", 6f, 4f, East); Put(c, TeamSide.Home, "hs4", 1f, -6f, East);
             Put(c, TeamSide.Away, "as3", 7f, -1f, West);
-            PlayerDecision d = Decide(c, "hs2");
+            PlayerDecision d = DecideLegacy(c, "hs2");
             Assert.AreEqual(DecisionKind.Pass, d.Kind); Assert.AreEqual(DecisionReason.FreePass, d.Reason);
             Assert.AreEqual("hs3", d.TargetPlayerId, "the one further forward with room"); Assert.AreEqual(PassTargetKind.Player, d.Action.Target.Kind); Assert.AreEqual("hs3", d.Action.Target.PlayerId);
             Assert.IsTrue(d.Action.Kind == FootballActionKind.ShortPass || d.Action.Kind == FootballActionKind.LongPass);
@@ -286,7 +292,7 @@ namespace FS27.Core.Tests
         {
             MatchController c = WithBallAt(-14f, 0f, East);
             Put(c, TeamSide.Home, "hs0", -19f, 0f, East); Put(c, TeamSide.Away, "as3", -13f, 1f, West);
-            PlayerDecision pressed = Decide(c, "hs2");
+            PlayerDecision pressed = DecideLegacy(c, "hs2");
             Assert.AreEqual(DecisionKind.Pass, pressed.Kind); Assert.AreEqual("hs0", pressed.TargetPlayerId, "a back pass to the keeper");
             MatchController free = WithBallAt(-14f, 0f, East); Put(free, TeamSide.Home, "hs0", -19f, 0f, East);
             Assert.AreNotEqual("hs0", Decide(free, "hs2").TargetPlayerId);
@@ -322,10 +328,10 @@ namespace FS27.Core.Tests
         {
             MatchController c = WithBallAt(-6f, 0f, East);
             Put(c, TeamSide.Away, "as3", -3.5f, 0.5f, West);
-            PlayerDecision d = Decide(c, "hs2");
+            PlayerDecision d = DecideLegacy(c, "hs2");
             Assert.AreEqual(DecisionKind.Dribble, d.Kind); Assert.Less(d.Movement.ToLocomotion().Stick.Y, -0.1f, "the blocker is on his left (+Y): he goes right (-Y)");
             Put(c, TeamSide.Away, "as3", -3.5f, -0.5f, West);
-            Assert.Greater(Decide(c, "hs2").Movement.ToLocomotion().Stick.Y, 0.1f);
+            Assert.Greater(DecideLegacy(c, "hs2").Movement.ToLocomotion().Stick.Y, 0.1f);
         }
 
         [Test]
@@ -334,13 +340,13 @@ namespace FS27.Core.Tests
             MatchController owner = QuietWithSkills("elusive_dribble");
             Carrier(owner, TeamSide.Home, "hs2", -6f, 0f, East);
             Put(owner, TeamSide.Away, "as3", -4.2f, 0.3f, West); Put(owner, TeamSide.Away, "as4", -4.5f, 2.6f, West); Put(owner, TeamSide.Away, "as5", -4.5f, -2.6f, West);
-            PlayerDecision d = Decide(owner, "hs2");
+            PlayerDecision d = DecideLegacy(owner, "hs2");
             Assert.AreEqual(DecisionKind.Dribble, d.Kind); Assert.AreEqual(DecisionReason.SkillMoveAvailable, d.Reason); Assert.AreEqual(FootballActionKind.SkillMove, d.Action.Kind);
             Assert.AreNotEqual(ActionOutcome.Rejected, owner.PerformIntent(d.Action).Outcome);
             MatchController stranger = QuietWithSkills("support_run");
             Carrier(stranger, TeamSide.Home, "hs2", -6f, 0f, East);
             Put(stranger, TeamSide.Away, "as3", -4.2f, 0.3f, West); Put(stranger, TeamSide.Away, "as4", -4.5f, 2.6f, West); Put(stranger, TeamSide.Away, "as5", -4.5f, -2.6f, West);
-            PlayerDecision plain = Decide(stranger, "hs2");
+            PlayerDecision plain = DecideLegacy(stranger, "hs2");
             Assert.IsFalse(plain.HasAction && plain.Action.Kind == FootballActionKind.SkillMove);
         }
 
@@ -349,7 +355,7 @@ namespace FS27.Core.Tests
         {
             MatchController c = WithBallAt(-6f, 0f, East);
             Put(c, TeamSide.Away, "as3", -4.2f, 0.3f, West); Put(c, TeamSide.Away, "as4", -4.5f, 2.6f, West); Put(c, TeamSide.Away, "as5", -4.5f, -2.6f, West);
-            PlayerDecision d = Decide(c, "hs2");
+            PlayerDecision d = DecideLegacy(c, "hs2");
             Assert.AreEqual(DecisionKind.Protect, d.Kind); Assert.AreEqual(DecisionReason.UnderPressureProtect, d.Reason);
             Assert.AreEqual(FootballActionKind.Shield, d.Action.Kind, "the Core already has the protection action"); Assert.Less(d.Movement.ToLocomotion().Stick.X, 0f, "he backs away from the man in front");
             ActionResult r = c.PerformIntent(d.Action);
@@ -361,7 +367,7 @@ namespace FS27.Core.Tests
         {
             MatchController c = WithBallAt(-6f, 0f, East);
             Put(c, TeamSide.Away, "as3", -3.0f, 0.2f, West); Put(c, TeamSide.Away, "as4", -4.5f, 2.6f, West); Put(c, TeamSide.Away, "as5", -4.5f, -2.6f, West);
-            PlayerDecision d = Decide(c, "hs2");
+            PlayerDecision d = DecideLegacy(c, "hs2");
             Assert.AreEqual(DecisionKind.Dribble, d.Kind); Assert.AreEqual(DecisionReason.NoActionFallback, d.Reason); Assert.IsTrue(d.HasMovement); Assert.Greater(d.Movement.ToLocomotion().Stick.X, 0.5f);
             MatchController cooling = WithBallAt(14f, 0f, East);
             cooling.Perform(new ActionRequest(TeamSide.Home, "hs2", FootballActionKind.ShortPass, East, 0.2f)); cooling.GiveBallTo(TeamSide.Home, "hs2");

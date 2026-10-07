@@ -144,7 +144,7 @@ namespace FS27.Core
         /// The room a pass has on its way: the distance of the nearest ON-PITCH opponent to the line from <paramref name="from"/> to <paramref name="to"/>, counting only opponents BETWEEN the two ends (one behind
         /// the passer or beyond the receiver cannot stop the ball). Infinity when nobody is between them. Geometry only.
         /// </summary>
-        public static float PassLaneRoom(WorldView view, TeamSide passingTeam, Vec2 from, Vec2 to)
+        public static float PassLaneRoom(WorldView view, TeamSide passingTeam, Vec2 from, Vec2 to, bool ignoreGoalkeepers = false)
         {
             Vec2 ab = to - from;
             float len2 = ab.SqrMagnitude;
@@ -152,7 +152,7 @@ namespace FS27.Core
             for (int i = 0; i < view.PlayerCount; i++)
             {
                 WorldPlayer o = view[i];
-                if (!o.IsOnPitch || o.Team == passingTeam) continue;
+                if (!o.IsOnPitch || o.Team == passingTeam || (ignoreGoalkeepers && o.IsGoalkeeper)) continue;
                 float along = len2 > 0f ? ((o.Position.X - from.X) * ab.X + (o.Position.Y - from.Y) * ab.Y) / len2 : 0f;
                 if (along < 0f || along > 1f) continue;
                 float d = (o.Position - (from + ab * along)).Magnitude;

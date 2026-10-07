@@ -46,14 +46,25 @@ namespace FS27.Core
         private readonly int[] passesToJob = new int[Enum.GetValues(typeof(AttackJob)).Length];
         /// <summary>How many decided passes went to a player who, at that moment, had this attack job (measured by recomputing the assignment, not by reading a reason).</summary>
         public int PassesToJob(AttackJob job) { return passesToJob[(int)job]; }
+        // ---- the ball carrier, measured (not balanced): sampled at each of his decisions
+        /// <summary>Decisions of a player with the ball, those where a shot was possible, and passes into space (to a point, not to a player's feet).</summary>
+        public int CarrierDecisions { get; private set; }
+        public int ShotOpportunities { get; private set; }
+        public int SpacePasses { get; private set; }
+        public long PassCandidateSum { get; private set; }
+        private readonly int[] chosen = new int[Enum.GetValues(typeof(CandidateType)).Length];
+        private readonly double[] chosenScore = new double[Enum.GetValues(typeof(CandidateType)).Length];
+        /// <summary>How many carrier decisions were won by each kind of candidate, and the sum of their winning scores.</summary>
+        public int ChosenCount(CandidateType type) { return chosen[(int)type]; }
+        public double ChosenScoreSum(CandidateType type) { return chosenScore[(int)type]; }
         public int DecisionSteps => intervalSteps;
         public int CountOf(DecisionKind kind) { return kindCounts[(int)kind]; }
 
-        public BasicDecisionDriver(MatchController match, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attack = null)
+        public BasicDecisionDriver(MatchController match, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attack = null, BallCarrierTuning carrier = null)
         {
             if (match == null) throw new ArgumentNullException(nameof(match));
             BasicDecisionTuning t = tuning ?? new BasicDecisionTuning();
-            engine = new BasicDecisionEngine(match.Pitch, t, defense, positioning, attack);
+            engine = new BasicDecisionEngine(match.Pitch, t, defense, positioning, attack, carrier);
             intervalSteps = Math.Max(1, (int)Math.Round(t.DecisionIntervalSeconds / LocomotionDefaults.FixedDeltaTime));
         }
 
@@ -97,6 +108,8 @@ namespace FS27.Core
                     PlayerDecision d = engine.Decide(view, p.PlayerId);
                     last[start + i] = d; decided[start + i] = true;
                     Decisions++; kindCounts[(int)d.Kind]++;
+                    if (p.HasBall && !p.IsGoalkeeper && engine.Carrier.Tuning.Enabled) { CarrierDecisions++; PassCandidateSum += engine.Carrier.Summary.PassCandidates; if (engine.Carrier.Summary.ShootValid) ShotOpportunities++; chosen[(int)engine.Carrier.Summary.Best]++; chosenScore[(int)engine.Carrier.Summary.Best] += engine.Carrier.Summary.BestScore; }
+                    if (d.HasAction && d.Action.Kind == FootballActionKind.ThroughPass) SpacePasses++;
                     if (d.Kind == DecisionKind.Pass && d.TargetPlayerId != null && view.TryGetPlayer(d.TargetPlayerId, out WorldPlayer target)) 
                     {
                         PassDecisions++; PassDistanceSum += (target.Position - p.Position).Magnitude;

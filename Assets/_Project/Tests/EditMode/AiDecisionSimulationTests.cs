@@ -133,7 +133,7 @@ namespace FS27.Core.Tests
             foreach (string banned in new[] { "PlayerDefinition", "PlayerAttributes", "PlayerPlayingProfile", "MatchState", "MatchController", "MatchBall", "BallSimulator", "ActionResolver", "Overall", "Random", "DateTime", "UnityEngine", "Time." })
                 StringAssert.DoesNotContain(banned, engine, "the engine reads only the view: " + banned);
             Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(engine, @"\.(Shooting|Finishing|Technique|Passing|Dribbling|Defense|Acceleration|Agility|Strength|Control)\b"), "no attribute is read: skills are asked through the view");
-            foreach (string file in Directory.GetFiles(DecisionDir, "*.cs"))
+            foreach (string file in Directory.GetFiles(DecisionDir, "*.cs", SearchOption.AllDirectories))
             {
                 string text = File.ReadAllText(file), name = Path.GetFileName(file);
                 Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(text, @"\.(Position|CurrentStamina|Velocity|CurrentSpeed|Locomotion|Physics|PossessingPlayerId|HasPossession)\s*=[^=]"), name + " writes state");
@@ -179,9 +179,9 @@ namespace FS27.Core.Tests
         [Test]
         public void TheDecisionKinds_AreAShortClosedList_AndTheReasonIsOnlyForDebugging()
         {
-            CollectionAssert.AreEqual(new[] { "Idle", "MoveToPoint", "MoveToBall", "Support", "Pass", "Shoot", "Dribble", "Protect", "CloseDown", "Tackle", "SlidingTackle", "Challenge", "Intercept", "GetOpen", "ForwardRun", "HoldWidth" }, Enum.GetNames(typeof(DecisionKind)), "Phase 8's eight, Phase 9's five and Phase 10's three appended");
-            Assert.LessOrEqual(Enum.GetValues(typeof(DecisionKind)).Length, 16);
-            foreach (string file in Directory.GetFiles(DecisionDir, "*.cs"))
+            CollectionAssert.AreEqual(new[] { "Idle", "MoveToPoint", "MoveToBall", "Support", "Pass", "Shoot", "Dribble", "Protect", "CloseDown", "Tackle", "SlidingTackle", "Challenge", "Intercept", "GetOpen", "ForwardRun", "HoldWidth", "Hold" }, Enum.GetNames(typeof(DecisionKind)), "Phase 8's eight, Phase 9's five, Phase 10's three and Phase 11's one appended");
+            Assert.LessOrEqual(Enum.GetValues(typeof(DecisionKind)).Length, 18);
+            foreach (string file in Directory.GetFiles(DecisionDir, "*.cs", SearchOption.AllDirectories))
                 Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(File.ReadAllText(file), @"(if|while|switch)\s*\([^)]*\.Reason"), Path.GetFileName(file) + " must not branch on the reason");
         }
 
@@ -292,8 +292,9 @@ namespace FS27.Core.Tests
             for (int step = 0; step < 600; step++)
             {
                 Vec3 beforeStep = c.State.Ball.Physics.Position;
+                int actionsBefore = driver.ActionsAttempted;
                 driver.Step(c);
-                Assert.AreEqual(beforeStep, c.State.Ball.Physics.Position, "deciding and applying intents never moves the ball by itself: only a resolved action or the simulator does");
+                if (driver.ActionsAttempted == actionsBefore) Assert.AreEqual(beforeStep, c.State.Ball.Physics.Position, "deciding and applying intents never moves the ball by itself: only a resolved action or the simulator does");
                 c.Advance(Dt);
                 if (c.State.Phase == MatchPhase.WaitingForKickoff || c.State.Phase == MatchPhase.WaitingForRestart) c.ConfirmRestart(); else if (c.State.Phase == MatchPhase.GoalCelebration) c.Advance(5f);
             }

@@ -79,3 +79,6 @@ Utility AI, árbol de comportamiento, GOAP, FSM táctica, tácticas de equipo, m
 
 ## 13. Legado (auditado; no se borra nada)
 Sin cambios desde la Fase 9: `PlayerIntent` (10 archivos en Core, 3 en Unity), `IIntentSource` (3/3), `PlayerIntentProvider` (1/4), `PlayerLocomotion` (2/1), `StaminaSystem` (2/0), `DribbleTouchModel` (1/0), `BallInteractor` (1/2) siguen vivos por consumidores del Core antiguo, de Unity y de tests. Esta fase no los toca ni añade consumidores. Su limpieza queda para la fase de cierre Core/Unity.
+
+## 14. Fase 11
+El límite «el portador no sabe qué compañero corre» (§12) queda resuelto en lo básico: ver [BALL_CARRIER_INTELLIGENCE.md](BALL_CARRIER_INTELLIGENCE.md). `AttackSupport` implementa `ITeammateRuns` (`RunOf`) y el portador valora las carreras de apoyo, adelante, amplitud y desmarque, y pasa al espacio de un corredor. La asignación de trabajos no cambió.

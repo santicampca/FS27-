@@ -31,7 +31,10 @@ namespace FS27.Core
         /// <summary>Run ahead into room, within his zone.</summary>
         ForwardRun = 14,
         /// <summary>Keep the width: a lateral option.</summary>
-        HoldWidth = 15
+        HoldWidth = 15,
+        // Phase 11 (appended)
+        /// <summary>The carrier keeps the ball and waits an instant (stands), because nothing is clearly better and a run is developing.</summary>
+        Hold = 16
     }
 
     /// <summary>Why the engine chose it: for tests and debugging only. No logic reads it.</summary>
@@ -75,7 +78,11 @@ namespace FS27.Core
         // Phase 10 (appended)
         ForwardRunRole,
         HoldWidthRole,
-        GetOpenRole
+        GetOpenRole,
+        // Phase 11 (appended)
+        RunnerPass,
+        SpacePass,
+        HoldForRun
     }
 
     /// <summary>
