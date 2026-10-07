@@ -86,6 +86,9 @@ namespace FS27.Core
         public PlayerRole Role { get; internal set; } = PlayerRole.Midfielder;
         /// <summary>Phase 7: the priority of the movement intent already applied in this step (internal arbitration).</summary>
         internal int IntentPriority = int.MinValue;
+        /// <summary>Phase 8: where his formation puts him when play is on (a derived cache, see <see cref="MatchController.RefreshHomePositions"/>).</summary>
+        internal Vec2 Home;
+        internal bool HasHome;
 
         /// <summary>
         /// The Phase-3 movement state (position, velocity, facing, speed, stamina 0..100). Part of the authoritative match state: only the engine steps it.

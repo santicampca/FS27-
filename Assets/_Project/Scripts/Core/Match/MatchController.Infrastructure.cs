@@ -81,6 +81,35 @@ namespace FS27.Core
             return true;
         }
 
+        private readonly int[] homeSignature = new int[2] { -1, -1 };
+        private readonly FormationDefinition[] homeFormation = new FormationDefinition[2];
+        private readonly bool[] homeAttack = new bool[2];
+
+        /// <summary>
+        /// Brings the open-play positions of the formations up to date (Phase 8: a player's "home"). It is a DERIVED cache: it is recomputed only when the formation, the attacking direction or who is on the
+        /// pitch changes, so calling it every step costs a few integer comparisons. Teams without a formation have no home.
+        /// </summary>
+        public void RefreshHomePositions()
+        {
+            for (int side = 0; side < 2; side++)
+            {
+                TeamMatchState team = side == 0 ? State.Home : State.Away;
+                int signature = 17;
+                for (int i = 0; i < team.Players.Count; i++) { MatchPlayer p = team.Players[i]; signature = signature * 31 + (p.IsActive ? (p.InGoal ? 2 : 1) : 0); }
+                bool attack = State.HomeAttacksPositiveX;
+                if (signature == homeSignature[side] && ReferenceEquals(formations[side], homeFormation[side]) && attack == homeAttack[side]) continue;
+                homeSignature[side] = signature; homeFormation[side] = formations[side]; homeAttack[side] = attack;
+                foreach (MatchPlayer p in team.Players) p.HasHome = false;
+                FormationDefinition f = formations[side];
+                MatchPlayer keeper = team.GoalkeeperInGoal;
+                if (f == null || keeper == null) continue;
+                var ids = new List<string>(5);
+                foreach (MatchPlayer p in team.Players) if (p.IsActive && !p.InGoal) ids.Add(p.PlayerId);
+                if (!FormationPlacement.Compute(f, Pitch, attack, team.Side, keeper.PlayerId, ids, false, placement)) continue;
+                foreach (PlacedPlayer pp in placement) { MatchPlayer p = team.Find(pp.PlayerId); p.Home = pp.Position; p.HasHome = true; }
+            }
+        }
+
         // ------------------------------------------------------------------ restarts
 
         /// <summary>Chooses the taker of the pending restart explicitly. Only an active player of the team that takes it.</summary>

@@ -574,3 +574,11 @@ Detalle en [AI_INFRASTRUCTURE.md](AI_INFRASTRUCTURE.md). Lo que afecta a este do
 - Formación → 12 posiciones iniciales (espejo exacto entre equipos, portero en su zona, sin solapamiento), reinicios con ejecutor **explícito** (`RestartRequest.TakerId/Status`, `ConfirmRestart`), saque de centro sin regalar el balón al primero de la lista, `PitchBounds` (Arena rebota / Classic sale), `PlayerSeparation`, `PassTarget`, `PlayerSelection`, `GoalkeeperSlot`, `NormalizedInput`.
 - **No implementado (Fase 8+):** el motor de decisión, ataque/defensa/marcaje/cobertura, transiciones, IA de portero, tácticas, reglas de falta/penalti, Unity (HUD, puente nuevo).
 
+---
+
+## U. FASE 8 — Motor de decisión básico (resumen)
+Detalle en [BASIC_DECISION_ENGINE.md](BASIC_DECISION_ENGINE.md). Lo que afecta a este documento:
+- Existe la cadena completa `WorldView → BasicDecisionEngine → PlayerDecision → MovementIntent / ActionIntent → Core` (locomoción, `Perform`, resolutor, `BallSimulator`), probada con 12 jugadores reales 30 s en Arena y en Classic. El motor es una función pura de la vista; el Core sigue siendo la autoridad.
+- Primer nivel solamente: sin balón (ir al balón el más cercano, apoyo, aproximarse al rival, volver a casa), con balón (tiro, pase a receptor, regate, protección con la acción `Shield` existente), portero mínimo y selección automática mínima.
+- **No implementado (fases siguientes):** decisiones defensivas reales (placar/interceptar/presión), marcaje, cobertura, tácticas, transiciones, desmarques, las 12 skills diferidas, IA de portero, decisión de reinicios, balance.
+

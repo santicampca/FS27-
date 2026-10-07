@@ -73,6 +73,9 @@ namespace FS27.Core
         /// <summary>His index in his team's squad list (starters first, then the bench).</summary>
         public int Slot;
         public Vec2 Position;
+        /// <summary>Phase 8: where his team's formation puts him in open play (turned the way his team attacks now). Only meaningful when <see cref="HasHome"/>.</summary>
+        public Vec2 Home;
+        public bool HasHome;
         public Vec2 Velocity;
         /// <summary>Unit vector he faces.</summary>
         public Vec2 Facing;

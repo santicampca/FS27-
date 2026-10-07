@@ -78,12 +78,12 @@ namespace FS27.Core
         /// <summary>
         /// Whether a pass from a point to a point has a clear lane: no ON-PITCH opponent is closer to the line than <paramref name="clearance"/>. Geometry only: it does not say whether the pass is a good idea.
         /// </summary>
-        public static bool IsLaneClear(WorldView view, TeamSide passingTeam, Vec2 from, Vec2 to, float clearance)
+        public static bool IsLaneClear(WorldView view, TeamSide passingTeam, Vec2 from, Vec2 to, float clearance, bool ignoreGoalkeepers = false)
         {
             for (int i = 0; i < view.PlayerCount; i++)
             {
                 WorldPlayer o = view[i];
-                if (!o.IsOnPitch || o.Team == passingTeam) continue;
+                if (!o.IsOnPitch || o.Team == passingTeam || (ignoreGoalkeepers && o.IsGoalkeeper)) continue;
                 if (DistanceToSegment(o.Position, from, to) < clearance) return false;
             }
             return true;
@@ -108,6 +108,20 @@ namespace FS27.Core
                 if (d >= distance || d > view.Tuning.MaxPassDistance) continue;
                 if (!IsLaneClear(view, me.Team, me.Position, t.Position, view.Tuning.PassLaneClearance)) continue;
                 distance = d; best = i;
+            }
+            return best;
+        }
+
+        /// <summary>The distance from a point to the nearest ON-PITCH opponent of a team (infinity when there is none).</summary>
+        public static float NearestOpponentDistanceTo(WorldView view, TeamSide team, Vec2 point)
+        {
+            float best = float.PositiveInfinity;
+            for (int i = 0; i < view.PlayerCount; i++)
+            {
+                WorldPlayer o = view[i];
+                if (!o.IsOnPitch || o.Team == team) continue;
+                float d = (o.Position - point).Magnitude;
+                if (d < best) best = d;
             }
             return best;
         }

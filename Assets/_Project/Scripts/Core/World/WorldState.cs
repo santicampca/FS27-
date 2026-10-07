@@ -82,6 +82,7 @@ namespace FS27.Core
             MatchState st = controller.State;
             Field = controller.Field;
             Tuning = controller.Infrastructure;
+            controller.RefreshHomePositions();
             BallParameters = controller.BallParameters;
             BallRadius = BallParameters.Radius;
 
@@ -140,7 +141,7 @@ namespace FS27.Core
                 players[count++] = new WorldPlayer
                 {
                     PlayerId = p.PlayerId, Team = team.Side, Slot = i,
-                    Position = p.Locomotion.Position, Velocity = p.Locomotion.Velocity, Facing = facing, Heading = p.Locomotion.Heading, Speed = p.Locomotion.CurrentSpeed, MaxSpeed = top,
+                    Position = p.Locomotion.Position, Home = p.Home, HasHome = p.HasHome, Velocity = p.Locomotion.Velocity, Facing = facing, Heading = p.Locomotion.Heading, Speed = p.Locomotion.CurrentSpeed, MaxSpeed = top,
                     Stamina = p.Locomotion.CurrentStamina, Role = p.Role,
                     Zone = p.InGoal ? PitchZone.Goal : PlayingProfileDefaults.ZoneOfRelativePosition(relative),
                     Availability = (PlayerAvailability)(int)p.Status,

@@ -143,3 +143,7 @@ No hay: DecisionEngine, UtilityAI, BehaviorTree, GOAP, FSM táctica, scoring de 
 - Reglas que conceden `FreeKick`/`Penalty` (con el árbitro y las faltas de Classic) y su ejecución.
 - Unity: `Touch → NormalizedInput`, `MatchBridge` con `PlaceFormation`/`ConfirmRestart`, HUD del botón C.
 - Balance de `InfrastructureDefaults` (separación, radios de despeje, margen de campo).
+
+## 24. Fase 8 — lo que el motor de decisión añadió a este contrato
+Ver [BASIC_DECISION_ENGINE.md](BASIC_DECISION_ENGINE.md). Ampliaciones de esta infraestructura (todas explícitas, de solo lectura para la IA): `WorldPlayer.Home/HasHome` (posición de su formación en juego abierto; caché derivada `MatchController.RefreshHomePositions`, solo se recalcula si cambian la formación, el sentido de ataque o quién está en pista), `WorldGeometry.IsLaneClear(..., ignoreGoalkeepers)` y `WorldGeometry.NearestOpponentDistanceTo`. La sección "Qué queda para la Fase 8" de arriba se cumple solo en parte: existe un primer motor de decisión (con balón / sin balón, receptor, tiro, regate, protección, portero mínimo y selección automática mínima); siguen pendientes la asignación de huecos por rol, las decisiones defensivas reales y los reinicios decididos por la IA.
+
