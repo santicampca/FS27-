@@ -19,15 +19,19 @@ namespace FS27.Core
 
         private readonly DefenseTuning d;
         private readonly RolePositioningTuning pos;
+        private readonly AttackSupport attack;
 
         public DefenseTuning DefenseTuning => d;
+        /// <summary>The attack without the ball (Phase 10): who does which job, and where each stands.</summary>
+        public AttackSupport Attack => attack;
 
-        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null)
+        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attackTuning = null)
         {
             this.bounds = bounds ?? throw new ArgumentNullException(nameof(bounds));
             t = tuning ?? new BasicDecisionTuning();
             d = defense ?? new DefenseTuning();
             pos = positioning ?? new RolePositioningTuning();
+            attack = new AttackSupport(t, attackTuning ?? new AttackPositioningTuning());
         }
 
         public PlayerDecision Decide(WorldView view, string playerId)
@@ -113,10 +117,39 @@ namespace FS27.Core
 
             // a team-mate has the ball
             if ((me.Position - home).Magnitude > t.FarFromHomeDistance) return MoveTo(me.PlayerId, me.Position, home, t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.FarFromHome);
+            if (attack.Tuning.Enabled) return AttackWithoutBall(view, idx, me, carrierIdx, home);
             float toCarrier = (me.Position - carrier.Position).Magnitude;
             if (toCarrier <= t.SupportRadius && TeammatesNearerToCarrier(view, idx, me, carrier, carrierIdx) < t.SupportCount)
                 return MoveTo(me.PlayerId, me.Position, SupportPoint(view, me, carrier, home), t.PositionMagnitude, DecisionKind.Support, DecisionReason.SupportRole);
             return Position(view, me, home, t.PositionBallPull, DecisionReason.TeammateHasBall);
+        }
+
+        /// <summary>
+        /// A team-mate has the ball (Phase 10): the player does the job he is given (support, run forward, width) or gets open near his place, always at the point the open-point search finds. The decision keeps the
+        /// job's kind even when he has arrived (he then stands), so what each player is doing can be read.
+        /// </summary>
+        private PlayerDecision AttackWithoutBall(WorldView view, int idx, in WorldPlayer me, int carrierIdx, Vec2 home)
+        {
+            attack.Assign(view, carrierIdx);
+            AttackJob job = attack.JobOf(idx);
+            if (job == AttackJob.None) return Position(view, me, home, t.PositionBallPull, DecisionReason.TeammateHasBall);
+            AttackPlan plan = attack.Plan(view, idx, carrierIdx, job, bounds.ClampPlayer(HomeTarget(view, home, t.PositionBallPull)));
+            DecisionKind kind; DecisionReason reason;
+            switch (plan.Job)
+            {
+                case AttackJob.Support: kind = DecisionKind.Support; reason = DecisionReason.SupportRole; break;
+                case AttackJob.Forward: kind = DecisionKind.ForwardRun; reason = DecisionReason.ForwardRunRole; break;
+                case AttackJob.Width: kind = DecisionKind.HoldWidth; reason = DecisionReason.HoldWidthRole; break;
+                default: kind = DecisionKind.GetOpen; reason = DecisionReason.GetOpenRole; break;
+            }
+            Vec2 goal = bounds.ClampPlayer(plan.Target);
+            bool arrived = (goal - me.Position).Magnitude <= t.IdleRadius;
+            float magnitude = plan.Job == AttackJob.Forward && view.Ball.SecondsSincePossessionChange < attack.Tuning.RecoverySeconds ? t.ChaseMagnitude : plan.Magnitude;
+            return new PlayerDecision
+            {
+                PlayerId = me.PlayerId, Kind = kind, Reason = reason, HasMovement = true,
+                Movement = arrived ? MovementIntent.Stand : MovementIntent.TowardsTarget(me.Position, goal, magnitude, t.ArriveRadius)
+            };
         }
 
         /// <summary>
@@ -364,23 +397,9 @@ namespace FS27.Core
             bestGain = 0f;
             int best = -1;
             float bestScore = float.NegativeInfinity;
-            Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
-            float mineToGoal = (goal - me.Position).Magnitude;
             for (int i = 0; i < view.PlayerCount; i++)
             {
-                if (i == idx) continue;
-                WorldPlayer r = view[i];
-                if (!r.IsOnPitch || r.Team != me.Team || (r.IsGoalkeeper && !allowKeeper)) continue;
-                float d = (r.Position - me.Position).Magnitude;
-                if (d < t.PassMinDistance || d > t.PassMaxDistance) continue;
-                if (!WorldGeometry.IsLaneClear(view, me.Team, me.Position, r.Position, view.Tuning.PassLaneClearance)) continue;
-                float space = WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position);
-                if (space < t.ReceiverMinSpace) continue;
-                float gain = (mineToGoal - (goal - r.Position).Magnitude) / view.Field.Length;
-                if (pressed ? gain < -t.PassMaxBackwardGain : gain < t.PassMinForwardGain) continue;
-                float turn = Math.Abs(WorldGeometry.RelativeAngle(me.Facing, me.Position, r.Position)) / t.FullTurnDegrees;
-                float score = t.PassForwardWeight * gain + t.PassSpaceWeight * Math.Min(space, t.PassSpaceCap) / t.PassSpaceCap
-                              - t.PassDistanceWeight * Math.Abs(d - t.PassPreferredDistance) / t.PassMaxDistance + t.PassAngleWeight * (1f - turn);
+                float score = ReceiverScore.Evaluate(view, idx, i, pressed, allowKeeper, t, attack.Tuning, out float gain);
                 if (score > bestScore) { bestScore = score; best = i; bestGain = gain; }
             }
             return best;

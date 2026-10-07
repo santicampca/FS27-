@@ -62,6 +62,19 @@ namespace FS27.Core
         public void SetRoleAssignment(TeamSide side, RoleAssignment assignment) { assignments[(int)side] = assignment; }
         public RoleAssignment GetRoleAssignment(TeamSide side) { return assignments[(int)side]; }
 
+        private PlayingProfileCatalog playingProfiles;
+
+        /// <summary>
+        /// The playing profiles (roles with affinity) of the players, for the AI to read through <see cref="WorldPlayer.Roles"/> (Phase 10). Optional: without them a player simply has no role, and the AI
+        /// treats every player alike. They are read, never changed; the match does not use them for anything else.
+        /// </summary>
+        public void SetPlayingProfiles(PlayingProfileCatalog profiles) { playingProfiles = profiles; }
+        internal bool TryGetPlayingProfile(string playerId, out PlayerPlayingProfile profile)
+        {
+            profile = null;
+            return playingProfiles != null && playingProfiles.TryGet(playerId, out profile);
+        }
+
         /// <summary>The field players on the pitch in the order of the field slots of the formation: the assigned ones where they can play, the others in squad order.</summary>
         private List<string> FieldIdsInSlotOrder(TeamMatchState team, RoleAssignment a)
         {

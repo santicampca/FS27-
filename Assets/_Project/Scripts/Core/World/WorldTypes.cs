@@ -111,6 +111,16 @@ namespace FS27.Core
         public ActionProfile Profile;
         /// <summary>His skills as they are active in this match (requirements met; the rest is listed as ignored). Read-only.</summary>
         public ResolvedSkills Skills;
+        /// <summary>Phase 10: his roles with their affinity (0..100), most defining first; null when the match was given no playing profiles. Read-only (shared with the profile).</summary>
+        public System.Collections.Generic.IReadOnlyList<RoleAffinity> Roles;
+
+        /// <summary>His affinity (0..100) with a role; 0 when it is not one of his roles.</summary>
+        public int AffinityOf(PlayerArchetype role)
+        {
+            if (Roles == null) return 0;
+            for (int i = 0; i < Roles.Count; i++) if (Roles[i].Role == role) return Roles[i].Affinity;
+            return 0;
+        }
 
         public bool IsOnPitch { get { return Availability == PlayerAvailability.OnPitch; } }
         /// <summary>On the pitch and free to start an action.</summary>

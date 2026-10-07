@@ -95,3 +95,6 @@ No hay: Utility AI, Behavior Tree, GOAP, FSM táctica, defensa zonal, marcaje in
 | `MatchController.Tick` | Sí (lo llama `Advance`; hosts y tests) | No es legado: API de observación. |
 | `Core/Ai/*` (`PositioningModel`, `PressureModel`, `AnticipationModel`, `TeamStyle`, `PlayingProfile`) | `PlayingProfile` sí (el asignador lee `PlayerPlayingProfile`, `RoleAffinity`, `PitchZone`); el resto sin consumidores de partido | `PlayingProfile` ahora se usa de verdad. El resto: pendiente de posicionamiento táctico/presión (fase posterior). |
 La limpieza completa queda para la fase de cierre del Core/Unity.
+
+## 6. Fase 10
+La defensa de esta fase no cambió. El ataque sin balón (apoyo, carrera, amplitud, desmarque) está en [ATTACK_SUPPORT_RUNS.md](ATTACK_SUPPORT_RUNS.md); los roles de la asignación también alimentan ahora el reparto de trabajos ofensivos mediante `WorldPlayer.Roles` (`MatchController.SetPlayingProfiles`).

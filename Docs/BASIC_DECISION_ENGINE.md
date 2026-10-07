@@ -97,3 +97,6 @@ No hay: Utility AI, Behavior Tree, GOAP, FSM táctica, táctica de equipo, marca
 
 ## 11. Fase 9 — lo que cambió aquí
 Ver [DEFENSE_AND_ROLE_POSITIONING.md](DEFENSE_AND_ROLE_POSITIONING.md). `DecisionKind` gana (al final) `CloseDown, Tackle, SlidingTackle, Challenge, Intercept`; con el rival con balón ya no se persigue con `MoveToBall`: el defensor principal (y, con motivo, un segundo) cierra y disputa, el resto va a su Home con `HomeTarget`. Los límites de la §8 sobre "nadie entra a un duelo" quedan resueltos en lo básico; sigue sin haber marcaje, cobertura ni presión coordinada.
+
+## 12. Fase 10 — lo que cambió aquí
+Ver [ATTACK_SUPPORT_RUNS.md](ATTACK_SUPPORT_RUNS.md). Con un compañero con balón, `WithoutBall` ya no manda a «los dos más cercanos» a apoyar: delega en `AttackSupport` (un apoyo, un corredor, un jugador de amplitud, el resto se desmarca cerca de su sitio). `DecisionKind` gana `GetOpen`, `ForwardRun`, `HoldWidth` (16 en total; el apoyo sigue siendo `Support`). `BestReceiver` pasa a `ReceiverScore` (línea de pase, presión, movimiento del receptor). `AttackPositioningTuning.Enabled = false` devuelve el comportamiento de la Fase 9.

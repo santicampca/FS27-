@@ -179,7 +179,7 @@ namespace FS27.Core.Tests
         [Test]
         public void TheDecisionKinds_AreAShortClosedList_AndTheReasonIsOnlyForDebugging()
         {
-            CollectionAssert.AreEqual(new[] { "Idle", "MoveToPoint", "MoveToBall", "Support", "Pass", "Shoot", "Dribble", "Protect", "CloseDown", "Tackle", "SlidingTackle", "Challenge", "Intercept" }, Enum.GetNames(typeof(DecisionKind)), "Phase 8's eight, then Phase 9's five appended");
+            CollectionAssert.AreEqual(new[] { "Idle", "MoveToPoint", "MoveToBall", "Support", "Pass", "Shoot", "Dribble", "Protect", "CloseDown", "Tackle", "SlidingTackle", "Challenge", "Intercept", "GetOpen", "ForwardRun", "HoldWidth" }, Enum.GetNames(typeof(DecisionKind)), "Phase 8's eight, Phase 9's five and Phase 10's three appended");
             Assert.LessOrEqual(Enum.GetValues(typeof(DecisionKind)).Length, 16);
             foreach (string file in Directory.GetFiles(DecisionDir, "*.cs"))
                 Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(File.ReadAllText(file), @"(if|while|switch)\s*\([^)]*\.Reason"), Path.GetFileName(file) + " must not branch on the reason");

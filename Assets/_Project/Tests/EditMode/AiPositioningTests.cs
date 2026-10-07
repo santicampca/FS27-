@@ -11,6 +11,7 @@ namespace FS27.Core.Tests
         private static MatchController RealRoles(int home, int away, int seed = 1, MatchSettings settings = null)
         {
             MatchController c = RealMatch(home, away, seed, settings);
+            c.SetPlayingProfiles(Db.Profiles);
             var assigner = new RolePositionAssigner(Db.Profiles);
             foreach (var pair in new[] { Tuple.Create(TeamSide.Home, home), Tuple.Create(TeamSide.Away, away) })
             {

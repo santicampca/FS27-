@@ -71,13 +71,16 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void ATeammateHasTheBall_TheNearestTwoSupport_AheadOfTheBallAndNeitherTooCloseNorTooFar()
+        public void ATeammateHasTheBall_WithoutTheAttackLayer_TheNearestTwoSupport_AheadOfTheBallAndNeitherTooCloseNorTooFar()
         {
+            // Phase 8's rule, kept as the Phase 9 comparison: the Phase 10 attack layer switched off
             MatchController c = Quiet();
             Carrier(c, TeamSide.Home, "hs2", 0f, 0f, East);
             Put(c, TeamSide.Home, "hs3", 3f, 5f, East); Put(c, TeamSide.Home, "hs4", -4f, -3f, East);
             var tuning = new BasicDecisionTuning();
-            PlayerDecision a = Decide(c, "hs3"), b = Decide(c, "hs4"), far = Decide(c, "hs5");
+            var phase9 = new BasicDecisionEngine(c.Pitch, null, null, null, new AttackPositioningTuning { Enabled = false });
+            WorldView v = WorldState.Capture(c).View;
+            PlayerDecision a = phase9.Decide(v, "hs3"), b = phase9.Decide(v, "hs4"), far = phase9.Decide(v, "hs5");
             Assert.AreEqual(DecisionKind.Support, a.Kind); Assert.AreEqual(DecisionKind.Support, b.Kind); Assert.AreEqual(DecisionReason.SupportRole, a.Reason);
             Assert.AreNotEqual(DecisionKind.Support, far.Kind, "only the nearest SupportCount players offer themselves");
             foreach (PlayerDecision d in new[] { a, b })

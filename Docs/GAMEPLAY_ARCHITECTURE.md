@@ -590,3 +590,9 @@ Detalle en [DEFENSE_AND_ROLE_POSITIONING.md](DEFENSE_AND_ROLE_POSITIONING.md). L
 - Defensa: un defensor principal y, con motivo, un segundo; cerrar, placar, deslizar (selectivo), contacto e intercepción, todo por `MovementIntent`/`ActionIntent` → Core. Transición mínima tras perder el balón.
 - Probado con 12 jugadores reales 60 s en Arena y Classic (recuperaciones, placajes, intercepciones, contactos, faltas en Classic, goles y determinismo medidos, no balanceados).
 - **No implementado (fases siguientes):** marcaje, cobertura, defensa zonal, presión coordinada, línea defensiva, transiciones completas, contrapresión, desmarques, las 12 skills diferidas, IA de portero, tácticas, balance.
+
+---
+
+## W. FASE 10 — Ataque sin balón (resumen)
+Detalle en [ATTACK_SUPPORT_RUNS.md](ATTACK_SUPPORT_RUNS.md). `AttackSupport` reparte, para el equipo con balón, un apoyo, un corredor y un jugador de amplitud (el resto se desmarca cerca de su sitio), con los roles como preferencia y no como regla; `ReceiverScore` mejora la elección de receptor; `WorldGeometry` gana `PassLaneRoom`, `IsPassLaneClear` y `FindBestOpenPoint`. Todo sigue siendo intents hacia el Core. Medido, no balanceado: más líneas de pase y más separación entre compañeros; sin mejora clara de tiros.
+- **No implementado (fases siguientes):** valoración de carreras por el portador, marcaje, cobertura, presión coordinada, línea defensiva, contrapresión, overlapping, half-space, llegada al área, GK AI, tácticas, skills diferidas, balance.

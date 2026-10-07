@@ -24,7 +24,14 @@ namespace FS27.Core
         SlidingTackle = 10,
         Challenge = 11,
         /// <summary>Go for a ball that is travelling to an opponent, and play the interception when it is in reach.</summary>
-        Intercept = 12
+        Intercept = 12,
+        // Phase 10 (appended). The support run itself is <see cref="Support"/> (Phase 8's "offer himself"): no second name for the same thing.
+        /// <summary>Improve his availability near his place, without the ball.</summary>
+        GetOpen = 13,
+        /// <summary>Run ahead into room, within his zone.</summary>
+        ForwardRun = 14,
+        /// <summary>Keep the width: a lateral option.</summary>
+        HoldWidth = 15
     }
 
     /// <summary>Why the engine chose it: for tests and debugging only. No logic reads it.</summary>
@@ -64,7 +71,11 @@ namespace FS27.Core
         InterceptReachable,
         ReceiveBall,
         TiredReturnHome,
-        TransitionReturn
+        TransitionReturn,
+        // Phase 10 (appended)
+        ForwardRunRole,
+        HoldWidthRole,
+        GetOpenRole
     }
 
     /// <summary>

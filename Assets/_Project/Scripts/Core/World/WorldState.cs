@@ -136,6 +136,7 @@ namespace FS27.Core
             for (int i = 0; i < list.Count && count < MaxPlayers; i++, n++)
             {
                 MatchPlayer p = list[i];
+                controller.TryGetPlayingProfile(p.PlayerId, out PlayerPlayingProfile profile);
                 Vec2 facing = p.Locomotion.FacingDirection;
                 float top = p.LocomotionProfile.MaxSpeed;
                 Vec2 relative = RelativeToOwnGoal(p.Locomotion.Position, controller, team.Side);
@@ -150,7 +151,7 @@ namespace FS27.Core
                     HasBall = controller.State.Ball.HasPossession && controller.State.Ball.PossessingTeam == team.Side && controller.State.Ball.PossessingPlayerId == p.PlayerId,
                     IsControlled = control == ControlSource.Human && controlled != null && controlled == p.PlayerId && p.IsActive,
                     ActionLocked = p.ActionLockRemaining > 0f, KickCooldown = p.KickCooldownRemaining > 0f, IsSliding = p.IsSliding, IsPressing = p.IsPressing, IsShielding = p.IsShielding, IsEvading = p.IsEvading,
-                    PreferredFoot = p.ActionProfile.PreferredFoot, Profile = p.ActionProfile, Skills = p.Skills
+                    PreferredFoot = p.ActionProfile.PreferredFoot, Profile = p.ActionProfile, Skills = p.Skills, Roles = profile != null ? profile.Roles : null
                 };
             }
             return n;
