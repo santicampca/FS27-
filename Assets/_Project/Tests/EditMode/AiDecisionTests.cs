@@ -95,10 +95,10 @@ namespace FS27.Core.Tests
             Carrier(c, TeamSide.Away, "as2", 0f, 0f, West);
             Put(c, TeamSide.Home, "hs3", -4f, 1f, East); Put(c, TeamSide.Home, "hs4", -8f, -4f, East);
             PlayerDecision chase = Decide(c, "hs3");
-            Assert.AreEqual(DecisionKind.MoveToBall, chase.Kind); Assert.AreEqual(DecisionReason.ChaseOpponent, chase.Reason);
+            Assert.AreEqual(DecisionKind.CloseDown, chase.Kind); Assert.AreEqual(DecisionReason.PrimaryDefender, chase.Reason, "Phase 9: the nearest becomes the primary defender and closes the carrier down");
             PlayerDecision other = Decide(c, "hs4");
             Assert.AreEqual(DecisionKind.MoveToPoint, other.Kind); Assert.AreEqual(DecisionReason.OpponentHasBall, other.Reason);
-            Assert.AreEqual(1, new[] { "hs1", "hs2", "hs3", "hs4", "hs5" }.Count(id => Decide(c, id).Kind == DecisionKind.MoveToBall));
+            Assert.AreEqual(1, new[] { "hs1", "hs2", "hs3", "hs4", "hs5" }.Count(id => Decide(c, id).Kind == DecisionKind.CloseDown));
             Assert.Greater(other.Movement.Target.X, PosOf(c, "hs4", TeamSide.Home).X, "drawn towards the ball");
         }
 

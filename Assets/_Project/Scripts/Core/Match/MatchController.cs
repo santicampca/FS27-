@@ -297,6 +297,7 @@ namespace FS27.Core
             {
                 hasLastPossessor = true;
                 lastPossessor = team;
+                State.Ball.SecondsSincePossessionChange = 0f;
                 Emit(GameplayEventKind.PossessionChanged, team, playerId, State.Ball.Physics.Position);
             }
             return true;

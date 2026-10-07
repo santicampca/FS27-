@@ -16,7 +16,15 @@ namespace FS27.Core
         /// <summary>Carry the ball (or beat a man with a skill move).</summary>
         Dribble = 6,
         /// <summary>Shield the ball from a nearby opponent.</summary>
-        Protect = 7
+        Protect = 7,
+        // Phase 9 (appended)
+        /// <summary>Close the carrier down: run at him (or at the point that cuts him off) with the ordinary locomotion.</summary>
+        CloseDown = 8,
+        Tackle = 9,
+        SlidingTackle = 10,
+        Challenge = 11,
+        /// <summary>Go for a ball that is travelling to an opponent, and play the interception when it is in reach.</summary>
+        Intercept = 12
     }
 
     /// <summary>Why the engine chose it: for tests and debugging only. No logic reads it.</summary>
@@ -46,7 +54,17 @@ namespace FS27.Core
         SpaceToDribble,
         SkillMoveAvailable,
         UnderPressureProtect,
-        NoActionFallback
+        NoActionFallback,
+        // Phase 9 (appended)
+        PrimaryDefender,
+        SecondaryDefender,
+        TackleInRange,
+        SlideWindow,
+        ChallengeContact,
+        InterceptReachable,
+        ReceiveBall,
+        TiredReturnHome,
+        TransitionReturn
     }
 
     /// <summary>

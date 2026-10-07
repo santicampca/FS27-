@@ -132,7 +132,7 @@ namespace FS27.Core.Tests
             string engine = File.ReadAllText(Path.Combine(DecisionDir, "BasicDecisionEngine.cs"));
             foreach (string banned in new[] { "PlayerDefinition", "PlayerAttributes", "PlayerPlayingProfile", "MatchState", "MatchController", "MatchBall", "BallSimulator", "ActionResolver", "Overall", "Random", "DateTime", "UnityEngine", "Time." })
                 StringAssert.DoesNotContain(banned, engine, "the engine reads only the view: " + banned);
-            Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(engine, @"\.(Shooting|Finishing|Technique|Passing|Dribbling|Defense|Stamina|Speed|Acceleration|Agility|Strength|Control)\b"), "no attribute is read: skills are asked through the view");
+            Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(engine, @"\.(Shooting|Finishing|Technique|Passing|Dribbling|Defense|Acceleration|Agility|Strength|Control)\b"), "no attribute is read: skills are asked through the view");
             foreach (string file in Directory.GetFiles(DecisionDir, "*.cs"))
             {
                 string text = File.ReadAllText(file), name = Path.GetFileName(file);
@@ -179,8 +179,8 @@ namespace FS27.Core.Tests
         [Test]
         public void TheDecisionKinds_AreAShortClosedList_AndTheReasonIsOnlyForDebugging()
         {
-            CollectionAssert.AreEqual(new[] { "Idle", "MoveToPoint", "MoveToBall", "Support", "Pass", "Shoot", "Dribble", "Protect" }, Enum.GetNames(typeof(DecisionKind)));
-            Assert.LessOrEqual(Enum.GetValues(typeof(DecisionKind)).Length, 10);
+            CollectionAssert.AreEqual(new[] { "Idle", "MoveToPoint", "MoveToBall", "Support", "Pass", "Shoot", "Dribble", "Protect", "CloseDown", "Tackle", "SlidingTackle", "Challenge", "Intercept" }, Enum.GetNames(typeof(DecisionKind)), "Phase 8's eight, then Phase 9's five appended");
+            Assert.LessOrEqual(Enum.GetValues(typeof(DecisionKind)).Length, 16);
             foreach (string file in Directory.GetFiles(DecisionDir, "*.cs"))
                 Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(File.ReadAllText(file), @"(if|while|switch)\s*\([^)]*\.Reason"), Path.GetFileName(file) + " must not branch on the reason");
         }

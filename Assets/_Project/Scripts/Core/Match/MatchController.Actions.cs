@@ -673,6 +673,7 @@ namespace FS27.Core
         {
             MatchBall b = State.Ball;
             b.SecondsSinceTouch = Math.Min(999f, b.SecondsSinceTouch + dt);
+            b.SecondsSincePossessionChange = Math.Min(999f, b.SecondsSincePossessionChange + dt);
 
             if (b.Mode == BallMode.Controlled && b.HasPossession)
             {

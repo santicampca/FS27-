@@ -17,10 +17,17 @@ namespace FS27.Core
 
         public BasicDecisionTuning Tuning => t;
 
-        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null)
+        private readonly DefenseTuning d;
+        private readonly RolePositioningTuning pos;
+
+        public DefenseTuning DefenseTuning => d;
+
+        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null)
         {
             this.bounds = bounds ?? throw new ArgumentNullException(nameof(bounds));
             t = tuning ?? new BasicDecisionTuning();
+            d = defense ?? new DefenseTuning();
+            pos = positioning ?? new RolePositioningTuning();
         }
 
         public PlayerDecision Decide(WorldView view, string playerId)
@@ -94,17 +101,15 @@ namespace FS27.Core
 
             if (!ball.HasPossessor)
             {
+                if (TryIntercept(view, idx, me, out PlayerDecision intercept)) return intercept;
+                if (ball.IntendedReceiverId == me.PlayerId) return MoveTo(me.PlayerId, me.Position, ball.Ground, t.ChaseMagnitude, DecisionKind.MoveToBall, DecisionReason.ReceiveBall);
                 if (nearest) return MoveTo(me.PlayerId, me.Position, ball.Ground, t.ChaseMagnitude, DecisionKind.MoveToBall, DecisionReason.ClosestToLooseBall);
                 return Position(view, me, home, t.PositionBallPull, DecisionReason.LooseBallNotClosest);
             }
 
             int carrierIdx = view.IndexOf(ball.PossessorId);
             WorldPlayer carrier = view[carrierIdx];
-            if (carrier.Team != me.Team)
-            {
-                if (nearest) return MoveTo(me.PlayerId, me.Position, ball.Ground, t.ChaseMagnitude, DecisionKind.MoveToBall, DecisionReason.ChaseOpponent);
-                return Position(view, me, home, t.DefendBallPull, DecisionReason.OpponentHasBall);
-            }
+            if (carrier.Team != me.Team) return Defend(view, idx, me, carrierIdx, carrier, home);
 
             // a team-mate has the ball
             if ((me.Position - home).Magnitude > t.FarFromHomeDistance) return MoveTo(me.PlayerId, me.Position, home, t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.FarFromHome);
@@ -114,11 +119,169 @@ namespace FS27.Core
             return Position(view, me, home, t.PositionBallPull, DecisionReason.TeammateHasBall);
         }
 
-        /// <summary>A place near his home, drawn towards the ball: the basic "keep your position and follow the play".</summary>
+        /// <summary>
+        /// The home controller: a place near his home, drawn towards the ball but never further than <see cref="RolePositioningTuning.HomeMaxDeviation"/> from it (and drawn less when the ball is far),
+        /// so he is neither frozen nor glued to the ball, and does not abandon his zone. A player far from home goes back.
+        /// </summary>
         private PlayerDecision Position(WorldView view, in WorldPlayer me, Vec2 home, float pull, DecisionReason reason)
         {
             if ((me.Position - home).Magnitude > t.FarFromHomeDistance) return MoveTo(me.PlayerId, me.Position, home, t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.FarFromHome);
-            return MoveTo(me.PlayerId, me.Position, Lerp(home, view.Ball.Ground, pull), t.PositionMagnitude, DecisionKind.MoveToPoint, reason);
+            return MoveTo(me.PlayerId, me.Position, HomeTarget(view, home, pull), t.PositionMagnitude, DecisionKind.MoveToPoint, reason);
+        }
+
+        private Vec2 HomeTarget(WorldView view, Vec2 home, float pull)
+        {
+            Vec2 toBall = view.Ball.Ground - home;
+            float d = toBall.Magnitude;
+            float far = Math.Min(1f, d / pos.HomeBallRange);
+            float k = pull * (1f - far * (1f - pos.HomeFarPullShare));
+            Vec2 dev = toBall * k;
+            float len = dev.Magnitude;
+            if (len > pos.HomeMaxDeviation) dev = dev * (pos.HomeMaxDeviation / len);
+            return home + dev;
+        }
+
+        // ------------------------------------------------------------------ defending (the opponent has the ball)
+
+        private PlayerDecision Defend(WorldView view, int idx, in WorldPlayer me, int carrierIdx, in WorldPlayer carrier, Vec2 home)
+        {
+            DefenseRoles.Rank(view, me.Team, carrier, d, out int primary, out int secondary);
+            if (idx == primary) return Primary(view, me, carrier);
+            if (idx == secondary) return Secondary(view, me, carrier, home);
+
+            // the others: back to their place, at full speed during the first moments after losing the ball
+            if (view.Ball.SecondsSincePossessionChange < d.TransitionSeconds && (me.Position - home).Magnitude > t.IdleRadius)
+                return MoveTo(me.PlayerId, me.Position, HomeTarget(view, home, t.DefendBallPull), t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.TransitionReturn);
+            if (me.Stamina < d.PressMinStamina) return Position(view, me, home, t.DefendBallPull, DecisionReason.TiredReturnHome);
+            return Position(view, me, home, t.DefendBallPull, DecisionReason.OpponentHasBall);
+        }
+
+        private PlayerDecision Primary(WorldView view, in WorldPlayer me, in WorldPlayer carrier)
+        {
+            Vec2 ball = view.Ball.Ground;
+            float toCarrier = (me.Position - carrier.Position).Magnitude;
+            float toBall = (ball - me.Position).Magnitude;
+            Vec2 fromCarrier = toCarrier > 0f ? (me.Position - carrier.Position) * (1f / toCarrier) : Vec2.Zero;
+            bool behind = carrier.Facing.X * fromCarrier.X + carrier.Facing.Y * fromCarrier.Y < d.BehindCosine;
+            bool canAct = me.CanAct && !me.KickCooldown;
+            Vec2 toBallDir = ActionModel.DirectionOr(ball - me.Position, me.Facing);
+
+            if (canAct)
+            {
+                if (toBall <= d.TackleDistance && !behind)
+                    return Contest(me, DecisionKind.Tackle, FootballActionKind.Tackle, toBallDir, DecisionReason.TackleInRange);
+                if (SlideWindow(view, me, carrier, toBall, toCarrier, behind))
+                    return Contest(me, DecisionKind.SlidingTackle, FootballActionKind.SlidingTackle, toBallDir, DecisionReason.SlideWindow);
+                if (toCarrier <= d.ChallengeDistance)
+                    return Contest(me, DecisionKind.Challenge, FootballActionKind.PhysicalChallenge, ActionModel.DirectionOr(carrier.Position - me.Position, me.Facing), DecisionReason.ChallengeContact);
+            }
+
+            float magnitude = me.Stamina < d.TiredStamina ? d.TiredMagnitude : (toCarrier <= d.PressDistance ? d.PressMagnitude : d.CloseMagnitude);
+            Vec2 target = ball;
+            if (toCarrier > d.ApproachDistance)
+            {
+                Vec2 own = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
+                target = carrier.Position + ActionModel.DirectionOr(own - carrier.Position, me.Facing) * d.GoalSideStandOff;
+            }
+            Vec2 goal = bounds.ClampPlayer(target);
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.CloseDown, Reason = DecisionReason.PrimaryDefender, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, goal, magnitude, t.ArriveRadius) };
+        }
+
+        private PlayerDecision Contest(in WorldPlayer me, DecisionKind kind, FootballActionKind action, Vec2 dir, DecisionReason reason)
+        {
+            return new PlayerDecision
+            {
+                PlayerId = me.PlayerId, Kind = kind, Reason = reason, HasAction = true, Action = new ActionIntent(me.Team, me.PlayerId, action, dir, ActionDefaults.DefaultPower),
+                HasMovement = true, Movement = MovementIntent.Stand
+            };
+        }
+
+        /// <summary>
+        /// A sliding tackle is rare: the ball just out of standing reach, the carrier running at the defender's goal with some speed, the defender in the way (inside the cone of the carrier's path), enough stamina,
+        /// and not from behind. The owner of the aggressive-tackle skill slides from a little further. Nothing else.
+        /// </summary>
+        private bool SlideWindow(WorldView view, in WorldPlayer me, in WorldPlayer carrier, float toBall, float toCarrier, bool behind)
+        {
+            if (behind || me.Stamina < d.SlideMinStamina || carrier.Speed < d.SlideMinCarrierSpeed) return false;
+            float max = d.SlideMaxDistance + (me.Skills != null && me.Skills.Has(SkillEffect.AggressiveTackle) ? d.AggressiveSlideBonus : 0f);
+            if (toBall < d.SlideMinDistance || toBall > max) return false;
+            Vec2 own = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
+            Vec2 toGoal = ActionModel.DirectionOr(own - carrier.Position, Vec2.Zero);
+            Vec2 heading = carrier.Velocity.Normalized;
+            if (heading.X * toGoal.X + heading.Y * toGoal.Y < d.SlideClosingCosine) return false;
+            return WorldGeometry.AngleBetween(heading, me.Position - carrier.Position) <= d.SlideMaxAngleDegrees;
+        }
+
+        private PlayerDecision Secondary(WorldView view, in WorldPlayer me, in WorldPlayer carrier, Vec2 home)
+        {
+            if (me.Stamina < d.TiredStamina) return Position(view, me, home, t.DefendBallPull, DecisionReason.TiredReturnHome);
+            Vec2 own = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
+            Vec2 target = carrier.Position + ActionModel.DirectionOr(own - carrier.Position, me.Facing) * d.SecondaryStandOff;
+            Vec2 goal = bounds.ClampPlayer(target);
+            if ((goal - me.Position).Magnitude <= t.IdleRadius) return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Idle, Reason = DecisionReason.SecondaryDefender, HasMovement = true, Movement = MovementIntent.Stand };
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.CloseDown, Reason = DecisionReason.SecondaryDefender, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, goal, d.SecondaryMagnitude, t.ArriveRadius) };
+        }
+
+        // ------------------------------------------------------------------ interception of a ball travelling to an opponent
+
+        private readonly Vec2[] samples = new Vec2[16];
+
+        /// <summary>
+        /// A ball an opponent has just played, still travelling: where will it be in the next moments (the reference ball model, on a copy)? The field player of the team who can get there first goes for
+        /// it, and plays the interception when it is in reach; nobody else does. The owner of the interception-reading skill looks further ahead. Reachability = distance minus reach against speed x time.
+        /// </summary>
+        private bool TryIntercept(WorldView view, int idx, in WorldPlayer me, out PlayerDecision decision)
+        {
+            decision = default(PlayerDecision);
+            WorldBall ball = view.Ball;
+            if (me.IsGoalkeeper || !ball.HasLastTouch || ball.LastTouchTeam == me.Team || ball.Speed < d.InterceptMinBallSpeed) return false;
+            if (ball.IntendedReceiverId != null && view.TryGetPlayer(ball.IntendedReceiverId, out WorldPlayer receiver) && receiver.Team == me.Team) return false;
+
+            int count = FillSamples(view, me);
+            int mine = Arrival(me, count);
+            if (mine < 0) return false;
+            // only the best placed field player of the team goes (earliest arrival; ties: the earlier in the squad)
+            int start = view.TeamStart(me.Team), end = start + view.TeamCount(me.Team);
+            for (int i = start; i < end; i++)
+            {
+                if (i == idx) continue;
+                WorldPlayer o = view[i];
+                if (!o.IsOnPitch || o.IsGoalkeeper) continue;
+                int other = Arrival(o, FillSamples(view, o));
+                if (other >= 0 && (other < mine || (other == mine && i < idx))) return false;
+            }
+            Vec2 target = samples[mine];
+            bool inReach = (ball.Ground - me.Position).Magnitude <= d.InterceptActionDistance && ball.Height <= d.InterceptMaxHeight && me.CanAct && !me.KickCooldown;
+            decision = new PlayerDecision
+            {
+                PlayerId = me.PlayerId, Kind = DecisionKind.Intercept, Reason = DecisionReason.InterceptReachable, HasMovement = true,
+                Movement = MovementIntent.TowardsTarget(me.Position, bounds.ClampPlayer(target), t.ChaseMagnitude, 0f)
+            };
+            if (inReach) { decision.HasAction = true; decision.Action = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.Intercept, ActionModel.DirectionOr(ball.Ground - me.Position, me.Facing), ActionDefaults.DefaultPower); }
+            return true;
+        }
+
+        private int FillSamples(WorldView view, in WorldPlayer who)
+        {
+            float horizon = d.InterceptHorizonSeconds + (who.Skills != null && who.Skills.Has(SkillEffect.InterceptionReading) ? d.InterceptSkillHorizonBonus : 0f);
+            int n = 0;
+            for (float time = d.InterceptStepSeconds; time <= horizon && n < samples.Length; time += d.InterceptStepSeconds)
+            {
+                Vec3 p = view.PredictBallPosition(time);
+                samples[n++] = new Vec2(p.X, p.Z);
+            }
+            return n;
+        }
+
+        /// <summary>The first sample (index) the player can reach, or -1: his distance to it, less his reach, is within what he can run in that time.</summary>
+        private int Arrival(in WorldPlayer who, int count)
+        {
+            for (int k = 0; k < count; k++)
+            {
+                float time = (k + 1) * d.InterceptStepSeconds;
+                if ((samples[k] - who.Position).Magnitude - d.InterceptReachDistance <= who.MaxSpeed * d.InterceptSpeedShare * time) return k;
+            }
+            return -1;
         }
 
         /// <summary>Where a supporting player stands: between his home and the carrier, a little further up the pitch, never too close to him nor too far.</summary>

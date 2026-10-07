@@ -15,7 +15,7 @@ namespace FS27.Core
         private readonly WorldState world = new WorldState();
         private readonly PlayerDecision[] last = new PlayerDecision[WorldState.MaxPlayers];
         private readonly bool[] decided = new bool[WorldState.MaxPlayers];
-        private readonly int[] kindCounts = new int[8];
+        private readonly int[] kindCounts = new int[Enum.GetValues(typeof(DecisionKind)).Length];
         private int step;
 
         public BasicDecisionEngine Engine => engine;
@@ -24,14 +24,25 @@ namespace FS27.Core
         public int ActionsCompleted { get; private set; }
         public int PassesCompleted { get; private set; }
         public int ShotsCompleted { get; private set; }
+        // ---- defence, measured (not balanced)
+        public int TackleAttempts { get; private set; }
+        public int SlideAttempts { get; private set; }
+        public int ChallengeAttempts { get; private set; }
+        public int InterceptAttempts { get; private set; }
+        /// <summary>Defensive actions that left the ball with the defender (or his team).</summary>
+        public int Recoveries { get; private set; }
+        public int Fouls { get; private set; }
+        /// <summary>How many times the primary defender was sampled (at each round of decisions with an opponent carrying the ball), and the sum of his distances to the carrier.</summary>
+        public int PrimaryDefenderSamples { get; private set; }
+        public double PrimaryDefenderDistanceSum { get; private set; }
         public int DecisionSteps => intervalSteps;
         public int CountOf(DecisionKind kind) { return kindCounts[(int)kind]; }
 
-        public BasicDecisionDriver(MatchController match, BasicDecisionTuning tuning = null)
+        public BasicDecisionDriver(MatchController match, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null)
         {
             if (match == null) throw new ArgumentNullException(nameof(match));
             BasicDecisionTuning t = tuning ?? new BasicDecisionTuning();
-            engine = new BasicDecisionEngine(match.Pitch, t);
+            engine = new BasicDecisionEngine(match.Pitch, t, defense, positioning);
             intervalSteps = Math.Max(1, (int)Math.Round(t.DecisionIntervalSeconds / LocomotionDefaults.FixedDeltaTime));
         }
 
@@ -58,6 +69,11 @@ namespace FS27.Core
 
             world.Refresh(match);
             WorldView view = world.View;
+            if (view.TryGetBallCarrier(out WorldPlayer holder))
+            {
+                DefenseRoles.Rank(view, holder.Team.Opponent(), holder, engine.DefenseTuning, out int primary, out _);
+                if (primary >= 0) { PrimaryDefenderSamples++; PrimaryDefenderDistanceSum += (holder.Position - view[primary].Position).Magnitude; }
+            }
             for (int side = 0; side < 2; side++)
             {
                 TeamSide s = side == 0 ? TeamSide.Home : TeamSide.Away;
@@ -74,6 +90,15 @@ namespace FS27.Core
                     {
                         ActionsAttempted++;
                         ActionResult r = match.PerformIntent(d.Action);
+                        switch (d.Action.Kind)
+                        {
+                            case FootballActionKind.Tackle: TackleAttempts++; break;
+                            case FootballActionKind.SlidingTackle: SlideAttempts++; break;
+                            case FootballActionKind.PhysicalChallenge: ChallengeAttempts++; break;
+                            case FootballActionKind.Intercept: InterceptAttempts++; break;
+                        }
+                        if (r.GainedPossession) Recoveries++;
+                        if (r.Detail == ActionDetail.Foul) Fouls++;
                         if (r.Outcome == ActionOutcome.Completed || r.Outcome == ActionOutcome.Accepted)
                         {
                             ActionsCompleted++;
@@ -84,7 +109,7 @@ namespace FS27.Core
                 }
                 if (match.GetControl(s) == ControlSource.Human)
                 {
-                    string chosen = AutoSelection.Choose(view, s, match.StoredSelection(s));
+                    string chosen = AutoSelection.Choose(view, s, match.StoredSelection(s), engine.DefenseTuning);
                     if (chosen != null) match.SelectPlayer(s, chosen);
                 }
             }

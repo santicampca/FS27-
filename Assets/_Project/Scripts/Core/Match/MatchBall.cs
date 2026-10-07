@@ -31,6 +31,8 @@ namespace FS27.Core
         public string LastActionPlayerId { get; internal set; }
         /// <summary>Seconds since the last touch (Core time). Large until the first touch.</summary>
         public float SecondsSinceTouch { get; internal set; } = 999f;
+        /// <summary>Phase 9: seconds since the possession last passed from one team to the other (Core time). Large until the first change.</summary>
+        public float SecondsSincePossessionChange { get; internal set; } = 999f;
 
         /// <summary>Height of the ball's lowest point above the ground, derived from the position (never stored twice).</summary>
         public float Height(float radius) { return Physics.Position.Y - radius; }

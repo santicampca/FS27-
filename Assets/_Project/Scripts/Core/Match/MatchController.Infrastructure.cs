@@ -53,6 +53,39 @@ namespace FS27.Core
         public void SetFormation(TeamSide side, FormationDefinition formation) { formations[(int)side] = formation; }
         public FormationDefinition GetFormation(TeamSide side) { return formations[(int)side]; }
 
+        private readonly RoleAssignment[] assignments = new RoleAssignment[2];
+
+        /// <summary>
+        /// Who stands in which slot (Phase 9, see <see cref="RolePositionAssigner"/>). Without one the field players take the slots in squad order. A player who left the pitch hands his slot to the next
+        /// field player who has none, in squad order (a substitute inherits the slot); calling this again reassigns explicitly. Null clears it.
+        /// </summary>
+        public void SetRoleAssignment(TeamSide side, RoleAssignment assignment) { assignments[(int)side] = assignment; }
+        public RoleAssignment GetRoleAssignment(TeamSide side) { return assignments[(int)side]; }
+
+        /// <summary>The field players on the pitch in the order of the field slots of the formation: the assigned ones where they can play, the others in squad order.</summary>
+        private List<string> FieldIdsInSlotOrder(TeamMatchState team, RoleAssignment a)
+        {
+            var onPitch = new List<string>(5);
+            foreach (MatchPlayer p in team.Players) if (p.IsActive && !p.InGoal) onPitch.Add(p.PlayerId);
+            if (a == null) return onPitch;
+            var ids = new List<string>(a.FieldPlayerIds.Count);
+            var taken = new HashSet<string>();
+            for (int k = 0; k < a.FieldPlayerIds.Count; k++)
+            {
+                string id = a.FieldPlayerIds[k];
+                if (onPitch.Contains(id) && taken.Add(id)) ids.Add(id); else ids.Add(null);
+            }
+            int next = 0;
+            for (int k = 0; k < ids.Count; k++)
+            {
+                if (ids[k] != null) continue;
+                while (next < onPitch.Count && taken.Contains(onPitch[next])) next++;
+                if (next >= onPitch.Count) break;
+                ids[k] = onPitch[next]; taken.Add(onPitch[next]);
+            }
+            return ids;
+        }
+
         /// <summary>
         /// Puts a team's players on their starting positions from its formation (turned to the way it attacks NOW, so it is right after a side switch). The goalkeeper in goal takes the goal slot and the
         /// field players take the field slots in squad order. Returns false when the team has no formation, nobody in goal or fewer field players than slots.
@@ -63,8 +96,7 @@ namespace FS27.Core
             TeamMatchState team = State.Team(side);
             MatchPlayer keeper = team.GoalkeeperInGoal;
             if (f == null || keeper == null) return false;
-            var ids = new List<string>(5);
-            foreach (MatchPlayer p in team.Players) if (p.IsActive && !p.InGoal) ids.Add(p.PlayerId);
+            List<string> ids = FieldIdsInSlotOrder(team, assignments[(int)side]);
             if (!FormationPlacement.Compute(f, Pitch, State.HomeAttacksPositiveX, side, keeper.PlayerId, ids, kickoff, placement)) return false;
             foreach (PlacedPlayer pp in placement) PlacePlayer(side, pp.PlayerId, pp.Position, pp.Heading);
             infrastructure.EnforcePlayerSpace = true;
@@ -84,6 +116,7 @@ namespace FS27.Core
         private readonly int[] homeSignature = new int[2] { -1, -1 };
         private readonly FormationDefinition[] homeFormation = new FormationDefinition[2];
         private readonly bool[] homeAttack = new bool[2];
+        private readonly RoleAssignment[] homeAssignment = new RoleAssignment[2];
 
         /// <summary>
         /// Brings the open-play positions of the formations up to date (Phase 8: a player's "home"). It is a DERIVED cache: it is recomputed only when the formation, the attacking direction or who is on the
@@ -97,14 +130,13 @@ namespace FS27.Core
                 int signature = 17;
                 for (int i = 0; i < team.Players.Count; i++) { MatchPlayer p = team.Players[i]; signature = signature * 31 + (p.IsActive ? (p.InGoal ? 2 : 1) : 0); }
                 bool attack = State.HomeAttacksPositiveX;
-                if (signature == homeSignature[side] && ReferenceEquals(formations[side], homeFormation[side]) && attack == homeAttack[side]) continue;
-                homeSignature[side] = signature; homeFormation[side] = formations[side]; homeAttack[side] = attack;
+                if (signature == homeSignature[side] && ReferenceEquals(formations[side], homeFormation[side]) && ReferenceEquals(assignments[side], homeAssignment[side]) && attack == homeAttack[side]) continue;
+                homeSignature[side] = signature; homeFormation[side] = formations[side]; homeAssignment[side] = assignments[side]; homeAttack[side] = attack;
                 foreach (MatchPlayer p in team.Players) p.HasHome = false;
                 FormationDefinition f = formations[side];
                 MatchPlayer keeper = team.GoalkeeperInGoal;
                 if (f == null || keeper == null) continue;
-                var ids = new List<string>(5);
-                foreach (MatchPlayer p in team.Players) if (p.IsActive && !p.InGoal) ids.Add(p.PlayerId);
+                List<string> ids = FieldIdsInSlotOrder(team, assignments[side]);
                 if (!FormationPlacement.Compute(f, Pitch, attack, team.Side, keeper.PlayerId, ids, false, placement)) continue;
                 foreach (PlacedPlayer pp in placement) { MatchPlayer p = team.Find(pp.PlayerId); p.Home = pp.Position; p.HasHome = true; }
             }

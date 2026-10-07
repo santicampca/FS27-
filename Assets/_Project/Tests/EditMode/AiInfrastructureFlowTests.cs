@@ -99,7 +99,7 @@ namespace FS27.Core.Tests
             Db.TryGetFormation(Db.Teams[0], out FormationDefinition f);
             var r = new List<PlacedPlayer>();
             Assert.IsFalse(FormationPlacement.Compute(null, bounds, true, TeamSide.Home, "gk", new[] { "a" }, true, r)); Assert.AreEqual(0, r.Count);
-            Assert.IsFalse(FormationPlacement.Compute(f, bounds, true, TeamSide.Home, "gk", new[] { "a", "b" }, true, r), "too few field players");
+            Assert.IsTrue(FormationPlacement.Compute(f, bounds, true, TeamSide.Home, "gk", new[] { "a", "b" }, true, r), "fewer players than slots (a red card): the leftover slots stay empty"); Assert.AreEqual(3, r.Count);
             Assert.IsFalse(FormationPlacement.Compute(f, bounds, true, TeamSide.Home, null, new[] { "a", "b", "c", "d", "e" }, true, r), "no keeper");
             var noKeeper = new FormationDefinition("x", "x", new FormationPosition(0, PlayerRole.Defender, 0.2f, 0.5f));
             Assert.IsFalse(FormationPlacement.Compute(noKeeper, bounds, true, TeamSide.Home, "gk", new[] { "a" }, true, r));

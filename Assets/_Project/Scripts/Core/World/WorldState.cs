@@ -126,6 +126,7 @@ namespace FS27.Core
             ball.HasPossessor = b.HasPossession && b.PossessingPlayerId != null; ball.PossessingTeam = b.PossessingTeam; ball.PossessorId = ball.HasPossessor ? b.PossessingPlayerId : null;
             ball.HasLastTouch = b.HasLastTouch; ball.LastTouchTeam = b.LastTouchTeam; ball.LastTouchPlayerId = b.LastTouchPlayerId;
             ball.IntendedReceiverId = b.IntendedReceiverId;
+            ball.SecondsSincePossessionChange = b.SecondsSincePossessionChange;
         }
 
         private int Fill(MatchController controller, TeamMatchState team, string controlled, ControlSource control)

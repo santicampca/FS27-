@@ -25,7 +25,7 @@ namespace FS27.Core
 
         /// <summary>
         /// Computes the placement. <paramref name="fieldPlayerIds"/> are the field players in order: the i-th field slot (by lineup index) is given to the i-th id. Fills <paramref name="result"/>
-        /// (cleared first) and returns false, writing nothing useful, when the formation has no goalkeeper slot or there are not as many ids as field slots.
+        /// (cleared first) and returns false, writing nothing useful, when the formation has no goalkeeper slot. With fewer ids than field slots (or null ids) the slots left over stay empty.
         /// </summary>
         public static bool Compute(FormationDefinition formation, PitchBounds bounds, bool homeAttacksPositiveX, TeamSide team, string goalkeeperId, IList<string> fieldPlayerIds,
                                    bool kickoffOwnHalf, List<PlacedPlayer> result)
@@ -40,7 +40,7 @@ namespace FS27.Core
                 if (s.Role == PlayerRole.Goalkeeper) { if (keeperSlot == null) keeperSlot = s; }
                 else fieldSlots.Add(s);
             }
-            if (keeperSlot == null || goalkeeperId == null || fieldPlayerIds.Count < fieldSlots.Count) return false;
+            if (keeperSlot == null || goalkeeperId == null) return false;
             fieldSlots.Sort((a, b) => a.PlayerIndex.CompareTo(b.PlayerIndex));
 
             float heading = new Vec2(attacksPlusX ? 1f : -1f, 0f).ToHeading();
@@ -50,6 +50,8 @@ namespace FS27.Core
             result.Add(new PlacedPlayer(goalkeeperId, bounds.ClampToGoalZone(keeper, homeAttacksPositiveX, team), heading));
             for (int i = 0; i < fieldSlots.Count; i++)
             {
+                // a slot nobody fills (a player was sent off) stays empty; a null id also leaves its slot empty
+                if (i >= fieldPlayerIds.Count || fieldPlayerIds[i] == null) continue;
                 Vec2 p = bounds.ClampPlayer(fieldSlots[i].ToFieldPosition(bounds.Field, attacksPlusX));
                 if (kickoffOwnHalf) p = KeepInOwnHalf(p, bounds, homeAttacksPositiveX, team, t.KickoffHalfMargin);
                 result.Add(new PlacedPlayer(fieldPlayerIds[i], p, heading));

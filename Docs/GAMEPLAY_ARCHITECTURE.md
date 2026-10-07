@@ -582,3 +582,11 @@ Detalle en [BASIC_DECISION_ENGINE.md](BASIC_DECISION_ENGINE.md). Lo que afecta a
 - Primer nivel solamente: sin balón (ir al balón el más cercano, apoyo, aproximarse al rival, volver a casa), con balón (tiro, pase a receptor, regate, protección con la acción `Shield` existente), portero mínimo y selección automática mínima.
 - **No implementado (fases siguientes):** decisiones defensivas reales (placar/interceptar/presión), marcaje, cobertura, tácticas, transiciones, desmarques, las 12 skills diferidas, IA de portero, decisión de reinicios, balance.
 
+---
+
+## V. FASE 9 — Defensa básica y posicionamiento por rol (resumen)
+Detalle en [DEFENSE_AND_ROLE_POSITIONING.md](DEFENSE_AND_ROLE_POSITIONING.md). Lo que afecta a este documento:
+- `RolePositionAssigner` asigna los titulares a los huecos de la formación por rol (afinidad) y zona, con el portero en el hueco de portería y desempates deterministas (Overall solo al final); no toca el sorteo. Alimenta `WorldPlayer.Home`.
+- Defensa: un defensor principal y, con motivo, un segundo; cerrar, placar, deslizar (selectivo), contacto e intercepción, todo por `MovementIntent`/`ActionIntent` → Core. Transición mínima tras perder el balón.
+- Probado con 12 jugadores reales 60 s en Arena y Classic (recuperaciones, placajes, intercepciones, contactos, faltas en Classic, goles y determinismo medidos, no balanceados).
+- **No implementado (fases siguientes):** marcaje, cobertura, defensa zonal, presión coordinada, línea defensiva, transiciones completas, contrapresión, desmarques, las 12 skills diferidas, IA de portero, tácticas, balance.

@@ -94,3 +94,6 @@ No hay: Utility AI, Behavior Tree, GOAP, FSM táctica, táctica de equipo, marca
 | `DribbleTouchModel` | 1 referencia en Core | Sí: conducción de la Fase 4 | Tras comprobar que `BallInteractor` no lo necesita. |
 | `BallInteractor` (Unity) | 1 consumidor en Unity | Sí: acciones del Core | Con la migración del balón de Unity al Core. |
 | `Core/Ai/*` (`PositioningModel`, `PressureModel`, `AnticipationModel`, `TeamStyle`, `PlayingProfile`) | Sin consumidores de partido | **Todavía no**: el motor básico no los usa a propósito | Se usarán (o se reemplazarán) cuando haya posicionamiento por rol y presión. |
+
+## 11. Fase 9 — lo que cambió aquí
+Ver [DEFENSE_AND_ROLE_POSITIONING.md](DEFENSE_AND_ROLE_POSITIONING.md). `DecisionKind` gana (al final) `CloseDown, Tackle, SlidingTackle, Challenge, Intercept`; con el rival con balón ya no se persigue con `MoveToBall`: el defensor principal (y, con motivo, un segundo) cierra y disputa, el resto va a su Home con `HomeTarget`. Los límites de la §8 sobre "nadie entra a un duelo" quedan resueltos en lo básico; sigue sin haber marcaje, cobertura ni presión coordinada.

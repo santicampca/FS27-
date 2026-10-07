@@ -60,6 +60,8 @@ namespace FS27.Core
         public string LastTouchPlayerId;
         /// <summary>The team-mate a pass in the air is aimed at, or null.</summary>
         public string IntendedReceiverId;
+        /// <summary>Phase 9: seconds since the possession last changed team.</summary>
+        public float SecondsSincePossessionChange;
     }
 
     /// <summary>
