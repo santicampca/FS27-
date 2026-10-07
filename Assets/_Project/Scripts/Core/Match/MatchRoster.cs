@@ -80,6 +80,12 @@ namespace FS27.Core
         /// <summary>A field player in goal. His keeper capabilities are derived at runtime (<see cref="EmergencyKeeperProfile"/>), never stored.</summary>
         public bool IsEmergencyKeeper { get; internal set; }
         public PlayerRuntimeState Runtime { get; }
+        /// <summary>Phase 7: he was one of the starters (not a substitute who came on).</summary>
+        public bool StartedMatch { get; internal set; }
+        /// <summary>Phase 7: his role, read from his definition when the match is created (Goalkeeper for a goalkeeper). The attributes stay in the definition.</summary>
+        public PlayerRole Role { get; internal set; } = PlayerRole.Midfielder;
+        /// <summary>Phase 7: the priority of the movement intent already applied in this step (internal arbitration).</summary>
+        internal int IntentPriority = int.MinValue;
 
         /// <summary>
         /// The Phase-3 movement state (position, velocity, facing, speed, stamina 0..100). Part of the authoritative match state: only the engine steps it.
@@ -123,6 +129,7 @@ namespace FS27.Core
             PlayerId = m.PlayerId;
             Team = team;
             IsGoalkeeper = m.IsGoalkeeper;
+            if (m.IsGoalkeeper) Role = PlayerRole.Goalkeeper;
             Status = status;
             Runtime = new PlayerRuntimeState();
             if (m.StaminaCapacity > 0f) Runtime.Reset(new PlayerStats { StaminaCapacity = m.StaminaCapacity }, 0f);
@@ -152,6 +159,7 @@ namespace FS27.Core
             {
                 var p = new MatchPlayer(m, side, MatchPlayerStatus.OnPitch);
                 p.InGoal = m.IsGoalkeeper;
+                p.StartedMatch = true;
                 players.Add(p);
             }
             foreach (SquadMember m in squad.Bench) players.Add(new MatchPlayer(m, side, MatchPlayerStatus.Bench));
@@ -179,6 +187,23 @@ namespace FS27.Core
             {
                 for (int i = 0; i < players.Count; i++) if (players[i].IsActive && players[i].InGoal) return players[i];
                 return null;
+            }
+        }
+
+        /// <summary>Phase 7: the goal slot of this team (starter, bench keeper, occupant and how he got there), derived from the squad.</summary>
+        public GoalkeeperSlot GoalkeeperSlot
+        {
+            get
+            {
+                var slot = new GoalkeeperSlot { Team = Side, NeedsGoalkeeper = NeedsGoalkeeper };
+                MatchPlayer bench = AvailableBenchKeeper;
+                slot.BenchKeeperId = bench != null ? bench.PlayerId : null;
+                for (int i = 0; i < players.Count; i++) if (players[i].StartedMatch && players[i].IsGoalkeeper) { slot.StarterId = players[i].PlayerId; break; }
+                MatchPlayer occupant = GoalkeeperInGoal;
+                if (occupant == null) return slot;
+                slot.OccupantId = occupant.PlayerId;
+                slot.Mode = occupant.IsEmergencyKeeper ? GoalkeeperSlotMode.Emergency : (occupant.StartedMatch ? GoalkeeperSlotMode.Starter : GoalkeeperSlotMode.Substitute);
+                return slot;
             }
         }
 

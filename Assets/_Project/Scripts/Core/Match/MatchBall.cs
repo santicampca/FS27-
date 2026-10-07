@@ -23,6 +23,9 @@ namespace FS27.Core
         public TeamSide PreviousTouchTeam { get; internal set; }
         public string PreviousTouchPlayerId { get; internal set; }
 
+        /// <summary>Phase 7: the team-mate a pass was aimed at, while it is on its way. Null otherwise; any touch clears it.</summary>
+        public string IntendedReceiverId { get; internal set; }
+
         /// <summary>The last action that moved the ball (a kick, a tackle...), with its player. None until one happens.</summary>
         public FootballActionKind LastAction { get; internal set; }
         public string LastActionPlayerId { get; internal set; }
@@ -34,6 +37,7 @@ namespace FS27.Core
 
         internal void RecordTouch(TeamSide team, string playerId)
         {
+            IntendedReceiverId = null;
             if (HasLastTouch)
             {
                 HasPreviousTouch = true;

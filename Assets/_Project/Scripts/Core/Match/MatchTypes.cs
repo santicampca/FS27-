@@ -39,7 +39,18 @@ namespace FS27.Core
         KickOff,
         ThrowIn,
         GoalKick,
-        Corner
+        Corner,
+        // appended in Phase 7 (contracts only: the rules that award them are a later phase)
+        FreeKick,
+        Penalty
+    }
+
+    /// <summary>Where a restart is in its life: asked for, players placed, play resumed.</summary>
+    public enum RestartStatus
+    {
+        Pending = 0,
+        Placed,
+        Confirmed
     }
 
     public enum BallOutcome
@@ -79,12 +90,17 @@ namespace FS27.Core
         public RestartKind Kind;
         public TeamSide Team;
         public Vec2 Position;
+        /// <summary>Phase 7: the player who takes it, set explicitly (never "the first of the list"). Null until it is chosen or assigned.</summary>
+        public string TakerId;
+        public RestartStatus Status;
 
         public RestartRequest(RestartKind kind, TeamSide team, Vec2 position)
         {
             Kind = kind;
             Team = team;
             Position = position;
+            TakerId = null;
+            Status = RestartStatus.Pending;
         }
     }
 

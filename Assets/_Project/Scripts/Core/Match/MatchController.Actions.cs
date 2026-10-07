@@ -41,7 +41,7 @@ namespace FS27.Core
         public ActionResult PerformInput(TeamSide side, string playerId, ActionInput input)
         {
             MatchPlayer p = State.Team(side).Find(playerId);
-            var request = new ActionRequest(side, playerId, FootballActionKind.None, input.Direction, input.Magnitude > 0f ? input.Magnitude : actions.DefaultPower);
+            var request = new ActionRequest(side, playerId, FootballActionKind.None, input.Direction, input.Magnitude > 0f ? input.Magnitude : actions.DefaultPower) { Source = ControlSource.Human };
             if (p != null)
             {
                 ActionContext context = new ActionContext { HasBall = IsCarrier(p), IsGoalkeeper = p.InGoal };
@@ -66,7 +66,7 @@ namespace FS27.Core
 
         private ActionResult Resolve(ActionRequest r)
         {
-            var res = new ActionResult { Kind = r.Kind, Team = r.Team, PlayerId = r.PlayerId, Outcome = ActionOutcome.Rejected };
+            var res = new ActionResult { Kind = r.Kind, Team = r.Team, PlayerId = r.PlayerId, Outcome = ActionOutcome.Rejected, Source = r.Source };
 
             if (r.Kind == FootballActionKind.None) return Reject(res, ActionRejection.InvalidInput);
             if (State.Phase != MatchPhase.Playing) return Reject(res, ActionRejection.MatchNotLive);
@@ -78,6 +78,7 @@ namespace FS27.Core
 
             Vec2 facing = p.Locomotion.FacingDirection;
             Vec2 dir = ActionModel.DirectionOr(r.Direction, facing);
+            if (IsKickAction(r.Kind) && !r.Target.IsNone) dir = ApplyTarget(r, p, dir, ref res);
             float power = ActionModel.Clamp01(r.Power);
             res.Direction = dir;
             res.Intensity = power;
@@ -92,7 +93,7 @@ namespace FS27.Core
                 case FootballActionKind.Shot:
                 case FootballActionKind.Clearance:
                 case FootballActionKind.GoalkeeperDistribution:
-                    return ResolveKick(res, p, r, dir, power);
+                    return AfterKick(ResolveKick(res, p, r, dir, power));
 
                 case FootballActionKind.SkillLobPass:
                 case FootballActionKind.CurvedShot:
@@ -101,7 +102,7 @@ namespace FS27.Core
                         SkillPermission permission = SkillResolver.CanUseAction(p.Skills, r.Kind, IsCarrier(p), r.SkillGranted, r.SkillId);
                         if (!permission.Allowed) return Reject(res, permission.Rejection);
                         if (r.Kind == FootballActionKind.SkillMove) return ResolveSkillMove(res, p, dir, power, permission.Effect, permission.SkillId);
-                        return ResolveKick(res, p, r, dir, power, permission.Effect);
+                        return AfterKick(ResolveKick(res, p, r, dir, power, permission.Effect));
                     }
 
                 case FootballActionKind.Control: return ResolveControlAction(res, p);

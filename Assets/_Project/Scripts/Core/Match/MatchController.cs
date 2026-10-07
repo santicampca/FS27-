@@ -110,6 +110,7 @@ namespace FS27.Core
                     PlayerDefinition def = null;
                     bool known = players != null && players.TryGet(p.PlayerId, out def) && def != null;
                     p.LocomotionProfile = known ? LocomotionProfile.Resolve(def.Attributes, locomotion) : LocomotionProfile.Resolve(neutral, locomotion);
+                    if (known && !p.IsGoalkeeper) p.Role = def.Role;
                     GoalkeeperProfile keeper = null;
                     if (known && players != null) players.TryGetGoalkeeperProfile(p.PlayerId, out keeper);
                     p.ActionProfile = known ? ActionProfile.Resolve(def.Attributes, def.PreferredFoot, def.WeakFootQuality, keeper) : ActionProfile.Neutral(keeper);
@@ -170,7 +171,7 @@ namespace FS27.Core
                     Emit(GameplayEventKind.BallBouncedOffWall, null, null, walls.LastBouncePosition, "Wall");
                 }
             }
-            if (State.Phase == MatchPhase.Playing) StepLocomotion(dt);
+            if (State.Phase == MatchPhase.Playing) { StepLocomotion(dt); StepPlayerSpace(); }
             if (State.Phase == MatchPhase.Playing) StepBallInteractions(dt);
             Tick(dt, new BallObservation(State.Ball.Physics.Position, ballParameters.Radius));
         }

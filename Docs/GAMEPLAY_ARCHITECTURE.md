@@ -564,3 +564,13 @@ Detalle en [SKILLS_REAL.md](SKILLS_REAL.md). Lo que afecta a este documento:
 - Nueva acción real: `SkillMove` (regate con 3 estilos y 3 desenlaces). `CurvedShot` y `SkillLobPass` resueltos con la maestría del jugador, el pie y la stamina. Botón **C** (skill) añadido al esquema de controles (H): con balón, toque = skill move, arriba = pase por alto, abajo = tiro con efecto.
 - Las skills no cambian atributos, Overall, GRL ni Coach Boost; la stamina es la de locomoción; el azar sale solo del generador sembrado del partido.
 - **No implementado (fases posteriores):** IA, tácticas, transiciones, centros, cabezazos, balón parado, árbitro funcional, competición, Unity (HUD del botón C, animaciones).
+
+---
+
+## T. FASE 7 — Infraestructura para IA (resumen)
+Detalle en [AI_INFRASTRUCTURE.md](AI_INFRASTRUCTURE.md). Lo que afecta a este documento:
+- Flujo preparado: `MatchState → WorldState → WorldView → [Decision, fase 8] → MovementIntent / ActionIntent → LocomotionInput / ActionRequest → MatchController.Perform → ActionResolver → BallSimulator → ActionResult`. Una persona entra por `Touch → NormalizedInput → ActionInput → ActionMapper → ActionRequest`; **ambas rutas terminan en el mismo `Perform`**.
+- `WorldView` es de solo lectura; la IA nunca escribe en `MatchState`, `MatchPlayer`, `MatchBall` ni `PlayerDefinition`.
+- Formación → 12 posiciones iniciales (espejo exacto entre equipos, portero en su zona, sin solapamiento), reinicios con ejecutor **explícito** (`RestartRequest.TakerId/Status`, `ConfirmRestart`), saque de centro sin regalar el balón al primero de la lista, `PitchBounds` (Arena rebota / Classic sale), `PlayerSeparation`, `PassTarget`, `PlayerSelection`, `GoalkeeperSlot`, `NormalizedInput`.
+- **No implementado (Fase 8+):** el motor de decisión, ataque/defensa/marcaje/cobertura, transiciones, IA de portero, tácticas, reglas de falta/penalti, Unity (HUD, puente nuevo).
+

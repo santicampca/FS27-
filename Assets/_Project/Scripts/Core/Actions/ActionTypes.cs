@@ -125,6 +125,10 @@ namespace FS27.Core
         public string SkillId;
         /// <summary>Goalkeeper distribution only: a long kick instead of a throw.</summary>
         public bool Long;
+        /// <summary>Phase 7: where a kick is meant to go (a team-mate, a point, or nobody). When it resolves, it decides the direction; otherwise <see cref="Direction"/> does.</summary>
+        public PassTarget Target;
+        /// <summary>Phase 7: who produced the request (context only; the resolution is identical).</summary>
+        public ControlSource Source;
 
         public ActionRequest(TeamSide team, string playerId, FootballActionKind kind, Vec2 direction = default, float power = ActionDefaults.DefaultPower)
         {
@@ -137,6 +141,8 @@ namespace FS27.Core
             SkillGranted = false;
             SkillId = null;
             Long = false;
+            Target = default(PassTarget);
+            Source = ControlSource.Ai;
         }
     }
 
@@ -254,6 +260,11 @@ namespace FS27.Core
         public bool GainedPossession;
         /// <summary>The player whose ball was challenged, when there is one.</summary>
         public string OtherPlayerId;
+        /// <summary>Phase 7: how the target of the request was resolved (None when there was none; Unknown when a player was asked for and could not be found).</summary>
+        public PassTargetKind TargetKind;
+        /// <summary>Phase 7: the team-mate the kick was aimed at, when it was.</summary>
+        public string TargetPlayerId;
+        public ControlSource Source;
         /// <summary>The catalogue skill that shaped the action (a skill action, or a passive skill that acted), or null.</summary>
         public string SkillId;
 

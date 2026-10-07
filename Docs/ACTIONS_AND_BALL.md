@@ -252,3 +252,9 @@ Sin IA (no se elige destinatario de pase ni compañero de pared), sin tácticas/
 
 ## Fase 6 — skills dentro de las acciones
 `SkillMove` deja de ser un contrato (`NotSupported`): es una acción real. `SkillLobPass` y `CurvedShot` siguen resolviéndose en `ResolveKick`, pero ahora con la maestría de la skill del jugador. `ActionRequest.SkillGranted` pasa a legado; el permiso lo decide `SkillResolver.CanUseAction`. Se añaden: botón `C`, `ActionInput.Curve`, `ActionRequest.SkillId`, `ActionResult.SkillId` y `ActionResult.WeakFoot`, y los detalles `Evaded`, `PartlyEvaded`, `Fumbled`. Sin skills, cada acción da **exactamente** el mismo resultado que en la Fase 4. Ver [SKILLS_REAL.md](SKILLS_REAL.md).
+
+---
+
+## Fase 7 — objetivo de pase e intenciones
+`ActionRequest` gana `Target` (`PassTarget`: ninguno / jugador / posición) y `Source` (`ControlSource`: humano / IA); `ActionResult` gana `TargetKind`, `TargetPlayerId` y `Source`; `MatchBall.IntendedReceiverId` recuerda al receptor mientras el pase va en camino. Un `ActionIntent` se convierte en el **mismo** `ActionRequest` (`PerformIntent`) y una `NormalizedInput` en un `ActionInput` (`SubmitHumanInput`): no hay otra ruta al resolutor. Ver [AI_INFRASTRUCTURE.md](AI_INFRASTRUCTURE.md).
+
