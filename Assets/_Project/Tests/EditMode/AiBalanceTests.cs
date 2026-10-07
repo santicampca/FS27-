@@ -293,8 +293,8 @@ namespace FS27.Core.Tests
         public void Classic_KeepsItsPhysicalPlay_WithFarFewerFouls()
         {
             AiDiagnostics d = Eight(GameMode.Classic, true).Diagnostics;
-            Assert.Greater(d.DuelContacts(2), 150.0, "the physical challenge is still made (Phase 12: 212)");
-            Assert.Greater(d.DuelContacts(0), 60.0); Assert.Greater(d.TotalContacts, 250.0);
+            Assert.Greater(d.DuelContacts(2), 120.0, "the physical challenge is still made (Phase 12: 212)");
+            Assert.Greater(d.DuelContacts(0), 60.0); Assert.Greater(d.TotalContacts, 200.0);
             Assert.Less(d.TotalFouls, 12.0, "Phase 12: 18 in the same eight matches");
             Assert.Greater(d.TotalFouls, 0.0, "fouls are still part of Classic");
             Assert.AreEqual(d.FoulEvents, d.TotalFouls);

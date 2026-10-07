@@ -699,6 +699,9 @@ namespace FS27.Core
                     MatchPlayer p = team.Players[i];
                     if (!p.IsActive) continue;
                     if (b.HasLastTouch && b.LastTouchTeam == p.Team && b.LastTouchPlayerId == p.PlayerId && b.SecondsSinceTouch < actions.ReTouchCooldown) continue;
+                    // Phase 14: the ball he has just kicked is not his again while his kick is still recovering, even if somebody else touched it in between (a team-mate's control, an opponent's block): before, the
+                    // re-touch cooldown above followed the LAST toucher, so one touch by anyone else let the kicker take his own pass back on the very next step
+                    if (actions.KickerKeepsOffHisKick > 0f && p.KickCooldownRemaining > 0f) continue;
                     bool keeper = p.InGoal;
                     float reach = keeper ? actions.TouchReach * (actions.KeeperReachBase + actions.KeeperReachRange * p.ActionProfile.KeeperDiving) : actions.TouchReach;
                     float maxHeight = keeper ? field.GoalHeight : actions.MaxTouchHeight;

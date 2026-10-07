@@ -27,6 +27,8 @@ namespace FS27.Core
         public const float MaxTouchHeight = 1.1f;
         /// <summary>The last player to touch the ball cannot take it automatically again for this long (seconds): a kicker does not re-collect his own pass.</summary>
         public const float ReTouchCooldown = 0.3f;
+        /// <summary>Phase 14: a player who has just kicked the ball does not touch it again while his kick recovers, even if somebody else touched it in between (before, one touch by anyone let him take his own pass back at once). 1 = on, 0 = off (the Phase 13 behaviour).</summary>
+        public const float KickerKeepsOffHisKick = 1.0f;
         // ---- control, first touch and dribbling
         /// <summary>How far in front of the player the controlled ball sits at rest.</summary>
         public const float ControlDistance = 0.8f;
@@ -263,6 +265,7 @@ namespace FS27.Core
         public float InterceptReach = ActionDefaults.InterceptReach;
         public float MaxTouchHeight = ActionDefaults.MaxTouchHeight;
         public float ReTouchCooldown = ActionDefaults.ReTouchCooldown;
+        public float KickerKeepsOffHisKick = ActionDefaults.KickerKeepsOffHisKick;
         // ---- control, first touch and dribbling
         public float ControlDistance = ActionDefaults.ControlDistance;
         public float LeadPerSpeed = ActionDefaults.LeadPerSpeed;
