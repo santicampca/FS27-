@@ -31,7 +31,7 @@ namespace FS27.Core.Tests
         private sealed class AttackSim
         {
             public string Fingerprint, Assignment;
-            public int Issues, Possessions, Losses, Goals, Restarts, Decisions, Actions, Passes, Shots, Recoveries, Fouls;
+            public int GoalsHome, GoalsAway; public int Issues, Possessions, Losses, Goals, Restarts, Decisions, Actions, Passes, Shots, Recoveries, Fouls;
             public int Support, Forward, Width, GetOpen;
             public int AttackSamples, PassDecisions; public long PassLanes; public double Spread, PassDistance;
             public int MoreThanOnePerJob, JobSamples, SupportersNearBall;
@@ -39,7 +39,7 @@ namespace FS27.Core.Tests
             public int[] Kinds = new int[17]; public int Dribbles, Protects, Holds, SpacePasses, ShotOpportunities, CarrierDecisions; public long PassCandidates; public int[] Chosen = new int[8]; public double[] ChosenScore = new double[8];
         }
 
-        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f, bool carrierLayer = true, AiDiagnostics diagnostics = null)
+        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f, bool carrierLayer = true, AiDiagnostics diagnostics = null, DifficultyLevel? homeLevel = null, DifficultyLevel? awayLevel = null, AiDiagnostics twin = null)
         {
             MatchSettings s = mode == GameMode.Arena ? MatchSettings.CreateArena() : MatchSettings.CreateClassic();
             MatchController c = RealRoles(homeTeam, awayTeam, seed, s);
@@ -52,7 +52,9 @@ namespace FS27.Core.Tests
             BallCarrierTuning carrierT = BallCarrierTuning.ForMode(mode); carrierT.Enabled = carrierLayer;
             ApplyExploration(mode, basicT, defenseT, attackT, carrierT, c.ActionTuning);
             var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT);
-            if (diagnostics != null) { diagnostics.Attach(c); driver.Diagnostics = diagnostics; }
+            if (homeLevel.HasValue) driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(homeLevel.Value), Db.Players, c);
+            if (awayLevel.HasValue) driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(awayLevel.Value), Db.Players, c);
+            if (diagnostics != null) { diagnostics.Attach(c); driver.Diagnostics = diagnostics; if (twin != null) { twin.Attach(c); diagnostics.Twin = twin; } }
             var world = new WorldState();
             bool hasLast = false; TeamSide last = TeamSide.Home;
             int steps = (int)(seconds * 60f);
@@ -113,7 +115,7 @@ namespace FS27.Core.Tests
                     }
                 }
             }
-            if (diagnostics != null) { diagnostics.Finish(); diagnostics.Detach(); }
+            if (diagnostics != null) { diagnostics.Finish(); diagnostics.Detach(); if (twin != null) { twin.Finish(); twin.Detach(); diagnostics.Twin = null; } }
             LastDriver = driver;
             r.Decisions = driver.Decisions; r.Actions = driver.ActionsAttempted; r.Passes = driver.PassesCompleted; r.Shots = driver.ShotsCompleted; r.Recoveries = driver.Recoveries; r.Fouls = driver.Fouls;
             r.Support = driver.CountOf(DecisionKind.Support); r.Forward = driver.CountOf(DecisionKind.ForwardRun); r.Width = driver.CountOf(DecisionKind.HoldWidth); r.GetOpen = driver.CountOf(DecisionKind.GetOpen);
@@ -121,7 +123,7 @@ namespace FS27.Core.Tests
             for (int j = 0; j < 5; j++) r.ToJob[j] = driver.PassesToJob((AttackJob)j);
             for (int j = 0; j < 17; j++) r.Kinds[j] = driver.CountOf((DecisionKind)j);
             r.Dribbles = driver.CountOf(DecisionKind.Dribble); r.Protects = driver.CountOf(DecisionKind.Protect); r.Holds = driver.CountOf(DecisionKind.Hold); r.SpacePasses = driver.SpacePasses; r.ShotOpportunities = driver.ShotOpportunities; r.CarrierDecisions = driver.CarrierDecisions; r.PassCandidates = driver.PassCandidateSum; for (int j = 0; j < 8; j++) { r.Chosen[j] = driver.ChosenCount((CandidateType)j); r.ChosenScore[j] = driver.ChosenScoreSum((CandidateType)j); }
-            r.Goals = c.State.Score.Home + c.State.Score.Away;
+            r.Goals = c.State.Score.Home + c.State.Score.Away; r.GoalsHome = c.State.Score.Home; r.GoalsAway = c.State.Score.Away;
             r.Fingerprint = Fingerprint(c) + "|" + r.Decisions + "|" + r.Actions + "|" + r.Passes + "|" + r.Shots + "|" + r.Recoveries + "|" + r.Fouls + "|" + r.Possessions + "|" + r.Losses + "|" + r.Support + "|" + r.Forward + "|" + r.Width + "|" + r.GetOpen + "|" + r.PassLanes + "|" + r.Spread.ToString("R") + "|" + r.Dribbles + "|" + r.Protects + "|" + r.Holds + "|" + r.SpacePasses + "|" + r.ShotOpportunities + "|" + c.State.Score.Home + "-" + c.State.Score.Away;
             return r;
         }

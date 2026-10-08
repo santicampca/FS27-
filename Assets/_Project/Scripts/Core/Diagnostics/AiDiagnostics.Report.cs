@@ -142,6 +142,11 @@ namespace FS27.Core
                 if (p.PlayerId == null) continue;
                 sb.AppendLine(p.PlayerId + " " + p.Team + " " + p.Role + " " + (p.ArchetypeIndex >= 0 ? ((PlayerArchetype)p.ArchetypeIndex).ToString() : "-") + " " + p.Decisions + " " + p.CarrierDecisions + " " + p.Passes + " " + p.PassesCompleted + " " + p.SpacePasses + " " + p.Dribbles + " " + p.Protects + " " + p.Holds + " " + p.Shots + " " + p.Goals + " " + p.Possessions + " " + p.FoulsCommitted + " " + p.FoulsSuffered + " " + p.ContactsMade + " " + p.ContactsSuffered + " " + p.Tackles + " " + p.DuelsWon + " " + p.Interceptions);
             }
+            var mistakes = new StringBuilder("MISTAKES (controlled, by kind: count / mean gap):");
+            foreach (DecisionErrorKind k in Enum.GetValues(typeof(DecisionErrorKind))) if (k != DecisionErrorKind.None && MistakeCount(k) > 0) mistakes.Append(" " + k + " " + MistakeCount(k) + "/" + F(Div(MistakeGapSum(k), MistakeCount(k))));
+            sb.AppendLine(mistakes.ToString());
+            sb.AppendLine("PROGRESS possessions " + Possessions + "  final-third entries " + FinalThirdEntries + "  danger entries " + DangerEntries + "  dangerous possessions " + DangerousPossessions + "  clear chances " + ClearChances + " (taken " + ClearChancesTaken + ")");
+            sb.AppendLine("POSITIONING mean distance from home attacking " + F(HomeDistanceAttacking) + " (" + HomeSamplesAttacking + ")  defending " + F(HomeDistanceDefending) + " (" + HomeSamplesDefending + ")  drift decisions " + DriftDecisions + " of " + DriftSamples + "  mean drift " + F(Div(DriftMetresSum, DriftDecisions)));
             return sb.ToString();
         }
     }

@@ -21,7 +21,8 @@ namespace FS27.Core
         /// </summary>
         public void OnAction(int stepNumber, WorldView view, int idx, in PlayerDecision d, in ActionResult r, BasicDecisionDriver driver)
         {
-            if (!Config.Enabled || match == null) return;
+            if (Twin != null) Twin.OnAction(stepNumber, view, idx, d, r, driver);
+            if (!Config.Enabled || match == null || Skip(view[idx].Team)) return;
             int k = (int)r.Kind;
             a[oActRequested + k] += 1.0;
             switch (r.Outcome)

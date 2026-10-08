@@ -150,3 +150,12 @@ namespace FS27.Core
         public bool IsValid { get { return Type != CandidateType.None; } }
     }
 }
+
+namespace FS27.Core
+{
+    /// <summary>A reading of the game that moves the score of a candidate (Phase 14): the player's own quality for that action, his habits, the score and the clock.</summary>
+    public interface ICandidateBias
+    {
+        float Bias(in ActionCandidate candidate, in CarrierSummary summary);
+    }
+}

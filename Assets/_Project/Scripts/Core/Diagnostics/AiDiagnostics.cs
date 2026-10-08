@@ -22,6 +22,7 @@ namespace FS27.Core
         private static readonly int ShotOutcomes = MaxOf(typeof(ShotOutcome)) + 1;
         private const int Archetypes = 16;
         private const int Roles = 4;
+        private static readonly int MistakeKinds = MaxOf(typeof(DecisionErrorKind)) + 1;
         public const int DuelKinds = 3; // 0 standing tackle, 1 sliding tackle, 2 physical challenge
 
         private static int MaxOf(Type enumType)
@@ -109,6 +110,11 @@ namespace FS27.Core
         private static readonly int oRoleFouls = Alloc(Roles);
         private static readonly int oStamina = Alloc(12 * 3);
         private static readonly int oEffort = Alloc(DecisionKinds * 3);
+        private static readonly int oMistake = Alloc(MistakeKinds);
+        private static readonly int oMistakeGap = Alloc(MistakeKinds);
+        private static readonly int oDrift = Alloc(3);
+        private static readonly int oProgress = Alloc(6);
+        private static readonly int oHome = Alloc(4);
         private static readonly int oMatch = Alloc(14);
         private static readonly int Size = cursor;
 
@@ -119,6 +125,8 @@ namespace FS27.Core
         public DiagnosticsConfig Config { get; }
         /// <summary>A name for the run (mode, seed, teams): only for reports.</summary>
         public string Label { get; set; }
+        /// <summary>A second observer fed the same calls (Phase 14): one for each team of the same match. It must be attached to the match on its own.</summary>
+        public AiDiagnostics Twin { get; set; }
 
         private readonly SpaceAttempt[] space;
         private readonly ContactRecord[] contacts;
@@ -203,6 +211,30 @@ namespace FS27.Core
 
         /// <summary>How hard the AI asks its players to move: decisions of a kind by the push of the stick they asked for (below the walk threshold, below the sprint threshold, in the sprint range).</summary>
         public double EffortCount(DecisionKind k, int band) { return a[oEffort + (int)k * 3 + band]; }
+
+        // ---- Phase 14: controlled mistakes, progress and positioning (counted for the filtered team when there is a filter)
+        /// <summary>How many times each kind of controlled mistake happened, and the sum of how much better the option not taken was (score points; for a late reaction or a late contest, seconds waited).</summary>
+        public double MistakeCount(DecisionErrorKind k) { return a[oMistake + (int)k]; }
+        public double MistakeGapSum(DecisionErrorKind k) { return a[oMistakeGap + (int)k]; }
+        public double MistakeTotal { get { double n = 0.0; for (int k = 1; k < MistakeKinds; k++) if (k != (int)DecisionErrorKind.LateContest && k != (int)DecisionErrorKind.LateReaction) n += a[oMistake + k]; return n; } }
+        /// <summary>Decisions off the ideal place because of positioning, and the sum of the metres.</summary>
+        public double DriftDecisions { get { return a[oDrift]; } }
+        public double DriftMetresSum { get { return a[oDrift + 1]; } }
+        public double DriftSamples { get { return a[oDrift + 2]; } }
+        /// <summary>Entries of the ball (carried or passed) into the final third / into the dangerous zone near the goal, possessions that reached the dangerous zone, clear chances (a shot candidate at or above the clear score) and clear chances taken.</summary>
+        public double FinalThirdEntries { get { return a[oProgress]; } }
+        public double DangerEntries { get { return a[oProgress + 1]; } }
+        public double DangerousPossessions { get { return a[oProgress + 2]; } }
+        public double ClearChances { get { return a[oProgress + 3]; } }
+        public double ClearChancesTaken { get { return a[oProgress + 4]; } }
+        public double Possessions { get { return a[oProgress + 5]; } }
+        /// <summary>Mean distance (m) of the field players from their place when their team has the ball, and when it has not.</summary>
+        public double HomeDistanceAttacking { get { return Div(a[oHome], a[oHome + 1]); } }
+        public double HomeDistanceDefending { get { return Div(a[oHome + 2], a[oHome + 3]); } }
+        public double HomeSamplesAttacking { get { return a[oHome + 1]; } }
+        public double HomeSamplesDefending { get { return a[oHome + 3]; } }
+
+        private bool Skip(TeamSide team) { return Config.OnlyOneTeam && team != Config.Team; }
 
         private static double Div(double x, double n) { return n > 0.0 ? x / n : 0.0; }
 

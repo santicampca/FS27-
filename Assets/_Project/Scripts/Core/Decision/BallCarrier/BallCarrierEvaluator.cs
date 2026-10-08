@@ -120,9 +120,16 @@ namespace FS27.Core
             AddProtect(view, me, pressure, anyPass, anyRun);
             AddHold(view, me, pressure, anyRun, ref summary);
 
+            // how this player reads the game (Phase 14): a bias on each candidate's score; none = the Phase 13 scores
+            if (Bias != null) for (int k = 0; k < count; k++) candidates[k].Score += Bias.Bias(candidates[k], summary);
+
             ActionCandidate best = default(ActionCandidate);
             best.Score = float.NegativeInfinity; best.ReceiverIndex = -1;
             for (int k = 0; k < count; k++) { summary.AvailableMask |= 1 << (int)candidates[k].Type; if (candidates[k].Score > best.Score) best = candidates[k]; }
+            // the second best of ALL (another receiver of the same kind counts): what a mistake would choose
+            HasSecond = false; Second = default(ActionCandidate);
+            for (int k = 0; k < count; k++)
+                if (!SameCandidate(candidates[k], best) && (!HasSecond || candidates[k].Score > Second.Score)) { Second = candidates[k]; HasSecond = true; }
             // the best candidate of any OTHER kind of action: how clearly the decision was won
             float runnerUp = float.NegativeInfinity; CandidateType runnerType = CandidateType.None;
             for (int k = 0; k < count; k++) if (candidates[k].Type != best.Type && candidates[k].Score > runnerUp) { runnerUp = candidates[k].Score; runnerType = candidates[k].Type; }
@@ -131,6 +138,24 @@ namespace FS27.Core
             Summary = summary;
             return best;
         }
+
+        /// <summary>The player took this candidate instead of the best one (a mistake of his level): what the evaluator reports from now on is what he did.</summary>
+        public void Choose(in ActionCandidate taken)
+        {
+            CarrierSummary s = Summary;
+            CandidateType wasBest = s.Best; float wasScore = s.BestScore;
+            s.Best = taken.Type; s.BestScore = taken.Score;
+            s.RunnerUpType = wasBest; s.RunnerUpScore = wasScore; s.Margin = taken.Score - wasScore;
+            Summary = s;
+        }
+
+        private static bool SameCandidate(in ActionCandidate a, in ActionCandidate b) { return a.Type == b.Type && a.ReceiverIndex == b.ReceiverIndex; }
+
+        /// <summary>How the player reading the game values each candidate on top of its score (Phase 14), or null.</summary>
+        public ICandidateBias Bias;
+        /// <summary>The second best candidate of the last evaluation (any kind, any receiver), when there was one.</summary>
+        public ActionCandidate Second;
+        public bool HasSecond;
 
         private void Add(CandidateType type, float score, int receiver, Vec2 target, RunKind run, DecisionReason reason, in CandidateParts parts)
         {

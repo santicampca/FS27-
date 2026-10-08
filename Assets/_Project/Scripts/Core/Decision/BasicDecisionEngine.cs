@@ -18,16 +18,25 @@ namespace FS27.Core
         // The tunings of the mode being played (Phase 13): Arena and Classic share this engine and every rule; only their numbers differ. A tuning given to the constructor is used for BOTH modes.
         private sealed class ModeSet
         {
-            public BasicDecisionTuning T; public DefenseTuning D; public AttackSupport Attack; public BallCarrierEvaluator Carrier;
+            public BasicDecisionTuning T; public DefenseTuning D; public AttackSupport Attack; public BallCarrierEvaluator Carrier; public AttackPositioningTuning AT; public BallCarrierTuning CT;
         }
 
         private readonly ModeSet arenaSet, classicSet;
+        // the sets of a team that plays with a difficulty profile (Phase 14): [mode, team]; null = the common set of the mode
+        private readonly ModeSet[,] profiledSets = new ModeSet[2, 2];
+        private readonly DecisionProfile[] profiles = new DecisionProfile[2];
+        private DecisionProfile profile;
         private ModeSet current;
         private BasicDecisionTuning t;
         private DefenseTuning d;
         private AttackSupport attack;
         private BallCarrierEvaluator carrier;
 
+        private bool collectRejections;
+        /// <summary>The mistake the last decision made on purpose, if any (Phase 14). Read by the diagnostics; no rule reads it.</summary>
+        public DecisionError LastError;
+        /// <summary>Metres the last decision was off the ideal place because of the level's positioning (0 when none).</summary>
+        public float LastDrift;
         public BasicDecisionTuning Tuning => t;
         public DefenseTuning DefenseTuning => d;
         /// <summary>The attack without the ball (Phase 10): who does which job, and where each stands (of the mode last played).</summary>
@@ -39,14 +48,49 @@ namespace FS27.Core
         public bool CollectRejections
         {
             get { return arenaSet.Carrier.CollectRejections; }
-            set { arenaSet.Carrier.CollectRejections = value; classicSet.Carrier.CollectRejections = value; }
+            set
+            {
+                collectRejections = value; arenaSet.Carrier.CollectRejections = value; classicSet.Carrier.CollectRejections = value;
+                for (int m = 0; m < 2; m++) for (int k = 0; k < 2; k++) if (profiledSets[m, k] != null) profiledSets[m, k].Carrier.CollectRejections = value;
+            }
         }
 
         /// <summary>Which tunings the engine reads from now on (it does this by itself at every decision, from the match it is shown).</summary>
         public void UseMode(GameMode mode)
         {
             current = mode == GameMode.Arena ? arenaSet : classicSet;
-            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier;
+            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier; profile = null;
+        }
+
+        /// <summary>The tunings of the team of the player who decides: the common ones of the mode, or the ones its difficulty profile gives it (Phase 14).</summary>
+        private void UseTeam(GameMode mode, TeamSide team)
+        {
+            DecisionProfile p = profiles[(int)team];
+            if (p == null) return;
+            current = profiledSets[mode == GameMode.Arena ? 0 : 1, (int)team];
+            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier; profile = p;
+        }
+
+        /// <summary>The difficulty profile of a team, or null (decides as in Phase 13). Changing it never changes the players, only how they choose.</summary>
+        public DecisionProfile ProfileOf(TeamSide team) { return profiles[(int)team]; }
+
+        public void SetProfile(TeamSide team, DecisionProfile p)
+        {
+            profiles[(int)team] = p;
+            for (int m = 0; m < 2; m++)
+            {
+                profiledSets[m, (int)team] = p == null ? null : BuildProfiledSet(m == 0 ? arenaSet : classicSet, m == 0 ? GameMode.Arena : GameMode.Classic, p);
+                if (profiledSets[m, (int)team] != null) profiledSets[m, (int)team].Carrier.CollectRejections = collectRejections;
+            }
+        }
+
+        private static ModeSet BuildProfiledSet(ModeSet common, GameMode mode, DecisionProfile p)
+        {
+            return new ModeSet
+            {
+                T = common.T, AT = common.AT, CT = common.CT, D = p.TuneDefense(common.D, mode),
+                Attack = new AttackSupport(common.T, common.AT), Carrier = new BallCarrierEvaluator(common.T, common.AT, common.CT)
+            };
         }
 
         public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attackTuning = null, BallCarrierTuning carrierTuning = null)
@@ -62,7 +106,8 @@ namespace FS27.Core
         {
             BasicDecisionTuning bt = tuning ?? BasicDecisionTuning.ForMode(mode);
             AttackPositioningTuning at = attackTuning ?? AttackPositioningTuning.ForMode(mode);
-            return new ModeSet { T = bt, D = defense ?? DefenseTuning.ForMode(mode), Attack = new AttackSupport(bt, at), Carrier = new BallCarrierEvaluator(bt, at, carrierTuning ?? BallCarrierTuning.ForMode(mode)) };
+            BallCarrierTuning ct = carrierTuning ?? BallCarrierTuning.ForMode(mode);
+            return new ModeSet { T = bt, AT = at, CT = ct, D = defense ?? DefenseTuning.ForMode(mode), Attack = new AttackSupport(bt, at), Carrier = new BallCarrierEvaluator(bt, at, ct) };
         }
 
         public PlayerDecision Decide(WorldView view, string playerId)
@@ -71,6 +116,9 @@ namespace FS27.Core
             int idx = view.IndexOf(playerId);
             if (idx < 0) return PlayerDecision.Idle(playerId, DecisionReason.NotOnPitch);
             WorldPlayer me = view[idx];
+            LastError = default(DecisionError); LastDrift = 0f;
+            UseTeam(view.Match.Mode, me.Team);
+            stamina = me.Stamina;
             if (!me.IsOnPitch) return PlayerDecision.Idle(playerId, DecisionReason.NotOnPitch);
             if (!view.Match.BallLive) return PlayerDecision.Idle(playerId, DecisionReason.NotPlaying);
             if (me.ActionLocked) return PlayerDecision.Idle(playerId, DecisionReason.Locked);
@@ -89,8 +137,17 @@ namespace FS27.Core
 
         private static Vec2 Lerp(Vec2 a, Vec2 b, float k) { return a + (b - a) * k; }
 
+        private float stamina;
+
+        /// <summary>The effort of a movement nothing depends on (Phase 14): a level that spends its legs well does not sprint to reposition. Essential movements (going for the ball, closing the carrier) are not capped.</summary>
+        private float Effort(float magnitude, bool essential)
+        {
+            return profile == null || essential ? magnitude : Math.Min(magnitude, profile.EffortCap(stamina));
+        }
+
         private PlayerDecision MoveTo(string playerId, Vec2 me, Vec2 target, float magnitude, DecisionKind kind, DecisionReason reason)
         {
+            magnitude = Effort(magnitude, kind == DecisionKind.MoveToBall);
             Vec2 goal = bounds.ClampPlayer(target);
             if ((goal - me).Magnitude <= t.IdleRadius) return new PlayerDecision { PlayerId = playerId, Kind = DecisionKind.Idle, Reason = DecisionReason.ArrivedAtPoint, HasMovement = true, Movement = MovementIntent.Stand };
             return new PlayerDecision { PlayerId = playerId, Kind = kind, Reason = reason, HasMovement = true, Movement = MovementIntent.TowardsTarget(me, goal, magnitude, t.ArriveRadius) };
@@ -183,7 +240,7 @@ namespace FS27.Core
             }
             Vec2 goal = bounds.ClampPlayer(plan.Target);
             bool arrived = (goal - me.Position).Magnitude <= t.IdleRadius;
-            float magnitude = plan.Job == AttackJob.Forward && view.Ball.SecondsSincePossessionChange < attack.Tuning.RecoverySeconds ? t.ChaseMagnitude : plan.Magnitude;
+            float magnitude = Effort(plan.Job == AttackJob.Forward && view.Ball.SecondsSincePossessionChange < attack.Tuning.RecoverySeconds ? t.ChaseMagnitude : plan.Magnitude, false);
             return new PlayerDecision
             {
                 PlayerId = me.PlayerId, Kind = kind, Reason = reason, HasMovement = true,
@@ -198,7 +255,7 @@ namespace FS27.Core
         private PlayerDecision Position(WorldView view, in WorldPlayer me, Vec2 home, float pull, DecisionReason reason)
         {
             if ((me.Position - home).Magnitude > t.FarFromHomeDistance) return MoveTo(me.PlayerId, me.Position, home, t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.FarFromHome);
-            return MoveTo(me.PlayerId, me.Position, HomeTarget(view, home, pull), t.PositionMagnitude, DecisionKind.MoveToPoint, reason);
+            return MoveTo(me.PlayerId, me.Position, HomeTarget(view, home, pull) + Drift(me, view), t.PositionMagnitude, DecisionKind.MoveToPoint, reason);
         }
 
         private Vec2 HomeTarget(WorldView view, Vec2 home, float pull)
@@ -302,9 +359,9 @@ namespace FS27.Core
             if (me.Stamina < d.TiredStamina) return Position(view, me, home, t.DefendBallPull, DecisionReason.TiredReturnHome);
             Vec2 own = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
             Vec2 target = carrier.Position + ActionModel.DirectionOr(own - carrier.Position, me.Facing) * d.SecondaryStandOff;
-            Vec2 goal = bounds.ClampPlayer(target);
+            Vec2 goal = bounds.ClampPlayer(target + Drift(me, view));
             if ((goal - me.Position).Magnitude <= t.IdleRadius) return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Idle, Reason = DecisionReason.SecondaryDefender, HasMovement = true, Movement = MovementIntent.Stand };
-            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.CloseDown, Reason = DecisionReason.SecondaryDefender, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, goal, d.SecondaryMagnitude, t.ArriveRadius) };
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.CloseDown, Reason = DecisionReason.SecondaryDefender, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, goal, Effort(d.SecondaryMagnitude, false), t.ArriveRadius) };
         }
 
         // ------------------------------------------------------------------ interception of a ball travelling to an opponent
@@ -507,7 +564,9 @@ namespace FS27.Core
             Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
             ITeammateRuns runs = NoRuns.Instance;
             if (attack.Tuning.Enabled) { attack.Assign(view, idx); runs = attack; }
+            if (profile != null) carrier.Bias = profile.BiasFor(me, view.Match, t.ShootRange, (goal - me.Position).Magnitude);
             ActionCandidate best = carrier.Evaluate(view, idx, runs, canKick);
+            if (profile != null && carrier.HasSecond) best = ChooseWithMistakes(view, me, best);
             bool pressed = obs.NearestOpponentDistance < t.PressureRadius;
             PlayerDecision decision;
             switch (best.Type)
@@ -532,6 +591,43 @@ namespace FS27.Core
                 PlayerId = me.PlayerId, Kind = DecisionKind.Dribble, Reason = DecisionReason.NoActionFallback, HasMovement = true,
                 Movement = MovementIntent.TowardsTarget(me.Position, bounds.ClampPlayer(goal), t.DribbleMagnitude, 0f)
             };
+        }
+
+        /// <summary>
+        /// The player of a level that makes mistakes (Phase 14) takes the second best option now and then, when it is close to the best. The mistake is recorded in <see cref="LastError"/>; the evaluator is told,
+        /// so that what it reports is what was done.
+        /// </summary>
+        private ActionCandidate ChooseWithMistakes(WorldView view, in WorldPlayer me, ActionCandidate best)
+        {
+            ActionCandidate second = carrier.Second;
+            float quality = ActionQualityOf(best.Type, me);
+            int tick = (int)Math.Round(view.Match.MatchTime / LocomotionDefaults.FixedDeltaTime);
+            if (!profile.ChoosesSecond(best, second, carrier.Summary.Pressure, me.Stamina / profile.Tuning.StaminaScale, quality, tick, me.Slot)) return best;
+            LastError = new DecisionError { Kind = DecisionProfile.Classify(best, second), Gap = best.Score - second.Score };
+            carrier.Choose(second);
+            return second;
+        }
+
+        private float ActionQualityOf(CandidateType type, in WorldPlayer me)
+        {
+            switch (type)
+            {
+                case CandidateType.Shoot: return me.Profile.ShotQualityClose;
+                case CandidateType.Pass:
+                case CandidateType.ForwardPass:
+                case CandidateType.ThroughPass: return me.Profile.PassQuality;
+                case CandidateType.Dribble: return me.Profile.DribbleSkill;
+                default: return me.Profile.ControlQuality;
+            }
+        }
+
+        /// <summary>Where the level's positioning puts a player off the place he should be in (nothing for a team without a profile).</summary>
+        private Vec2 Drift(in WorldPlayer me, WorldView view)
+        {
+            if (profile == null) return Vec2.Zero;
+            Vec2 v = profile.PositionDrift(me.Slot, view.Match.MatchTime, out float meters);
+            LastDrift = v.Magnitude;
+            return v;
         }
 
         /// <summary>A pass into the space a runner is running to: the ball goes to the point, the runner goes with it.</summary>

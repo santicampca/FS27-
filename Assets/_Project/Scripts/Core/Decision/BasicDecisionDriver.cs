@@ -12,6 +12,18 @@ namespace FS27.Core
     {
         private readonly BasicDecisionEngine engine;
         private readonly int intervalSteps;
+        // ---- Phase 14: a team that plays with a difficulty decides at its own rhythm, notices a change of possession after a reaction time and waits that long before committing a contest
+        private readonly int[] sideSteps = new int[2];
+        private readonly DecisionProfile[] sideProfiles = new DecisionProfile[2];
+        private readonly ReactionGate[] noticing = new ReactionGate[WorldState.MaxPlayers];
+        private readonly ReactionGate[] committing = new ReactionGate[WorldState.MaxPlayers];
+        private readonly int[] seenState = new int[WorldState.MaxPlayers];
+        // how much faster or slower than average each player reacts, read once from his Reaction attribute (the attribute itself is not kept)
+        private readonly System.Collections.Generic.Dictionary<string, float> reactionFactor = new System.Collections.Generic.Dictionary<string, float>();
+        /// <summary>Decisions skipped because the player had not yet noticed the change, contests held back until the reaction time had passed, and the sum of the delays (seconds).</summary>
+        public int LateNoticed { get; private set; }
+        public int LateContests { get; private set; }
+        public double ReactionDelaySum { get; private set; }
         private readonly WorldState world = new WorldState();
         private readonly PlayerDecision[] last = new PlayerDecision[WorldState.MaxPlayers];
         private readonly bool[] decided = new bool[WorldState.MaxPlayers];
@@ -73,7 +85,31 @@ namespace FS27.Core
             BasicDecisionTuning t = tuning ?? new BasicDecisionTuning();
             engine = new BasicDecisionEngine(match.Pitch, t, defense, positioning, attack, carrier);
             intervalSteps = Math.Max(1, (int)Math.Round(t.DecisionIntervalSeconds / LocomotionDefaults.FixedDeltaTime));
+            sideSteps[0] = sideSteps[1] = intervalSteps;
+            for (int i = 0; i < noticing.Length; i++) { noticing[i] = new ReactionGate(); committing[i] = new ReactionGate(); }
         }
+
+        /// <summary>
+        /// Plays a team with a difficulty level (Phase 14): the level is read ONCE into a <see cref="DecisionProfile"/> and from then on only changes how that team's players choose, notice and commit; the players
+        /// themselves (their attributes, stamina, speed) are never touched. <paramref name="players"/> only lets the driver READ each player's reaction attribute; without it every player reacts as an average one.
+        /// A null definition returns the team to the Phase 13 behaviour.
+        /// </summary>
+        public void SetDifficulty(TeamSide side, DifficultyDefinition definition, IPlayerLookup players = null, MatchController match = null, DecisionProfileTuning tuning = null)
+        {
+            DecisionProfile p = definition == null ? null : DecisionProfile.From(definition, tuning);
+            sideProfiles[(int)side] = p; engine.SetProfile(side, p);
+            sideSteps[(int)side] = p == null ? intervalSteps : Math.Max(1, (int)Math.Round(intervalSteps * p.DecisionIntervalScale));
+            if (p != null && players != null && match != null)
+            {
+                TeamMatchState team = side == TeamSide.Home ? match.State.Home : match.State.Away;
+                for (int i = 0; i < team.Players.Count; i++)
+                    if (players.TryGet(team.Players[i].PlayerId, out PlayerDefinition def) && def != null) reactionFactor[team.Players[i].PlayerId] = ReactionModel.AttributeFactor(p.Reaction.AttributeInfluence, def.Attributes);
+            }
+        }
+
+        public DecisionProfile ProfileOf(TeamSide side) { return sideProfiles[(int)side]; }
+        public int DecisionStepsOf(TeamSide side) { return sideSteps[(int)side]; }
+
 
         /// <summary>The last decision a player made (by his id), if he has made one.</summary>
         public bool TryGetLast(string playerId, out PlayerDecision decision)
@@ -87,7 +123,7 @@ namespace FS27.Core
         {
             step++;
             if (diagnostics != null) diagnostics.BeginStep(step);
-            if (!match.State.IsBallLive) return;
+            if (!match.State.IsBallLive) { SyncSeen(match); return; }
 
             bool any = false;
             for (int side = 0; side < 2 && !any; side++)
@@ -99,6 +135,7 @@ namespace FS27.Core
 
             world.Refresh(match);
             WorldView view = world.View;
+            if (view.Match.HasPossession) lastOwner = view.Match.PossessingTeam == TeamSide.Home ? 1 : 2;
             if (view.TryGetBallCarrier(out WorldPlayer holder))
             {
                 DefenseRoles.Rank(view, holder.Team.Opponent(), holder, engine.DefenseTuning, out int primary, out _);
@@ -113,7 +150,11 @@ namespace FS27.Core
                 {
                     WorldPlayer p = view[start + i];
                     if (!p.IsOnPitch || p.IsControlled || !IsDue(side, i)) continue;
+                    DecisionProfile profile = sideProfiles[side];
+                    if (profile != null && !HasNoticed(view, profile, start + i, p, side)) continue;
                     PlayerDecision d = engine.Decide(view, p.PlayerId);
+                    if (profile != null && !ClearToCommit(profile, start + i, p, ref d)) continue;
+                    if (profile != null && diagnostics != null) diagnostics.OnMistake(step, s, engine.LastError, engine.LastDrift);
                     last[start + i] = d; decided[start + i] = true;
                     if (diagnostics != null) diagnostics.OnDecision(step, view, start + i, d, engine.Carrier, p.HasBall && !p.IsGoalkeeper && engine.Carrier.Tuning.Enabled);
                     Decisions++; kindCounts[(int)d.Kind]++;
@@ -155,6 +196,67 @@ namespace FS27.Core
             }
         }
 
+        // ------------------------------------------------------------------ Phase 14: noticing and committing
+
+        // the team that had the ball last (0 = nobody yet, 1 = the home team, 2 = the away team): a pass in the air is not a change, a turnover is
+        private int lastOwner;
+
+        private int PossessionState(WorldMatch m) { return lastOwner; }
+
+        private void SyncSeen(MatchController match)
+        {
+            int state = lastOwner;
+            for (int i = 0; i < seenState.Length; i++) { seenState[i] = state; noticing[i].Clear(); committing[i].Clear(); }
+        }
+
+        private float ReactionSecondsOf(DecisionProfile profile, in WorldPlayer p, float share)
+        {
+            float factor = reactionFactor.TryGetValue(p.PlayerId, out float known) ? known : 1f;
+            float jitter = DecisionDice.Roll(DecisionDice.Reaction, step, p.Slot);
+            ReactionParameters r = profile.Reaction;
+            float seconds = r.BaseReactionSeconds * factor * (1f + r.ReactionVariance * (2f * jitter - 1f));
+            return ReactionModel.Clamp(seconds, r.MinReactionSeconds) * share;
+        }
+
+        /// <summary>A player notices that possession changed only after his reaction time; until then he goes on with what he was doing.</summary>
+        private bool HasNoticed(WorldView view, DecisionProfile profile, int index, in WorldPlayer p, int side)
+        {
+            int state = PossessionState(view.Match);
+            if (seenState[index] == state) return true;
+            float now = step * LocomotionDefaults.FixedDeltaTime;
+            ReactionGate gate = noticing[index];
+            if (!gate.IsPending)
+            {
+                float seconds = ReactionSecondsOf(profile, p, profile.Tuning.PerceptionShare);
+                gate.Notice(now, seconds);
+                ReactionDelaySum += seconds; LateNoticed++;
+                if (diagnostics != null) diagnostics.OnMistake(step, p.Team, new DecisionError { Kind = DecisionErrorKind.LateReaction, Gap = seconds }, 0f);
+            }
+            if (!gate.IsReady(now)) return false;
+            gate.Clear(); seenState[index] = state;
+            return true;
+        }
+
+        private static bool IsContest(FootballActionKind k) { return k == FootballActionKind.Tackle || k == FootballActionKind.SlidingTackle || k == FootballActionKind.PhysicalChallenge; }
+
+        /// <summary>A defender who is in range does not commit the tackle, the slide or the challenge at once: he takes his reaction time first (the decision is dropped and he goes on closing in).</summary>
+        private bool ClearToCommit(DecisionProfile profile, int index, in WorldPlayer p, ref PlayerDecision d)
+        {
+            ReactionGate gate = committing[index];
+            if (!d.HasAction || !IsContest(d.Action.Kind)) { gate.Clear(); return true; }
+            float now = step * LocomotionDefaults.FixedDeltaTime;
+            if (!gate.IsPending)
+            {
+                float seconds = ReactionSecondsOf(profile, p, profile.Tuning.ContestShare);
+                gate.Notice(now, seconds);
+                ReactionDelaySum += seconds; LateContests++;
+                if (diagnostics != null) diagnostics.OnMistake(step, p.Team, new DecisionError { Kind = DecisionErrorKind.LateContest, Gap = seconds }, 0f);
+            }
+            if (!gate.IsReady(now)) return false;
+            gate.Clear();
+            return true;
+        }
+
         private void SampleAttack(WorldView view, in WorldPlayer holder)
         {
             int start = view.TeamStart(holder.Team), end = start + view.TeamCount(holder.Team), lanes = 0, field = 0;
@@ -176,6 +278,6 @@ namespace FS27.Core
             AttackSamples++; PassLaneSum += lanes; TeammateSpreadSum += spread / pairs;
         }
 
-        private bool IsDue(int side, int slot) { return (step + side * 5 + slot) % intervalSteps == 0; }
+        private bool IsDue(int side, int slot) { return (step + side * 5 + slot) % sideSteps[side] == 0; }
     }
 }

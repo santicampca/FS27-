@@ -53,6 +53,7 @@ namespace FS27.Core
 
         private void OnEvent(GameplayEvent e)
         {
+            if (Config.OnlyOneTeam && e.HasTeam && e.Team != Config.Team) return;
             switch (e.Kind)
             {
                 case GameplayEventKind.GoalScored:
@@ -81,6 +82,7 @@ namespace FS27.Core
         /// <summary>Called at the start of every driver step, before anything is decided: follows possession and settles what can be settled. Reads the match only.</summary>
         public void BeginStep(int stepNumber)
         {
+            if (Twin != null) Twin.BeginStep(stepNumber);
             if (!Config.Enabled || match == null) return;
             step = stepNumber;
             a[oMatch + mSteps] += 1.0;
@@ -91,7 +93,10 @@ namespace FS27.Core
                 {
                     if (hasPossession && ball.PossessingTeam != lastTeam) a[oMatch + mSwitches] += 1.0;
                     a[oMatch + (ball.PossessingTeam == TeamSide.Home ? mGainsHome : mGainsAway)] += 1.0;
+                    if (!Skip(ball.PossessingTeam)) a[oProgress + 5] += 1.0;
+                    inFinalThird = false; inDanger = false; possessionWasDangerous = false;
                 }
+                if (!Skip(ball.PossessingTeam)) TrackProgress(ball);
                 if (ball.PossessingPlayerId != lastPossessor) { int who = IndexOf(ball.PossessingTeam, ball.PossessingPlayerId); if (who >= 0) players[who].Possessions++; }
                 hasPossession = true; lastTeam = ball.PossessingTeam; lastPossessor = ball.PossessingPlayerId;
             }
@@ -102,7 +107,7 @@ namespace FS27.Core
                     for (int i = 0; i < team.Players.Count; i++)
                     {
                         MatchPlayer p = team.Players[i];
-                        if (!p.IsActive || p.InGoal) continue;
+                        if (!p.IsActive || p.InGoal || Skip(team.Side)) continue;
                         float st = p.Locomotion.CurrentStamina;
                         a[oStamina + slot * 3] += st; if (st < 20f) a[oStamina + slot * 3 + 1] += 1.0; a[oStamina + slot * 3 + 2] += 1.0;
                     }
@@ -142,6 +147,30 @@ namespace FS27.Core
                 case FootballActionKind.Shot: case FootballActionKind.CurvedShot: case FootballActionKind.PlacedShot: case FootballActionKind.Chip: case FootballActionKind.Header: return true;
                 default: return false;
             }
+        }
+
+        private bool inFinalThird, inDanger, possessionWasDangerous;
+
+        /// <summary>The ball in the hands of the observed team: did it enter the final third, did it reach the dangerous zone (counted once per possession).</summary>
+        private void TrackProgress(MatchBall ball)
+        {
+            bool positive = (ball.PossessingTeam == TeamSide.Home) == match.State.HomeAttacksPositiveX;
+            float x = positive ? ball.Physics.Position.X : -ball.Physics.Position.X;
+            float half = match.Field.Length * 0.5f;
+            bool third = x > half - match.Field.Length * Config.FinalThirdFraction;
+            bool danger = half - x < Config.DangerDistance;
+            if (third && !inFinalThird) a[oProgress] += 1.0;
+            if (danger && !inDanger) { a[oProgress + 1] += 1.0; if (!possessionWasDangerous) { a[oProgress + 2] += 1.0; possessionWasDangerous = true; } }
+            inFinalThird = third; inDanger = danger;
+        }
+
+        /// <summary>A controlled mistake of a level (or a late reaction / late contest), and the metres the player was off his place. Counts for the team given.</summary>
+        public void OnMistake(int stepNumber, TeamSide team, in DecisionError error, float driftMetres)
+        {
+            if (Twin != null) Twin.OnMistake(stepNumber, team, error, driftMetres);
+            if (!Config.Enabled || match == null || Skip(team)) return;
+            if (error.Occurred) { a[oMistake + (int)error.Kind] += 1.0; a[oMistakeGap + (int)error.Kind] += error.Gap; }
+            if (driftMetres > 0f) { a[oDrift] += 1.0; a[oDrift + 1] += driftMetres; }
         }
 
         private void FollowPasses(MatchBall ball)
@@ -250,8 +279,10 @@ namespace FS27.Core
         /// <summary>One decision of one player (any player): counted by kind, by player and, for a carrier, explained.</summary>
         public void OnDecision(int stepNumber, WorldView view, int idx, in PlayerDecision d, BallCarrierEvaluator carrier, bool wasCarrierDecision)
         {
-            if (!Config.Enabled || match == null) return;
+            if (Twin != null) Twin.OnDecision(stepNumber, view, idx, d, carrier, wasCarrierDecision);
+            if (!Config.Enabled || match == null || Skip(view[idx].Team)) return;
             a[oDecisions] += 1.0; a[oKinds + (int)d.Kind] += 1.0;
+            { WorldPlayer who = view[idx]; if (!who.IsGoalkeeper && who.HasHome) { bool attacking = view.Match.HasPossession && view.Match.PossessingTeam == who.Team; int o = oHome + (attacking ? 0 : 2); a[o] += (who.Position - who.Home).Magnitude; a[o + 1] += 1.0; } a[oDrift + 2] += 1.0; }
             players[idx].Decisions++;
             { float m = d.HasMovement ? d.Movement.Magnitude : 0f; a[oEffort + (int)d.Kind * 3 + (m < LocomotionDefaults.WalkThreshold ? 0 : (m < LocomotionDefaults.SprintThreshold ? 1 : 2))] += 1.0; }
             if (d.Kind == DecisionKind.MoveToBall) for (int i = 0; i < passes.Length; i++) if (passes[i].Active && passes[i].PasserIdx == idx) passes[i].PasserChased = true;
@@ -272,6 +303,7 @@ namespace FS27.Core
             CarrierSummary s = ev.Summary;
             int win = (int)s.Best;
             a[oCarrier] += 1.0;
+            if (s.ShootValid && s.ShootScore >= Config.ClearChanceScore) { a[oProgress + 3] += 1.0; if (s.Best == CandidateType.Shoot) a[oProgress + 4] += 1.0; }
             a[oChosen + win] += 1.0; a[oChosenScore + win] += s.BestScore; a[oChosenPressure + win] += s.Pressure; a[oChosenStamina + win] += s.Stamina; a[oChosenGoal + win] += s.DistanceToGoal;
             if (s.RunnerUpType != CandidateType.None) { a[oRunnerUp + (int)s.RunnerUpType] += 1.0; a[oSecond + win * Types + (int)s.RunnerUpType] += 1.0; }
             double margin = s.Margin;

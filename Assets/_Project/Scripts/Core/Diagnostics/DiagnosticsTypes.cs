@@ -25,6 +25,15 @@ namespace FS27.Core
         public int EpisodeGapSteps = 30;
         /// <summary>A carrier slower than this (m/s) when a duel happens counts as standing still.</summary>
         public float StationarySpeed = 0.5f;
+        /// <summary>Phase 14: count only what ONE team does (its decisions, actions, passes, shots, duels, stamina, possessions and goals), to compare the two sides of the same match.</summary>
+        public bool OnlyOneTeam;
+        public TeamSide Team;
+        /// <summary>The attacking third, as a fraction of the pitch length.</summary>
+        public float FinalThirdFraction = 0.3333f;
+        /// <summary>A possession with the ball this close to the opposing goal (metres) is a dangerous one.</summary>
+        public float DangerDistance = 9f;
+        /// <summary>A shot candidate that scores at least this is a clear chance.</summary>
+        public float ClearChanceScore = 2.5f;
     }
 
     /// <summary>How a pass ended, as far as the core lets us see (never guessed: <see cref="NotObserved"/> when it could not be told).</summary>
