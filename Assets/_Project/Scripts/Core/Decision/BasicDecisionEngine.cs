@@ -603,7 +603,7 @@ namespace FS27.Core
             float quality = ActionQualityOf(best.Type, me);
             int tick = (int)Math.Round(view.Match.MatchTime / LocomotionDefaults.FixedDeltaTime);
             if (!profile.ChoosesSecond(best, second, carrier.Summary.Pressure, me.Stamina / profile.Tuning.StaminaScale, quality, tick, me.Slot)) return best;
-            LastError = new DecisionError { Kind = DecisionProfile.Classify(best, second), Gap = best.Score - second.Score };
+            LastError = new DecisionError { Kind = DecisionProfile.Classify(best, second), Gap = best.Score - second.Score, Pressure = carrier.Summary.Pressure, Stamina = me.Stamina, FreeWay = carrier.Summary.DribbleFree };
             carrier.Choose(second);
             return second;
         }

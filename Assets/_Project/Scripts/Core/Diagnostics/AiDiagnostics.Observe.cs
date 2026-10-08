@@ -61,6 +61,8 @@ namespace FS27.Core
                     { bool afterShot = false; for (int i = 0; i < shots.Length; i++) if (shots[i].Active && (!e.HasTeam || shots[i].Team == e.Team)) afterShot = true; a[oMatch + (afterShot ? mGoalsAfterShot : mGoalsOther)] += 1.0; }
                     break;
                 case GameplayEventKind.FoulCommitted: a[oMatch + mFoulEvents] += 1.0; break;
+                case GameplayEventKind.YellowCardIssued: a[oContext + 6] += 1.0; break;
+                case GameplayEventKind.RedCardIssued: a[oContext + 7] += 1.0; break;
                 case GameplayEventKind.InterceptionPerformed:
                     lastInterceptStep = step; lastInterceptTeam = e.Team; a[oMatch + mInterceptEvents] += 1.0;
                     if (e.Detail == "Blocked") a[oMatch + mBlocks] += 1.0; else a[oMatch + mInterceptions] += 1.0;
@@ -91,7 +93,7 @@ namespace FS27.Core
             {
                 if (!hasPossession || ball.PossessingTeam != lastTeam)
                 {
-                    if (hasPossession && ball.PossessingTeam != lastTeam) a[oMatch + mSwitches] += 1.0;
+                    if (hasPossession && ball.PossessingTeam != lastTeam) { a[oMatch + mSwitches] += 1.0; if (!Skip(lastTeam)) a[oLost] += 1.0; }
                     a[oMatch + (ball.PossessingTeam == TeamSide.Home ? mGainsHome : mGainsAway)] += 1.0;
                     if (!Skip(ball.PossessingTeam)) a[oProgress + 5] += 1.0;
                     inFinalThird = false; inDanger = false; possessionWasDangerous = false;
@@ -169,7 +171,16 @@ namespace FS27.Core
         {
             if (Twin != null) Twin.OnMistake(stepNumber, team, error, driftMetres);
             if (!Config.Enabled || match == null || Skip(team)) return;
-            if (error.Occurred) { a[oMistake + (int)error.Kind] += 1.0; a[oMistakeGap + (int)error.Kind] += error.Gap; }
+            if (error.Occurred)
+            {
+                a[oMistake + (int)error.Kind] += 1.0; a[oMistakeGap + (int)error.Kind] += error.Gap;
+                if (error.Kind != DecisionErrorKind.LateContest && error.Kind != DecisionErrorKind.LateReaction)
+                {
+                    if (error.Pressure >= Config.PressedLevel) a[oContext + 3] += 1.0;
+                    if (!error.FreeWay) a[oContext + 4] += 1.0;
+                    if (error.Stamina <= Config.TiredLevel) a[oContext + 5] += 1.0;
+                }
+            }
             if (driftMetres > 0f) { a[oDrift] += 1.0; a[oDrift + 1] += driftMetres; }
         }
 
@@ -303,6 +314,9 @@ namespace FS27.Core
             CarrierSummary s = ev.Summary;
             int win = (int)s.Best;
             a[oCarrier] += 1.0;
+            if (s.Pressure >= Config.PressedLevel) a[oContext] += 1.0;
+            if (!s.DribbleFree) a[oContext + 1] += 1.0;
+            if (s.Stamina <= Config.TiredLevel) a[oContext + 2] += 1.0;
             if (s.ShootValid && s.ShootScore >= Config.ClearChanceScore) { a[oProgress + 3] += 1.0; if (s.Best == CandidateType.Shoot) a[oProgress + 4] += 1.0; }
             a[oChosen + win] += 1.0; a[oChosenScore + win] += s.BestScore; a[oChosenPressure + win] += s.Pressure; a[oChosenStamina + win] += s.Stamina; a[oChosenGoal + win] += s.DistanceToGoal;
             if (s.RunnerUpType != CandidateType.None) { a[oRunnerUp + (int)s.RunnerUpType] += 1.0; a[oSecond + win * Types + (int)s.RunnerUpType] += 1.0; }

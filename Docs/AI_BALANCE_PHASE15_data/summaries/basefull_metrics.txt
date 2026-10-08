@@ -1,0 +1,302 @@
+==== Arena (A level vs opponent; value = mean of A [mean of B]; diff A-B with 95%CI; * = CI excludes 0)
+Novice vs Professional
+   q_ErrorRate                                  A    0.156 B    0.057  diff   +0.099 [  +0.095,  +0.103] *
+   q_ErrorRateUnderPressure                     A    0.209 B    0.066  diff   +0.143 [  +0.135,  +0.151] *
+   q_ErrorRateWithLittleSpace                   A    0.204 B    0.054  diff   +0.151 [  +0.131,  +0.169] *
+   q_ErrorRateWhenTired                         A    0.158 B    0.058  diff   +0.100 [  +0.096,  +0.104] *
+   q_MeanMargin                                 A    0.724 B    0.742  diff   -0.017 [  -0.030,  -0.005] *
+   q_PassCompletion                             A    0.465 B    0.487  diff   -0.023 [  -0.036,  -0.010] *
+   q_ShotsOnTargetShare                         A    0.467 B    0.451  diff   +0.016 [  -0.009,  +0.042]  
+   q_ShotTakeRate                               A    0.509 B    0.385  diff   +0.124 [  +0.106,  +0.142] *
+   q_ClearChancesPer100Possessions              A   16.865 B   22.317  diff   -5.452 [  -7.472,  -3.346] *
+   q_FinalThirdEntriesPerPossession             A    0.411 B    0.439  diff   -0.029 [  -0.055,  -0.001] *
+   q_ChancesConcededPer100OpponentPossessions   A   22.317 B   16.865  diff   +5.452 [  +3.341,  +7.567] *
+   q_DangerConcededPerOpponentPossession        A    0.252 B    0.238  diff   +0.014 [  -0.004,  +0.032]  
+   q_RecoveriesPerOpponentPossession            A    0.403 B    0.516  diff   -0.114 [  -0.134,  -0.093] *
+   q_InterceptionsPerOpponentPossession         A    0.372 B    0.451  diff   -0.079 [  -0.095,  -0.061] *
+   q_ContestSuccess                             A    0.596 B    0.701  diff   -0.102 [  -0.149,  -0.057] *
+   q_HomeDistanceAttacking                      A    4.408 B    4.520  diff   -0.112 [  -0.201,  -0.017] *
+   q_HomeDistanceDefending                      A    4.270 B    4.323  diff   -0.053 [  -0.125,  +0.020]  
+   q_OffBallAttackShare                         A    0.114 B    0.108  diff   +0.007 [  +0.002,  +0.011] *
+   q_DefensiveActionShare                       A    0.052 B    0.048  diff   +0.005 [  +0.004,  +0.006] *
+   stamMean                                     A   14.238 B   15.597  diff   -1.359 [  -1.585,  -1.143] *
+   sprintDecisions                              A 3021.133 B 4677.427  diff -1656.293 [-1687.373,-1622.467] *
+   fouls                                        A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    2.667 B    3.407  diff   -0.740 [  -1.187,  -0.327] *
+Amateur vs Professional
+   q_ErrorRate                                  A    0.102 B    0.055  diff   +0.047 [  +0.044,  +0.050] *
+   q_ErrorRateUnderPressure                     A    0.128 B    0.063  diff   +0.065 [  +0.059,  +0.071] *
+   q_ErrorRateWithLittleSpace                   A    0.104 B    0.053  diff   +0.051 [  +0.038,  +0.065] *
+   q_ErrorRateWhenTired                         A    0.104 B    0.056  diff   +0.048 [  +0.044,  +0.051] *
+   q_MeanMargin                                 A    0.738 B    0.753  diff   -0.015 [  -0.027,  -0.004] *
+   q_PassCompletion                             A    0.471 B    0.471  diff   +0.000 [  -0.012,  +0.012]  
+   q_ShotsOnTargetShare                         A    0.477 B    0.460  diff   +0.017 [  -0.007,  +0.042]  
+   q_ShotTakeRate                               A    0.459 B    0.398  diff   +0.060 [  +0.042,  +0.079] *
+   q_ClearChancesPer100Possessions              A   15.028 B   19.407  diff   -4.379 [  -6.180,  -2.669] *
+   q_FinalThirdEntriesPerPossession             A    0.404 B    0.412  diff   -0.008 [  -0.031,  +0.016]  
+   q_ChancesConcededPer100OpponentPossessions   A   19.407 B   15.028  diff   +4.379 [  +2.738,  +6.175] *
+   q_DangerConcededPerOpponentPossession        A    0.232 B    0.225  diff   +0.007 [  -0.008,  +0.022]  
+   q_RecoveriesPerOpponentPossession            A    0.469 B    0.524  diff   -0.055 [  -0.075,  -0.035] *
+   q_InterceptionsPerOpponentPossession         A    0.431 B    0.473  diff   -0.042 [  -0.060,  -0.024] *
+   q_ContestSuccess                             A    0.611 B    0.635  diff   -0.024 [  -0.068,  +0.020]  
+   q_HomeDistanceAttacking                      A    4.375 B    4.435  diff   -0.060 [  -0.141,  +0.024]  
+   q_HomeDistanceDefending                      A    4.221 B    4.250  diff   -0.029 [  -0.094,  +0.032]  
+   q_OffBallAttackShare                         A    0.113 B    0.108  diff   +0.005 [  +0.000,  +0.009] *
+   q_DefensiveActionShare                       A    0.051 B    0.049  diff   +0.002 [  +0.001,  +0.004] *
+   stamMean                                     A   14.812 B   15.409  diff   -0.596 [  -0.818,  -0.386] *
+   sprintDecisions                              A 3864.227 B 4705.227  diff -841.000 [-869.100,-812.987] *
+   fouls                                        A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.167 B    3.440  diff   -0.273 [  -0.760,  +0.227]  
+Professional vs Professional
+   q_ErrorRate                                  A    0.055 B    0.055  diff   +0.000 [  -0.002,  +0.002]  
+   q_ErrorRateUnderPressure                     A    0.063 B    0.063  diff   +0.000 [  -0.004,  +0.005]  
+   q_ErrorRateWithLittleSpace                   A    0.050 B    0.050  diff   +0.000 [  -0.009,  +0.010]  
+   q_ErrorRateWhenTired                         A    0.056 B    0.056  diff   +0.000 [  -0.002,  +0.002]  
+   q_MeanMargin                                 A    0.755 B    0.755  diff   +0.000 [  -0.012,  +0.012]  
+   q_PassCompletion                             A    0.466 B    0.466  diff   +0.000 [  -0.011,  +0.011]  
+   q_ShotsOnTargetShare                         A    0.474 B    0.474  diff   +0.000 [  -0.026,  +0.025]  
+   q_ShotTakeRate                               A    0.401 B    0.401  diff   +0.000 [  -0.016,  +0.017]  
+   q_ClearChancesPer100Possessions              A   18.342 B   18.342  diff   +0.000 [  -2.091,  +2.121]  
+   q_FinalThirdEntriesPerPossession             A    0.404 B    0.404  diff   +0.000 [  -0.023,  +0.024]  
+   q_ChancesConcededPer100OpponentPossessions   A   18.342 B   18.342  diff   +0.000 [  -2.110,  +2.117]  
+   q_DangerConcededPerOpponentPossession        A    0.215 B    0.215  diff   +0.000 [  -0.015,  +0.015]  
+   q_RecoveriesPerOpponentPossession            A    0.531 B    0.531  diff   +0.000 [  -0.025,  +0.025]  
+   q_InterceptionsPerOpponentPossession         A    0.484 B    0.484  diff   +0.000 [  -0.022,  +0.023]  
+   q_ContestSuccess                             A    0.609 B    0.609  diff   +0.000 [  -0.041,  +0.041]  
+   q_HomeDistanceAttacking                      A    4.427 B    4.427  diff   +0.000 [  -0.076,  +0.080]  
+   q_HomeDistanceDefending                      A    4.261 B    4.261  diff   +0.000 [  -0.075,  +0.076]  
+   q_OffBallAttackShare                         A    0.110 B    0.110  diff   +0.000 [  -0.005,  +0.004]  
+   q_DefensiveActionShare                       A    0.050 B    0.050  diff   +0.000 [  -0.001,  +0.001]  
+   stamMean                                     A   15.248 B   15.248  diff   +0.000 [  -0.212,  +0.224]  
+   sprintDecisions                              A 4752.000 B 4752.000  diff   +0.000 [ -31.913, +33.640]  
+   fouls                                        A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.233 B    3.233  diff   +0.000 [  -0.400,  +0.400]  
+Expert vs Professional
+   q_ErrorRate                                  A    0.023 B    0.056  diff   -0.033 [  -0.035,  -0.031] *
+   q_ErrorRateUnderPressure                     A    0.024 B    0.064  diff   -0.040 [  -0.044,  -0.036] *
+   q_ErrorRateWithLittleSpace                   A    0.020 B    0.055  diff   -0.034 [  -0.042,  -0.027] *
+   q_ErrorRateWhenTired                         A    0.024 B    0.058  diff   -0.034 [  -0.036,  -0.032] *
+   q_MeanMargin                                 A    0.743 B    0.751  diff   -0.008 [  -0.018,  +0.003]  
+   q_PassCompletion                             A    0.478 B    0.457  diff   +0.021 [  +0.010,  +0.032] *
+   q_ShotsOnTargetShare                         A    0.492 B    0.497  diff   -0.005 [  -0.029,  +0.018]  
+   q_ShotTakeRate                               A    0.332 B    0.404  diff   -0.072 [  -0.088,  -0.055] *
+   q_ClearChancesPer100Possessions              A   23.353 B   16.700  diff   +6.653 [  +4.443,  +8.939] *
+   q_FinalThirdEntriesPerPossession             A    0.416 B    0.404  diff   +0.012 [  -0.010,  +0.033]  
+   q_ChancesConcededPer100OpponentPossessions   A   16.700 B   23.353  diff   -6.653 [  -8.811,  -4.436] *
+   q_DangerConcededPerOpponentPossession        A    0.221 B    0.229  diff   -0.008 [  -0.023,  +0.008]  
+   q_RecoveriesPerOpponentPossession            A    0.581 B    0.529  diff   +0.051 [  +0.031,  +0.073] *
+   q_InterceptionsPerOpponentPossession         A    0.531 B    0.489  diff   +0.042 [  +0.024,  +0.062] *
+   q_ContestSuccess                             A    0.599 B    0.577  diff   +0.023 [  -0.020,  +0.065]  
+   q_HomeDistanceAttacking                      A    4.422 B    4.396  diff   +0.027 [  -0.047,  +0.103]  
+   q_HomeDistanceDefending                      A    4.242 B    4.227  diff   +0.015 [  -0.051,  +0.081]  
+   q_OffBallAttackShare                         A    0.110 B    0.111  diff   -0.001 [  -0.006,  +0.004]  
+   q_DefensiveActionShare                       A    0.049 B    0.051  diff   -0.002 [  -0.003,  -0.001] *
+   stamMean                                     A   15.488 B   15.251  diff   +0.237 [  +0.003,  +0.462] *
+   sprintDecisions                              A 6077.907 B 4742.780  diff +1335.127 [+1294.473,+1375.367] *
+   fouls                                        A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.627 B    2.993  diff   +0.633 [  +0.247,  +1.033] *
+Elite vs Professional
+   q_ErrorRate                                  A    0.006 B    0.056  diff   -0.050 [  -0.051,  -0.048] *
+   q_ErrorRateUnderPressure                     A    0.005 B    0.065  diff   -0.060 [  -0.063,  -0.056] *
+   q_ErrorRateWithLittleSpace                   A    0.004 B    0.062  diff   -0.058 [  -0.065,  -0.051] *
+   q_ErrorRateWhenTired                         A    0.006 B    0.057  diff   -0.051 [  -0.053,  -0.049] *
+   q_MeanMargin                                 A    0.739 B    0.752  diff   -0.013 [  -0.024,  -0.002] *
+   q_PassCompletion                             A    0.483 B    0.456  diff   +0.027 [  +0.015,  +0.038] *
+   q_ShotsOnTargetShare                         A    0.468 B    0.476  diff   -0.007 [  -0.030,  +0.015]  
+   q_ShotTakeRate                               A    0.296 B    0.407  diff   -0.111 [  -0.128,  -0.094] *
+   q_ClearChancesPer100Possessions              A   26.107 B   16.840  diff   +9.267 [  +6.952, +11.714] *
+   q_FinalThirdEntriesPerPossession             A    0.410 B    0.414  diff   -0.004 [  -0.028,  +0.020]  
+   q_ChancesConcededPer100OpponentPossessions   A   16.840 B   26.107  diff   -9.267 [ -11.632,  -6.920] *
+   q_DangerConcededPerOpponentPossession        A    0.223 B    0.227  diff   -0.004 [  -0.019,  +0.011]  
+   q_RecoveriesPerOpponentPossession            A    0.618 B    0.536  diff   +0.082 [  +0.061,  +0.105] *
+   q_InterceptionsPerOpponentPossession         A    0.564 B    0.499  diff   +0.065 [  +0.046,  +0.084] *
+   q_ContestSuccess                             A    0.567 B    0.563  diff   +0.004 [  -0.038,  +0.044]  
+   q_HomeDistanceAttacking                      A    4.429 B    4.442  diff   -0.013 [  -0.095,  +0.068]  
+   q_HomeDistanceDefending                      A    4.242 B    4.251  diff   -0.009 [  -0.082,  +0.061]  
+   q_OffBallAttackShare                         A    0.107 B    0.114  diff   -0.007 [  -0.012,  -0.001] *
+   q_DefensiveActionShare                       A    0.048 B    0.052  diff   -0.003 [  -0.005,  -0.002] *
+   stamMean                                     A   15.811 B   15.258  diff   +0.552 [  +0.306,  +0.802] *
+   sprintDecisions                              A 7115.393 B 4778.527  diff +2336.867 [+2291.640,+2383.673] *
+   fouls                                        A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.633 B    3.007  diff   +0.627 [  +0.193,  +1.040] *
+Novice vs Elite
+   q_ErrorRate                                  A    0.156 B    0.006  diff   +0.150 [  +0.147,  +0.154] *
+   q_ErrorRateUnderPressure                     A    0.213 B    0.006  diff   +0.207 [  +0.199,  +0.216] *
+   q_ErrorRateWithLittleSpace                   A    0.179 B    0.004  diff   +0.175 [  +0.164,  +0.187] *
+   q_ErrorRateWhenTired                         A    0.159 B    0.006  diff   +0.152 [  +0.149,  +0.155] *
+   q_MeanMargin                                 A    0.715 B    0.728  diff   -0.013 [  -0.024,  -0.002] *
+   q_PassCompletion                             A    0.460 B    0.506  diff   -0.046 [  -0.058,  -0.035] *
+   q_ShotsOnTargetShare                         A    0.477 B    0.469  diff   +0.008 [  -0.020,  +0.033]  
+   q_ShotTakeRate                               A    0.509 B    0.282  diff   +0.227 [  +0.214,  +0.242] *
+   q_ClearChancesPer100Possessions              A   15.795 B   33.627  diff  -17.832 [ -20.808, -14.955] *
+   q_FinalThirdEntriesPerPossession             A    0.401 B    0.448  diff   -0.047 [  -0.070,  -0.025] *
+   q_ChancesConcededPer100OpponentPossessions   A   33.627 B   15.795  diff  +17.832 [ +14.864, +20.896] *
+   q_DangerConcededPerOpponentPossession        A    0.254 B    0.233  diff   +0.021 [  +0.005,  +0.038] *
+   q_RecoveriesPerOpponentPossession            A    0.401 B    0.604  diff   -0.203 [  -0.222,  -0.184] *
+   q_InterceptionsPerOpponentPossession         A    0.377 B    0.535  diff   -0.158 [  -0.175,  -0.141] *
+   q_ContestSuccess                             A    0.556 B    0.650  diff   -0.092 [  -0.142,  -0.042] *
+   q_HomeDistanceAttacking                      A    4.339 B    4.490  diff   -0.151 [  -0.234,  -0.076] *
+   q_HomeDistanceDefending                      A    4.219 B    4.290  diff   -0.071 [  -0.135,  -0.008] *
+   q_OffBallAttackShare                         A    0.119 B    0.103  diff   +0.016 [  +0.010,  +0.020] *
+   q_DefensiveActionShare                       A    0.053 B    0.045  diff   +0.008 [  +0.007,  +0.009] *
+   stamMean                                     A   14.206 B   16.070  diff   -1.864 [  -2.082,  -1.651] *
+   sprintDecisions                              A 3043.947 B 7006.967  diff -3963.020 [-4010.307,-3913.967] *
+   fouls                                        A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    2.613 B    3.933  diff   -1.320 [  -1.733,  -0.907] *
+==== Classic (A level vs opponent; value = mean of A [mean of B]; diff A-B with 95%CI; * = CI excludes 0)
+Novice vs Professional
+   q_ErrorRate                                  A    0.138 B    0.049  diff   +0.089 [  +0.086,  +0.093] *
+   q_ErrorRateUnderPressure                     A    0.188 B    0.058  diff   +0.131 [  +0.123,  +0.138] *
+   q_ErrorRateWithLittleSpace                   A    0.173 B    0.048  diff   +0.125 [  +0.109,  +0.141] *
+   q_ErrorRateWhenTired                         A    0.140 B    0.049  diff   +0.090 [  +0.087,  +0.094] *
+   q_MeanMargin                                 A    0.779 B    0.802  diff   -0.023 [  -0.032,  -0.015] *
+   q_PassCompletion                             A    0.455 B    0.466  diff   -0.011 [  -0.022,  -0.000] *
+   q_ShotsOnTargetShare                         A    0.300 B    0.327  diff   -0.028 [  -0.051,  -0.005] *
+   q_ShotTakeRate                               A    0.663 B    0.632  diff   +0.031 [  +0.016,  +0.046] *
+   q_ClearChancesPer100Possessions              A   11.610 B   11.864  diff   -0.255 [  -1.373,  +0.816]  
+   q_FinalThirdEntriesPerPossession             A    0.356 B    0.378  diff   -0.022 [  -0.039,  -0.006] *
+   q_ChancesConcededPer100OpponentPossessions   A   11.864 B   11.610  diff   +0.255 [  -0.873,  +1.433]  
+   q_DangerConcededPerOpponentPossession        A    0.229 B    0.221  diff   +0.008 [  -0.004,  +0.020]  
+   q_RecoveriesPerOpponentPossession            A    0.182 B    0.233  diff   -0.051 [  -0.059,  -0.042] *
+   q_InterceptionsPerOpponentPossession         A    0.170 B    0.207  diff   -0.037 [  -0.045,  -0.028] *
+   q_ContestSuccess                             A    0.628 B    0.701  diff   -0.074 [  -0.125,  -0.025] *
+   q_HomeDistanceAttacking                      A    4.918 B    5.033  diff   -0.115 [  -0.221,  -0.016] *
+   q_HomeDistanceDefending                      A    4.726 B    4.785  diff   -0.059 [  -0.141,  +0.026]  
+   q_OffBallAttackShare                         A    0.121 B    0.111  diff   +0.010 [  +0.005,  +0.014] *
+   q_DefensiveActionShare                       A    0.045 B    0.041  diff   +0.004 [  +0.003,  +0.005] *
+   stamMean                                     A   11.322 B   12.311  diff   -0.989 [  -1.134,  -0.851] *
+   sprintDecisions                              A 3902.113 B 6048.260  diff -2146.147 [-2179.267,-2114.700] *
+   fouls                                        A    0.267 B    0.100  diff   +0.167 [  +0.073,  +0.260] *
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.373 B    3.773  diff   -0.400 [  -0.827,  +0.007]  
+Amateur vs Professional
+   q_ErrorRate                                  A    0.089 B    0.048  diff   +0.041 [  +0.038,  +0.043] *
+   q_ErrorRateUnderPressure                     A    0.117 B    0.055  diff   +0.062 [  +0.056,  +0.068] *
+   q_ErrorRateWithLittleSpace                   A    0.107 B    0.050  diff   +0.056 [  +0.044,  +0.069] *
+   q_ErrorRateWhenTired                         A    0.089 B    0.048  diff   +0.041 [  +0.039,  +0.044] *
+   q_MeanMargin                                 A    0.794 B    0.802  diff   -0.008 [  -0.017,  +0.000]  
+   q_PassCompletion                             A    0.461 B    0.461  diff   -0.001 [  -0.011,  +0.010]  
+   q_ShotsOnTargetShare                         A    0.317 B    0.323  diff   -0.005 [  -0.030,  +0.020]  
+   q_ShotTakeRate                               A    0.679 B    0.648  diff   +0.031 [  +0.014,  +0.049] *
+   q_ClearChancesPer100Possessions              A   10.212 B   10.766  diff   -0.553 [  -1.648,  +0.545]  
+   q_FinalThirdEntriesPerPossession             A    0.361 B    0.360  diff   +0.000 [  -0.016,  +0.017]  
+   q_ChancesConcededPer100OpponentPossessions   A   10.766 B   10.212  diff   +0.553 [  -0.607,  +1.723]  
+   q_DangerConcededPerOpponentPossession        A    0.220 B    0.223  diff   -0.003 [  -0.015,  +0.010]  
+   q_RecoveriesPerOpponentPossession            A    0.233 B    0.254  diff   -0.021 [  -0.031,  -0.012] *
+   q_InterceptionsPerOpponentPossession         A    0.214 B    0.233  diff   -0.019 [  -0.028,  -0.009] *
+   q_ContestSuccess                             A    0.643 B    0.661  diff   -0.015 [  -0.067,  +0.035]  
+   q_HomeDistanceAttacking                      A    4.899 B    4.928  diff   -0.030 [  -0.132,  +0.073]  
+   q_HomeDistanceDefending                      A    4.706 B    4.685  diff   +0.021 [  -0.065,  +0.116]  
+   q_OffBallAttackShare                         A    0.116 B    0.113  diff   +0.003 [  -0.002,  +0.008]  
+   q_DefensiveActionShare                       A    0.045 B    0.043  diff   +0.002 [  +0.001,  +0.003] *
+   stamMean                                     A   11.992 B   12.370  diff   -0.378 [  -0.528,  -0.218] *
+   sprintDecisions                              A 4996.767 B 6093.667  diff -1096.900 [-1134.273,-1060.527] *
+   fouls                                        A    0.233 B    0.080  diff   +0.153 [  +0.060,  +0.247] *
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.393 B    3.987  diff   -0.593 [  -1.107,  -0.107] *
+Professional vs Professional
+   q_ErrorRate                                  A    0.047 B    0.047  diff   +0.000 [  -0.002,  +0.002]  
+   q_ErrorRateUnderPressure                     A    0.058 B    0.058  diff   +0.000 [  -0.004,  +0.004]  
+   q_ErrorRateWithLittleSpace                   A    0.050 B    0.050  diff   +0.000 [  -0.009,  +0.010]  
+   q_ErrorRateWhenTired                         A    0.048 B    0.048  diff   +0.000 [  -0.002,  +0.002]  
+   q_MeanMargin                                 A    0.808 B    0.808  diff   +0.000 [  -0.009,  +0.009]  
+   q_PassCompletion                             A    0.451 B    0.451  diff   +0.000 [  -0.011,  +0.011]  
+   q_ShotsOnTargetShare                         A    0.322 B    0.322  diff   +0.000 [  -0.023,  +0.025]  
+   q_ShotTakeRate                               A    0.652 B    0.652  diff   +0.000 [  -0.018,  +0.017]  
+   q_ClearChancesPer100Possessions              A    9.315 B    9.315  diff   +0.000 [  -0.982,  +0.972]  
+   q_FinalThirdEntriesPerPossession             A    0.350 B    0.350  diff   +0.000 [  -0.016,  +0.016]  
+   q_ChancesConcededPer100OpponentPossessions   A    9.315 B    9.315  diff   +0.000 [  -0.989,  +0.992]  
+   q_DangerConcededPerOpponentPossession        A    0.213 B    0.213  diff   +0.000 [  -0.012,  +0.012]  
+   q_RecoveriesPerOpponentPossession            A    0.253 B    0.253  diff   +0.000 [  -0.010,  +0.009]  
+   q_InterceptionsPerOpponentPossession         A    0.235 B    0.235  diff   +0.000 [  -0.009,  +0.009]  
+   q_ContestSuccess                             A    0.656 B    0.656  diff   +0.000 [  -0.054,  +0.050]  
+   q_HomeDistanceAttacking                      A    4.910 B    4.910  diff   +0.000 [  -0.104,  +0.105]  
+   q_HomeDistanceDefending                      A    4.666 B    4.666  diff   +0.000 [  -0.076,  +0.072]  
+   q_OffBallAttackShare                         A    0.113 B    0.113  diff   +0.000 [  -0.004,  +0.004]  
+   q_DefensiveActionShare                       A    0.045 B    0.045  diff   +0.000 [  -0.001,  +0.001]  
+   stamMean                                     A   12.294 B   12.294  diff   +0.000 [  -0.170,  +0.169]  
+   sprintDecisions                              A 6181.233 B 6181.233  diff   +0.000 [ -34.633, +34.493]  
+   fouls                                        A    0.147 B    0.147  diff   +0.000 [  -0.080,  +0.080]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.513 B    3.513  diff   +0.000 [  -0.500,  +0.527]  
+Expert vs Professional
+   q_ErrorRate                                  A    0.019 B    0.047  diff   -0.028 [  -0.030,  -0.026] *
+   q_ErrorRateUnderPressure                     A    0.020 B    0.055  diff   -0.035 [  -0.038,  -0.031] *
+   q_ErrorRateWithLittleSpace                   A    0.018 B    0.058  diff   -0.041 [  -0.047,  -0.034] *
+   q_ErrorRateWhenTired                         A    0.020 B    0.048  diff   -0.029 [  -0.030,  -0.027] *
+   q_MeanMargin                                 A    0.794 B    0.804  diff   -0.010 [  -0.018,  -0.002] *
+   q_PassCompletion                             A    0.459 B    0.451  diff   +0.008 [  -0.002,  +0.018]  
+   q_ShotsOnTargetShare                         A    0.327 B    0.308  diff   +0.019 [  -0.003,  +0.041]  
+   q_ShotTakeRate                               A    0.598 B    0.658  diff   -0.061 [  -0.084,  -0.037] *
+   q_ClearChancesPer100Possessions              A   11.607 B    9.401  diff   +2.206 [  +1.103,  +3.372] *
+   q_FinalThirdEntriesPerPossession             A    0.361 B    0.357  diff   +0.004 [  -0.013,  +0.021]  
+   q_ChancesConcededPer100OpponentPossessions   A    9.401 B   11.607  diff   -2.206 [  -3.405,  -1.057] *
+   q_DangerConcededPerOpponentPossession        A    0.213 B    0.218  diff   -0.005 [  -0.016,  +0.006]  
+   q_RecoveriesPerOpponentPossession            A    0.289 B    0.282  diff   +0.007 [  -0.003,  +0.017]  
+   q_InterceptionsPerOpponentPossession         A    0.268 B    0.265  diff   +0.003 [  -0.007,  +0.013]  
+   q_ContestSuccess                             A    0.628 B    0.676  diff   -0.049 [  -0.103,  +0.005]  
+   q_HomeDistanceAttacking                      A    4.900 B    4.838  diff   +0.061 [  -0.049,  +0.160]  
+   q_HomeDistanceDefending                      A    4.651 B    4.620  diff   +0.032 [  -0.044,  +0.115]  
+   q_OffBallAttackShare                         A    0.113 B    0.114  diff   -0.001 [  -0.006,  +0.005]  
+   q_DefensiveActionShare                       A    0.044 B    0.046  diff   -0.003 [  -0.004,  -0.002] *
+   stamMean                                     A   12.944 B   12.635  diff   +0.309 [  +0.118,  +0.511] *
+   sprintDecisions                              A 7896.880 B 6169.260  diff +1727.620 [+1679.620,+1776.233] *
+   fouls                                        A    0.207 B    0.200  diff   +0.007 [  -0.093,  +0.107]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.833 B    3.160  diff   +0.673 [  +0.273,  +1.093] *
+Elite vs Professional
+   q_ErrorRate                                  A    0.005 B    0.048  diff   -0.043 [  -0.044,  -0.041] *
+   q_ErrorRateUnderPressure                     A    0.005 B    0.059  diff   -0.054 [  -0.058,  -0.051] *
+   q_ErrorRateWithLittleSpace                   A    0.004 B    0.055  diff   -0.051 [  -0.058,  -0.045] *
+   q_ErrorRateWhenTired                         A    0.005 B    0.049  diff   -0.043 [  -0.045,  -0.042] *
+   q_MeanMargin                                 A    0.783 B    0.800  diff   -0.017 [  -0.025,  -0.009] *
+   q_PassCompletion                             A    0.464 B    0.446  diff   +0.018 [  +0.008,  +0.029] *
+   q_ShotsOnTargetShare                         A    0.334 B    0.314  diff   +0.020 [  -0.005,  +0.046]  
+   q_ShotTakeRate                               A    0.571 B    0.653  diff   -0.081 [  -0.105,  -0.059] *
+   q_ClearChancesPer100Possessions              A   13.117 B    8.990  diff   +4.126 [  +2.739,  +5.581] *
+   q_FinalThirdEntriesPerPossession             A    0.369 B    0.332  diff   +0.036 [  +0.021,  +0.051] *
+   q_ChancesConcededPer100OpponentPossessions   A    8.990 B   13.117  diff   -4.126 [  -5.534,  -2.764] *
+   q_DangerConcededPerOpponentPossession        A    0.189 B    0.214  diff   -0.025 [  -0.036,  -0.015] *
+   q_RecoveriesPerOpponentPossession            A    0.317 B    0.286  diff   +0.031 [  +0.020,  +0.042] *
+   q_InterceptionsPerOpponentPossession         A    0.296 B    0.271  diff   +0.025 [  +0.013,  +0.036] *
+   q_ContestSuccess                             A    0.624 B    0.637  diff   -0.015 [  -0.060,  +0.033]  
+   q_HomeDistanceAttacking                      A    4.895 B    4.745  diff   +0.150 [  +0.044,  +0.255] *
+   q_HomeDistanceDefending                      A    4.644 B    4.556  diff   +0.088 [  +0.008,  +0.175] *
+   q_OffBallAttackShare                         A    0.112 B    0.112  diff   +0.000 [  -0.005,  +0.006]  
+   q_DefensiveActionShare                       A    0.043 B    0.048  diff   -0.005 [  -0.006,  -0.004] *
+   stamMean                                     A   12.825 B   12.568  diff   +0.258 [  +0.065,  +0.471] *
+   sprintDecisions                              A 9325.207 B 6230.980  diff +3094.227 [+3031.293,+3156.007] *
+   fouls                                        A    0.100 B    0.127  diff   -0.027 [  -0.107,  +0.053]  
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.720 B    3.273  diff   +0.447 [  +0.040,  +0.873] *
+Novice vs Elite
+   q_ErrorRate                                  A    0.138 B    0.005  diff   +0.132 [  +0.129,  +0.135] *
+   q_ErrorRateUnderPressure                     A    0.191 B    0.005  diff   +0.185 [  +0.179,  +0.192] *
+   q_ErrorRateWithLittleSpace                   A    0.161 B    0.004  diff   +0.157 [  +0.145,  +0.169] *
+   q_ErrorRateWhenTired                         A    0.139 B    0.006  diff   +0.133 [  +0.131,  +0.136] *
+   q_MeanMargin                                 A    0.768 B    0.776  diff   -0.008 [  -0.017,  +0.001]  
+   q_PassCompletion                             A    0.442 B    0.478  diff   -0.036 [  -0.048,  -0.025] *
+   q_ShotsOnTargetShare                         A    0.295 B    0.343  diff   -0.047 [  -0.070,  -0.024] *
+   q_ShotTakeRate                               A    0.653 B    0.550  diff   +0.103 [  +0.082,  +0.123] *
+   q_ClearChancesPer100Possessions              A   10.670 B   15.901  diff   -5.231 [  -6.795,  -3.678] *
+   q_FinalThirdEntriesPerPossession             A    0.325 B    0.390  diff   -0.065 [  -0.081,  -0.047] *
+   q_ChancesConcededPer100OpponentPossessions   A   15.901 B   10.670  diff   +5.231 [  +3.723,  +6.749] *
+   q_DangerConcededPerOpponentPossession        A    0.236 B    0.194  diff   +0.042 [  +0.030,  +0.055] *
+   q_RecoveriesPerOpponentPossession            A    0.201 B    0.286  diff   -0.085 [  -0.095,  -0.074] *
+   q_InterceptionsPerOpponentPossession         A    0.189 B    0.256  diff   -0.067 [  -0.076,  -0.058] *
+   q_ContestSuccess                             A    0.514 B    0.689  diff   -0.176 [  -0.230,  -0.123] *
+   q_HomeDistanceAttacking                      A    4.749 B    5.012  diff   -0.264 [  -0.360,  -0.170] *
+   q_HomeDistanceDefending                      A    4.625 B    4.705  diff   -0.081 [  -0.152,  -0.008] *
+   q_OffBallAttackShare                         A    0.120 B    0.110  diff   +0.010 [  +0.005,  +0.015] *
+   q_DefensiveActionShare                       A    0.048 B    0.039  diff   +0.008 [  +0.007,  +0.009] *
+   stamMean                                     A   11.292 B   12.917  diff   -1.625 [  -1.835,  -1.418] *
+   sprintDecisions                              A 3919.473 B 9144.773  diff -5225.300 [-5284.373,-5159.133] *
+   fouls                                        A    0.447 B    0.180  diff   +0.267 [  +0.133,  +0.393] *
+   yellow                                       A    0.000 B    0.000  diff   +0.000 [  +0.000,  +0.000]  
+   goals                                        A    3.100 B    4.320  diff   -1.220 [  -1.727,  -0.753] *

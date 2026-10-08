@@ -1,0 +1,18 @@
+== Arena
+forwardChosen    Nov sd 0.020 rho 0.93 | Ama sd 0.015 rho 0.87 | Pro sd 0.017 rho 1.00 | Exp sd 0.013 rho 0.94 | Eli sd 0.015 rho 0.92
+throughChosen    Nov sd 0.001 rho 0.97 | Ama sd 0.001 rho 0.82 | Pro sd 0.001 rho 1.00 | Exp sd 0.001 rho 0.84 | Eli sd 0.001 rho 0.89
+dribbleChosen    Nov sd 0.024 rho 0.43 | Ama sd 0.026 rho 0.80 | Pro sd 0.028 rho 1.00 | Exp sd 0.031 rho 0.91 | Eli sd 0.040 rho 0.87
+protectChosen    Nov sd 0.013 rho 0.91 | Ama sd 0.023 rho 0.85 | Pro sd 0.023 rho 1.00 | Exp sd 0.029 rho 0.90 | Eli sd 0.038 rho 0.91
+holdChosen       Nov sd 0.012 rho 0.85 | Ama sd 0.011 rho 0.87 | Pro sd 0.014 rho 1.00 | Exp sd 0.014 rho 0.91 | Eli sd 0.018 rho 0.97
+shotsChosen      Nov sd 0.010 rho 0.92 | Ama sd 0.008 rho 0.98 | Pro sd 0.007 rho 1.00 | Exp sd 0.006 rho 0.95 | Eli sd 0.005 rho 0.95
+defensiveShare   Nov sd 0.004 rho 0.94 | Ama sd 0.004 rho 0.70 | Pro sd 0.004 rho 1.00 | Exp sd 0.004 rho 0.85 | Eli sd 0.004 rho 0.93
+sprintShare      Nov sd 0.007 rho 0.94 | Ama sd 0.008 rho 0.97 | Pro sd 0.008 rho 1.00 | Exp sd 0.008 rho 0.92 | Eli sd 0.007 rho 0.97
+== Classic
+forwardChosen    Nov sd 0.022 rho 0.94 | Ama sd 0.019 rho 0.98 | Pro sd 0.018 rho 1.00 | Exp sd 0.017 rho 0.87 | Eli sd 0.015 rho 0.90
+throughChosen    Nov sd 0.001 rho 0.91 | Ama sd 0.001 rho 0.90 | Pro sd 0.001 rho 1.00 | Exp sd 0.000 rho 0.78 | Eli sd 0.000 rho 0.97
+dribbleChosen    Nov sd 0.023 rho 0.59 | Ama sd 0.024 rho 0.90 | Pro sd 0.030 rho 1.00 | Exp sd 0.053 rho 0.81 | Eli sd 0.042 rho 0.86
+protectChosen    Nov sd 0.022 rho 0.90 | Ama sd 0.028 rho 0.94 | Pro sd 0.037 rho 1.00 | Exp sd 0.063 rho 0.89 | Eli sd 0.046 rho 0.93
+holdChosen       Nov sd 0.009 rho 0.94 | Ama sd 0.010 rho 0.91 | Pro sd 0.012 rho 1.00 | Exp sd 0.015 rho 0.78 | Eli sd 0.016 rho 0.92
+shotsChosen      Nov sd 0.007 rho 0.94 | Ama sd 0.006 rho 0.85 | Pro sd 0.005 rho 1.00 | Exp sd 0.005 rho 0.99 | Eli sd 0.004 rho 0.97
+defensiveShare   Nov sd 0.002 rho 0.89 | Ama sd 0.004 rho 0.90 | Pro sd 0.003 rho 1.00 | Exp sd 0.004 rho 0.94 | Eli sd 0.003 rho 0.94
+sprintShare      Nov sd 0.007 rho 0.98 | Ama sd 0.007 rho 0.97 | Pro sd 0.007 rho 1.00 | Exp sd 0.007 rho 0.96 | Eli sd 0.007 rho 0.92

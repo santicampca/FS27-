@@ -50,7 +50,7 @@ namespace FS27.Core
         /// <summary>Goal difference at which the urgency is at its maximum.</summary>
         public const float UrgencyGoalDifference = 2.0f;
         /// <summary>Score added to the forward pass, the pass into space and the shot at full urgency (taking risks); removed from them at full negative urgency (protecting a lead).</summary>
-        public const float RiskBias = 0.6f;
+        public const float RiskBias = 1.5f;
         /// <summary>Score added to the safe options (pass, hold, protect) at full negative urgency.</summary>
         public const float SafeBias = 0.3f;
         /// <summary>A level below this decision quality does not read the situation at all.</summary>

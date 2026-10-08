@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace FS27.Core.Tests
@@ -133,6 +135,29 @@ namespace FS27.Core.Tests
             }
             if (!string.IsNullOrEmpty(dir)) File.WriteAllText(Path.Combine(dir, "phase14_battery_" + tag + ".txt"), text.ToString());
             Console.WriteLine(text.ToString());
+        }
+
+        /// <summary>Phase 15 audit tool: what each level controls, as the decision layer reads it. Writes $DIAG_OUT/phase15_profiles.txt.</summary>
+        [Test, Explicit]
+        public void Phase15Tool_WriteTheProfiles()
+        {
+            string dir = Environment.GetEnvironmentVariable("DIAG_OUT");
+            var sb = new System.Text.StringBuilder();
+            var fields = typeof(DecisionProfile).GetFields().Where(f => f.FieldType == typeof(float)).ToArray();
+            sb.AppendLine("field," + string.Join(",", AllLevels.Select(l => l.ToString())));
+            foreach (FieldInfo f in fields) sb.AppendLine(f.Name + "," + string.Join(",", AllLevels.Select(l => ((float)f.GetValue(ProfileOf14(l))).ToString("F3", System.Globalization.CultureInfo.InvariantCulture))));
+            foreach (GameMode mode in new[] { GameMode.Arena, GameMode.Classic })
+            {
+                DefenseTuning common = DefenseTuning.ForMode(mode);
+                foreach (string name in new[] { "InterceptHorizonSeconds", "ScoreGoalSideWeight", "PressMinStamina", "ChallengeMaxRisk" })
+                {
+                    FieldInfo f = typeof(DefenseTuning).GetField(name);
+                    sb.AppendLine("defense." + mode + "." + name + "," + string.Join(",", AllLevels.Select(l => ((float)f.GetValue(ProfileOf14(l).TuneDefense(common, mode))).ToString("F3", System.Globalization.CultureInfo.InvariantCulture))));
+                }
+            }
+            sb.AppendLine("effortCap@50," + string.Join(",", AllLevels.Select(l => ProfileOf14(l).EffortCap(50f).ToString("F3", System.Globalization.CultureInfo.InvariantCulture))));
+            sb.AppendLine("effortCap@25," + string.Join(",", AllLevels.Select(l => ProfileOf14(l).EffortCap(25f).ToString("F3", System.Globalization.CultureInfo.InvariantCulture))));
+            if (!string.IsNullOrEmpty(dir)) File.WriteAllText(Path.Combine(dir, "phase15_profiles.txt"), sb.ToString());
         }
     }
 }

@@ -1,0 +1,11 @@
+Passes given away (intercepted + lost to another player) per possession gained, and per pass attempt; level A against Professional, full matches, 150 per cell. (The DQS ratio LossesPerPossession is ~0.98 by construction and says nothing; this replaces it.)
+Arena   Novice       lost per possession 0.630  lost per 100 passes 41.6
+Arena   Amateur      lost per possession 0.647  lost per 100 passes 39.5
+Arena   Professional lost per possession 0.662  lost per 100 passes 38.6
+Arena   Expert       lost per possession 0.662  lost per 100 passes 37.7
+Arena   Elite        lost per possession 0.683  lost per 100 passes 36.6
+Classic Novice       lost per possession 0.593  lost per 100 passes 45.7
+Classic Amateur      lost per possession 0.629  lost per 100 passes 44.4
+Classic Professional lost per possession 0.654  lost per 100 passes 44.4
+Classic Expert       lost per possession 0.684  lost per 100 passes 43.3
+Classic Elite        lost per possession 0.740  lost per 100 passes 43.0

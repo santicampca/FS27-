@@ -115,6 +115,8 @@ namespace FS27.Core
         private static readonly int oDrift = Alloc(3);
         private static readonly int oProgress = Alloc(6);
         private static readonly int oHome = Alloc(4);
+        private static readonly int oContext = Alloc(8);
+        private static readonly int oLost = Alloc(1);
         private static readonly int oMatch = Alloc(14);
         private static readonly int Size = cursor;
 
@@ -233,6 +235,20 @@ namespace FS27.Core
         public double HomeDistanceDefending { get { return Div(a[oHome + 2], a[oHome + 3]); } }
         public double HomeSamplesAttacking { get { return a[oHome + 1]; } }
         public double HomeSamplesDefending { get { return a[oHome + 3]; } }
+
+        // ---- Phase 15: the same carrier decisions and mistakes split by the situation they happened in, and cards and possessions lost
+        /// <summary>Carrier decisions made under pressure, with no free way to dribble, and tired.</summary>
+        public double DecisionsPressed { get { return a[oContext]; } }
+        public double DecisionsLowSpace { get { return a[oContext + 1]; } }
+        public double DecisionsTired { get { return a[oContext + 2]; } }
+        /// <summary>Controlled mistakes (of the carrier) made in those same situations.</summary>
+        public double MistakesPressed { get { return a[oContext + 3]; } }
+        public double MistakesLowSpace { get { return a[oContext + 4]; } }
+        public double MistakesTired { get { return a[oContext + 5]; } }
+        public double YellowCards { get { return a[oContext + 6]; } }
+        public double RedCards { get { return a[oContext + 7]; } }
+        /// <summary>Times the observed team lost the ball to the other team.</summary>
+        public double PossessionsLost { get { return a[oLost]; } }
 
         private bool Skip(TeamSide team) { return Config.OnlyOneTeam && team != Config.Team; }
 

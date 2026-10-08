@@ -1,0 +1,11 @@
+mode,level,samples,stamina_q1,stamina_q2,stamina_q3,stamina_q4
+Arena,Novice,6,33.37,7.44,9.24,6.82
+Arena,Amateur,6,34.40,7.44,8.90,8.56
+Arena,Professional,6,34.49,9.29,10.68,9.52
+Arena,Expert,6,35.86,8.68,9.82,9.99
+Arena,Elite,6,34.60,10.75,11.91,9.65
+Classic,Novice,6,24.31,6.80,9.91,5.31
+Classic,Amateur,6,24.55,6.09,10.85,6.11
+Classic,Professional,6,25.70,5.87,9.69,7.17
+Classic,Expert,6,26.79,7.58,11.70,6.54
+Classic,Elite,6,25.60,7.67,11.63,8.47

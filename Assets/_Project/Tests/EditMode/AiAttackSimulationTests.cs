@@ -8,7 +8,7 @@ namespace FS27.Core.Tests
     /// <summary>Phase 10: twelve real players, real rosters and formations, roles, defence and the attack without the ball, for two minutes in each mode. Measured, not balanced; compared with the same match with the attack layer off (Phase 9).</summary>
     public partial class AiInfrastructureTests
     {
-        private static void ApplyExploration(GameMode mode, BasicDecisionTuning basic, DefenseTuning defense, AttackPositioningTuning attack, BallCarrierTuning carrier, ActionTuning actions = null)
+        private static void ApplyExploration(GameMode mode, BasicDecisionTuning basic, DefenseTuning defense, AttackPositioningTuning attack, BallCarrierTuning carrier, ActionTuning actions = null, DecisionProfileTuning profile = null)
         {
             string spec = Environment.GetEnvironmentVariable("FS27_EXP");
             if (string.IsNullOrEmpty(spec)) return;
@@ -18,7 +18,7 @@ namespace FS27.Core.Tests
                 if (path.Length != 3 || (path[0] != "A" && path[0] != "C" && path[0] != "*")) throw new ArgumentException("bad exploration item " + item);
                 if (path[0] == "A" && mode != GameMode.Arena) continue;
                 if (path[0] == "C" && mode != GameMode.Classic) continue;
-                object target = path[1] == "Basic" ? (object)basic : path[1] == "Defense" ? defense : path[1] == "Attack" ? attack : path[1] == "BallCarrier" ? (object)carrier : path[1] == "Actions" && actions != null ? actions : throw new ArgumentException(item);
+                object target = path[1] == "Basic" ? (object)basic : path[1] == "Defense" ? defense : path[1] == "Attack" ? attack : path[1] == "BallCarrier" ? (object)carrier : path[1] == "Actions" && actions != null ? actions : path[1] == "Profile" && profile != null ? profile : throw new ArgumentException(item);
                 System.Reflection.FieldInfo f = target.GetType().GetField(path[2]);
                 if (f == null) throw new ArgumentException("no field " + item);
                 f.SetValue(target, f.FieldType == typeof(bool) ? (object)(kv[1].Trim() == "1" || kv[1].Trim() == "true") : f.FieldType == typeof(int) ? (object)int.Parse(kv[1]) : (object)float.Parse(kv[1], System.Globalization.CultureInfo.InvariantCulture));
@@ -31,7 +31,7 @@ namespace FS27.Core.Tests
         private sealed class AttackSim
         {
             public string Fingerprint, Assignment;
-            public int GoalsHome, GoalsAway; public int Issues, Possessions, Losses, Goals, Restarts, Decisions, Actions, Passes, Shots, Recoveries, Fouls;
+            public int GoalsHome, GoalsAway; public double[] StaminaSum = new double[8]; public int[] StaminaN = new int[8]; public int Issues, Possessions, Losses, Goals, Restarts, Decisions, Actions, Passes, Shots, Recoveries, Fouls;
             public int Support, Forward, Width, GetOpen;
             public int AttackSamples, PassDecisions; public long PassLanes; public double Spread, PassDistance;
             public int MoreThanOnePerJob, JobSamples, SupportersNearBall;
@@ -39,7 +39,7 @@ namespace FS27.Core.Tests
             public int[] Kinds = new int[17]; public int Dribbles, Protects, Holds, SpacePasses, ShotOpportunities, CarrierDecisions; public long PassCandidates; public int[] Chosen = new int[8]; public double[] ChosenScore = new double[8];
         }
 
-        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f, bool carrierLayer = true, AiDiagnostics diagnostics = null, DifficultyLevel? homeLevel = null, DifficultyLevel? awayLevel = null, AiDiagnostics twin = null)
+        private static AttackSim SimulateAttack(GameMode mode, int seed, bool attackLayer, int homeTeam = 3, int awayTeam = 8, float seconds = 120f, bool carrierLayer = true, AiDiagnostics diagnostics = null, DifficultyLevel? homeLevel = null, DifficultyLevel? awayLevel = null, AiDiagnostics twin = null, DifficultyDefinition homeDefinition = null, DifficultyDefinition awayDefinition = null)
         {
             MatchSettings s = mode == GameMode.Arena ? MatchSettings.CreateArena() : MatchSettings.CreateClassic();
             MatchController c = RealRoles(homeTeam, awayTeam, seed, s);
@@ -50,10 +50,12 @@ namespace FS27.Core.Tests
             BasicDecisionTuning basicT = BasicDecisionTuning.ForMode(mode); DefenseTuning defenseT = DefenseTuning.ForMode(mode);
             AttackPositioningTuning attackT = AttackPositioningTuning.ForMode(mode); attackT.Enabled = attackLayer;
             BallCarrierTuning carrierT = BallCarrierTuning.ForMode(mode); carrierT.Enabled = carrierLayer;
-            ApplyExploration(mode, basicT, defenseT, attackT, carrierT, c.ActionTuning);
+            var profileT = new DecisionProfileTuning();
+            ApplyExploration(mode, basicT, defenseT, attackT, carrierT, c.ActionTuning, profileT);
             var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT);
-            if (homeLevel.HasValue) driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(homeLevel.Value), Db.Players, c);
-            if (awayLevel.HasValue) driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(awayLevel.Value), Db.Players, c);
+            DifficultyDefinition hd = homeDefinition ?? (homeLevel.HasValue ? DefaultDifficulties.Create(homeLevel.Value) : null), ad = awayDefinition ?? (awayLevel.HasValue ? DefaultDifficulties.Create(awayLevel.Value) : null);
+            if (hd != null) driver.SetDifficulty(TeamSide.Home, hd, Db.Players, c, profileT);
+            if (ad != null) driver.SetDifficulty(TeamSide.Away, ad, Db.Players, c, profileT);
             if (diagnostics != null) { diagnostics.Attach(c); driver.Diagnostics = diagnostics; if (twin != null) { twin.Attach(c); diagnostics.Twin = twin; } }
             var world = new WorldState();
             bool hasLast = false; TeamSide last = TeamSide.Home;
@@ -72,6 +74,7 @@ namespace FS27.Core.Tests
                 if (step % 10 != 0) continue;
 
                 world.Refresh(c);
+                for (int q = 0; q < world.PlayerCount; q++) { WorldPlayer sp = world[q]; if (sp.IsOnPitch && !sp.IsGoalkeeper) { int sd = (sp.Team == TeamSide.Home ? 0 : 4) + Math.Min(3, step * 4 / steps); r.StaminaSum[sd] += sp.Stamina; r.StaminaN[sd]++; } }
                 int onPitch = 0, keepers = 0;
                 var points = new List<Vec2>();
                 for (int i = 0; i < world.PlayerCount; i++)

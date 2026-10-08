@@ -1,0 +1,13 @@
+mode,group,carrierSamples,carrierSameType,carrierSameReceiver,carrierPressedSamples,carrierPressedSameType,otherSamples,otherSameKind,otherSameMovement
+Arena,mistakes,2852,2748,2804,962,918,77014,77014,77014
+Arena,habits+skillUse,2852,2768,2802,962,934,77014,77014,77014
+Arena,positioning,2852,2852,2852,962,962,77014,75337,75334
+Arena,anticipation+pressing,2852,2852,2852,962,962,77014,76155,76160
+Arena,stamina,2852,2852,2852,962,962,77014,77014,76248
+Arena,everything(Amateur),2852,2700,2773,962,900,77014,74479,73666
+Classic,mistakes,2625,2542,2594,956,914,77291,77291,77291
+Classic,habits+skillUse,2625,2530,2574,956,924,77291,77291,77291
+Classic,positioning,2625,2625,2625,956,956,77291,75828,75825
+Classic,anticipation+pressing,2625,2625,2625,956,956,77291,76424,76481
+Classic,stamina,2625,2625,2625,956,956,77291,77291,76564
+Classic,everything(Amateur),2625,2480,2559,956,899,77291,74964,74281

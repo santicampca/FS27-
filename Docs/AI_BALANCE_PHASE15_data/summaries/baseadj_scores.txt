@@ -1,0 +1,4 @@
+Arena    Elite        vs Expert       n=150  W69/D25/L56  score 0.543 [0.470,0.617]  goals A 3.33 B 2.83 diff +0.50 [+0.07,+0.93]
+Arena    Novice       vs Amateur      n=150  W63/D22/L65  score 0.493 [0.420,0.570]  goals A 2.99 B 3.12 diff -0.13 [-0.55,+0.29]
+Classic  Elite        vs Expert       n=150  W66/D15/L69  score 0.490 [0.417,0.567]  goals A 3.33 B 3.29 diff +0.04 [-0.45,+0.49]
+Classic  Novice       vs Amateur      n=150  W57/D20/L73  score 0.447 [0.370,0.520]  goals A 3.41 B 3.78 diff -0.37 [-0.83,+0.08]

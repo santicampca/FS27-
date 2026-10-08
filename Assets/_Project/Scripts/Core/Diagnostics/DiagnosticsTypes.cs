@@ -34,6 +34,9 @@ namespace FS27.Core
         public float DangerDistance = 9f;
         /// <summary>A shot candidate that scores at least this is a clear chance.</summary>
         public float ClearChanceScore = 2.5f;
+        /// <summary>Phase 15: a carrier decision with at least this pressure counts as made under pressure, and one with at most this stamina as made tired.</summary>
+        public float PressedLevel = 0.5f;
+        public float TiredLevel = 30f;
     }
 
     /// <summary>How a pass ended, as far as the core lets us see (never guessed: <see cref="NotObserved"/> when it could not be told).</summary>

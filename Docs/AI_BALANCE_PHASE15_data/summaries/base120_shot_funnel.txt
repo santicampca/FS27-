@@ -1,0 +1,14 @@
+== Arena
+Novice           per match: poss 25.4 carrierDec 74 | shotAvail 7.7 chosen 2.23 (take 29.1%) goals 0.57 conv 9.3% | clear 2.53 taken 1.27 (50%) | mix pass 10% fwd 19% thr 0.9% drib 55% prot 9% hold 3%
+Amateur          per match: poss 27.3 carrierDec 91 | shotAvail 9.6 chosen 2.52 (take 26.2%) goals 0.62 conv 12.2% | clear 3.43 taken 1.45 (42%) | mix pass 11% fwd 17% thr 0.6% drib 54% prot 11% hold 4%
+Professional     per match: poss 29.1 carrierDec 115 | shotAvail 14.4 chosen 3.19 (take 22.2%) goals 0.63 conv 11.3% | clear 5.75 taken 1.98 (34%) | mix pass 10% fwd 15% thr 0.6% drib 55% prot 12% hold 5%
+Expert           per match: poss 29.5 carrierDec 148 | shotAvail 19.8 chosen 3.67 (take 18.5%) goals 0.75 conv 12.8% | clear 7.31 taken 2.21 (30%) | mix pass 9% fwd 12% thr 0.5% drib 57% prot 13% hold 6%
+Elite            per match: poss 30.9 carrierDec 176 | shotAvail 21.0 chosen 3.31 (take 15.7%) goals 0.67 conv 13.1% | clear 7.10 taken 2.03 (29%) | mix pass 8% fwd 12% thr 0.5% drib 55% prot 16% hold 7%
+Novice_vs_Elite  per match: poss 27.5 carrierDec 72 | shotAvail 6.8 chosen 2.21 (take 32.6%) goals 0.49 conv 8.7% | clear 2.31 taken 1.17 (51%) | mix pass 11% fwd 20% thr 0.9% drib 52% prot 9% hold 3%
+== Classic
+Novice           per match: poss 33.8 carrierDec 77 | shotAvail 4.1 chosen 1.99 (take 48.9%) goals 0.49 conv 11.4% | clear 2.08 taken 1.28 (62%) | mix pass 14% fwd 18% thr 0.4% drib 50% prot 12% hold 3%
+Amateur          per match: poss 34.1 carrierDec 93 | shotAvail 5.2 chosen 2.41 (take 46.6%) goals 0.58 conv 10.2% | clear 2.66 taken 1.39 (52%) | mix pass 13% fwd 16% thr 0.4% drib 52% prot 12% hold 4%
+Professional     per match: poss 35.4 carrierDec 117 | shotAvail 6.6 chosen 2.57 (take 39.0%) goals 0.65 conv 11.4% | clear 3.44 taken 1.41 (41%) | mix pass 12% fwd 15% thr 0.5% drib 52% prot 13% hold 5%
+Expert           per match: poss 35.5 carrierDec 146 | shotAvail 9.0 chosen 3.00 (take 33.4%) goals 0.69 conv 12.7% | clear 4.55 taken 1.77 (39%) | mix pass 11% fwd 12% thr 0.3% drib 52% prot 18% hold 5%
+Elite            per match: poss 36.4 carrierDec 178 | shotAvail 9.6 chosen 2.63 (take 27.4%) goals 0.63 conv 13.2% | clear 5.12 taken 1.54 (30%) | mix pass 10% fwd 11% thr 0.3% drib 50% prot 21% hold 5%
+Novice_vs_Elite  per match: poss 34.3 carrierDec 72 | shotAvail 3.0 chosen 1.54 (take 50.8%) goals 0.49 conv 8.7% | clear 1.42 taken 0.87 (61%) | mix pass 14% fwd 20% thr 0.5% drib 49% prot 11% hold 4%

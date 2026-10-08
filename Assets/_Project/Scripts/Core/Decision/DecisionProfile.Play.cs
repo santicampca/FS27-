@@ -28,6 +28,9 @@ namespace FS27.Core
         public DecisionErrorKind Kind;
         /// <summary>How much better the option he did not take was, in score points.</summary>
         public float Gap;
+        /// <summary>The situation of the carrier when it happened (pressure 0..1, stamina 0..100, whether he had a free way to dribble): for the diagnostics only.</summary>
+        public float Pressure, Stamina;
+        public bool FreeWay;
         public bool Occurred { get { return Kind != DecisionErrorKind.None; } }
     }
 
