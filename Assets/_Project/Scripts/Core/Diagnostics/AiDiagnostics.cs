@@ -117,6 +117,7 @@ namespace FS27.Core
         private static readonly int oHome = Alloc(4);
         private static readonly int oContext = Alloc(8);
         private static readonly int oLost = Alloc(1);
+        private static readonly int oShotQ = Alloc(8);
         private static readonly int oMatch = Alloc(14);
         private static readonly int Size = cursor;
 
@@ -125,11 +126,18 @@ namespace FS27.Core
 
         private readonly double[] a = new double[Size];
         public DiagnosticsConfig Config { get; }
+        /// <summary>The numbers of the shot rating (statistics only).</summary>
+        public ShotQualityTuning ShotQualityNumbers { get { return shotQuality; } }
+        private readonly ShotQualityTuning shotQuality = new ShotQualityTuning();
         /// <summary>A name for the run (mode, seed, teams): only for reports.</summary>
         public string Label { get; set; }
         /// <summary>A second observer fed the same calls (Phase 14): one for each team of the same match. It must be attached to the match on its own.</summary>
         public AiDiagnostics Twin { get; set; }
 
+        private readonly ShotRecord[] shotLog;
+        public int ShotLogCount { get; private set; }
+        public int ShotLogDropped { get; private set; }
+        public ShotRecord ShotAt(int i) { return shotLog[i]; }
         private readonly SpaceAttempt[] space;
         private readonly ContactRecord[] contacts;
         private readonly CarrierTrace[] trace;
@@ -140,8 +148,9 @@ namespace FS27.Core
         public int ContactsDropped { get; private set; }
         public int TraceDropped { get; private set; }
 
-        public AiDiagnostics(DiagnosticsConfig config = null, int spaceCapacity = 128, int contactCapacity = 512, int traceCapacity = 256)
+        public AiDiagnostics(DiagnosticsConfig config = null, int spaceCapacity = 128, int contactCapacity = 512, int traceCapacity = 256, int shotCapacity = 192)
         {
+            shotLog = new ShotRecord[shotCapacity];
             Config = config ?? new DiagnosticsConfig();
             space = new SpaceAttempt[spaceCapacity];
             contacts = new ContactRecord[contactCapacity];
@@ -249,6 +258,17 @@ namespace FS27.Core
         public double RedCards { get { return a[oContext + 7]; } }
         /// <summary>Times the observed team lost the ball to the other team.</summary>
         public double PossessionsLost { get { return a[oLost]; } }
+
+        // ---- Phase 16: the shots, their quality and the saves
+        /// <summary>Shots struck by the observed team, the sum of their quality values, the sum of their expected goals, the saves its goalkeeper made against the other team, and the shots the other team struck that were on target.</summary>
+        public double ShotsRated { get { return a[oShotQ]; } }
+        public double ShotQualitySum { get { return a[oShotQ + 1]; } }
+        public double ExpectedGoalsSum { get { return a[oShotQ + 2]; } }
+        public double SavesMade { get { return a[oShotQ + 3]; } }
+        public double ShotsSavedOwn { get { return a[oShotQ + 4]; } }
+        public double ExpectedGoalsOnTargetSum { get { return a[oShotQ + 5]; } }
+        public double ShotsOnTargetRated { get { return a[oShotQ + 6]; } }
+        public double ShotQualityAverage { get { return Div(a[oShotQ + 1], a[oShotQ]); } }
 
         private bool Skip(TeamSide team) { return Config.OnlyOneTeam && team != Config.Team; }
 

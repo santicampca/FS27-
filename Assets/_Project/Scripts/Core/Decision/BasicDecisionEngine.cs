@@ -18,7 +18,7 @@ namespace FS27.Core
         // The tunings of the mode being played (Phase 13): Arena and Classic share this engine and every rule; only their numbers differ. A tuning given to the constructor is used for BOTH modes.
         private sealed class ModeSet
         {
-            public BasicDecisionTuning T; public DefenseTuning D; public AttackSupport Attack; public BallCarrierEvaluator Carrier; public AttackPositioningTuning AT; public BallCarrierTuning CT;
+            public BasicDecisionTuning T; public DefenseTuning D; public AttackSupport Attack; public BallCarrierEvaluator Carrier; public AttackPositioningTuning AT; public BallCarrierTuning CT; public GoalkeeperAiTuning K;
         }
 
         private readonly ModeSet arenaSet, classicSet;
@@ -31,6 +31,7 @@ namespace FS27.Core
         private DefenseTuning d;
         private AttackSupport attack;
         private BallCarrierEvaluator carrier;
+        private GoalkeeperAiTuning keeperAi;
 
         private bool collectRejections;
         /// <summary>The mistake the last decision made on purpose, if any (Phase 14). Read by the diagnostics; no rule reads it.</summary>
@@ -59,7 +60,7 @@ namespace FS27.Core
         public void UseMode(GameMode mode)
         {
             current = mode == GameMode.Arena ? arenaSet : classicSet;
-            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier; profile = null;
+            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier; keeperAi = current.K; profile = null;
         }
 
         /// <summary>The tunings of the team of the player who decides: the common ones of the mode, or the ones its difficulty profile gives it (Phase 14).</summary>
@@ -68,7 +69,7 @@ namespace FS27.Core
             DecisionProfile p = profiles[(int)team];
             if (p == null) return;
             current = profiledSets[mode == GameMode.Arena ? 0 : 1, (int)team];
-            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier; profile = p;
+            t = current.T; d = current.D; attack = current.Attack; carrier = current.Carrier; keeperAi = current.K; profile = p;
         }
 
         /// <summary>The difficulty profile of a team, or null (decides as in Phase 13). Changing it never changes the players, only how they choose.</summary>
@@ -88,26 +89,26 @@ namespace FS27.Core
         {
             return new ModeSet
             {
-                T = common.T, AT = common.AT, CT = common.CT, D = p.TuneDefense(common.D, mode),
+                T = common.T, AT = common.AT, CT = common.CT, K = common.K, D = p.TuneDefense(common.D, mode),
                 Attack = new AttackSupport(common.T, common.AT), Carrier = new BallCarrierEvaluator(common.T, common.AT, common.CT)
             };
         }
 
-        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attackTuning = null, BallCarrierTuning carrierTuning = null)
+        public BasicDecisionEngine(PitchBounds bounds, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attackTuning = null, BallCarrierTuning carrierTuning = null, GoalkeeperAiTuning keeperTuning = null)
         {
             this.bounds = bounds ?? throw new ArgumentNullException(nameof(bounds));
             pos = positioning ?? new RolePositioningTuning();
-            arenaSet = BuildSet(GameMode.Arena, tuning, defense, attackTuning, carrierTuning);
-            classicSet = BuildSet(GameMode.Classic, tuning, defense, attackTuning, carrierTuning);
+            arenaSet = BuildSet(GameMode.Arena, tuning, defense, attackTuning, carrierTuning, keeperTuning);
+            classicSet = BuildSet(GameMode.Classic, tuning, defense, attackTuning, carrierTuning, keeperTuning);
             UseMode(GameMode.Classic);
         }
 
-        private static ModeSet BuildSet(GameMode mode, BasicDecisionTuning tuning, DefenseTuning defense, AttackPositioningTuning attackTuning, BallCarrierTuning carrierTuning)
+        private static ModeSet BuildSet(GameMode mode, BasicDecisionTuning tuning, DefenseTuning defense, AttackPositioningTuning attackTuning, BallCarrierTuning carrierTuning, GoalkeeperAiTuning keeperTuning)
         {
             BasicDecisionTuning bt = tuning ?? BasicDecisionTuning.ForMode(mode);
             AttackPositioningTuning at = attackTuning ?? AttackPositioningTuning.ForMode(mode);
             BallCarrierTuning ct = carrierTuning ?? BallCarrierTuning.ForMode(mode);
-            return new ModeSet { T = bt, AT = at, CT = ct, D = defense ?? DefenseTuning.ForMode(mode), Attack = new AttackSupport(bt, at), Carrier = new BallCarrierEvaluator(bt, at, ct) };
+            return new ModeSet { T = bt, AT = at, CT = ct, K = keeperTuning ?? GoalkeeperAiTuning.ForMode(mode), D = defense ?? DefenseTuning.ForMode(mode), Attack = new AttackSupport(bt, at), Carrier = new BallCarrierEvaluator(bt, at, ct) };
         }
 
         public PlayerDecision Decide(WorldView view, string playerId)
@@ -669,12 +670,57 @@ namespace FS27.Core
                 return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.KeeperDistribute, HasAction = true, Action = intent, TargetPlayerId = targetId, HasMovement = true, Movement = MovementIntent.Stand };
             }
 
+            if (!keeperAi.Enabled) return LegacyKeeper(view, me, attacksPlusX);
+            return KeeperAi(view, me);
+        }
+
+        /// <summary>The goalkeeper rule of Phase 15 (kept to compare): stand on the line from his goal to the ball; chase the ball inside seven metres.</summary>
+        private PlayerDecision LegacyKeeper(WorldView view, in WorldPlayer me, bool attacksPlusX)
+        {
             Vec2 own = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
             Vec2 ball = view.Ball.Ground;
             if ((ball - me.Position).Magnitude <= t.KeeperReactDistance)
                 return MoveTo(me.PlayerId, me.Position, bounds.ClampToGoalZone(ball, attacksPlusX, me.Team), t.ChaseMagnitude, DecisionKind.MoveToBall, DecisionReason.KeeperReact);
             Vec2 toBall = ActionModel.DirectionOr(ball - own, AttackDirection(view, me.Team));
             return MoveTo(me.PlayerId, me.Position, bounds.ClampToGoalZone(own + toBall * t.KeeperLineDepth, attacksPlusX, me.Team), t.PositionMagnitude, DecisionKind.MoveToPoint, DecisionReason.KeeperHold);
+        }
+
+        /// <summary>A team without a difficulty profile: the defaults of the parameters, which are the reference level's.</summary>
+        private static readonly GoalkeeperParameters NeutralKeeper = new GoalkeeperParameters();
+
+        /// <summary>
+        /// The goalkeeper in goal (Phase 16): a shot he can read makes him go to where he thinks it will cross, but only once his reaction time has passed; a free ball he can get to first makes him come out; otherwise he stands where
+        /// <see cref="GoalkeeperPositioning"/> puts him. His own capabilities come from his profile (reflexes, positioning, command, diving, handling) and how well his level uses them from the difficulty.
+        /// </summary>
+        private PlayerDecision KeeperAi(WorldView view, in WorldPlayer me)
+        {
+            GoalkeeperParameters level = profile != null && profile.Goalkeeper != null ? profile.Goalkeeper : NeutralKeeper;
+            GoalkeeperSkill skill = GoalkeeperSkillModel.ResolveNormalized(level, me.Profile.KeeperReflexes, me.Profile.KeeperPositioning, me.Profile.KeeperCommand, me.Profile.KeeperDiving, me.Profile.KeeperHandling, keeperAi.Skill);
+            Vec2 goal = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
+            float inward = goal.X > 0f ? -1f : 1f;
+
+            GoalkeeperRead read = GoalkeeperReaction.Read(view, me, keeperAi, skill);
+            if (read.IsShot && read.Started)
+            {
+                float reach = view.Field.GoalWidth / 2f - keeperAi.PostMargin;
+                float y = Math.Max(goal.Y - reach, Math.Min(goal.Y + reach, read.Believed.Y));
+                Vec2 stand = new Vec2(goal.X + inward * keeperAi.ShotStandOff, y);
+                if (read.ReadError >= keeperAi.MisreadThreshold) LastError = new DecisionError { Kind = DecisionErrorKind.KeeperMisread, Gap = read.ReadError };
+                return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.MoveToPoint, Reason = DecisionReason.KeeperSave, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, stand, keeperAi.DiveMagnitude, 0f) };
+            }
+
+            if (!read.IsShot)
+            {
+                float reboundWait = skill.ReactionSeconds * keeperAi.ReactionScale * (1f + keeperAi.ReboundPenalty * (1f - MathUtil.Clamp01(skill.ReboundResponse)));
+                GoalkeeperExitChoice exit = GoalkeeperExit.Choose(view, me, keeperAi, skill, me.Profile.KeeperCommand, reboundWait);
+                if (exit.Considered && exit.Mistake) LastError = new DecisionError { Kind = DecisionErrorKind.KeeperBadExit, Gap = exit.TrueMargin };
+                if (exit.Go)
+                    return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.MoveToBall, Reason = DecisionReason.KeeperExit, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, bounds.ClampPlayer(exit.Target), keeperAi.ExitMagnitude, 0f) };
+            }
+
+            GoalkeeperStand place = GoalkeeperPositioning.Stand(view, me, keeperAi, skill);
+            LastDrift = place.Drift;
+            return MoveTo(me.PlayerId, me.Position, place.Target, keeperAi.PositionMagnitude, DecisionKind.MoveToPoint, DecisionReason.KeeperHold);
         }
     }
 }

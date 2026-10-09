@@ -14,7 +14,8 @@ namespace FS27.Core
             if (o.MarginMax > MarginMax) MarginMax = o.MarginMax;
             for (int i = 0; i < o.SpaceCount; i++) { if (SpaceCount < space.Length) space[SpaceCount++] = o.space[i]; else SpaceDropped++; }
             for (int i = 0; i < o.ContactCount; i++) { if (ContactCount < contacts.Length) contacts[ContactCount++] = o.contacts[i]; else ContactsDropped++; }
-            SpaceDropped += o.SpaceDropped; ContactsDropped += o.ContactsDropped;
+            for (int i = 0; i < o.ShotLogCount; i++) { if (ShotLogCount < shotLog.Length) shotLog[ShotLogCount++] = o.shotLog[i]; else ShotLogDropped++; }
+            SpaceDropped += o.SpaceDropped; ContactsDropped += o.ContactsDropped; ShotLogDropped += o.ShotLogDropped;
         }
 
         private static string P(double part, double whole) { return whole > 0.0 ? (100.0 * part / whole).ToString("F1") + "%" : "-"; }

@@ -84,7 +84,11 @@ namespace FS27.Core
         SpacePass,
         HoldForRun,
         // Phase 13 (appended)
-        AfterPass
+        AfterPass,
+        /// <summary>Phase 16: the keeper goes to where he reads a shot will cross the line.</summary>
+        KeeperSave,
+        /// <summary>Phase 16: the keeper comes out for a ball nobody has.</summary>
+        KeeperExit
     }
 
     /// <summary>

@@ -62,6 +62,8 @@ namespace FS27.Core
         public string IntendedReceiverId;
         /// <summary>Phase 9: seconds since the possession last changed team.</summary>
         public float SecondsSincePossessionChange;
+        /// <summary>Phase 16: seconds since anybody last touched the ball (a shot just struck reads zero).</summary>
+        public float SecondsSinceTouch;
     }
 
     /// <summary>

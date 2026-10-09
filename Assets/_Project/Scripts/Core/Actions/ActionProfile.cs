@@ -38,6 +38,9 @@ namespace FS27.Core
         public float KeeperDiving;
         public float KeeperDistribution;
         public float KeeperKicking;
+        /// <summary>Phase 16: the keeper's positioning and command (his reading of the game), 0..1. A field player in goal has his derived positioning and uses it for the command too (command is contextual, it has no number of its own).</summary>
+        public float KeeperPositioning;
+        public float KeeperCommand;
 
         public static ActionProfile Resolve(in PlayerAttributes a, PreferredFoot foot, int weakFootQuality, GoalkeeperProfile keeper)
         {
@@ -67,6 +70,8 @@ namespace FS27.Core
                 p.KeeperDiving = N(keeper.Diving);
                 p.KeeperDistribution = N(keeper.Distribution);
                 p.KeeperKicking = N(keeper.Kicking);
+                p.KeeperPositioning = N(keeper.Positioning);
+                p.KeeperCommand = N(keeper.Command);
             }
             else
             {
@@ -76,6 +81,8 @@ namespace FS27.Core
                 p.KeeperDiving = N(e.Diving);
                 p.KeeperDistribution = N(e.Distribution);
                 p.KeeperKicking = N(e.Kicking);
+                p.KeeperPositioning = N(e.Positioning);
+                p.KeeperCommand = N(e.Positioning);
             }
             return p;
         }

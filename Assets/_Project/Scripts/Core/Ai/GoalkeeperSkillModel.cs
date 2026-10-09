@@ -46,16 +46,26 @@ namespace FS27.Core
         /// <summary>Resolves one keeper's parameters. Nothing here writes to the attributes or the profile: the capabilities stay exactly as they are.</summary>
         public static GoalkeeperSkill Resolve(GoalkeeperParameters g, in PlayerAttributes keeper, GoalkeeperProfile profile, GoalkeeperTuning t)
         {
-            float reaction = g.ReactionSeconds * ReflexesFactor(t, profile);
+            return ResolveNormalized(g, PlayerAttributes.Normalize(profile.Reflexes), PositioningAbility01(keeper, profile, t), PlayerAttributes.Normalize(profile.Command),
+                                     PlayerAttributes.Normalize(profile.Diving), PlayerAttributes.Normalize(profile.Handling), t);
+        }
+
+        /// <summary>
+        /// The same resolution from capabilities already normalised to 0..1 (what the decision layer sees of a keeper): reflexes, positioning ability, command, diving and handling.
+        /// <see cref="Resolve"/> is this with the attributes read from the definition, so the two always agree.
+        /// </summary>
+        public static GoalkeeperSkill ResolveNormalized(GoalkeeperParameters g, float reflexes01, float positioningAbility01, float command01, float diving01, float handling01, GoalkeeperTuning t)
+        {
+            float reaction = g.ReactionSeconds * (1f + t.ReflexesReactionInfluence * (0.5f - reflexes01));
             return new GoalkeeperSkill
             {
                 ReactionSeconds = ReactionModel.Clamp(reaction, t.MinReactionSeconds),
-                Positioning = Cap(g.Positioning * Factor(t, PositioningAbility01(keeper, profile, t))),
-                Anticipation = Cap(g.Anticipation * Factor(t, PositioningAbility01(keeper, profile, t))),
-                DecisionMaking = Cap(g.DecisionMaking * Factor(t, profile.Command)),
-                SaveTiming = Cap(g.SaveTiming * Factor(t, profile.Diving)),
-                ShotReading = Cap(g.ShotReading * Factor(t, profile.Reflexes)),
-                ReboundResponse = Cap(g.ReboundResponse * Factor(t, profile.Handling))
+                Positioning = Cap(g.Positioning * Factor(t, positioningAbility01)),
+                Anticipation = Cap(g.Anticipation * Factor(t, positioningAbility01)),
+                DecisionMaking = Cap(g.DecisionMaking * Factor(t, command01)),
+                SaveTiming = Cap(g.SaveTiming * Factor(t, diving01)),
+                ShotReading = Cap(g.ShotReading * Factor(t, reflexes01)),
+                ReboundResponse = Cap(g.ReboundResponse * Factor(t, handling01))
             };
         }
 

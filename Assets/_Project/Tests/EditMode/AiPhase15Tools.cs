@@ -45,7 +45,8 @@ namespace FS27.Core.Tests
             "homeDistAtt", "homeDistDef", "driftMean", "decisions", "defensiveDecisions", "offensiveDecisions", "sprintDecisions",
             "mistakes", "badPass", "wrongReceiver", "badShot", "unnecessaryDribble", "excessiveRisk", "passive", "lateNotice", "lateNoticeSec", "lateContest",
             "decPressed", "decLowSpace", "decTired", "misPressed", "misLowSpace", "misTired", "meanMargin",
-            "stam1", "stam2", "stam3", "stam4", "stamMean"
+            "stam1", "stam2", "stam3", "stam4", "stamMean",
+            "shotsRated", "xgSum", "xgOnTarget", "saves", "shotQuality", "keeperMisread", "keeperBadExit"
         };
 
         private static double[] SideValues(AiDiagnostics d, AttackSim r, int sideIndex)
@@ -67,7 +68,8 @@ namespace FS27.Core.Tests
                 d.MistakeTotal, d.MistakeCount(DecisionErrorKind.BadPass), d.MistakeCount(DecisionErrorKind.WrongReceiver), d.MistakeCount(DecisionErrorKind.BadShot), d.MistakeCount(DecisionErrorKind.UnnecessaryDribble), d.MistakeCount(DecisionErrorKind.ExcessiveRisk), d.MistakeCount(DecisionErrorKind.Passive),
                 d.MistakeCount(DecisionErrorKind.LateReaction), d.MistakeGapSum(DecisionErrorKind.LateReaction), d.MistakeCount(DecisionErrorKind.LateContest),
                 d.DecisionsPressed, d.DecisionsLowSpace, d.DecisionsTired, d.MistakesPressed, d.MistakesLowSpace, d.MistakesTired, d.MarginAverage,
-                Stam(0), Stam(1), Stam(2), Stam(3), n > 0 ? sum / n : double.NaN
+                Stam(0), Stam(1), Stam(2), Stam(3), n > 0 ? sum / n : double.NaN,
+                d.ShotsRated, d.ExpectedGoalsSum, d.ExpectedGoalsOnTargetSum, d.SavesMade, d.ShotQualityAverage, d.MistakeCount(DecisionErrorKind.KeeperMisread), d.MistakeCount(DecisionErrorKind.KeeperBadExit)
             };
         }
 
@@ -84,12 +86,13 @@ namespace FS27.Core.Tests
             string secondsText = Environment.GetEnvironmentVariable("BAT_SECONDS") ?? "120";
             float seconds = secondsText == "full" ? 2f * (mode == GameMode.Arena ? MatchDefaults.ArenaPeriodSeconds : MatchDefaults.ClassicPeriodSeconds) : float.Parse(secondsText, CultureInfo.InvariantCulture);
             string path = Environment.GetEnvironmentVariable("BAT_OUT");
-            string csv = BatteryCsv(mode, nameA, nameB, first, count, seconds);
-            if (!string.IsNullOrEmpty(path)) File.WriteAllText(path, csv);
+            var shotRows = new StringBuilder("mode,seed,shooterLevel,keeperLevel,team,metres,radians,distance,angle,pressure,keeperPos,foot,speed,aim,value,xg,outcome,saved,goal\n");
+            string csv = BatteryCsv(mode, nameA, nameB, first, count, seconds, shotRows);
+            if (!string.IsNullOrEmpty(path)) { File.WriteAllText(path, csv); File.WriteAllText(path.Replace(".csv", "_shots.csv"), shotRows.ToString()); }
         }
 
         /// <summary>The battery as text: the header and one row per match (each seed twice, A at home and A away). The same arguments always give the same text.</summary>
-        private static string BatteryCsv(GameMode mode, string nameA, string nameB, int first, int count, float seconds)
+        private static string BatteryCsv(GameMode mode, string nameA, string nameB, int first, int count, float seconds, StringBuilder shotRows = null)
         {
             Assert.IsTrue(TryDefinition(nameA, out DifficultyDefinition defA, out DifficultyLevel? levelA), nameA); Assert.IsTrue(TryDefinition(nameB, out DifficultyDefinition defB, out DifficultyLevel? levelB), nameB);
             var sb = new StringBuilder();
@@ -113,6 +116,17 @@ namespace FS27.Core.Tests
                     row.AddRange(DifficultyQualityScore.Of(home, away).ToArray().Select(v => v.ToString("R", CultureInfo.InvariantCulture)));
                     row.AddRange(DifficultyQualityScore.Of(away, home).ToArray().Select(v => v.ToString("R", CultureInfo.InvariantCulture)));
                     sb.AppendLine(string.Join(",", row));
+                    if (shotRows != null)
+                    {
+                        string homeName = aHome ? nameA : nameB, awayName = aHome ? nameB : nameA;
+                        foreach (var pair in new[] { Tuple.Create(home, homeName, awayName), Tuple.Create(away, awayName, homeName) })
+                            for (int i = 0; i < pair.Item1.ShotLogCount; i++)
+                            {
+                                ShotRecord rec = pair.Item1.ShotAt(i); ShotQuality q = rec.Quality;
+                                string F(float v) { return v.ToString("R", CultureInfo.InvariantCulture); }
+                                shotRows.AppendLine(string.Join(",", new[] { mode.ToString(), seed.ToString(), pair.Item2, pair.Item3, rec.Team.ToString(), F(q.Metres), F(q.Radians), F(q.Distance), F(q.Angle), F(q.Pressure), F(q.KeeperPosition), F(q.Foot), F(q.Speed), F(q.Aim), F(q.Value), F(q.ExpectedGoal), rec.Outcome.ToString(), rec.Saved ? "1" : "0", rec.Outcome == ShotOutcome.Goal ? "1" : "0" }));
+                            }
+                    }
                 }
             }
             return sb.ToString();
@@ -143,8 +157,9 @@ namespace FS27.Core.Tests
                             for (int g = 0; g < theirs; g++) c.State.Score.Add(TeamSide.Away);
                             c.State.Clock.Advance(c.State.Clock.Remaining - 45f);   // 45 s left in the period
                             BasicDecisionTuning basicT = BasicDecisionTuning.ForMode(mode); DefenseTuning defenseT = DefenseTuning.ForMode(mode); AttackPositioningTuning attackT = AttackPositioningTuning.ForMode(mode); BallCarrierTuning carrierT = BallCarrierTuning.ForMode(mode); var profileT = new DecisionProfileTuning();
-                            ApplyExploration(mode, basicT, defenseT, attackT, carrierT, c.ActionTuning, profileT);
-                            var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT);
+                            GoalkeeperAiTuning keeperT = GoalkeeperAiTuning.ForMode(mode);
+                            ApplyExploration(mode, basicT, defenseT, attackT, carrierT, c.ActionTuning, profileT, keeperT);
+                            var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT, keeperT);
                             driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(level), Db.Players, c, profileT);
                             driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(DifficultyLevel.Professional), Db.Players, c, profileT);
                             var diag = NewDiagnostics(new DiagnosticsConfig { OnlyOneTeam = true, Team = TeamSide.Home }); diag.Attach(c); driver.Diagnostics = diag;
@@ -274,6 +289,74 @@ namespace FS27.Core.Tests
                     summary.AppendLine(mode + "," + level + "," + seeds + "," + string.Join(",", Enumerable.Range(0, 4).Select(b => (q[b] / Math.Max(1.0, qn[b])).ToString("F2", CultureInfo.InvariantCulture))));
                 }
             if (!string.IsNullOrEmpty(path)) { File.WriteAllText(path, sb.ToString()); File.WriteAllText(path + ".summary.csv", summary.ToString()); }
+        }
+
+        /// <summary>Phase 16 tool: every shot of the matches (quality parts, the model's probability, the outcome), one row each. Environment as the battery. Writes BAT_OUT.</summary>
+        [Test, Explicit]
+        public void Phase16Tool_ShotsCsv()
+        {
+            GameMode mode = (GameMode)Enum.Parse(typeof(GameMode), Environment.GetEnvironmentVariable("BAT_MODE") ?? "Arena");
+            string nameA = Environment.GetEnvironmentVariable("BAT_A") ?? "Professional", nameB = Environment.GetEnvironmentVariable("BAT_B") ?? "Professional";
+            int first = int.Parse(Environment.GetEnvironmentVariable("BAT_FIRST") ?? "1001"), count = int.Parse(Environment.GetEnvironmentVariable("BAT_SEEDS") ?? "30");
+            string secondsText = Environment.GetEnvironmentVariable("BAT_SECONDS") ?? "120";
+            float seconds = secondsText == "full" ? 2f * (mode == GameMode.Arena ? MatchDefaults.ArenaPeriodSeconds : MatchDefaults.ClassicPeriodSeconds) : float.Parse(secondsText, CultureInfo.InvariantCulture);
+            string path = Environment.GetEnvironmentVariable("BAT_OUT");
+            Assert.IsTrue(TryDefinition(nameA, out DifficultyDefinition defA, out DifficultyLevel? levelA)); Assert.IsTrue(TryDefinition(nameB, out DifficultyDefinition defB, out DifficultyLevel? levelB));
+            var sb = new StringBuilder("mode,seed,shooterLevel,keeperLevel,team,metres,radians,distance,angle,pressure,keeperPos,foot,speed,aim,value,xg,outcome,saved,goal\n");
+            for (int k = 0; k < count; k++)
+            {
+                int seed = first + k, teamX = seed % 12, teamY = (seed * 5 + 3) % 12;
+                for (int arrangement = 0; arrangement < 2; arrangement++)
+                {
+                    bool aHome = arrangement == 0;
+                    var home = NewDiagnostics(new DiagnosticsConfig { OnlyOneTeam = true, Team = TeamSide.Home }); var away = NewDiagnostics(new DiagnosticsConfig { OnlyOneTeam = true, Team = TeamSide.Away });
+                    string homeName = aHome ? nameA : nameB, awayName = aHome ? nameB : nameA;
+                    if (aHome) SimulateAttack(mode, seed, true, teamX, teamY, seconds, true, home, levelA, levelB, away, defA, defB); else SimulateAttack(mode, seed, true, teamX, teamY, seconds, true, home, levelB, levelA, away, defB, defA);
+                    foreach (var pair in new[] { Tuple.Create(home, homeName, awayName), Tuple.Create(away, awayName, homeName) })
+                        for (int i = 0; i < pair.Item1.ShotLogCount; i++)
+                        {
+                            ShotRecord r = pair.Item1.ShotAt(i); ShotQuality q = r.Quality;
+                            string F(float v) { return v.ToString("R", CultureInfo.InvariantCulture); }
+                            sb.AppendLine(string.Join(",", new[] { mode.ToString(), seed.ToString(), pair.Item2, pair.Item3, r.Team.ToString(), F(q.Metres), F(q.Radians), F(q.Distance), F(q.Angle), F(q.Pressure), F(q.KeeperPosition), F(q.Foot), F(q.Speed), F(q.Aim), F(q.Value), F(q.ExpectedGoal), r.Outcome.ToString(), r.Saved ? "1" : "0", r.Outcome == ShotOutcome.Goal ? "1" : "0" }));
+                        }
+                }
+            }
+            if (!string.IsNullOrEmpty(path)) File.WriteAllText(path, sb.ToString());
+        }
+
+        /// <summary>Phase 16 debugging tool: prints what the goalkeepers read and do during the shots of one match. Writes BAT_OUT.</summary>
+        [Test, Explicit]
+        public void Phase16Tool_TraceShots()
+        {
+            string path = Environment.GetEnvironmentVariable("BAT_OUT");
+            GameMode mode = (GameMode)Enum.Parse(typeof(GameMode), Environment.GetEnvironmentVariable("BAT_MODE") ?? "Arena");
+            int seed = int.Parse(Environment.GetEnvironmentVariable("BAT_FIRST") ?? "1001");
+            var sb = new StringBuilder();
+            MatchSettings settings = mode == GameMode.Arena ? MatchSettings.CreateArena() : MatchSettings.CreateClassic();
+            MatchController c = RealRoles(seed % 12, (seed * 5 + 3) % 12, seed, settings); Assert.IsTrue(c.ConfirmRestart());
+            BasicDecisionTuning bt = BasicDecisionTuning.ForMode(mode);
+            GoalkeeperAiTuning kt = GoalkeeperAiTuning.ForMode(mode);
+            var driver = new BasicDecisionDriver(c, bt, DefenseTuning.ForMode(mode), null, AttackPositioningTuning.ForMode(mode), BallCarrierTuning.ForMode(mode), kt);
+            driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(DifficultyLevel.Professional), Db.Players, c); driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(DifficultyLevel.Professional), Db.Players, c);
+            var world = new WorldState(); int printed = 0;
+            for (int step = 0; step < 120 * 60 && printed < 400; step++)
+            {
+                driver.Step(c); c.Advance(Dt);
+                if (c.State.Phase == MatchPhase.WaitingForKickoff || c.State.Phase == MatchPhase.WaitingForRestart) c.ConfirmRestart(); else if (c.State.Phase == MatchPhase.GoalCelebration) c.Advance(5f);
+                if (step % 3 != 0) continue;
+                world.Refresh(c); WorldView v = world.View;
+                for (int i = 0; i < v.PlayerCount; i++)
+                {
+                    WorldPlayer p = v[i]; if (!p.IsOnPitch || !p.IsGoalkeeper) continue;
+                    GoalkeeperSkill sk = GoalkeeperSkillModel.ResolveNormalized(DefaultDifficulties.Create(DifficultyLevel.Professional).Goalkeeper, p.Profile.KeeperReflexes, p.Profile.KeeperPositioning, p.Profile.KeeperCommand, p.Profile.KeeperDiving, p.Profile.KeeperHandling, kt.Skill);
+                    GoalkeeperRead r = GoalkeeperReaction.Read(v, p, kt, sk);
+                    if (!r.IsShot) continue;
+                    driver.TryGetLast(p.PlayerId, out PlayerDecision d);
+                    sb.AppendLine("t=" + c.State.MatchTimeSeconds.ToString("F2") + " " + p.PlayerId + " keeperPos=(" + p.Position.X.ToString("F2") + "," + p.Position.Y.ToString("F2") + ") speed " + p.Speed.ToString("F2") + "/" + p.MaxSpeed.ToString("F2") + " ball=(" + v.Ball.Ground.X.ToString("F1") + "," + v.Ball.Ground.Y.ToString("F1") + ") ballSpeed " + v.Ball.Speed.ToString("F1") + " timeToGoal " + r.TimeToGoal.ToString("F2") + " elapsed " + r.Elapsed.ToString("F2") + " delay " + r.Delay.ToString("F2") + " started " + r.Started + " crossY " + r.Crossing.Y.ToString("F2") + " believedY " + r.Believed.Y.ToString("F2") + " h " + r.Height.ToString("F2") + " vis " + r.Visibility.ToString("F2") + " decision " + d.Kind + "/" + d.Reason);
+                    printed++;
+                }
+            }
+            if (!string.IsNullOrEmpty(path)) File.WriteAllText(path, sb.ToString());
         }
     }
 }

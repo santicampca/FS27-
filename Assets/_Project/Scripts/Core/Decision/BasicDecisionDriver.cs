@@ -79,11 +79,11 @@ namespace FS27.Core
         public int DecisionSteps => intervalSteps;
         public int CountOf(DecisionKind kind) { return kindCounts[(int)kind]; }
 
-        public BasicDecisionDriver(MatchController match, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attack = null, BallCarrierTuning carrier = null)
+        public BasicDecisionDriver(MatchController match, BasicDecisionTuning tuning = null, DefenseTuning defense = null, RolePositioningTuning positioning = null, AttackPositioningTuning attack = null, BallCarrierTuning carrier = null, GoalkeeperAiTuning keeper = null)
         {
             if (match == null) throw new ArgumentNullException(nameof(match));
             BasicDecisionTuning t = tuning ?? new BasicDecisionTuning();
-            engine = new BasicDecisionEngine(match.Pitch, t, defense, positioning, attack, carrier);
+            engine = new BasicDecisionEngine(match.Pitch, t, defense, positioning, attack, carrier, keeper);
             intervalSteps = Math.Max(1, (int)Math.Round(t.DecisionIntervalSeconds / LocomotionDefaults.FixedDeltaTime));
             sideSteps[0] = sideSteps[1] = intervalSteps;
             for (int i = 0; i < noticing.Length; i++) { noticing[i] = new ReactionGate(); committing[i] = new ReactionGate(); }

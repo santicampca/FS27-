@@ -127,6 +127,7 @@ namespace FS27.Core
             ball.HasLastTouch = b.HasLastTouch; ball.LastTouchTeam = b.LastTouchTeam; ball.LastTouchPlayerId = b.LastTouchPlayerId;
             ball.IntendedReceiverId = b.IntendedReceiverId;
             ball.SecondsSincePossessionChange = b.SecondsSincePossessionChange;
+            ball.SecondsSinceTouch = b.SecondsSinceTouch;
         }
 
         private int Fill(MatchController controller, TeamMatchState team, string controlled, ControlSource control)

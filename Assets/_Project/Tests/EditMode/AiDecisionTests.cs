@@ -145,18 +145,19 @@ namespace FS27.Core.Tests
         // ================= the goalkeeper =================
 
         [Test]
-        public void TheGoalkeeper_KeepsHisZone_AnswersTheNearBall_AndIsNotTreatedAsAFieldPlayer()
+        public void TheLegacyGoalkeeperRule_KeepsHisZone_AnswersTheNearBall_AndIsNotTreatedAsAFieldPlayer()
         {
             MatchController c = Quiet();
             Vec2 goal = new Vec2(-20f, 0f);
             PutBall(c, 5f, 4f);
             Put(c, TeamSide.Home, "hs0", -18f, 3f, East);
-            PlayerDecision hold = Decide(c, "hs0");
+            var legacy = new GoalkeeperAiTuning { Enabled = false };   // Phase 8 rule, kept to compare; the Phase 16 keeper has its own tests (AiGoalkeeperTests)
+            PlayerDecision hold = new BasicDecisionEngine(c.Pitch, null, null, null, null, null, legacy).Decide(WorldState.Capture(c).View, "hs0");
             Assert.AreEqual(DecisionKind.MoveToPoint, hold.Kind); Assert.AreEqual(DecisionReason.KeeperHold, hold.Reason);
             Assert.IsTrue(c.Pitch.IsInGoalZone(hold.Movement.Target, true, TeamSide.Home), "he stands on the goal line, not in the middle of the pitch");
             Assert.AreNotEqual(DecisionKind.MoveToBall, hold.Kind);
             PutBall(c, -14f, 2f); Put(c, TeamSide.Home, "hs0", -18f, 0f, East);
-            PlayerDecision react = Decide(c, "hs0");
+            PlayerDecision react = new BasicDecisionEngine(c.Pitch, null, null, null, null, null, legacy).Decide(WorldState.Capture(c).View, "hs0");
             Assert.AreEqual(DecisionKind.MoveToBall, react.Kind); Assert.AreEqual(DecisionReason.KeeperReact, react.Reason);
             Assert.IsTrue(c.Pitch.IsInGoalZone(react.Movement.Target, true, TeamSide.Home), "even chasing the ball he never leaves the zone: " + react.Movement.Target.X + "," + react.Movement.Target.Y);
         }

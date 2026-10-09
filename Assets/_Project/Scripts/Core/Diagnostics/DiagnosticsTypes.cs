@@ -162,3 +162,19 @@ namespace FS27.Core
         public CandidateParts RunnerUpParts;
     }
 }
+
+namespace FS27.Core
+{
+    /// <summary>One shot, from the strike to its fate (Phase 16): what it was worth and what became of it. For statistics only.</summary>
+    public struct ShotRecord
+    {
+        public int Step;
+        public TeamSide Team;
+        public string ShooterId;
+        public ShotQuality Quality;
+        public ShotOutcome Outcome;
+        /// <summary>The goalkeeper's hands or body stopped it (a catch or a parry while it was in flight).</summary>
+        public bool Saved;
+        public bool Settled;
+    }
+}

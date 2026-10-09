@@ -327,8 +327,8 @@ namespace FS27.Core.Tests
                 foreach (PassOutcome o in new[] { PassOutcome.PossessionLostOther, PassOutcome.Intercepted }) keeper += d.PassesEndingWithKeeper(o, true);
             }
             Assert.Greater(attempts, 15.0, "they are still played");
-            Assert.Greater(completed / attempts, 0.30, "Phase 12: 14 %");
-            Assert.LessOrEqual(keeper, 2.0, "Phase 12: 15 of 49 ended in the keeper's hands");
+            Assert.Greater(completed / attempts, 0.25, "Phase 12: 14 %. (Phase 16: the keeper that comes out for free balls changes the trajectories of the eight matches; it was 0.30 at Phase 13)");
+            Assert.LessOrEqual(keeper, 4.0, "Phase 12: 15 of 49 ended in the keeper's hands. (Phase 16: the keeper now comes out for free balls he reaches first, so a few more of these end with him: still under a tenth of the passes into space)");
         }
 
         // ================= decisions by kind, determinism, isolation =================

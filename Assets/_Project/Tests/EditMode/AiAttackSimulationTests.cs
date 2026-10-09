@@ -8,7 +8,7 @@ namespace FS27.Core.Tests
     /// <summary>Phase 10: twelve real players, real rosters and formations, roles, defence and the attack without the ball, for two minutes in each mode. Measured, not balanced; compared with the same match with the attack layer off (Phase 9).</summary>
     public partial class AiInfrastructureTests
     {
-        private static void ApplyExploration(GameMode mode, BasicDecisionTuning basic, DefenseTuning defense, AttackPositioningTuning attack, BallCarrierTuning carrier, ActionTuning actions = null, DecisionProfileTuning profile = null)
+        private static void ApplyExploration(GameMode mode, BasicDecisionTuning basic, DefenseTuning defense, AttackPositioningTuning attack, BallCarrierTuning carrier, ActionTuning actions = null, DecisionProfileTuning profile = null, GoalkeeperAiTuning keeper = null)
         {
             string spec = Environment.GetEnvironmentVariable("FS27_EXP");
             if (string.IsNullOrEmpty(spec)) return;
@@ -18,7 +18,7 @@ namespace FS27.Core.Tests
                 if (path.Length != 3 || (path[0] != "A" && path[0] != "C" && path[0] != "*")) throw new ArgumentException("bad exploration item " + item);
                 if (path[0] == "A" && mode != GameMode.Arena) continue;
                 if (path[0] == "C" && mode != GameMode.Classic) continue;
-                object target = path[1] == "Basic" ? (object)basic : path[1] == "Defense" ? defense : path[1] == "Attack" ? attack : path[1] == "BallCarrier" ? (object)carrier : path[1] == "Actions" && actions != null ? actions : path[1] == "Profile" && profile != null ? profile : throw new ArgumentException(item);
+                object target = path[1] == "Basic" ? (object)basic : path[1] == "Defense" ? defense : path[1] == "Attack" ? attack : path[1] == "BallCarrier" ? (object)carrier : path[1] == "Actions" && actions != null ? actions : path[1] == "Profile" && profile != null ? profile : path[1] == "Keeper" && keeper != null ? keeper : throw new ArgumentException(item);
                 System.Reflection.FieldInfo f = target.GetType().GetField(path[2]);
                 if (f == null) throw new ArgumentException("no field " + item);
                 f.SetValue(target, f.FieldType == typeof(bool) ? (object)(kv[1].Trim() == "1" || kv[1].Trim() == "true") : f.FieldType == typeof(int) ? (object)int.Parse(kv[1]) : (object)float.Parse(kv[1], System.Globalization.CultureInfo.InvariantCulture));
@@ -51,8 +51,9 @@ namespace FS27.Core.Tests
             AttackPositioningTuning attackT = AttackPositioningTuning.ForMode(mode); attackT.Enabled = attackLayer;
             BallCarrierTuning carrierT = BallCarrierTuning.ForMode(mode); carrierT.Enabled = carrierLayer;
             var profileT = new DecisionProfileTuning();
-            ApplyExploration(mode, basicT, defenseT, attackT, carrierT, c.ActionTuning, profileT);
-            var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT);
+            GoalkeeperAiTuning keeperT = GoalkeeperAiTuning.ForMode(mode);
+            ApplyExploration(mode, basicT, defenseT, attackT, carrierT, c.ActionTuning, profileT, keeperT);
+            var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT, keeperT);
             DifficultyDefinition hd = homeDefinition ?? (homeLevel.HasValue ? DefaultDifficulties.Create(homeLevel.Value) : null), ad = awayDefinition ?? (awayLevel.HasValue ? DefaultDifficulties.Create(awayLevel.Value) : null);
             if (hd != null) driver.SetDifficulty(TeamSide.Home, hd, Db.Players, c, profileT);
             if (ad != null) driver.SetDifficulty(TeamSide.Away, ad, Db.Players, c, profileT);

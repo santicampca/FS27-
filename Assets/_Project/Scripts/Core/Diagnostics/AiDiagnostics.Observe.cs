@@ -6,7 +6,7 @@ namespace FS27.Core
     {
         private struct PendingPass { public bool Active; public bool PasserChased; public float OpponentDistance, PasserSpeed, BallSpeed, TargetDistance, Power, Quality; public int Step, PasserIdx, SpaceIndex; public string PasserId, IntendedId; public TeamSide Team; public FootballActionKind Kind; }
         private struct PendingWindow { public bool Active; public int Step, PlayerIdx; public TeamSide Team; public CandidateType Type; }
-        private struct PendingShot { public float Score, Distance; public bool Active; public int Step, PlayerIdx, GoalsFor; public TeamSide Team; }
+        private struct PendingShot { public float Score, Distance; public bool Active; public int Step, PlayerIdx, GoalsFor, LogIndex; public TeamSide Team; }
 
         private readonly PendingPass[] passes = new PendingPass[16];
         private readonly PendingWindow[] windows = new PendingWindow[48];
@@ -33,6 +33,7 @@ namespace FS27.Core
             if (m == null) throw new ArgumentNullException(nameof(m));
             if (match != null) Detach();
             match = m;
+            shotQuality.ModeIsClassic = m.State.Mode == GameMode.Classic ? 1f : 0f;
             m.Events.Published += OnEvent;
             a[oMatch + mMatches] += 1.0;
             int n = 0;
@@ -53,6 +54,14 @@ namespace FS27.Core
 
         private void OnEvent(GameplayEvent e)
         {
+            // a keeper's catch or parry while an opponent's shot is in flight: a save (the keeper's team counts it; the shooter's observer marks its shot)
+            if (e.Kind == GameplayEventKind.BallTouched && (e.Detail == "GoalkeeperCatch" || e.Detail == "GoalkeeperSave") && anyShotTeam != e.Team && step - anyShotStep <= ToSteps(Config.ShotWindowSeconds))
+            {
+                // one save per shot: a parry that is then caught is the same save
+                if (!Skip(e.Team) && !anyShotSaved) a[oShotQ + 3] += 1.0;
+                anyShotSaved = true;
+                for (int i = 0; i < shots.Length; i++) if (shots[i].Active && shots[i].Team != e.Team && shots[i].LogIndex >= 0) shotLog[shots[i].LogIndex].Saved = true;
+            }
             if (Config.OnlyOneTeam && e.HasTeam && e.Team != Config.Team) return;
             switch (e.Kind)
             {
@@ -152,6 +161,9 @@ namespace FS27.Core
         }
 
         private bool inFinalThird, inDanger, possessionWasDangerous;
+        private bool anyShotSaved;
+        private int anyShotStep = -100000;
+        private TeamSide anyShotTeam;
 
         /// <summary>The ball in the hands of the observed team: did it enter the final third, did it reach the dangerous zone (counted once per possession).</summary>
         private void TrackProgress(MatchBall ball)
@@ -279,6 +291,7 @@ namespace FS27.Core
         private void SettleShot(ref PendingShot s, ShotOutcome outcome)
         {
             s.Active = false;
+            if (s.LogIndex >= 0) { shotLog[s.LogIndex].Outcome = outcome; shotLog[s.LogIndex].Settled = true; if (outcome == ShotOutcome.Goal) a[oShotQ + 5] += shotLog[s.LogIndex].Quality.ExpectedGoal; }
             a[oShotOutcome + (int)outcome] += 1.0;
             int bucket = s.Distance < 4f ? 0 : (s.Distance < 7f ? 1 : (s.Distance < 9f ? 2 : (s.Distance < 11f ? 3 : (s.Distance < 13f ? 4 : 5))));
             a[oShotDistance + bucket * ShotOutcomes + (int)outcome] += 1.0;

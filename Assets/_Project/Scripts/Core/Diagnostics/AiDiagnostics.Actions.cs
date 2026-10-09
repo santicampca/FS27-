@@ -22,6 +22,7 @@ namespace FS27.Core
         public void OnAction(int stepNumber, WorldView view, int idx, in PlayerDecision d, in ActionResult r, BasicDecisionDriver driver)
         {
             if (Twin != null) Twin.OnAction(stepNumber, view, idx, d, r, driver);
+            if (IsShot(r.Kind) && r.Outcome == ActionOutcome.Completed) { anyShotStep = stepNumber; anyShotTeam = view[idx].Team; anyShotSaved = false; }
             if (!Config.Enabled || match == null || Skip(view[idx].Team)) return;
             int k = (int)r.Kind;
             a[oActRequested + k] += 1.0;
@@ -37,7 +38,7 @@ namespace FS27.Core
             if (r.Kind == FootballActionKind.Intercept && r.Detail == ActionDetail.Intercepted) players[idx].Interceptions++;
 
             if (IsPass(r.Kind) && r.Outcome == ActionOutcome.Completed) { ReleaseWindows(idx); RegisterPass(stepNumber, view, idx, d, r); }
-            else if (IsShot(r.Kind) && r.Outcome == ActionOutcome.Completed) { ReleaseWindows(idx); RegisterShot(stepNumber, view, idx); }
+            else if (IsShot(r.Kind) && r.Outcome == ActionOutcome.Completed) { ReleaseWindows(idx); RegisterShot(stepNumber, view, idx, r); }
             int duel = DuelIndex(r.Kind);
             if (duel >= 0) RecordDuel(stepNumber, view, idx, duel, r, driver);
         }
@@ -94,14 +95,34 @@ namespace FS27.Core
             passes[slot] = new PendingPass { OpponentDistance = WorldGeometry.NearestOpponentDistanceTo(view, view[idx].Team, view[idx].Position), PasserSpeed = view[idx].Speed, BallSpeed = (float)Math.Sqrt(r.BallVelocity.X * r.BallVelocity.X + r.BallVelocity.Z * r.BallVelocity.Z), TargetDistance = tdist, Power = r.Intensity, Quality = r.Quality, Active = true, Step = stepNumber, PasserIdx = idx, SpaceIndex = spaceIndex, PasserId = view[idx].PlayerId, IntendedId = d.TargetPlayerId ?? r.TargetPlayerId, Team = view[idx].Team, Kind = r.Kind };
         }
 
-        private void RegisterShot(int stepNumber, WorldView view, int idx)
+        private void RegisterShot(int stepNumber, WorldView view, int idx, in ActionResult r)
         {
             a[oShotAttempts] += 1.0; players[idx].Shots++;
-            TeamSide team = view[idx].Team;
+            WorldPlayer me = view[idx];
+            TeamSide team = me.Team;
+
+            // what the shot was worth (statistics only)
+            var ctx = new ShotContext { Shooter = me.Position, GoalCentre = WorldGeometry.AttackGoal(view.Match, view.Field, team), GoalWidth = view.Field.GoalWidth, BallVelocity = new Vec2(r.BallVelocity.X, r.BallVelocity.Z), WeakFoot = r.WeakFoot, NearestDefender = float.PositiveInfinity };
+            Vec2 toGoal = ctx.GoalCentre - ctx.Shooter; float length = toGoal.Magnitude;
+            for (int i = 0; i < view.PlayerCount; i++)
+            {
+                WorldPlayer o = view[i];
+                if (!o.IsOnPitch || o.Team == team) continue;
+                if (o.IsGoalkeeper) { ctx.Keeper = o.Position; ctx.HasKeeper = true; continue; }
+                float d = (o.Position - ctx.Shooter).Magnitude;
+                if (d < ctx.NearestDefender) ctx.NearestDefender = d;
+                if (length > 1e-3f && WorldGeometry.DistanceToSegment(o.Position, ctx.Shooter, ctx.GoalCentre) <= shotQuality.LaneHalfWidth) ctx.DefendersInLane++;
+            }
+            ShotQuality q = ShotQualityEvaluator.Evaluate(ctx, shotQuality);
+            a[oShotQ] += 1.0; a[oShotQ + 1] += q.Value; a[oShotQ + 2] += q.ExpectedGoal; if (q.Aim > 0f) a[oShotQ + 6] += 1.0;
+            int logIndex = -1;
+            if (ShotLogCount < shotLog.Length) { logIndex = ShotLogCount++; shotLog[logIndex] = new ShotRecord { Step = stepNumber, Team = team, ShooterId = me.PlayerId, Quality = q }; }
+            else ShotLogDropped++;
+
             int slot = -1;
             for (int i = 0; i < shots.Length; i++) if (!shots[i].Active) { slot = i; break; }
             if (slot < 0) { slot = 0; for (int i = 1; i < shots.Length; i++) if (shots[i].Step < shots[slot].Step) slot = i; SettleShot(ref shots[slot], ShotOutcome.Unknown); }
-            shots[slot] = new PendingShot { Score = lastShotScore[idx], Distance = (WorldGeometry.AttackGoal(view.Match, view.Field, team) - view[idx].Position).Magnitude, Active = true, Step = stepNumber, PlayerIdx = idx, Team = team, GoalsFor = team == TeamSide.Home ? match.State.Score.Home : match.State.Score.Away };
+            shots[slot] = new PendingShot { Score = lastShotScore[idx], Distance = length, Active = true, Step = stepNumber, PlayerIdx = idx, Team = team, LogIndex = logIndex, GoalsFor = team == TeamSide.Home ? match.State.Score.Home : match.State.Score.Away };
         }
 
         // ------------------------------------------------------------------ duels for the ball and fouls

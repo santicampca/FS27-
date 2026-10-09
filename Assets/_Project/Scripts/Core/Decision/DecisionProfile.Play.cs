@@ -20,7 +20,11 @@ namespace FS27.Core
         /// <summary>He waited before committing a tackle, a slide or a challenge.</summary>
         LateContest,
         /// <summary>He noticed a change of possession late.</summary>
-        LateReaction
+        LateReaction,
+        /// <summary>Phase 16, goalkeeper: he misjudged where a shot would cross the line by at least the misread threshold.</summary>
+        KeeperMisread,
+        /// <summary>Phase 16, goalkeeper: he came out for a ball an opponent was going to reach first, or stayed when he would have got there first.</summary>
+        KeeperBadExit
     }
 
     public struct DecisionError

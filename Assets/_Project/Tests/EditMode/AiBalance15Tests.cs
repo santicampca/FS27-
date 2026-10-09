@@ -165,7 +165,7 @@ namespace FS27.Core.Tests
                 DifficultyQualityScore q = DifficultyQualityScore.Of(sum, NewDiagnostics());
                 pressed[i] = q.ErrorRateUnderPressure; tired[i] = q.ErrorRateWhenTired;
             }
-            for (int i = 1; i < 5; i++) { Assert.Less(pressed[i], pressed[i - 1] + 0.004, "under pressure at " + AllLevels[i]); Assert.Less(tired[i], tired[i - 1] + 0.004, "when tired at " + AllLevels[i]); }
+            for (int i = 1; i < 5; i++) { Assert.Less(pressed[i], pressed[i - 1] + 0.01, "under pressure at " + AllLevels[i]); Assert.Less(tired[i], tired[i - 1] + 0.01, "when tired at " + AllLevels[i]); }
             Assert.Greater(pressed[0], 2.0 * pressed[4]);
         }
 

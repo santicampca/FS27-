@@ -183,6 +183,8 @@ namespace FS27.Core
         public float RiskTolerance;
         /// <summary>The level's own position error in metres.</summary>
         public float PositionErrorMeters;
+        /// <summary>Phase 16: how well the level's goalkeepers use what they have (reaction, positioning, anticipation, decision making, save timing, shot reading, rebound response). The keeper's own capabilities come from his profile.</summary>
+        public GoalkeeperParameters Goalkeeper;
 
         public static DecisionProfile From(DifficultyDefinition d, DecisionProfileTuning tuning = null)
         {
@@ -210,7 +212,8 @@ namespace FS27.Core
                 SituationAwareness = decisionQ,
                 StaminaManagement = MathUtil.Clamp01((d.Positioning.PositioningQuality + d.Pressure.PressureIntelligence) * 0.5f),
                 RiskTolerance = 0f,
-                PositionErrorMeters = d.Positioning.PositionErrorMeters
+                PositionErrorMeters = d.Positioning.PositionErrorMeters,
+                Goalkeeper = d.Goalkeeper
             };
             return p;
         }
