@@ -23,7 +23,7 @@ New, `Assets/_Project/Tests/EditMode/GoalLineTests.cs` (12; partial class `Actio
 * Rules: completely beyond = goal at both ends and for both directions of attack (side switch); touching the line / partly across / centre on the line = no goal at both ends; completely across but wide of either post or over the bar = no goal; the two modes judge the same crossing and keep their own rules for the rest (Arena has no "out", Classic gives out of play); the crossing function is the one the judgement uses.
 * Match: a shot into the empty goal is exactly one goal in Arena and in Classic, not an own goal; the same at the other end for Away; an own goal still counts when the ball really crosses (defender's last touch); **a keeper who catches in front of the line and keeps going back cannot carry the ball over it (Arena and Classic, ground and lofted ball)**; a ball already completely over the line cannot be played by the keeper, so the goal is the shooter's (Arena and Classic, counted once); the catch of a slow shot inside the area works as before; with the rule off the keeper carries the ball over and the Core calls it an own goal (documents the cause).
 Before the fix the two tests for the carry and for the already-crossed ball failed (carry: 1 goal instead of 0; already crossed: flagged as own goal); the other 9 passed (the geometry was right). After: 12 of 12.
-Whole suite: **2387 passed, 0 failed, 0 skipped** (was 2375), 5 min 1 s (run twice, 4 min 3 s to 5 min 1 s); the focused run of the 12 new tests takes under a second. No test was changed in its expectations.
+Whole suite: **2387 passed, 0 failed, 0 skipped** (was 2375), 5 min 1 s (run twice, 5 min 1 s both times); the focused run of the 12 new tests takes under a second. No test was changed in its expectations.
 Test tooling added (no behaviour): a step hook in the attack simulation (`StepHook`), the explicit tool `Phase18Tool_TraceGoals` (writes the last 1.5 s before every goal), and the word `partial` on `ActionsAndBallTests`.
 
 ## 4. Effect in simulated matches (quick battery, 6 cells x 20 different matches, seeds 5001–5020, commit `e7d972f`, 294 s in total, longest cell 234 s)
@@ -32,7 +32,7 @@ Test tooling added (no behaviour): a step hook in the attack simulation (`StepHo
 | goals in the 120 matches | 948 | 798 (−150, about −1.25 per match) |
 | own goals right after a keeper catch | 144 | **0** |
 | goals flagged as own goals | 179 | 31 |
-| goals with a known origin (Shot / Rebound / Deflection) | 70 % | 87 % (Arena Professional 0.73 → 0.90, Classic Professional 0.65 → 0.80) |
+| goals with a known origin (Shot / Rebound / Deflection) | 75 % | 86 % (Arena Professional 0.73 → 0.90, Classic Professional 0.65 → 0.80) |
 | goals per match, Arena Professional | 8.35 | 6.70 |
 | goals per match, Classic Professional | 7.10 | 5.60 |
 | stamina, keeper stamina, pass completion, mistakes | – | unchanged (inside the bands) |
