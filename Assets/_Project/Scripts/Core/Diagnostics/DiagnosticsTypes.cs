@@ -37,6 +37,9 @@ namespace FS27.Core
         /// <summary>Phase 15: a carrier decision with at least this pressure counts as made under pressure, and one with at most this stamina as made tired.</summary>
         public float PressedLevel = 0.5f;
         public float TiredLevel = 30f;
+        /// <summary>Phase 17: how far back (seconds) the events before a goal are read to tell where it came from, and how many ball events are kept for that.</summary>
+        public float GoalOriginWindowSeconds = 6f;
+        public int GoalOriginRing = 16;
     }
 
     /// <summary>How a pass ended, as far as the core lets us see (never guessed: <see cref="NotObserved"/> when it could not be told).</summary>

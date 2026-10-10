@@ -20,6 +20,8 @@ namespace FS27.Core
         private static readonly int PassOutcomes = MaxOf(typeof(PassOutcome)) + 1;
         private static readonly int WindowOutcomes = MaxOf(typeof(WindowOutcome)) + 1;
         private static readonly int ShotOutcomes = MaxOf(typeof(ShotOutcome)) + 1;
+        private static readonly int GoalOrigins = MaxOf(typeof(GoalOrigin)) + 1;
+        private static readonly int GoalEvidences = MaxOf(typeof(GoalEvidence)) + 1;
         private const int Archetypes = 16;
         private const int Roles = 4;
         private static readonly int MistakeKinds = MaxOf(typeof(DecisionErrorKind)) + 1;
@@ -119,6 +121,7 @@ namespace FS27.Core
         private static readonly int oLost = Alloc(1);
         private static readonly int oShotQ = Alloc(8);
         private static readonly int oMatch = Alloc(14);
+        private static readonly int oGoalOrigin = Alloc(GoalOrigins * GoalEvidences);
         private static readonly int Size = cursor;
 
         // indexes into the small oMatch block
@@ -138,6 +141,11 @@ namespace FS27.Core
         public int ShotLogCount { get; private set; }
         public int ShotLogDropped { get; private set; }
         public ShotRecord ShotAt(int i) { return shotLog[i]; }
+        private readonly GoalOriginRecord[] goalLog;
+        private readonly GoalOriginTracker origin;
+        public int GoalLogCount { get; private set; }
+        public int GoalLogDropped { get; private set; }
+        public GoalOriginRecord GoalAt(int i) { return goalLog[i]; }
         private readonly SpaceAttempt[] space;
         private readonly ContactRecord[] contacts;
         private readonly CarrierTrace[] trace;
@@ -148,10 +156,12 @@ namespace FS27.Core
         public int ContactsDropped { get; private set; }
         public int TraceDropped { get; private set; }
 
-        public AiDiagnostics(DiagnosticsConfig config = null, int spaceCapacity = 128, int contactCapacity = 512, int traceCapacity = 256, int shotCapacity = 192)
+        public AiDiagnostics(DiagnosticsConfig config = null, int spaceCapacity = 128, int contactCapacity = 512, int traceCapacity = 256, int shotCapacity = 192, int goalCapacity = 64)
         {
             shotLog = new ShotRecord[shotCapacity];
+            goalLog = new GoalOriginRecord[goalCapacity];
             Config = config ?? new DiagnosticsConfig();
+            origin = new GoalOriginTracker(Config.GoalOriginRing);
             space = new SpaceAttempt[spaceCapacity];
             contacts = new ContactRecord[contactCapacity];
             trace = new CarrierTrace[Config.TraceEnabled ? traceCapacity : 0];
@@ -172,6 +182,9 @@ namespace FS27.Core
         /// <summary>Goals scored while a shot of the scoring team was still being followed (3 s), and goals with none (carried in, a deflection, a rebound after the shot was settled).</summary>
         public double GoalsAfterShot { get { return a[oMatch + mGoalsAfterShot]; } }
         public double GoalsOther { get { return a[oMatch + mGoalsOther]; } }
+        /// <summary>Phase 17: the goals by where they came from (the events before them), and by how sure that is.</summary>
+        public double GoalsByOrigin(GoalOrigin o) { double n = 0; for (int e = 0; e < GoalEvidences; e++) n += a[oGoalOrigin + (int)o * GoalEvidences + e]; return n; }
+        public double GoalsByEvidence(GoalEvidence ev) { double n = 0; for (int o = 0; o < GoalOrigins; o++) n += a[oGoalOrigin + o * GoalEvidences + (int)ev]; return n; }
         public double FoulEvents { get { return a[oMatch + mFoulEvents]; } }
         public double Decisions { get { return a[oDecisions]; } }
         public double KindCount(DecisionKind k) { return a[oKinds + (int)k]; }

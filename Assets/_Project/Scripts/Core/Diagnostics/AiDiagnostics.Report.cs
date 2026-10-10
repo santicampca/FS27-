@@ -15,6 +15,8 @@ namespace FS27.Core
             for (int i = 0; i < o.SpaceCount; i++) { if (SpaceCount < space.Length) space[SpaceCount++] = o.space[i]; else SpaceDropped++; }
             for (int i = 0; i < o.ContactCount; i++) { if (ContactCount < contacts.Length) contacts[ContactCount++] = o.contacts[i]; else ContactsDropped++; }
             for (int i = 0; i < o.ShotLogCount; i++) { if (ShotLogCount < shotLog.Length) shotLog[ShotLogCount++] = o.shotLog[i]; else ShotLogDropped++; }
+            for (int i = 0; i < o.GoalLogCount; i++) { if (GoalLogCount < goalLog.Length) goalLog[GoalLogCount++] = o.goalLog[i]; else GoalLogDropped++; }
+            GoalLogDropped += o.GoalLogDropped;
             SpaceDropped += o.SpaceDropped; ContactsDropped += o.ContactsDropped; ShotLogDropped += o.ShotLogDropped;
         }
 

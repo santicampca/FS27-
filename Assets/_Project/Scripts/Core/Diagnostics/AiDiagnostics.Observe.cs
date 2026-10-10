@@ -33,6 +33,7 @@ namespace FS27.Core
             if (m == null) throw new ArgumentNullException(nameof(m));
             if (match != null) Detach();
             match = m;
+            origin.Clear();
             shotQuality.ModeIsClassic = m.State.Mode == GameMode.Classic ? 1f : 0f;
             m.Events.Published += OnEvent;
             a[oMatch + mMatches] += 1.0;
@@ -62,12 +63,14 @@ namespace FS27.Core
                 anyShotSaved = true;
                 for (int i = 0; i < shots.Length; i++) if (shots[i].Active && shots[i].Team != e.Team && shots[i].LogIndex >= 0) shotLog[shots[i].LogIndex].Saved = true;
             }
+            origin.Add(e);
             if (Config.OnlyOneTeam && e.HasTeam && e.Team != Config.Team) return;
             switch (e.Kind)
             {
                 case GameplayEventKind.GoalScored:
                     a[oMatch + mGoals] += 1.0; lastGoalStep = step;
                     { bool afterShot = false; for (int i = 0; i < shots.Length; i++) if (shots[i].Active && (!e.HasTeam || shots[i].Team == e.Team)) afterShot = true; a[oMatch + (afterShot ? mGoalsAfterShot : mGoalsOther)] += 1.0; }
+                    RecordGoalOrigin(e);
                     break;
                 case GameplayEventKind.FoulCommitted: a[oMatch + mFoulEvents] += 1.0; break;
                 case GameplayEventKind.YellowCardIssued: a[oContext + 6] += 1.0; break;
@@ -80,6 +83,21 @@ namespace FS27.Core
                     lastOutStep = step; a[oMatch + mOutEvents] += 1.0; break;
             }
         }
+
+        /// <summary>Phase 17: reads where a goal came from (never changes it) and counts it once.</summary>
+        private void RecordGoalOrigin(GameplayEvent e)
+        {
+            GoalOriginRecord g = origin.Read(e.Team, e.PlayerId, e.Detail == GoalOwnGoalDetail, e.MatchTime, Config.GoalOriginWindowSeconds);
+            g.MatchId = match.State.MatchId; g.GoalPosition = e.Position;
+            if (g.ShotTime >= 0f)
+                for (int i = 0; i < ShotLogCount; i++)
+                    if (shotLog[i].Team == e.Team && step - shotLog[i].Step <= ToSteps(Config.GoalOriginWindowSeconds)) { g.ShotLogged = true; break; }
+            a[oGoalOrigin + (int)g.Origin * GoalEvidences + (int)g.Evidence] += 1.0;
+            if (GoalLogCount < goalLog.Length) goalLog[GoalLogCount++] = g; else GoalLogDropped++;
+        }
+
+        /// <summary>The qualifier the Core gives to a goal scored by a player against his own team.</summary>
+        private const string GoalOwnGoalDetail = "OwnGoal";
 
         private int IndexOf(TeamSide team, string id)
         {

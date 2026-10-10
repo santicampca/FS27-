@@ -46,7 +46,9 @@ namespace FS27.Core.Tests
             "mistakes", "badPass", "wrongReceiver", "badShot", "unnecessaryDribble", "excessiveRisk", "passive", "lateNotice", "lateNoticeSec", "lateContest",
             "decPressed", "decLowSpace", "decTired", "misPressed", "misLowSpace", "misTired", "meanMargin",
             "stam1", "stam2", "stam3", "stam4", "stamMean",
-            "shotsRated", "xgSum", "xgOnTarget", "saves", "shotQuality", "keeperMisread", "keeperBadExit"
+            "shotsRated", "xgSum", "xgOnTarget", "saves", "shotQuality", "keeperMisread", "keeperBadExit",
+            "keeperStamina", "stamLow20", "stamLow5",
+            "goalsShot", "goalsRebound", "goalsDeflection", "goalsCross", "goalsUnknown", "goalsDirect", "goalsInferred", "goalsNoEvidence", "goalsShotLogged"
         };
 
         private static double[] SideValues(AiDiagnostics d, AttackSim r, int sideIndex)
@@ -69,13 +71,16 @@ namespace FS27.Core.Tests
                 d.MistakeCount(DecisionErrorKind.LateReaction), d.MistakeGapSum(DecisionErrorKind.LateReaction), d.MistakeCount(DecisionErrorKind.LateContest),
                 d.DecisionsPressed, d.DecisionsLowSpace, d.DecisionsTired, d.MistakesPressed, d.MistakesLowSpace, d.MistakesTired, d.MarginAverage,
                 Stam(0), Stam(1), Stam(2), Stam(3), n > 0 ? sum / n : double.NaN,
-                d.ShotsRated, d.ExpectedGoalsSum, d.ExpectedGoalsOnTargetSum, d.SavesMade, d.ShotQualityAverage, d.MistakeCount(DecisionErrorKind.KeeperMisread), d.MistakeCount(DecisionErrorKind.KeeperBadExit)
+                d.ShotsRated, d.ExpectedGoalsSum, d.ExpectedGoalsOnTargetSum, d.SavesMade, d.ShotQualityAverage, d.MistakeCount(DecisionErrorKind.KeeperMisread), d.MistakeCount(DecisionErrorKind.KeeperBadExit),
+                r.KeeperStaminaN[sideIndex] > 0 ? r.KeeperStaminaSum[sideIndex] / r.KeeperStaminaN[sideIndex] : double.NaN, n > 0 ? r.LowN[sideIndex] / n : double.NaN, n > 0 ? r.VeryLowN[sideIndex] / n : double.NaN,
+                d.GoalsByOrigin(GoalOrigin.Shot), d.GoalsByOrigin(GoalOrigin.Rebound), d.GoalsByOrigin(GoalOrigin.Deflection), d.GoalsByOrigin(GoalOrigin.Cross), d.GoalsByOrigin(GoalOrigin.Unknown),
+                d.GoalsByEvidence(GoalEvidence.Direct), d.GoalsByEvidence(GoalEvidence.Inferred), d.GoalsByEvidence(GoalEvidence.None), Enumerable.Range(0, d.GoalLogCount).Count(i => d.GoalAt(i).ShotLogged)
             };
         }
 
         /// <summary>
         /// Phase 15 battery. Environment: BAT_MODE (Arena|Classic), BAT_A and BAT_B (Novice|Amateur|Professional|Expert|Elite|None|HumanCasual|HumanSkilled), BAT_FIRST (first seed), BAT_SEEDS (how many; each seed is played twice,
-        /// A at home and A away), BAT_SECONDS (a number, or "full" for the regulation length of the mode), BAT_OUT (csv path). One row per match.
+        /// A at home and A away, once when A and B are the same level), BAT_SECONDS (a number, or "full" for the regulation length of the mode), BAT_OUT (csv path). One row per match.
         /// </summary>
         [Test, Explicit]
         public void Phase15Battery_WriteTheCsv()
@@ -87,12 +92,13 @@ namespace FS27.Core.Tests
             float seconds = secondsText == "full" ? 2f * (mode == GameMode.Arena ? MatchDefaults.ArenaPeriodSeconds : MatchDefaults.ClassicPeriodSeconds) : float.Parse(secondsText, CultureInfo.InvariantCulture);
             string path = Environment.GetEnvironmentVariable("BAT_OUT");
             var shotRows = new StringBuilder("mode,seed,shooterLevel,keeperLevel,team,metres,radians,distance,angle,pressure,keeperPos,foot,speed,aim,value,xg,outcome,saved,goal\n");
-            string csv = BatteryCsv(mode, nameA, nameB, first, count, seconds, shotRows);
-            if (!string.IsNullOrEmpty(path)) { File.WriteAllText(path, csv); File.WriteAllText(path.Replace(".csv", "_shots.csv"), shotRows.ToString()); }
+            var goalRows = new StringBuilder("mode,seed,matchId,team,time,scorer,ownGoal,origin,evidence,prevKind,prevDetail,shotTime,shotLogged,lastKick,lastKickDetail,lastKickTeam,lastKickAge,goalX,goalY,goalZ,prevX,prevY,prevZ\n");
+            string csv = BatteryCsv(mode, nameA, nameB, first, count, seconds, shotRows, goalRows);
+            if (!string.IsNullOrEmpty(path)) { File.WriteAllText(path, csv); File.WriteAllText(path.Replace(".csv", "_shots.csv"), shotRows.ToString()); File.WriteAllText(path.Replace(".csv", "_goals.csv"), goalRows.ToString()); }
         }
 
         /// <summary>The battery as text: the header and one row per match (each seed twice, A at home and A away). The same arguments always give the same text.</summary>
-        private static string BatteryCsv(GameMode mode, string nameA, string nameB, int first, int count, float seconds, StringBuilder shotRows = null)
+        private static string BatteryCsv(GameMode mode, string nameA, string nameB, int first, int count, float seconds, StringBuilder shotRows = null, StringBuilder goalRows = null)
         {
             Assert.IsTrue(TryDefinition(nameA, out DifficultyDefinition defA, out DifficultyLevel? levelA), nameA); Assert.IsTrue(TryDefinition(nameB, out DifficultyDefinition defB, out DifficultyLevel? levelB), nameB);
             var sb = new StringBuilder();
@@ -103,7 +109,8 @@ namespace FS27.Core.Tests
             for (int k = 0; k < count; k++)
             {
                 int seed = first + k, teamX = seed % 12, teamY = (seed * 5 + 3) % 12;
-                for (int arrangement = 0; arrangement < 2; arrangement++)
+                // two teams of the same level: the second arrangement (A away) would repeat the first match exactly, so it is not played (Phase 17: it used to double the apparent sample)
+                for (int arrangement = 0; arrangement < (nameA == nameB ? 1 : 2); arrangement++)
                 {
                     bool aHome = arrangement == 0;
                     var home = NewDiagnostics(new DiagnosticsConfig { OnlyOneTeam = true, Team = TeamSide.Home }); var away = NewDiagnostics(new DiagnosticsConfig { OnlyOneTeam = true, Team = TeamSide.Away });
@@ -116,6 +123,13 @@ namespace FS27.Core.Tests
                     row.AddRange(DifficultyQualityScore.Of(home, away).ToArray().Select(v => v.ToString("R", CultureInfo.InvariantCulture)));
                     row.AddRange(DifficultyQualityScore.Of(away, home).ToArray().Select(v => v.ToString("R", CultureInfo.InvariantCulture)));
                     sb.AppendLine(string.Join(",", row));
+                    if (goalRows != null)
+                        foreach (var pair in new[] { Tuple.Create(home, 0), Tuple.Create(away, 1) })
+                            for (int i = 0; i < pair.Item1.GoalLogCount; i++)
+                            {
+                                GoalOriginRecord g = pair.Item1.GoalAt(i);
+                                goalRows.AppendLine(string.Join(",", new[] { mode.ToString(), seed.ToString(), g.MatchId, g.Team.ToString(), g.MatchTime.ToString("F1", CultureInfo.InvariantCulture), g.ScorerId, g.OwnGoal ? "1" : "0", g.Origin.ToString(), g.Evidence.ToString(), g.PreviousKind.ToString(), g.PreviousDetail, g.ShotTime.ToString("F1", CultureInfo.InvariantCulture), g.ShotLogged ? "1" : "0", g.LastKickKind.ToString(), g.LastKickDetail, g.LastKickTeam.ToString(), g.LastKickAge.ToString("F1", CultureInfo.InvariantCulture), g.GoalPosition.X.ToString("F2", CultureInfo.InvariantCulture), g.GoalPosition.Y.ToString("F2", CultureInfo.InvariantCulture), g.GoalPosition.Z.ToString("F2", CultureInfo.InvariantCulture), g.PreviousPosition.X.ToString("F2", CultureInfo.InvariantCulture), g.PreviousPosition.Y.ToString("F2", CultureInfo.InvariantCulture), g.PreviousPosition.Z.ToString("F2", CultureInfo.InvariantCulture) }));
+                            }
                     if (shotRows != null)
                     {
                         string homeName = aHome ? nameA : nameB, awayName = aHome ? nameB : nameA;

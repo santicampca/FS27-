@@ -127,7 +127,7 @@ namespace FS27.Core.Tests
             string before = Environment.GetEnvironmentVariable("FS27_EXP");
             try
             {
-                Environment.SetEnvironmentVariable("FS27_EXP", "*.Basic.PasserStaysOffHisPass=0;*.BallCarrier.SafePassBaseWeight=0;*.BallCarrier.ThroughKeeperMargin=0;*.BallCarrier.ShootMinScore=0;*.Defense.ChallengeMaxRisk=1000;*.Actions.KickerKeepsOffHisKick=0;*.Keeper.Enabled=0");
+                Environment.SetEnvironmentVariable("FS27_EXP", "*.Basic.PasserStaysOffHisPass=0;*.BallCarrier.SafePassBaseWeight=0;*.BallCarrier.ThroughKeeperMargin=0;*.BallCarrier.ShootMinScore=0;*.Defense.ChallengeMaxRisk=1000;*.Actions.KickerKeepsOffHisKick=0;*.Keeper.Enabled=0;*.Locomotion.WalkRecoveryFactor=0.25");
                 Assert.AreEqual(2212894415u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, false).Fingerprint), "Arena 301, Phase 10 carrier");
                 Assert.AreEqual(3998311449u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, true).Fingerprint), "Arena 301, Phase 11 carrier");
             }

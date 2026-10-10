@@ -323,7 +323,7 @@ namespace FS27.Core.Tests
             }
         }
 
-        private static AiDiagnostics Aggregate14(GameMode mode, DifficultyLevel level, int matches)
+        private static AiDiagnostics Aggregate14(GameMode mode, DifficultyLevel level, int matches, float seconds = 90f)
         {
             var sum = NewDiagnostics();
             int first = mode == GameMode.Arena ? 301 : 321;
@@ -331,7 +331,7 @@ namespace FS27.Core.Tests
             {
                 int seed = first + k;
                 var one = NewDiagnostics(new DiagnosticsConfig { OnlyOneTeam = true, Team = TeamSide.Home });
-                SimulateAttack(mode, seed, true, seed % 12, (seed * 5 + 3) % 12, 90f, true, one, level, DifficultyLevel.Professional);
+                SimulateAttack(mode, seed, true, seed % 12, (seed * 5 + 3) % 12, seconds, true, one, level, DifficultyLevel.Professional);
                 sum.Merge(one);
             }
             return sum;
@@ -351,7 +351,10 @@ namespace FS27.Core.Tests
                 }
                 for (int i = 1; i < rates.Count; i++) Assert.Less(rates[i], rates[i - 1] + 0.004, mode + " " + AllLevels[i] + ": never clearly worse than the level below");
                 Assert.Greater(rates[0], 3.0 * rates[4], mode + ": the worst errs far more than the best");
-                Assert.Greater(rates[4], 0.0, mode + ": and the best still errs");
+                // the errors of a tired player are almost all of the mistakes, and since Phase 17 (walking recovery 0.6) nobody is tired in 90 s: the best level is checked over longer matches
+                AiDiagnostics best = Aggregate14(mode, AllLevels[4], 3, 360f);
+                Assert.Greater(best.CarrierDecisions, 100.0);
+                Assert.Greater(best.MistakeTotal, 0.0, mode + ": and the best still errs");
             }
         }
 

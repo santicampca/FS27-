@@ -45,8 +45,8 @@ namespace FS27.Core
         public const float BaseStaminaDrain = 3.0f;
         public const float SprintMultiplier = 1.35f;
         public const float BaseStaminaRecovery = 2.0f;
-        /// <summary>Recovery while walking, relative to standing still. Running and sprinting do not recover.</summary>
-        public const float WalkRecoveryFactor = 0.25f;
+        /// <summary>Recovery while walking, relative to standing still. Running and sprinting do not recover. Phase 17: 0.25 -> 0.6 (in a match the field players spent 33-43 % of their time under 5 stamina; see Docs/AI_BALANCE_PHASE17.md).</summary>
+        public const float WalkRecoveryFactor = 0.6f;
         /// <summary>The Stamina attribute scales recovery (and, inversely, the drain): factor = Base + Range x (attribute / 99).</summary>
         public const float AttributeStaminaBase = 0.75f;
         public const float AttributeStaminaRange = 0.50f;

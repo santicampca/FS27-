@@ -298,7 +298,8 @@ namespace FS27.Core.Tests
             float f = 1f;
             float idle = LocomotionStamina.RecoveryPerSecond(0f, f, T), walk = LocomotionStamina.RecoveryPerSecond(0.2f, f, T);
             Assert.AreEqual(2.0f, idle, 1e-4f);
-            Assert.AreEqual(0.5f, walk, 1e-4f, "a quarter of the idle recovery");
+            Assert.AreEqual(2.0f * LocomotionDefaults.WalkRecoveryFactor, walk, 1e-4f, "the walking share of the idle recovery (Phase 17: 0.6, it was a quarter)");
+            Assert.Less(walk, idle, "walking still recovers less than standing still");
             Assert.AreEqual(0f, LocomotionStamina.RecoveryPerSecond(0.5f, f, T));
             Assert.AreEqual(0f, LocomotionStamina.RecoveryPerSecond(0.9f, f, T));
             LocomotionProfile p = Profile(70, 70, 70, 70);
