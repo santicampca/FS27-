@@ -122,14 +122,16 @@ namespace FS27.Core.Tests
         [Test]
         public void TheRefactoredScores_ReproduceThePhase11Matches_BitForBit_WhenThePhase13SwitchesAreOff()
         {
-            // reference fingerprints taken from the Phase 11 commit (00186bb), before the score terms were exposed. Phase 13 changed the decisions on purpose; with its switches off the old matches come back exactly
+            // reference fingerprints: taken from the Phase 11 commit (00186bb), before the score terms were exposed. Phase 13 changed the decisions on purpose; with its switches off the old matches came back exactly.
+            // Phase 20 RE-PINNED them (4242571587 and 34388847; they were 2212894415 and 3998311449): the short pass is now rated like every other pass, and a pass loses quality when rivals are close. Those are not switches of a
+            // decision layer but a correction of the kick itself, so the Phase 11 matches cannot come back; the test now anchors the refactor equivalence on the Phase 20 matches.
             uint Hash(string s) { uint h = 2166136261; foreach (char ch in s) h = (h ^ ch) * 16777619; return h; }
             string before = Environment.GetEnvironmentVariable("FS27_EXP");
             try
             {
                 Environment.SetEnvironmentVariable("FS27_EXP", "*.Basic.PasserStaysOffHisPass=0;*.BallCarrier.SafePassBaseWeight=0;*.BallCarrier.ThroughKeeperMargin=0;*.BallCarrier.ShootMinScore=0;*.Defense.ChallengeMaxRisk=1000;*.Actions.KickerKeepsOffHisKick=0;*.Keeper.Enabled=0;*.Locomotion.WalkRecoveryFactor=0.25");
-                Assert.AreEqual(2212894415u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, false).Fingerprint), "Arena 301, Phase 10 carrier");
-                Assert.AreEqual(3998311449u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, true).Fingerprint), "Arena 301, Phase 11 carrier");
+                Assert.AreEqual(4242571587u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, false).Fingerprint), "Arena 301, Phase 10 carrier");
+                Assert.AreEqual(34388847u, Hash(SimulateAttack(GameMode.Arena, 301, true, 301 % 12, (301 * 5 + 3) % 12, 120f, true).Fingerprint), "Arena 301, Phase 11 carrier");
             }
             finally { Environment.SetEnvironmentVariable("FS27_EXP", before); }
             // and with them on (the real game) the match is different, and the same every time

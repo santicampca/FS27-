@@ -1,0 +1,4 @@
+Arena seeds 301..340 exp='': space attempts 75, completed 25 (0.333); all passes 3219, completed 1149 (0.357)
+Classic seeds 301..340 exp='': space attempts 65, completed 10 (0.154); all passes 3529, completed 1092 (0.309)
+Arena seeds 301..340 exp='*.Actions.PassPressureEffect=0': space attempts 78, completed 26 (0.333); all passes 3339, completed 1153 (0.345)
+Classic seeds 301..340 exp='*.Actions.PassPressureEffect=0': space attempts 37, completed 4 (0.108); all passes 3603, completed 1136 (0.315)

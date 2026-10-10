@@ -64,6 +64,8 @@ namespace FS27.Core
         public const float PressureRadius = 3.0f;
         /// <summary>Control quality lost per pressing opponent (at most two count).</summary>
         public const float PressureEffect = 0.25f;
+        /// <summary>Phase 20: how much opponents close to the passer take from the quality of EVERY pass (short, wall, through, long, lob): quality x (1 - this x pressure), pressure 0..2 (the two nearest opponents within <see cref="PressureRadius"/>, each 1 at his feet and 0 at the radius). Half of the dribble's <see cref="PressureEffect"/>. 0 = passes ignore the rivals.</summary>
+        public const float PassPressureEffect = 0.125f;
         /// <summary>How long the pressure/contain action lasts.</summary>
         public const float PressureSeconds = 1.5f;
         /// <summary>Extra stamina per second while pressing.</summary>
@@ -286,6 +288,7 @@ namespace FS27.Core
         public float DeflectSpeed = ActionDefaults.DeflectSpeed;
         public float PressureRadius = ActionDefaults.PressureRadius;
         public float PressureEffect = ActionDefaults.PressureEffect;
+        public float PassPressureEffect = ActionDefaults.PassPressureEffect;
         public float PressureSeconds = ActionDefaults.PressureSeconds;
         public float PressureDrainPerSecond = ActionDefaults.PressureDrainPerSecond;
         // ---- kicking: speeds (m/s), errors (degrees)

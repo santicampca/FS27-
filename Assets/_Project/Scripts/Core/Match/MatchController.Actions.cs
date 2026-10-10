@@ -229,6 +229,10 @@ namespace FS27.Core
 
             switch (r.Kind)
             {
+                // Phase 20: the short pass is an ordinary pass. It had no case of its own and fell into the goalkeeper-distribution branch below, which rated it with the emergency-keeper profile (x0.75)
+                case FootballActionKind.ShortPass:
+                    baseQuality = prof.PassQuality; minSpeed = actions.PassMinSpeed; maxSpeed = actions.PassMaxSpeed; loft = 0f; maxError = actions.PassMaxError; cost = actions.PassStaminaCost;
+                    break;
                 case FootballActionKind.WallPass:
                     baseQuality = prof.PassQuality; minSpeed = actions.PassMinSpeed; maxSpeed = actions.PassMaxSpeed; loft = 0f; maxError = actions.PassMaxError; cost = actions.PassStaminaCost;
                     detail = ActionDetail.Wall;
@@ -261,7 +265,7 @@ namespace FS27.Core
                     baseQuality = prof.ClearanceQuality; minSpeed = actions.ClearanceMinSpeed; maxSpeed = actions.ClearanceMaxSpeed; loft = actions.ClearanceLoft; maxError = actions.ClearanceMaxError; cost = actions.ClearanceStaminaCost;
                     detail = ActionDetail.Lofted; eventKind = GameplayEventKind.ClearancePerformed;
                     break;
-                default: // goalkeeper distribution
+                default: // goalkeeper distribution (only GoalkeeperDistribution reaches it)
                     baseQuality = r.Long ? actions.KeeperLongKickShare * prof.KeeperKicking + (1f - actions.KeeperLongKickShare) * prof.KeeperDistribution : actions.KeeperShortDistributionShare * prof.KeeperDistribution + (1f - actions.KeeperShortDistributionShare) * prof.KeeperKicking;
                     minSpeed = r.Long ? actions.LongPassMinSpeed : actions.PassMinSpeed; maxSpeed = r.Long ? actions.LongPassMaxSpeed : actions.PassMaxSpeed;
                     loft = r.Long ? actions.LongPassLoft : 0f; maxError = r.Long ? actions.LongPassMaxError : actions.PassMaxError; cost = actions.PassStaminaCost;
@@ -274,6 +278,7 @@ namespace FS27.Core
             minSpeed *= skill.SpeedFactor; maxSpeed *= skill.SpeedFactor; loft *= skill.LoftFactor; maxError *= skill.ErrorFactor; extraError *= skill.ExtraErrorFactor; cost += skill.ExtraCost;
 
             float quality = SkillQuality(ActionModel.Clamp01(baseQuality * footFactor * stamina), (baseQuality + skill.QualityBonus) * footFactor * stamina);
+            if (IsPassKick(r.Kind) && actions.PassPressureEffect > 0f) quality *= 1f - ActionModel.Clamp01(actions.PassPressureEffect * PassPressureOf(p) * SkillPressureLeft(p));
             float noise = Noise();
             float errorDegrees = ActionModel.KickError(maxError, quality, power, extraError, noise, actions) + noise * skill.ResidualErrorDegrees;
             Vec2 aimed = ActionModel.Rotate(dir, errorDegrees + skill.AimDegrees);
@@ -301,6 +306,31 @@ namespace FS27.Core
             res.StaminaCost = SpendStamina(p, cost * (actions.PowerCostBase + (1f - actions.PowerCostBase) * power));
             res.GainedPossession = false;
             return res;
+        }
+
+        private static bool IsPassKick(FootballActionKind kind)
+        {
+            return kind == FootballActionKind.ShortPass || kind == FootballActionKind.WallPass || kind == FootballActionKind.ThroughPass || kind == FootballActionKind.LongPass || kind == FootballActionKind.SkillLobPass;
+        }
+
+        /// <summary>
+        /// 0..2: the rivals that stand close to a passer (Phase 20). The two nearest opponents inside <see cref="ActionTuning.PressureRadius"/> count, each 1 when he is at his feet and 0 at the radius. Plain proximity: it does not need the
+        /// opponent to have asked for the Pressure action (the AI closes down by moving), so it is the same for a person's pass and for the AI's.
+        /// </summary>
+        private float PassPressureOf(MatchPlayer p)
+        {
+            TeamMatchState others = State.Team(p.Team.Opponent());
+            float radius = actions.PressureRadius, first = 0f, second = 0f;
+            for (int i = 0; i < others.Players.Count; i++)
+            {
+                MatchPlayer o = others.Players[i];
+                if (!o.IsActive) continue;
+                float near = 1f - (o.Locomotion.Position - p.Locomotion.Position).Magnitude / radius;
+                if (near <= 0f) continue;
+                if (near > first) { second = first; first = near; }
+                else if (near > second) second = near;
+            }
+            return first + second;
         }
 
         private float ShotQualityAt(in ActionProfile prof, MatchPlayer p)
