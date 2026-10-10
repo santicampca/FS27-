@@ -45,7 +45,7 @@
    "matches": 20,
    "mistakes_per_carrier_decision": 0.05775598987078761,
    "pass_completion": 0.4251117197635866,
-   "seconds": 125.0,
+   "seconds": 128.0,
    "shots": 60.45,
    "stam_mean": 21.801080177958987,
    "stam_q1": 39.816364728477524,
@@ -63,7 +63,7 @@
    "matches": 20,
    "mistakes_per_carrier_decision": 0.006139833010036265,
    "pass_completion": 0.3890937151676241,
-   "seconds": 281.0,
+   "seconds": 278.0,
    "shots": 70.05,
    "stam_mean": 20.1043187916468,
    "stam_q1": 32.13263508206262,
@@ -110,8 +110,8 @@
   }
  },
  "meta": {
-  "commit": "f68ba8585d8347a7779e51285e64dae64c0e2f7d",
+  "commit": "9e0704366e2928ad61cea8ca822bf972e119d704",
   "config": "",
-  "total_seconds": 353.0
+  "total_seconds": 350.0
  }
 }
