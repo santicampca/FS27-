@@ -30,8 +30,7 @@ namespace FS27.Core
                 int endSign = p.X > 0f ? 1 : -1;
                 TeamSide attacker = AttackerAtEnd(homeAttacksPositiveX, endSign);
 
-                bool insideMouth = Math.Abs(p.Z) <= field.GoalWidth * 0.5f && p.Y - r <= field.GoalHeight;
-                if (insideMouth)
+                if (HasCrossedGoalLine(field, ball))
                     return new BallJudgement { Outcome = BallOutcome.Goal, ScoringTeam = attacker };
 
                 TeamSide defender = attacker.Opponent();
@@ -71,6 +70,16 @@ namespace FS27.Core
             }
 
             return new BallJudgement { Outcome = BallOutcome.InPlay };
+        }
+
+        /// <summary>
+        /// THE test of a goal (Phase 18): the WHOLE ball is beyond the goal line (its centre further than the radius, so a ball touching the line or partly over it is still in play) and it is inside the mouth
+        /// (between the posts, with the lowest part of the ball under the bar). The judgement and the keeper's hands (a ball that has crossed completely can no longer be played) both use this one function.
+        /// </summary>
+        public static bool HasCrossedGoalLine(FieldDimensions field, in BallObservation ball)
+        {
+            Vec3 p = ball.Position;
+            return Math.Abs(p.X) - ball.Radius > field.Length * 0.5f && Math.Abs(p.Z) <= field.GoalWidth * 0.5f && p.Y - ball.Radius <= field.GoalHeight;
         }
 
         private static TeamSide AttackerAtEnd(bool homeAttacksPositiveX, int endSign)

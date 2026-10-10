@@ -686,6 +686,8 @@ namespace FS27.Core
                 b.Mode = BallMode.Free;
 
             if (b.Mode == BallMode.Dead || b.Mode == BallMode.Goal) return;
+            // Phase 18: a ball that has already crossed the goal line completely is a goal (the judgement comes right after this step): nobody, the keeper included, plays it any more
+            if (actions.KeeperHoldsBallOnThePitch > 0f && MatchRules.HasCrossedGoalLine(field, new BallObservation(b.Physics.Position, ballParameters.Radius))) return;
 
             MatchPlayer best = null;
             float bestDistance = float.MaxValue;
@@ -769,6 +771,22 @@ namespace FS27.Core
             b.Physics.Velocity = new Vec3(current.X + delta.X, 0f, current.Y + delta.Y);
             b.Physics.Position = new Vec3(b.Physics.Position.X, ballParameters.Radius, b.Physics.Position.Z);
             b.Physics.IsGrounded = true;
+            if (p.InGoal && actions.KeeperHoldsBallOnThePitch > 0f) KeepHeldBallOnThePitch(b);
+        }
+
+        /// <summary>
+        /// Phase 18: the ball in a goalkeeper's hands stays on the pitch. He may be carried back by the momentum of his dive, but the ball he holds does not cross his own goal line with him: its whole width stays at most
+        /// touching the line, and what pushed it outwards is cancelled. (A ball that crosses the line completely while it is NOT held is judged as always.)
+        /// </summary>
+        private void KeepHeldBallOnThePitch(MatchBall b)
+        {
+            float limit = field.Length * 0.5f - ballParameters.Radius;
+            Vec3 pos = b.Physics.Position;
+            if (Math.Abs(pos.X) <= limit) return;
+            float sign = pos.X > 0f ? 1f : -1f;
+            Vec3 vel = b.Physics.Velocity;
+            b.Physics.Position = new Vec3(sign * limit, pos.Y, pos.Z);
+            if (vel.X * sign > 0f) b.Physics.Velocity = new Vec3(0f, vel.Y, vel.Z);
         }
     }
 }

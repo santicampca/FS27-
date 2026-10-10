@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace FS27.Core.Tests
 {
     /// <summary>Phase 4: actions and ball. The Core decides; these tests drive the match engine only through its public API.</summary>
-    public class ActionsAndBallTests
+    public partial class ActionsAndBallTests
     {
         private const float Dt = LocomotionDefaults.FixedDeltaTime;
         private static readonly Vec2 East = new Vec2(1f, 0f);

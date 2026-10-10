@@ -29,6 +29,8 @@ namespace FS27.Core
         public const float ReTouchCooldown = 0.3f;
         /// <summary>Phase 14: a player who has just kicked the ball does not touch it again while his kick recovers, even if somebody else touched it in between (before, one touch by anyone let him take his own pass back at once). 1 = on, 0 = off (the Phase 13 behaviour).</summary>
         public const float KickerKeepsOffHisKick = 1.0f;
+        /// <summary>Phase 18: 1 = a goalkeeper who holds the ball cannot carry it over his own goal line (the held ball stays on the pitch, at most touching the line) and a ball that has already crossed the line completely can no longer be played. 0 = as before.</summary>
+        public const float KeeperHoldsBallOnThePitch = 1.0f;
         // ---- control, first touch and dribbling
         /// <summary>How far in front of the player the controlled ball sits at rest.</summary>
         public const float ControlDistance = 0.8f;
@@ -266,6 +268,7 @@ namespace FS27.Core
         public float MaxTouchHeight = ActionDefaults.MaxTouchHeight;
         public float ReTouchCooldown = ActionDefaults.ReTouchCooldown;
         public float KickerKeepsOffHisKick = ActionDefaults.KickerKeepsOffHisKick;
+        public float KeeperHoldsBallOnThePitch = ActionDefaults.KeeperHoldsBallOnThePitch;
         // ---- control, first touch and dribbling
         public float ControlDistance = ActionDefaults.ControlDistance;
         public float LeadPerSpeed = ActionDefaults.LeadPerSpeed;

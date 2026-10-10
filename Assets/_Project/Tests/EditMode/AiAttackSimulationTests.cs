@@ -31,6 +31,9 @@ namespace FS27.Core.Tests
         /// <summary>Phase 17 diagnostics: the field samples below these stamina levels count as low / very low (reading only).</summary>
         private const float LowStamina = 20f, VeryLowStamina = 5f;
 
+        /// <summary>Phase 18 diagnostics: called after every step of a simulated match (reading only). Null in the normal tests.</summary>
+        private static Action<MatchController, int> StepHook;
+
         private sealed class AttackSim
         {
             public string Fingerprint, Assignment;
@@ -68,6 +71,7 @@ namespace FS27.Core.Tests
             {
                 driver.Step(c);
                 c.Advance(Dt);
+                StepHook?.Invoke(c, step);
                 if (c.State.Phase == MatchPhase.WaitingForKickoff || c.State.Phase == MatchPhase.WaitingForRestart) { if (c.ConfirmRestart()) r.Restarts++; else r.Issues++; }
                 else if (c.State.Phase == MatchPhase.GoalCelebration) c.Advance(5f);
                 if (c.State.Ball.HasPossession)
