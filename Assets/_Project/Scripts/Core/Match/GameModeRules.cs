@@ -80,6 +80,7 @@ namespace FS27.Core
                 case GameplayEventKind.FoulCommitted:
                 case GameplayEventKind.OffsideDetected:
                 case GameplayEventKind.PenaltyAwarded:
+                case GameplayEventKind.FreeKickAwarded:
                 case GameplayEventKind.YellowCardIssued:
                 case GameplayEventKind.RedCardIssued:
                 case GameplayEventKind.PlayerDismissed:

@@ -75,6 +75,10 @@ namespace FS27.Core
         public bool IsGoalkeeper { get; }
         public MatchPlayerStatus Status { get; internal set; }
         public int YellowCards { get; internal set; }
+        /// <summary>Phase 21: red cards he has been shown in this match (a second yellow counts as a red: he is sent off).</summary>
+        public int RedCards { get; internal set; }
+        /// <summary>Phase 21: fouls the referee has called against him in this match.</summary>
+        public int FoulsCommitted { get; internal set; }
         /// <summary>This player currently stands in goal (the real keeper, or a field player who took the gloves).</summary>
         public bool InGoal { get; internal set; }
         /// <summary>A field player in goal. His keeper capabilities are derived at runtime (<see cref="EmergencyKeeperProfile"/>), never stored.</summary>
@@ -151,6 +155,8 @@ namespace FS27.Core
         public bool HasSquad => players.Count > 0;
         /// <summary>Substitutions made so far. Never above the match limit.</summary>
         public int SubstitutionsUsed { get; internal set; }
+        /// <summary>Phase 21: fouls called against this team in this match.</summary>
+        public int Fouls { get; internal set; }
         /// <summary>The keeper was sent off and nobody stands in goal yet: the next restart cannot happen until this is resolved.</summary>
         public bool NeedsGoalkeeper { get; internal set; }
 

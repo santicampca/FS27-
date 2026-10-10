@@ -41,7 +41,10 @@ namespace FS27.Core
         BallDeflected,
         TacklePerformed,
         InterceptionPerformed,
-        ClearancePerformed
+        ClearancePerformed,
+        // ---- Phase 21 (appended)
+        /// <summary>The referee called a foul and the other team is entitled to a free kick. PREPARED for the free-kick phase: nothing restarts the game from it yet. Team = the team that was fouled; Detail = the reasons.</summary>
+        FreeKickAwarded
     }
 
     /// <summary>One thing that happened. Plain data, stamped with the Core time, never with Unity time.</summary>

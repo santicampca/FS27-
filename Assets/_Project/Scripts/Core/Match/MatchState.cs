@@ -16,6 +16,26 @@ namespace FS27.Core
     }
 
     /// <summary>
+    /// A decision of the referee about a contact that became a foul (Phase 21): who, against whom, where, what the referee saw and the card. The disciplinary history of the match; the cards are also on the players.
+    /// </summary>
+    public sealed class DisciplineRecord
+    {
+        public float MatchTime { get; internal set; }
+        public MatchPeriod Period { get; internal set; }
+        /// <summary>The team of the player who committed the foul.</summary>
+        public TeamSide Team { get; internal set; }
+        public string PlayerId { get; internal set; }
+        /// <summary>The player who was fouled (the carrier).</summary>
+        public string VictimId { get; internal set; }
+        public Vec2 Position { get; internal set; }
+        public FoulReason Reasons { get; internal set; }
+        public float Severity { get; internal set; }
+        public CardDecision Card { get; internal set; }
+        /// <summary>What showing the card did (Issued, a second yellow, a red). Meaningful only when <see cref="Card"/> is not None.</summary>
+        public CardResult CardResult { get; internal set; }
+    }
+
+    /// <summary>
     /// THE state of the match: the single authoritative source of truth. Only <see cref="MatchController"/> changes it; HUD, audio, camera, AI and the Unity
     /// presentation only read it (Unity's rigidbody FOLLOWS <see cref="Ball"/>). There is no second match state anywhere.
     /// Configuration (<see cref="Settings"/>) is kept apart from what changes during play (everything else).
@@ -63,6 +83,10 @@ namespace FS27.Core
         /// <summary>The shoot-out, once it has started. Null before.</summary>
         public PenaltyShootoutState Shootout { get; internal set; }
         public IReadOnlyList<GoalRecord> Goals => goals;
+        private readonly List<DisciplineRecord> discipline = new List<DisciplineRecord>();
+        /// <summary>Phase 21: every foul the referee called, in order.</summary>
+        public IReadOnlyList<DisciplineRecord> Discipline => discipline;
+        internal void AddDiscipline(DisciplineRecord r) { discipline.Add(r); }
         public bool HasResult { get; internal set; }
         public MatchResult Result { get; internal set; }
         public MatchTerminationReason Termination => Result.Reason;

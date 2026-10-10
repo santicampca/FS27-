@@ -295,7 +295,7 @@ namespace FS27.Core.Tests
             AiDiagnostics d = Eight(GameMode.Classic, true).Diagnostics;
             Assert.Greater(d.DuelContacts(2), 120.0, "the physical challenge is still made (Phase 12: 212)");
             Assert.Greater(d.DuelContacts(0), 60.0); Assert.Greater(d.TotalContacts, 200.0);
-            Assert.Less(d.TotalFouls, 12.0, "Phase 12: 18 in the same eight matches");
+            Assert.Less(d.TotalFouls, 0.4 * d.TotalContacts, "Phase 12: 18 in the same eight matches. Phase 21: the referee calls the late contacts, 43 here; still well under half of the contacts");
             Assert.Greater(d.TotalFouls, 0.0, "fouls are still part of Classic");
             Assert.AreEqual(d.FoulEvents, d.TotalFouls);
         }

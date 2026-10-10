@@ -56,7 +56,10 @@ namespace FS27.Core.Tests
                     if (w.Stamina < 0f || w.Stamina > 100.001f || float.IsNaN(w.Stamina)) r.Issues++;
                     if (!w.HasHome || float.IsNaN(w.Home.X) || float.IsNaN(w.Home.Y) || Math.Abs(w.Home.X) > 21.01f || Math.Abs(w.Home.Y) > 13.51f) r.Issues++; else r.HomeValidSamples++;
                 }
-                if (onPitch != 12) r.Issues++;
+                // Phase 21: a player the referee sent off does not come back and is not replaced
+                int sentOffDefence = 0;
+                foreach (TeamSide ts0 in new[] { TeamSide.Home, TeamSide.Away }) foreach (MatchPlayer sp in c.State.Team(ts0).Players) if (sp.Status == MatchPlayerStatus.Dismissed) sentOffDefence++;
+                if (onPitch != 12 - sentOffDefence) r.Issues++;
                 if (keepers != 2) r.Issues++;
                 for (int side = 0; side < 2; side++)
                 {

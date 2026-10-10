@@ -58,6 +58,14 @@ namespace FS27.Core
         public const float SlideClosingCosine = 0.5f;
         public const float SlideMaxAngleDegrees = 60.0f;
         public const float SlideMinStamina = 30.0f;
+        // ---- Phase 21: a player with a card plays with care
+        /// <summary>A player who already has a yellow card accepts challenges only up to this share of the risk he would accept without it (and never slides).</summary>
+        public const float YellowRiskScale = 0.5f;
+        /// <summary>A player with a yellow and this many fouls in the match is close to a red: he accepts only the contacts that are practically safe (from the front or the side: this share of the usual risk) and never slides.</summary>
+        public const int NearRedFouls = 2;
+        public const float NearRedRiskScale = 0.1f;
+        /// <summary>1 = a player with a yellow card never slides; 0 = cards change nothing about the slides.</summary>
+        public const float CardedNeverSlide = 1.0f;
         /// <summary>A defender who owns the aggressive-tackle skill slides from this much further.</summary>
         public const float AggressiveSlideBonus = 0.3f;
 
@@ -122,6 +130,10 @@ namespace FS27.Core
         public float SlideClosingCosine = DefenseDefaults.SlideClosingCosine;
         public float SlideMaxAngleDegrees = DefenseDefaults.SlideMaxAngleDegrees;
         public float SlideMinStamina = DefenseDefaults.SlideMinStamina;
+        public float YellowRiskScale = DefenseDefaults.YellowRiskScale;
+        public int NearRedFouls = DefenseDefaults.NearRedFouls;
+        public float NearRedRiskScale = DefenseDefaults.NearRedRiskScale;
+        public float CardedNeverSlide = DefenseDefaults.CardedNeverSlide;
         public float AggressiveSlideBonus = DefenseDefaults.AggressiveSlideBonus;
         public float InterceptHorizonSeconds = DefenseDefaults.InterceptHorizonSeconds;
         public float InterceptStepSeconds = DefenseDefaults.InterceptStepSeconds;

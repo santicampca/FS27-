@@ -198,6 +198,8 @@ namespace FS27.Core
         // ---- simulation ----
         /// <summary>Seed of the match's deterministic randomness (first touches, errors, duels). The same seed and the same inputs give the same match.</summary>
         public int Seed = 1;
+        /// <summary>Phase 21: how the referee of the match judges (his strictness and card tendency shape the calls). The host builds it from the data of a referee (<see cref="RefereeStyle.From"/>); the default is a neutral referee.</summary>
+        public RefereeStyle Referee = RefereeStyle.Neutral;
         /// <summary>Fixed simulation step (seconds). The Core never uses a variable step.</summary>
         public float SimulationStepSeconds = MatchDefaults.SimulationStepSeconds;
 

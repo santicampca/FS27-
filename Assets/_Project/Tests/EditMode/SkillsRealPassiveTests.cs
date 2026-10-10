@@ -246,15 +246,19 @@ namespace FS27.Core.Tests
             var cast = new Cast().Add("as1", 72, skills: new[] { "aggressive_tackle" }).Add("as2", 72).Add("hs1", 99);
             ActionResult o = TackleBy(cast, "as1", 3, East, new Vec2(0.9f, 0.2f)), s = TackleBy(cast, "as2", 3, East, new Vec2(0.9f, 0.2f));
             Assert.Greater(o.Quality, s.Quality);
-            int foulsOwner = 0, foulsStranger = 0, arenaFouls = 0;
+            int foulsOwner = 0, foulsStranger = 0, frontOwner = 0, frontStranger = 0, arenaFouls = 0;
             for (int seed = 1; seed <= 120; seed++)
             {
-                // from behind: the carrier faces away from the tackler
+                // from behind: the carrier faces away from the tackler (Phase 21: the referee calls every duel lost from behind, so this scene is nearly all fouls for both)
                 if (TackleBy(cast, "as1", seed, East, new Vec2(-0.1f, 0f)).Detail == ActionDetail.Foul) foulsOwner++;
                 if (TackleBy(cast, "as2", seed, East, new Vec2(-0.1f, 0f)).Detail == ActionDetail.Foul) foulsStranger++;
+                // from the front: only a clumsy lost duel is a foul, and the aggressive tackler is clumsy sooner (his foul shift)
+                if (TackleBy(cast, "as1", seed, East, new Vec2(0.9f, 0.2f)).Detail == ActionDetail.Foul) frontOwner++;
+                if (TackleBy(cast, "as2", seed, East, new Vec2(0.9f, 0.2f)).Detail == ActionDetail.Foul) frontStranger++;
                 if (TackleBy(cast, "as1", seed, East, new Vec2(-0.1f, 0f), settings: MatchSettings.CreateArena()).Detail == ActionDetail.Foul) arenaFouls++;
             }
-            Assert.GreaterOrEqual(foulsOwner, foulsStranger); Assert.Greater(foulsOwner, 0, "the aggressive tackler does foul");
+            Assert.Greater(foulsOwner, 0, "the aggressive tackler does foul");
+            Assert.Greater(frontOwner, frontStranger, "and he fouls more often as the stranger where only a clumsy challenge is a foul (" + frontOwner + " against " + frontStranger + ")");
             Assert.AreEqual(0, arenaFouls, "Arena has no fouls");
         }
 

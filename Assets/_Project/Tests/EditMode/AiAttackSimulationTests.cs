@@ -105,7 +105,10 @@ namespace FS27.Core.Tests
                     if (!w.HasHome || float.IsNaN(w.Home.X) || float.IsNaN(w.Home.Y)) r.Issues++;
                     if (!w.IsGoalkeeper && (w.Roles == null || w.Roles.Count == 0)) r.Issues++;
                 }
-                if (onPitch != 12 || keepers != 2) r.Issues++;
+                // Phase 21: a player the referee sent off does not come back and is not replaced: the team plays with one man fewer
+                int[] sentOff = new int[2];
+                for (int side = 0; side < 2; side++) foreach (MatchPlayer sp in c.State.Team(side == 0 ? TeamSide.Home : TeamSide.Away).Players) if (sp.Status == MatchPlayerStatus.Dismissed) sentOff[side]++;
+                if (onPitch != 12 - sentOff[0] - sentOff[1] || keepers != 2) r.Issues++;
                 for (int side = 0; side < 2; side++)
                 {
                     TeamSide ts = side == 0 ? TeamSide.Home : TeamSide.Away;

@@ -381,7 +381,7 @@ namespace FS27.Core.Tests
         public void Classic_KeepsItsFoulsLimited_AtEveryLevel_AndTheyAreStillPossible()
         {
             double fouls = 0, contacts = 0;
-            foreach (DifficultyLevel l in AllLevels) { AiDiagnostics d = Aggregate14(GameMode.Classic, l, 3); fouls += d.TotalFouls; contacts += d.TotalContacts; Assert.Less(d.TotalFouls, d.TotalContacts * 0.2 + 1.0, l.ToString()); }
+            foreach (DifficultyLevel l in AllLevels) { AiDiagnostics d = Aggregate14(GameMode.Classic, l, 3); fouls += d.TotalFouls; contacts += d.TotalContacts; Assert.Less(d.TotalFouls, d.TotalContacts * 0.5 + 1.0, l.ToString()); }   // Phase 21: the referee calls every late contact (before: only the clumsy ones from behind, under 20 %); a minority of the contacts is still the rule
             Assert.Greater(contacts, 30.0);
         }
 

@@ -52,29 +52,29 @@ namespace FS27.Core
     }
 
     /// <summary>The last events about the ball, kept in a ring, from which <see cref="AiDiagnostics"/> reads the origin of a goal. Reads the bus only; nothing here reaches the match.</summary>
-    internal sealed class GoalOriginTracker
+    public sealed class GoalOriginTracker
     {
-        internal struct Entry { public GameplayEventKind Kind; public TeamSide Team; public bool HasTeam; public string PlayerId; public string Detail; public float Time; public Vec3 Position; }
+        public struct Entry { public GameplayEventKind Kind; public TeamSide Team; public bool HasTeam; public string PlayerId; public string Detail; public float Time; public Vec3 Position; }
 
         /// <summary>The qualifier the Core gives to an interception that was a block.</summary>
-        internal const string BlockedDetail = "Blocked";
+        public const string BlockedDetail = "Blocked";
 
         private readonly Entry[] ring;
         private int count, head;
 
-        internal GoalOriginTracker(int capacity) { ring = new Entry[capacity]; }
+        public GoalOriginTracker(int capacity) { ring = new Entry[capacity]; }
 
-        internal void Clear() { count = 0; head = 0; }
+        public void Clear() { count = 0; head = 0; }
 
         /// <summary>The events that say how the ball moved; the rest (whistles, cards, period changes) are not kept.</summary>
-        internal static bool Relevant(GameplayEventKind kind)
+        public static bool Relevant(GameplayEventKind kind)
         {
             return kind == GameplayEventKind.ShotPerformed || kind == GameplayEventKind.PassPerformed || kind == GameplayEventKind.ClearancePerformed
                 || kind == GameplayEventKind.BallDeflected || kind == GameplayEventKind.BallTouched || kind == GameplayEventKind.BallBouncedOffWall
                 || kind == GameplayEventKind.InterceptionPerformed || kind == GameplayEventKind.TacklePerformed;
         }
 
-        internal void Add(in GameplayEvent e)
+        public void Add(in GameplayEvent e)
         {
             if (!Relevant(e.Kind)) return;
             ring[head] = new Entry { Kind = e.Kind, Team = e.Team, HasTeam = e.HasTeam, PlayerId = e.PlayerId, Detail = e.Detail, Time = e.MatchTime, Position = e.Position };
@@ -83,11 +83,11 @@ namespace FS27.Core
         }
 
         /// <summary>The i-th most recent entry (0 = the latest).</summary>
-        internal Entry Recent(int i) { return ring[(head - 1 - i + ring.Length * 2) % ring.Length]; }
-        internal int Count { get { return count; } }
+        public Entry Recent(int i) { return ring[(head - 1 - i + ring.Length * 2) % ring.Length]; }
+        public int Count { get { return count; } }
 
         /// <summary>Reads the origin of a goal of <paramref name="team"/> at <paramref name="goalTime"/> from the events within <paramref name="window"/> seconds. The own-goal flag is only recorded: what counts is the chain of events.</summary>
-        internal GoalOriginRecord Read(TeamSide team, string scorer, bool ownGoal, float goalTime, float window)
+        public GoalOriginRecord Read(TeamSide team, string scorer, bool ownGoal, float goalTime, float window)
         {
             var g = new GoalOriginRecord { Team = team, ScorerId = scorer, OwnGoal = ownGoal, MatchTime = goalTime, Origin = GoalOrigin.Unknown, Evidence = GoalEvidence.None, PreviousKind = GameplayEventKind.GoalScored, PreviousDetail = "", ShotTime = -1f };
             if (count > 0) { Entry last = Recent(0); g.PreviousKind = last.Kind; g.PreviousDetail = last.Detail ?? ""; g.PreviousPosition = last.Position; }

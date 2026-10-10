@@ -302,7 +302,7 @@ namespace FS27.Core
                     return Contest(me, DecisionKind.Tackle, FootballActionKind.Tackle, toBallDir, DecisionReason.TackleInRange);
                 if (SlideWindow(view, me, carrier, toBall, toCarrier, behind))
                     return Contest(me, DecisionKind.SlidingTackle, FootballActionKind.SlidingTackle, toBallDir, DecisionReason.SlideWindow);
-                if (toCarrier <= d.ChallengeDistance && ChallengeRisk(me, carrier, fromCarrier) <= d.ChallengeMaxRisk)
+                if (toCarrier <= d.ChallengeDistance && ChallengeRisk(me, carrier, fromCarrier) <= d.ChallengeMaxRisk * DisciplineRiskScale(me))
                     return Contest(me, DecisionKind.Challenge, FootballActionKind.PhysicalChallenge, ActionModel.DirectionOr(carrier.Position - me.Position, me.Facing), DecisionReason.ChallengeContact);
             }
 
@@ -315,6 +315,16 @@ namespace FS27.Core
             }
             Vec2 goal = bounds.ClampPlayer(target);
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.CloseDown, Reason = DecisionReason.PrimaryDefender, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, goal, magnitude, t.ArriveRadius) };
+        }
+
+        /// <summary>
+        /// Phase 21: how much of his usual risk a defender accepts given his cards: all of it with a clean sheet, <see cref="DefenseTuning.YellowRiskScale"/> of it with a yellow, and (almost) none when he has a yellow and has
+        /// already committed <see cref="DefenseTuning.NearRedFouls"/> fouls: one more card and he is off. Where the mode has no cards nobody has any, so nothing changes.
+        /// </summary>
+        private float DisciplineRiskScale(in WorldPlayer me)
+        {
+            if (me.YellowCards <= 0) return 1f;
+            return me.FoulsCommitted >= d.NearRedFouls ? d.NearRedRiskScale : d.YellowRiskScale;
         }
 
         /// <summary>
@@ -346,6 +356,7 @@ namespace FS27.Core
         private bool SlideWindow(WorldView view, in WorldPlayer me, in WorldPlayer carrier, float toBall, float toCarrier, bool behind)
         {
             if (behind || me.Stamina < d.SlideMinStamina || carrier.Speed < d.SlideMinCarrierSpeed) return false;
+            if (d.CardedNeverSlide > 0f && me.YellowCards > 0) return false;   // Phase 21: a booked player does not slide
             float max = d.SlideMaxDistance + (me.Skills != null && me.Skills.Has(SkillEffect.AggressiveTackle) ? d.AggressiveSlideBonus : 0f);
             if (toBall < d.SlideMinDistance || toBall > max) return false;
             Vec2 own = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);

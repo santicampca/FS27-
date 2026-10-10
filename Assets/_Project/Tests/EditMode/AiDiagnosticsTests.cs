@@ -408,7 +408,7 @@ namespace FS27.Core.Tests
         }
 
         [Test]
-        public void Fouls_InClassic_AreContactsFailedFromBehind_AndEachOneIsTiedToItsEvent_ArenaHasNone()
+        public void Fouls_InClassic_AreDuelsTheRefereeCalled_AndEachOneIsTiedToItsEvent_ArenaHasNone()
         {
             AiDiagnostics classic = Eight(GameMode.Classic, true).Diagnostics, arena = Eight(GameMode.Arena, true).Diagnostics;
             Assert.AreEqual(0.0, arena.TotalFouls); Assert.AreEqual(0.0, arena.FoulEvents); Assert.Greater(arena.TotalContacts, 0.0);
@@ -419,7 +419,8 @@ namespace FS27.Core.Tests
                 ContactRecord c = classic.ContactAt(i);
                 if (!c.Foul) continue;
                 fouls++;
-                Assert.IsTrue(c.FromBehind, "the rules of the core: a foul is a failed duel from behind"); Assert.AreEqual(ActionOutcome.Failed, c.Outcome); Assert.AreEqual(ActionDetail.Foul, c.Detail);
+                Assert.AreEqual(ActionOutcome.Failed, c.Outcome);   // Phase 21: a foul is a failed duel the referee called (late or dangerous; most, not all, from behind)
+                 Assert.AreEqual(ActionDetail.Foul, c.Detail);
                 Assert.IsTrue(c.Kind == FootballActionKind.Tackle || c.Kind == FootballActionKind.SlidingTackle || c.Kind == FootballActionKind.PhysicalChallenge);
                 Assert.AreNotEqual(c.DefenderTeam == TeamSide.Home ? "hs" : "as", null);
                 Assert.IsNotNull(c.DefenderId); Assert.IsNotNull(c.CarrierId); Assert.Greater(c.Distance, 0f);

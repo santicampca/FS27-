@@ -422,9 +422,52 @@ namespace FS27.Core
             return CardResult.DismissedByRed;
         }
 
+        /// <summary>The result of <see cref="CallFoul"/>: whether the foul was recorded and, if the referee showed a card, what it did.</summary>
+        public struct FoulCallResult
+        {
+            public bool Called;
+            public CardDecision Card;
+            public CardResult CardResult;
+        }
+
+        /// <summary>The referee's tuning and style for this match (Phase 21). A copy per match, so a test or an experiment can change it.</summary>
+        public RefereeTuning RefereeTuning { get; set; } = new RefereeTuning();
+
+        /// <summary>The referee's style: the one in the match settings (neutral by default).</summary>
+        public RefereeStyle RefereeStyle { get { return settings.Referee; } }
+
+        /// <summary>
+        /// Records a foul the referee has called (Phase 21): it counts against the player and his team, goes into the disciplinary history, is published (<see cref="GameplayEventKind.FoulCommitted"/>, and
+        /// <see cref="GameplayEventKind.FreeKickAwarded"/> for the free-kick phase to use) and, if the decision carries a card, the card is shown with <see cref="IssueCard"/>. Only where the mode has fouls (Classic). The play is NOT
+        /// stopped here: the free kick itself is a later phase, so for now the fouled team simply keeps the ball.
+        /// </summary>
+        public FoulCallResult CallFoul(TeamSide offenderTeam, string offenderId, string victimId, RefereeDecision decision, Vec3 position)
+        {
+            var result = new FoulCallResult();
+            if (!rules.HasFouls || !decision.IsFoul) return result;
+            TeamMatchState team = State.Team(offenderTeam);
+            MatchPlayer offender = team.Find(offenderId);
+            if (offender == null || !offender.IsActive) return result;
+            result.Called = true;
+            offender.FoulsCommitted++;
+            team.Fouls++;
+            var record = new DisciplineRecord { MatchTime = State.MatchTimeSeconds, Period = State.Period, Team = offenderTeam, PlayerId = offenderId, VictimId = victimId, Position = Flat(position), Reasons = decision.Reasons, Severity = decision.Severity, Card = decision.Card };
+            Emit(GameplayEventKind.FoulCommitted, offenderTeam, offenderId, position, decision.Reasons.ToString(), victimId);
+            Emit(GameplayEventKind.FreeKickAwarded, offenderTeam.Opponent(), victimId, position, decision.Reasons.ToString(), offenderId);
+            if (decision.Card != CardDecision.None)
+            {
+                result.Card = decision.Card;
+                result.CardResult = IssueCard(offenderTeam, offenderId, decision.Card == CardDecision.Red ? CardKind.Red : CardKind.Yellow);
+                record.CardResult = result.CardResult;
+            }
+            State.AddDiscipline(record);
+            return result;
+        }
+
         private void Dismiss(TeamMatchState team, MatchPlayer p, string how)
         {
             bool wasInGoal = p.InGoal;
+            p.RedCards++;
             p.Status = MatchPlayerStatus.Dismissed;
             p.InGoal = false;
             p.IsEmergencyKeeper = false;

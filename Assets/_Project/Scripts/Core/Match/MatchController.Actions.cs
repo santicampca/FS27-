@@ -564,11 +564,30 @@ namespace FS27.Core
             return ResolveDuel(res, p, target, margin, actions.StandingFoulMargin, GameplayEventKind.TacklePerformed);
         }
 
-        /// <summary>The common end of a duel for the ball: won cleanly (the ball is his), won loose (the carrier loses it, nobody has it), lost (nothing, he is unbalanced) or a foul.</summary>
+        /// <summary>
+        /// The common end of a duel for the ball: won cleanly (the ball is his), won loose (the carrier loses it, nobody has it), lost (nothing, he is unbalanced) or a foul.
+        /// Phase 21: where the mode has fouls (Classic) the REFEREE judges the contact first (<see cref="RefereeDecisionSystem"/>): a challenge that played the ball first is clean; a late or dangerous one is a foul, whatever the
+        /// duel would otherwise have given him; a foul takes the ball from no one (the fouled team keeps it) and may carry a card.
+        /// </summary>
         private ActionResult ResolveDuel(ActionResult res, MatchPlayer attacker, MatchPlayer carrier, float margin, float foulMargin, GameplayEventKind eventKind)
         {
             MatchBall b = State.Ball;
-            if (margin >= actions.TackleCleanMargin)
+            bool won = margin >= actions.TackleCleanMargin, loose = !won && margin >= actions.TackleDeflectMargin;
+            if (rules.HasFouls)
+            {
+                RefereeDecision call = RefereeDecisionSystem.Decide(EvidenceOf(attacker, carrier, res.Kind == FootballActionKind.SlidingTackle, won || loose, margin <= foulMargin), RefereeStyle, RefereeTuning);
+                if (call.IsFoul)
+                {
+                    attacker.ActionLockRemaining = Math.Max(attacker.ActionLockRemaining, actions.FailedTackleLockSeconds * SkillFailLockFactor(attacker));
+                    res.Outcome = ActionOutcome.Failed;
+                    res.Detail = ActionDetail.Foul;
+                    CallFoul(attacker.Team, attacker.PlayerId, carrier.PlayerId, call, b.Physics.Position);
+                    Emit(eventKind, attacker.Team, attacker.PlayerId, b.Physics.Position, res.Kind + ":Lost", carrier.PlayerId);
+                    return res;
+                }
+            }
+
+            if (won)
             {
                 TouchBall(attacker, res.Kind, false);
                 GiveBallTo(attacker.Team, attacker.PlayerId);
@@ -576,7 +595,7 @@ namespace FS27.Core
                 Emit(eventKind, attacker.Team, attacker.PlayerId, b.Physics.Position, res.Kind + ":Won", carrier.PlayerId);
                 return Complete(res, ActionDetail.Won);
             }
-            if (margin >= actions.TackleDeflectMargin)
+            if (loose)
             {
                 Vec2 away = ActionModel.DirectionOr(Flat(b.Physics.Position) - attacker.Locomotion.Position, attacker.Locomotion.FacingDirection);
                 SetBallVelocity(new Vec3(away.X * actions.ChallengeLooseSpeed, 0f, away.Y * actions.ChallengeLooseSpeed));
@@ -589,14 +608,53 @@ namespace FS27.Core
 
             attacker.ActionLockRemaining = Math.Max(attacker.ActionLockRemaining, actions.FailedTackleLockSeconds * SkillFailLockFactor(attacker));
             res.Outcome = ActionOutcome.Failed;
-            if (rules.HasFouls && margin <= foulMargin && FromBehind(attacker, carrier))
-            {
-                // the mode has fouls: a clumsy challenge from behind is one. Only the event is raised (the referee and the restart are not part of Phase 4).
-                res.Detail = ActionDetail.Foul;
-                Emit(GameplayEventKind.FoulCommitted, attacker.Team, attacker.PlayerId, b.Physics.Position, res.Kind.ToString(), carrier.PlayerId);
-            }
             Emit(eventKind, attacker.Team, attacker.PlayerId, b.Physics.Position, res.Kind + ":Lost", carrier.PlayerId);
             return res;
+        }
+
+        /// <summary>What the referee sees of a duel (Phase 21): plain geometry and state, nothing random.</summary>
+        private ContactEvidence EvidenceOf(MatchPlayer attacker, MatchPlayer carrier, bool slide, bool touchedBallFirst, bool clumsy)
+        {
+            RefereeTuning t = RefereeTuning;
+            Vec2 toCarrier = carrier.Locomotion.Position - attacker.Locomotion.Position;
+            float distance = toCarrier.Magnitude;
+            float top = attacker.LocomotionProfile.MaxSpeed;
+            float closing = 0f;
+            if (distance > 1e-4f && top > 0f)
+            {
+                Vec2 relative = attacker.Locomotion.Velocity - carrier.Locomotion.Velocity;
+                closing = Math.Max(0f, (relative.X * toCarrier.X + relative.Y * toCarrier.Y) / distance) / top;
+            }
+
+            // the goal the carrier attacks, and the outfield defenders of the challenger's team that stand between
+            Vec2 goal = GoalCentreOf(carrier.Team);
+            Vec2 toGoal = goal - carrier.Locomotion.Position;
+            float goalDistance = toGoal.Magnitude;
+            bool chance = false, counter = false;
+            if (goalDistance > 1e-4f)
+            {
+                Vec2 heading = carrier.Locomotion.Velocity.Magnitude > t.HeadingMinSpeed ? carrier.Locomotion.Velocity.Normalized : carrier.Locomotion.FacingDirection;
+                float facingGoal = (heading.X * toGoal.X + heading.Y * toGoal.Y) / goalDistance;
+                if (goalDistance <= t.GoalChanceDistance && facingGoal >= t.GoalChanceFacingCosine)
+                {
+                    chance = true;
+                    TeamMatchState defenders = State.Team(attacker.Team);
+                    for (int i = 0; i < defenders.Players.Count; i++)
+                    {
+                        MatchPlayer o = defenders.Players[i];
+                        if (o == attacker || !o.IsActive || o.InGoal) continue;
+                        if ((goal - o.Locomotion.Position).Magnitude < goalDistance) { chance = false; break; }
+                    }
+                }
+                float carrierTop = carrier.LocomotionProfile.MaxSpeed;
+                counter = State.Ball.SecondsSincePossessionChange <= t.CounterPossessionSeconds && carrierTop > 0f && carrier.Locomotion.CurrentSpeed >= t.CounterCarrierSpeed * carrierTop && facingGoal >= t.CounterFacingCosine;
+            }
+
+            return new ContactEvidence
+            {
+                TouchedBallFirst = touchedBallFirst, Contact = distance <= t.ContactDistance, IsSlide = slide, FromBehind = FromBehind(attacker, carrier), ClosingSpeed01 = closing,
+                Clumsy = clumsy, StoppedCounterAttack = counter, DeniedGoalChance = chance, PriorFouls = attacker.FoulsCommitted
+            };
         }
 
         private void StartSlide(MatchPlayer p, Vec2 dir)

@@ -145,7 +145,7 @@ namespace FS27.Core
                 {
                     PlayerId = p.PlayerId, Team = team.Side, Slot = i,
                     Position = p.Locomotion.Position, Home = p.Home, HasHome = p.HasHome, Velocity = p.Locomotion.Velocity, Facing = facing, Heading = p.Locomotion.Heading, Speed = p.Locomotion.CurrentSpeed, MaxSpeed = top,
-                    Stamina = p.Locomotion.CurrentStamina, Role = p.Role,
+                    Stamina = p.Locomotion.CurrentStamina, Role = p.Role, YellowCards = p.YellowCards, FoulsCommitted = p.FoulsCommitted,
                     Zone = p.InGoal ? PitchZone.Goal : PlayingProfileDefaults.ZoneOfRelativePosition(relative),
                     Availability = (PlayerAvailability)(int)p.Status,
                     IsGoalkeeper = p.InGoal, IsEmergencyKeeper = p.IsEmergencyKeeper,

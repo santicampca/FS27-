@@ -98,6 +98,9 @@ namespace FS27.Core
         public bool IsGoalkeeper;
         public bool IsEmergencyKeeper;
         public bool HasBall;
+        /// <summary>Phase 21: the yellow cards he has in this match, and the fouls the referee has called against him. The AI reads them to play with care.</summary>
+        public int YellowCards;
+        public int FoulsCommitted;
         /// <summary>A person controls him.</summary>
         public bool IsControlled;
         // ---- what he is doing

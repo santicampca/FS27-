@@ -143,7 +143,8 @@ namespace FS27.Core.Tests
             {
                 var d = NewDiagnostics();
                 SimulateAttack(GameMode.Classic, 333, true, 333 % 12, (333 * 5 + 3) % 12, 300f, true, d, l, l);
-                Assert.LessOrEqual(d.TotalFouls, d.TotalContacts * 0.2 + 1.0, l.ToString()); fouls += d.TotalFouls; contacts += d.TotalContacts;
+                Assert.LessOrEqual(d.TotalFouls, d.TotalContacts * 0.5 + 1.0, l.ToString()); fouls += d.TotalFouls;   // Phase 21: 0.2 -> 0.5 (the referee judges every contact; a full match has about a quarter of its contacts called)
+                 contacts += d.TotalContacts;
             }
             Assert.Greater(contacts, 20.0); Assert.GreaterOrEqual(fouls, 0.0);
         }
