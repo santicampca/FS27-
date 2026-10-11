@@ -53,6 +53,8 @@ namespace FS27.Core
         public const float ReadySeconds = 2.0f;
         /// <summary>A free kick that a person has to take (aim, charge) waits this long; then the Core takes it for him with the AI's decision, so the match is never blocked.</summary>
         public const float HumanMaxWaitSeconds = 12.0f;
+        /// <summary>A person has this long, from the stoppage, to choose who takes the free kick; then the choice (the automatic one if nobody chose) is locked and the aiming begins. The AI never waits: its taker is automatic.</summary>
+        public const float TakerChoiceSeconds = 5.0f;
         /// <summary>The set-up waits this long for a team to put somebody in goal; then the Core puts the emergency keeper on (safety net: the match is never blocked).</summary>
         public const float KeeperVacancySeconds = 3.0f;
         /// <summary>After the whistle the opponents may not enter the circle of the ball until it is played; this long at most.</summary>
@@ -102,6 +104,7 @@ namespace FS27.Core
         public float WallCentreBand = FreeKickDefaults.WallCentreBand;
         public float ReadySeconds = FreeKickDefaults.ReadySeconds;
         public float HumanMaxWaitSeconds = FreeKickDefaults.HumanMaxWaitSeconds;
+        public float TakerChoiceSeconds = FreeKickDefaults.TakerChoiceSeconds;
         public float KeeperVacancySeconds = FreeKickDefaults.KeeperVacancySeconds;
         public float ProtectionSeconds = FreeKickDefaults.ProtectionSeconds;
         public float PlayedDistance = FreeKickDefaults.PlayedDistance;
@@ -151,6 +154,16 @@ namespace FS27.Core
         /// <summary>Where the ball is placed.</summary>
         public Vec2 Spot;
         public string TakerId;
+        /// <summary>The taker the Core would choose by itself (the best one by its rule); a person may choose another one.</summary>
+        public string SuggestedTakerId;
+        /// <summary>A person chose the current taker (<see cref="MatchController.ChooseFreeKickTaker"/>) and he is still the one.</summary>
+        public bool TakerChosenManually;
+        /// <summary>The taker is final: a person confirmed him, the choice time ran out, the kick was aimed, or the beneficiary is not a person (the AI chooses by itself). No more choosing.</summary>
+        public bool TakerConfirmed;
+        /// <summary>The player a person had chosen became unavailable (sent off, substituted, in goal) and the Core chose a valid one in his place.</summary>
+        public bool TakerReplaced;
+        /// <summary>Seconds left to choose the taker (0 when it is locked).</summary>
+        public float TakerChoiceRemaining;
         /// <summary>The players that form the wall (possibly none: far from the goal there is no wall).</summary>
         public readonly List<string> Wall = new List<string>();
         /// <summary>Core seconds since the stoppage.</summary>
@@ -165,6 +178,56 @@ namespace FS27.Core
 
         public bool Active { get { return Stage == FreeKickStage.Preparing || Stage == FreeKickStage.Ready; } }
         public bool InProtection { get { return Stage == FreeKickStage.Protected; } }
+    }
+
+    /// <summary>The answer to a choice of taker (<see cref="MatchController.ChooseFreeKickTaker"/>, <see cref="MatchController.ConfirmFreeKickTaker"/>).</summary>
+    public enum FreeKickTakerResult
+    {
+        Accepted = 0,
+        /// <summary>There is no free kick waiting to be taken.</summary>
+        NoFreeKick,
+        /// <summary>The team asking is not the one that takes it, or it is not controlled by a person (the AI chooses its own taker).</summary>
+        NotUserTeam,
+        /// <summary>Nobody has that id in the match.</summary>
+        UnknownPlayer,
+        /// <summary>He plays for the other team.</summary>
+        WrongTeam,
+        /// <summary>He is not on the pitch (on the bench, substituted off).</summary>
+        NotAvailable,
+        /// <summary>He has been sent off.</summary>
+        Dismissed,
+        /// <summary>He is in goal (the goalkeeper does not take free kicks).</summary>
+        Goalkeeper,
+        /// <summary>The taker is already final (confirmed, the choice time ran out, or the kick was aimed).</summary>
+        Locked
+    }
+
+    /// <summary>
+    /// One player who may take the free kick, as the future screen lists him (<see cref="MatchController.FreeKickTakerCandidates"/>). What the Core knows is always filled (id, role, the action numbers it derived, the curve);
+    /// the name, shirt number and raw attributes are filled when the host passes the player lookup (the Core never copies them: they stay in the player's definition).
+    /// </summary>
+    public struct FreeKickTakerCandidate
+    {
+        public string PlayerId;
+        public PlayerRole Role;
+        /// <summary>He is the taker right now.</summary>
+        public bool IsCurrent;
+        /// <summary>He is the one the Core would choose by itself.</summary>
+        public bool IsSuggested;
+        /// <summary>The Core's own score for this free kick (higher = better): the one the automatic choice uses.</summary>
+        public float Score;
+        /// <summary>0..1, derived (<see cref="ActionProfile"/>).</summary>
+        public float ShotClose, ShotFar, Pass;
+        public PreferredFoot PreferredFoot;
+        /// <summary>He owns the skill that curves a shot (the effect of the aim is applied only for him).</summary>
+        public bool CanCurve;
+        public float DistanceToBall;
+        /// <summary>True when a definition was found: the fields below are then valid.</summary>
+        public bool HasDefinition;
+        public string Name;
+        public int ShirtNumber;
+        /// <summary>The raw attributes (1..99) a screen shows for a free kick.</summary>
+        public int ShootingValue, TechniqueValue, PassingValue, FinishingValue;
     }
 
     /// <summary>What the person aims at (or the AI decides): shoot at the goal, pass to a team-mate or play to a point.</summary>

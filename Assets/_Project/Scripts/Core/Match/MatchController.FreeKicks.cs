@@ -47,6 +47,10 @@ namespace FS27.Core
             MatchPlayer taker = SelectFreeKickTaker(beneficiary, spot);
             request.TakerId = taker != null ? taker.PlayerId : null;
             fk.TakerId = request.TakerId;
+            fk.SuggestedTakerId = request.TakerId;
+            // the AI never waits to choose; a person has the choice time
+            fk.TakerConfirmed = GetControl(beneficiary) != ControlSource.Human;
+            fk.TakerChoiceRemaining = fk.TakerConfirmed ? 0f : freeKick.TakerChoiceSeconds;
             RequestRestart(request);
             ClearPossession();
             return true;
@@ -78,26 +82,111 @@ namespace FS27.Core
         public MatchPlayer SelectFreeKickTaker(TeamSide team, Vec2 spot)
         {
             TeamMatchState t = State.Team(team);
-            Vec2 goal = GoalCentreOf(team);
-            float goalDistance = (goal - spot).Magnitude;
             MatchPlayer best = null;
             float bestScore = float.NegativeInfinity;
             for (int i = 0; i < t.Players.Count; i++)
             {
                 MatchPlayer p = t.Players[i];
                 if (!p.IsActive || p.InGoal) continue;
-                float quality;
-                if (goalDistance <= freeKick.TakerShotDistance)
-                {
-                    float far = goalDistance / Math.Max(1e-3f, freeKick.TakerShotDistance);
-                    quality = p.ActionProfile.ShotQualityClose * (1f - far) + p.ActionProfile.ShotQualityFar * far;
-                    if (SkillResolver.CanUseAction(p.Skills, FootballActionKind.CurvedShot, true).Allowed) quality += freeKick.TakerCurveBonus;
-                }
-                else quality = p.ActionProfile.PassQuality;
-                float score = quality - freeKick.TakerDistancePenalty * (p.Locomotion.Position - spot).Magnitude / Math.Max(1e-3f, field.Length);
+                float score = TakerScore(p, team, spot);
                 if (score > bestScore + 1e-6f) { best = p; bestScore = score; }
             }
             return best ?? t.GoalkeeperInGoal;
+        }
+
+        /// <summary>How good a taker a player is for a free kick at that spot (the rule of <see cref="SelectFreeKickTaker"/>).</summary>
+        private float TakerScore(MatchPlayer p, TeamSide team, Vec2 spot)
+        {
+            float goalDistance = (GoalCentreOf(team) - spot).Magnitude;
+            float quality;
+            if (goalDistance <= freeKick.TakerShotDistance)
+            {
+                float far = goalDistance / Math.Max(1e-3f, freeKick.TakerShotDistance);
+                quality = p.ActionProfile.ShotQualityClose * (1f - far) + p.ActionProfile.ShotQualityFar * far;
+                if (SkillResolver.CanUseAction(p.Skills, FootballActionKind.CurvedShot, true).Allowed) quality += freeKick.TakerCurveBonus;
+            }
+            else quality = p.ActionProfile.PassQuality;
+            return quality - freeKick.TakerDistancePenalty * (p.Locomotion.Position - spot).Magnitude / Math.Max(1e-3f, field.Length);
+        }
+
+        /// <summary>
+        /// The players who may take the free kick that is waiting, for the screen that lets a person choose (Phase 22): the active field players of the team that takes it, in squad order. Empty when there is none.
+        /// The goalkeeper, the sent-off, the substituted-off, the bench and the other team are never listed. Pass the player lookup to also get names, shirt numbers and the raw attributes.
+        /// </summary>
+        public List<FreeKickTakerCandidate> FreeKickTakerCandidates(IPlayerLookup players = null)
+        {
+            var list = new List<FreeKickTakerCandidate>();
+            FreeKickState fk = State.FreeKick;
+            if (fk == null || !fk.Active) return list;
+            TeamMatchState team = State.Team(fk.Beneficiary);
+            for (int i = 0; i < team.Players.Count; i++)
+            {
+                MatchPlayer p = team.Players[i];
+                if (!p.IsActive || p.InGoal) continue;
+                var c = new FreeKickTakerCandidate
+                {
+                    PlayerId = p.PlayerId, Role = p.Role, IsCurrent = p.PlayerId == fk.TakerId, IsSuggested = p.PlayerId == fk.SuggestedTakerId,
+                    Score = TakerScore(p, fk.Beneficiary, fk.Spot), ShotClose = p.ActionProfile.ShotQualityClose, ShotFar = p.ActionProfile.ShotQualityFar, Pass = p.ActionProfile.PassQuality,
+                    PreferredFoot = p.ActionProfile.PreferredFoot, CanCurve = SkillResolver.CanUseAction(p.Skills, FootballActionKind.CurvedShot, true).Allowed,
+                    DistanceToBall = (p.Locomotion.Position - fk.Spot).Magnitude
+                };
+                PlayerDefinition def;
+                if (players != null && players.TryGet(p.PlayerId, out def) && def != null)
+                {
+                    c.HasDefinition = true; c.Name = def.DisplayName; c.ShirtNumber = def.Number;
+                    c.ShootingValue = def.Attributes.Shooting; c.TechniqueValue = def.Attributes.Technique; c.PassingValue = def.Attributes.Passing; c.FinishingValue = def.Attributes.Finishing;
+                }
+                list.Add(c);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// A person chooses who takes the free kick (Phase 22). Only for the team that takes it, when a person controls it, while the choice is open (<see cref="FreeKickTuning.TakerChoiceSeconds"/> from the stoppage,
+        /// until <see cref="ConfirmFreeKickTaker"/>), and only for an active field player of that team: not an opponent, not on the bench or substituted off, not sent off, not the goalkeeper. The choice can change as often
+        /// as the person wants. It is the SAME restart machinery as the automatic choice: the wall, the clearance and the whistle are set up again around the new taker.
+        /// </summary>
+        public FreeKickTakerResult ChooseFreeKickTaker(TeamSide side, string playerId)
+        {
+            FreeKickState fk = State.FreeKick;
+            FreeKickTakerResult gate = TakerChoiceGate(side, fk);
+            if (gate != FreeKickTakerResult.Accepted) return gate;
+            MatchPlayer p = State.Team(fk.Beneficiary).Find(playerId);
+            if (p == null)
+                return playerId != null && State.Team(fk.Beneficiary.Opponent()).Find(playerId) != null ? FreeKickTakerResult.WrongTeam : FreeKickTakerResult.UnknownPlayer;
+            if (p.Status == MatchPlayerStatus.Dismissed) return FreeKickTakerResult.Dismissed;
+            if (!p.IsActive) return FreeKickTakerResult.NotAvailable;
+            if (p.InGoal) return FreeKickTakerResult.Goalkeeper;
+
+            RestartRequest r = State.PendingRestart;
+            r.TakerId = p.PlayerId;
+            State.PendingRestart = r;
+            fk.TakerId = p.PlayerId;
+            fk.TakerChosenManually = true;
+            fk.TakerReplaced = false;
+            if (r.Status == RestartStatus.Placed) PrepareRestart();
+            return FreeKickTakerResult.Accepted;
+        }
+
+        /// <summary>The person confirms the taker (the current one: the automatic one if he chose nobody): the choice is closed and the aiming begins. Accepted again is harmless.</summary>
+        public FreeKickTakerResult ConfirmFreeKickTaker(TeamSide side)
+        {
+            FreeKickState fk = State.FreeKick;
+            if (fk != null && fk.TakerConfirmed && fk.Active && side == fk.Beneficiary) return FreeKickTakerResult.Accepted;
+            FreeKickTakerResult gate = TakerChoiceGate(side, fk);
+            if (gate != FreeKickTakerResult.Accepted) return gate;
+            PrepareRestart();   // a taker who is no longer valid is replaced before he is locked (the set-up is idempotent)
+            fk.TakerConfirmed = true;
+            fk.TakerChoiceRemaining = 0f;
+            return FreeKickTakerResult.Accepted;
+        }
+
+        private FreeKickTakerResult TakerChoiceGate(TeamSide side, FreeKickState fk)
+        {
+            if (fk == null || !fk.Active || State.Phase != MatchPhase.WaitingForRestart || State.PendingRestart.Kind != RestartKind.FreeKick) return FreeKickTakerResult.NoFreeKick;
+            if (side != fk.Beneficiary || GetControl(side) != ControlSource.Human) return FreeKickTakerResult.NotUserTeam;
+            if (fk.TakerConfirmed) return FreeKickTakerResult.Locked;
+            return FreeKickTakerResult.Accepted;
         }
 
         // ------------------------------------------------------------------ the set-up
@@ -114,7 +203,13 @@ namespace FS27.Core
             TeamSide team = r.Team, other = team.Opponent();
 
             MatchPlayer taker = r.TakerId != null ? State.Team(team).Find(r.TakerId) : null;
-            if (taker == null || !taker.IsActive) taker = SelectFreeKickTaker(team, r.Position);
+            // a taker who is no longer available (sent off, substituted off, put in goal) is replaced by the Core's own choice, so the free kick is never stuck
+            if (taker == null || !taker.IsActive || (taker.InGoal && fk.TakerChosenManually))
+            {
+                if (fk.TakerChosenManually) fk.TakerReplaced = true;
+                fk.TakerChosenManually = false;
+                taker = SelectFreeKickTaker(team, r.Position);
+            }
             if (taker == null) return false;
             r.TakerId = taker.PlayerId;
             fk.TakerId = taker.PlayerId;
@@ -260,6 +355,11 @@ namespace FS27.Core
 
             fk.WaitSeconds += dt;
             if (State.PendingRestart.Status == RestartStatus.Pending) PrepareRestart();
+            if (!fk.TakerConfirmed)
+            {
+                fk.TakerChoiceRemaining = Math.Max(0f, freeKick.TakerChoiceSeconds - fk.WaitSeconds);
+                if (fk.TakerChoiceRemaining <= 0f) { fk.TakerConfirmed = true; PrepareRestart(); }   // nobody chose in time: the current (automatic) taker stays
+            }
 
             if (State.Home.NeedsGoalkeeper || State.Away.NeedsGoalkeeper)
             {
@@ -372,6 +472,8 @@ namespace FS27.Core
             FreeKickState fk = State.FreeKick;
             if (fk == null || !fk.Active || State.Phase != MatchPhase.WaitingForRestart || State.PendingRestart.Kind != RestartKind.FreeKick) return FreeKickExecuteResult.NoFreeKick;
             if (!ValidAim(aim, fk)) return FreeKickExecuteResult.InvalidAim;
+            fk.TakerConfirmed = true;
+            fk.TakerChoiceRemaining = 0f;
             if (!ConfirmRestart()) return FreeKickExecuteResult.NotReady;
 
             MatchPlayer taker = State.Team(fk.Beneficiary).Find(fk.TakerId);

@@ -495,6 +495,221 @@ namespace FS27.Core.Tests
             Assert.IsFalse(wallStopsLob, "the lob goes over it");
         }
 
+        // ================= the choice of the taker (a person) =================
+
+        private static MatchController FkHuman(float x = 12f, float z = 0f, IPlayerLookup lookup = null)
+        {
+            MatchController c = FkLive(GameMode.Classic, 1, lookup);
+            c.SetControl(TeamSide.Home, ControlSource.Human);
+            FkFoul(c, x, z);
+            return c;
+        }
+
+        private static string FkOtherThanSuggested(MatchController c) { return c.FreeKickTakerCandidates().First(k => !k.IsSuggested).PlayerId; }
+
+        [Test]
+        public void Taker_APersonChoosesWhoTakesIt_AndThatPlayerReallyKicksTheBall()
+        {
+            MatchController c = FkHuman();
+            string suggested = c.State.FreeKick.SuggestedTakerId, chosen = FkOtherThanSuggested(c);
+            var events = new List<GameplayEvent>(); c.Events.Published += events.Add;
+            var results = new List<ActionResult>(); c.ActionPerformed += results.Add;
+            Assert.AreEqual(FreeKickTakerResult.Accepted, c.ChooseFreeKickTaker(TeamSide.Home, chosen));
+            Assert.AreEqual(chosen, c.State.PendingRestart.TakerId); Assert.AreEqual(chosen, c.State.FreeKick.TakerId); Assert.IsTrue(c.State.FreeKick.TakerChosenManually);
+            Assert.AreEqual(suggested, c.State.FreeKick.SuggestedTakerId, "the Core still knows who it would have chosen");
+            Assert.AreEqual(FreeKickTakerResult.Accepted, c.ConfirmFreeKickTaker(TeamSide.Home));
+            Assert.IsTrue(c.State.FreeKick.TakerConfirmed);
+            Assert.AreEqual(FreeKickExecuteResult.Executed, c.ExecuteFreeKick(new FreeKickAim { Intent = FreeKickIntent.Shot, HasZone = true, Zone = GoalZone.Left, Power = 0.8f }));
+            Assert.AreEqual(chosen, results.Last(r => r.Outcome != ActionOutcome.Rejected).PlayerId, "the action is his");
+            Assert.AreEqual(chosen, events.Single(e => e.Kind == GameplayEventKind.FreeKickTaken).PlayerId);
+            Assert.AreEqual(chosen, c.State.Ball.LastTouchPlayerId, "the last touch is his, not the automatic taker's");
+            Assert.AreNotEqual(suggested, c.State.Ball.LastTouchPlayerId);
+        }
+
+        [Test]
+        public void Taker_TheChosenOneStandsAtTheBall_AndTheOneNotChosenLeavesIt()
+        {
+            MatchController c = FkHuman();
+            string suggested = c.State.FreeKick.SuggestedTakerId, chosen = FkOtherThanSuggested(c);
+            Assert.IsTrue(c.PrepareRestart());
+            Assert.AreEqual(FreeKickTakerResult.Accepted, c.ChooseFreeKickTaker(TeamSide.Home, chosen));
+            Vec2 spot = c.State.FreeKick.Spot;
+            Assert.AreEqual(c.FreeKick.TakerOffsetBehind, (c.State.Home.Find(chosen).Locomotion.Position - spot).Magnitude, 0.6f);
+            Assert.GreaterOrEqual((c.State.Home.Find(suggested).Locomotion.Position - spot).Magnitude, c.Infrastructure.RestartClearRadius - 0.4f, "the automatic taker is no longer next to the ball");
+            Assert.AreEqual(RestartStatus.Placed, c.State.PendingRestart.Status);
+            Assert.AreEqual(1, c.State.FreeKicksAwarded, "choosing does not create another free kick");
+        }
+
+        [Test]
+        public void Taker_TheListShowsOnlyEligiblePlayers_WithTheirNumbersAndAttributes()
+        {
+            var l = new FkLookup();
+            for (int i = 0; i < 6; i++) { l.Players["hs" + i] = new PlayerDefinition("hs" + i, "Home " + i, i + 7, i == 0 ? PlayerRole.Goalkeeper : PlayerRole.Midfielder, FkAll(50 + i)); l.Players["hs" + i].Attributes.Shooting = 60 + i; }
+            MatchController c = FkHuman(12f, 0f, l);
+            List<FreeKickTakerCandidate> list = c.FreeKickTakerCandidates(l);
+            Assert.AreEqual(5, list.Count, "the five field players, not the goalkeeper, not the bench, not the rival");
+            Assert.IsFalse(list.Any(k => k.PlayerId == "hs0" || k.PlayerId.StartsWith("a") || k.PlayerId.StartsWith("hb")));
+            Assert.AreEqual(1, list.Count(k => k.IsSuggested)); Assert.AreEqual(1, list.Count(k => k.IsCurrent)); Assert.AreEqual(list.Single(k => k.IsSuggested).PlayerId, list.Single(k => k.IsCurrent).PlayerId);
+            FreeKickTakerCandidate hs3 = list.Single(k => k.PlayerId == "hs3");
+            Assert.IsTrue(hs3.HasDefinition); Assert.AreEqual("Home 3", hs3.Name); Assert.AreEqual(10, hs3.ShirtNumber); Assert.AreEqual(63, hs3.ShootingValue); Assert.AreEqual(53, hs3.PassingValue);
+            Assert.AreEqual(PlayerRole.Midfielder, hs3.Role); Assert.GreaterOrEqual(hs3.ShotClose, 0f);
+            Assert.IsFalse(c.FreeKickTakerCandidates().First().HasDefinition, "without a lookup the Core gives what it knows, not names");
+            c.ChooseFreeKickTaker(TeamSide.Home, "hs4");
+            Assert.AreEqual("hs4", c.FreeKickTakerCandidates().Single(k => k.IsCurrent).PlayerId);
+            c.IssueCard(TeamSide.Home, "hs2", CardKind.Red);
+            Assert.IsFalse(c.FreeKickTakerCandidates().Any(k => k.PlayerId == "hs2"), "a sent-off player disappears from the list");
+        }
+
+        [Test]
+        public void Taker_AnInvalidChoice_IsRefused_AndTheTakerDoesNotChange()
+        {
+            MatchController c = FkHuman();
+            string before = c.State.FreeKick.TakerId;
+            Assert.AreEqual(FreeKickTakerResult.WrongTeam, c.ChooseFreeKickTaker(TeamSide.Home, "as3"), "an opponent");
+            Assert.AreEqual(FreeKickTakerResult.UnknownPlayer, c.ChooseFreeKickTaker(TeamSide.Home, "nobody"));
+            Assert.AreEqual(FreeKickTakerResult.UnknownPlayer, c.ChooseFreeKickTaker(TeamSide.Home, null));
+            Assert.AreEqual(FreeKickTakerResult.NotAvailable, c.ChooseFreeKickTaker(TeamSide.Home, "hb1"), "a substitute who is not on the pitch");
+            Assert.AreEqual(FreeKickTakerResult.Goalkeeper, c.ChooseFreeKickTaker(TeamSide.Home, "hs0"), "the rule excludes the goalkeeper");
+            Assert.AreEqual(FreeKickTakerResult.NotUserTeam, c.ChooseFreeKickTaker(TeamSide.Away, "as3"), "the other team is not the one that takes it");
+            c.IssueCard(TeamSide.Home, "hs2", CardKind.Red);
+            Assert.AreEqual(FreeKickTakerResult.Dismissed, c.ChooseFreeKickTaker(TeamSide.Home, "hs2"));
+            Assert.AreEqual(before, c.State.FreeKick.TakerId); Assert.IsFalse(c.State.FreeKick.TakerChosenManually);
+            Assert.AreEqual(MatchPhase.WaitingForRestart, c.State.Phase);
+            Assert.AreEqual(FreeKickTakerResult.Accepted, c.ConfirmFreeKickTaker(TeamSide.Home));
+            Assert.AreEqual(FreeKickTakerResult.Locked, c.ChooseFreeKickTaker(TeamSide.Home, "hs4"), "after the confirmation the taker is final");
+            Assert.AreEqual(before, c.State.FreeKick.TakerId);
+        }
+
+        [Test]
+        public void Taker_ChoosingWithNoFreeKick_OrInArena_IsRefused()
+        {
+            MatchController live = FkLive(); live.SetControl(TeamSide.Home, ControlSource.Human);
+            Assert.AreEqual(FreeKickTakerResult.NoFreeKick, live.ChooseFreeKickTaker(TeamSide.Home, "hs3"));
+            Assert.AreEqual(FreeKickTakerResult.NoFreeKick, live.ConfirmFreeKickTaker(TeamSide.Home));
+            Assert.AreEqual(0, live.FreeKickTakerCandidates().Count);
+            MatchController arena = FkLive(GameMode.Arena); arena.SetControl(TeamSide.Home, ControlSource.Human);
+            FkFoul(arena);
+            Assert.AreEqual(FreeKickTakerResult.NoFreeKick, arena.ChooseFreeKickTaker(TeamSide.Home, "hs3")); Assert.AreEqual(0, arena.FreeKickTakerCandidates().Count); Assert.IsNull(arena.State.FreeKick);
+        }
+
+        [Test]
+        public void Taker_TheChosenOneSentOffDuringThePreparation_IsReplacedByAValidOne_WithoutBlocking()
+        {
+            MatchController c = FkHuman();
+            string chosen = FkOtherThanSuggested(c);
+            Assert.AreEqual(FreeKickTakerResult.Accepted, c.ChooseFreeKickTaker(TeamSide.Home, chosen));
+            c.IssueCard(TeamSide.Home, chosen, CardKind.Red);
+            Assert.IsTrue(c.ConfirmRestart());
+            FreeKickState fk = c.State.FreeKick;
+            Assert.AreNotEqual(chosen, fk.TakerId); Assert.IsTrue(fk.TakerReplaced); Assert.IsFalse(fk.TakerChosenManually);
+            MatchPlayer taker = c.State.Home.Find(fk.TakerId);
+            Assert.IsTrue(taker.IsActive && !taker.InGoal);
+            Assert.AreEqual(MatchPhase.Playing, c.State.Phase); Assert.AreEqual(fk.TakerId, c.State.Ball.PossessingPlayerId);
+        }
+
+        [Test]
+        public void Taker_ASubstitutionDuringTheWait_IsAllowed_TheSubstituteCanBeChosen_AndAChosenOneSubstitutedOffIsReplaced()
+        {
+            MatchController c = FkHuman();
+            Assert.AreEqual(SubstitutionResult.Accepted, c.TrySubstitute(TeamSide.Home, "hs1", "hb1"));
+            Assert.IsTrue(c.FreeKickTakerCandidates().Any(k => k.PlayerId == "hb1"));
+            Assert.IsFalse(c.FreeKickTakerCandidates().Any(k => k.PlayerId == "hs1"));
+            Assert.AreEqual(FreeKickTakerResult.NotAvailable, c.ChooseFreeKickTaker(TeamSide.Home, "hs1"), "substituted off");
+            Assert.AreEqual(FreeKickTakerResult.Accepted, c.ChooseFreeKickTaker(TeamSide.Home, "hb1"));
+            Assert.AreEqual(SubstitutionResult.Accepted, c.TrySubstitute(TeamSide.Home, "hb1", "hb2"), "the substitute is substituted again before the kick");
+            Assert.IsTrue(c.ConfirmRestart());
+            Assert.AreNotEqual("hb1", c.State.FreeKick.TakerId); Assert.IsTrue(c.State.FreeKick.TakerReplaced);
+            Assert.IsTrue(c.State.Home.Find(c.State.FreeKick.TakerId).IsActive);
+            Assert.AreEqual(c.State.FreeKick.TakerId, c.State.Ball.PossessingPlayerId);
+        }
+
+        [Test]
+        public void Taker_PlayersMovedDuringTheWait_TheChosenOneIsPutBackAtTheBall()
+        {
+            MatchController c = FkHuman();
+            string chosen = FkOtherThanSuggested(c);
+            c.ChooseFreeKickTaker(TeamSide.Home, chosen);
+            Assert.IsTrue(c.PrepareRestart());
+            foreach (MatchPlayer p in c.State.Home.Players.Concat(c.State.Away.Players).Where(q => q.IsActive)) c.PlacePlayer(p.Team, p.PlayerId, new Vec2(0f, 0f), 0f);   // a formation change that puts everybody elsewhere
+            Assert.IsTrue(c.ConfirmRestart());
+            Assert.AreEqual(chosen, c.State.FreeKick.TakerId); Assert.AreEqual(chosen, c.State.Ball.PossessingPlayerId);
+            Assert.AreEqual(c.FreeKick.TakerOffsetBehind, (c.State.Home.Find(chosen).Locomotion.Position - c.State.FreeKick.Spot).Magnitude, 0.6f);
+        }
+
+        [Test]
+        public void Taker_RealFormations_AFormationChangeDuringTheWaitKeepsTheChosenTaker()
+        {
+            MatchController c = RealRoles(3, 8, 5, MatchSettings.CreateClassic());
+            Assert.IsTrue(c.ConfirmRestart());
+            c.SetControl(TeamSide.Home, ControlSource.Human);
+            MatchPlayer offender = c.State.Away.Players.First(p => p.IsActive && !p.InGoal), victim = c.State.Home.Players.First(p => p.IsActive && !p.InGoal);
+            c.CallFoul(TeamSide.Away, offender.PlayerId, victim.PlayerId, FkCall(), new Vec3(10f, 0.2f, 2f));
+            Assert.AreEqual(MatchPhase.WaitingForRestart, c.State.Phase);
+            string chosen = FkOtherThanSuggested(c);
+            Assert.AreEqual(FreeKickTakerResult.Accepted, c.ChooseFreeKickTaker(TeamSide.Home, chosen));
+            c.PlaceFormation(TeamSide.Home, false); c.PlaceFormation(TeamSide.Away, false);   // the formations are applied again during the wait
+            Assert.IsTrue(c.ConfirmRestart());
+            Assert.AreEqual(chosen, c.State.FreeKick.TakerId); Assert.AreEqual(chosen, c.State.Ball.PossessingPlayerId);
+            Assert.LessOrEqual((c.State.Home.Find(chosen).Locomotion.Position - c.State.FreeKick.Spot).Magnitude, c.FreeKick.TakerOffsetBehind + 0.8f);
+        }
+
+        [Test]
+        public void Taker_IfNobodyChoosesInTime_TheAutomaticTakerStays_ChoosingIsLocked_AndTheMatchGoesOn()
+        {
+            MatchController c = FkHuman();
+            string suggested = c.State.FreeKick.SuggestedTakerId;
+            Assert.IsFalse(c.State.FreeKick.TakerConfirmed); Assert.AreEqual(c.FreeKick.TakerChoiceSeconds, c.State.FreeKick.TakerChoiceRemaining, 1e-4f);
+            FkAdvance(c, c.FreeKick.TakerChoiceSeconds + 0.2f);
+            Assert.IsTrue(c.State.FreeKick.TakerConfirmed); Assert.AreEqual(0f, c.State.FreeKick.TakerChoiceRemaining, 1e-4f);
+            Assert.AreEqual(suggested, c.State.FreeKick.TakerId);
+            Assert.AreEqual(FreeKickTakerResult.Locked, c.ChooseFreeKickTaker(TeamSide.Home, FkOtherThanSuggested(c)));
+            Assert.AreEqual(MatchPhase.WaitingForRestart, c.State.Phase, "the person can still aim");
+            FkAdvance(c, c.FreeKick.HumanMaxWaitSeconds);
+            Assert.AreEqual(MatchPhase.Playing, c.State.Phase); Assert.AreEqual(suggested, c.State.Ball.PossessingPlayerId);
+        }
+
+        [Test]
+        public void Taker_ExecutingWithoutConfirming_ConfirmsTheCurrentChoice()
+        {
+            MatchController c = FkHuman();
+            string chosen = FkOtherThanSuggested(c);
+            c.ChooseFreeKickTaker(TeamSide.Home, chosen);
+            Assert.AreEqual(FreeKickExecuteResult.Executed, c.ExecuteFreeKick(new FreeKickAim { Intent = FreeKickIntent.Shot, Power = 0.5f }));
+            Assert.AreEqual(chosen, c.State.Ball.LastTouchPlayerId); Assert.IsTrue(c.State.FreeKick.TakerConfirmed);
+        }
+
+        [Test]
+        public void Taker_TheAiChoosesItsOwnTaker_AutomaticallyAndAtOnce_AndNoOneCanChooseForIt()
+        {
+            MatchController c = FkLive();   // nobody controls home: the AI
+            FkFoul(c);
+            FreeKickState fk = c.State.FreeKick;
+            Assert.IsTrue(fk.TakerConfirmed, "the AI never waits to choose");
+            Assert.AreEqual(fk.SuggestedTakerId, fk.TakerId); Assert.IsFalse(fk.TakerChosenManually);
+            Assert.AreEqual(FreeKickTakerResult.NotUserTeam, c.ChooseFreeKickTaker(TeamSide.Home, FkOtherThanSuggested(c)));
+            Assert.AreEqual(fk.SuggestedTakerId, fk.TakerId);
+            FkAdvance(c, c.FreeKick.ReadySeconds + 0.3f);
+            Assert.AreEqual(MatchPhase.Playing, c.State.Phase); Assert.AreEqual(fk.SuggestedTakerId, c.State.Ball.PossessingPlayerId);
+        }
+
+        [Test]
+        public void Taker_TheSameChoicesGiveTheSameFreeKick()
+        {
+            string Run()
+            {
+                MatchController c = FkHuman();
+                var sb = new System.Text.StringBuilder();
+                c.Events.Published += e => sb.Append((int)e.Kind).Append(e.PlayerId).Append(e.MatchTime.ToString("R")).Append(';');
+                c.ChooseFreeKickTaker(TeamSide.Home, "hs4");
+                c.ConfirmFreeKickTaker(TeamSide.Home);
+                c.ExecuteFreeKick(new FreeKickAim { Intent = FreeKickIntent.Shot, HasZone = true, Zone = GoalZone.Right, HoldSeconds = 0.6f });
+                FkAdvance(c, 3f);
+                sb.Append(c.State.Ball.Physics.Position.X.ToString("R")).Append(c.State.Score.Home);
+                return sb.ToString();
+            }
+            Assert.AreEqual(Run(), Run());
+        }
+
         // ================= the AI of the taker =================
 
         private static PlayerDecision FkDecide(MatchController c, string id) { return new BasicDecisionEngine(c.Pitch).Decide(WorldState.Capture(c).View, id); }
