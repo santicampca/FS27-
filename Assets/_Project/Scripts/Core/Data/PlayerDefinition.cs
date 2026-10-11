@@ -29,7 +29,12 @@ namespace FS27.Core
         public string ShortName = "";
         /// <summary>Two or three capital letters, or empty when not set.</summary>
         public string NationalityCode = "";
-        /// <summary>Id of the team the player belongs to (a <see cref="TeamDefinition"/>), or empty for a free player.</summary>
+        /// <summary>
+        /// LEGACY (deprecated). A player has NO permanent club: the player library is global and a player belongs to a team only through a generated
+        /// <see cref="TeamRoster"/> (the authority). This field is not read by any Phase-2 system (draw, rosters, match setup); it only survives so cards and
+        /// the older data core keep working, and it is planned for removal. Never use it to decide who plays for whom. Imported data leaves it empty.
+        /// </summary>
+        [Obsolete("LEGACY: players have no permanent team. A player belongs to a team through a TeamRoster (the authority), never through this field.", false)]
         public string TeamId = "";
         public int Age = 22;
         public int HeightCm = 178;

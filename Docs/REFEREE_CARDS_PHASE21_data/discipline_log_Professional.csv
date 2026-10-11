@@ -1,0 +1,77 @@
+seed,time,team,player,victim,x,y,reasons,severity,card,cardResult,playerYellows,playerFouls
+5001,4.9,Away,sd-lamine-yamal,mq-alexis-mac-allister,-4.3,-2.2,Late+FromBehind,0.65,None,-,0,2
+5001,10.9,Away,sd-khvicha-kvaratskhelia,md-joshua-kimmich,2.2,9.1,Late+Tactical,0.60,Yellow,Issued,1,1
+5001,11.9,Away,cb-josko-gvardiol,md-joshua-kimmich,7.4,10.4,Late+FromBehind+Tactical,0.67,Yellow,Issued,1,2
+5001,49.2,Away,sd-lamine-yamal,mq-sandro-tonali,-1.4,0.3,Late+FromBehind+Reckless,0.92,None,-,0,2
+5001,497.3,Away,cb-josko-gvardiol,sd-fermin-lopez,-12.4,1.3,Late+FromBehind+DeniedGoalChance,0.65,None,-,1,2
+5001,748.7,Home,mq-alexis-mac-allister,dc-harry-kane,3.4,0.1,Late+Reckless,0.66,None,-,0,2
+5001,749.4,Home,mq-alexis-mac-allister,dc-harry-kane,3.5,-0.3,Late+FromBehind,0.65,None,-,0,2
+# seed 5001 issues 0 home needs keeper False away needs keeper False fouls H/A 2/5 | field ids H/A 5/5 active H/A 6/6
+5002,5.5,Away,dc-victor-osimhen,cb-gerard-martin,-9.0,-0.4,Late+Reckless+Dangerous,1.12,Yellow,Issued,1,2
+5002,32.4,Home,wg-antoine-semenyo,cb-dayot-upamecano,16.1,6.9,Late+FromBehind,0.65,None,-,0,2
+5002,45.8,Home,mc-leandro-paredes,sd-neymar-jr,-3.8,-3.8,Late+Reckless,0.80,None,-,0,1
+5002,53.9,Away,cb-micky-van-de-ven,wg-antoine-semenyo,17.5,2.0,Late,0.62,None,-,0,3
+5002,107.7,Away,cb-dayot-upamecano,wg-antoine-semenyo,18.3,1.6,Late+Reckless,0.84,None,-,0,2
+5002,108.5,Away,cb-dayot-upamecano,wg-antoine-semenyo,15.3,1.6,Late+FromBehind+Reckless,0.90,None,-,0,2
+5002,109.1,Away,cb-micky-van-de-ven,wg-antoine-semenyo,15.0,1.0,Late+FromBehind,0.74,None,-,0,3
+5002,109.7,Away,cb-micky-van-de-ven,wg-antoine-semenyo,16.5,2.2,Late+FromBehind+DeniedGoalChance,0.65,None,-,0,3
+5002,489.0,Away,dc-victor-osimhen,mc-leandro-paredes,11.6,2.4,Late,0.62,None,-,1,2
+5002,574.3,Home,wg-antoine-semenyo,cb-dayot-upamecano,-6.0,1.5,Late+Reckless,0.66,None,-,0,2
+5002,794.2,Home,mo-marco-reus,cb-dayot-upamecano,-6.8,-1.5,Late+FromBehind,0.69,None,-,0,1
+# seed 5002 issues 0 home needs keeper False away needs keeper False fouls H/A 4/7 | field ids H/A 5/5 active H/A 6/6
+5003,48.0,Away,mo-marco-reus,cb-gabriel-magalhaes,-10.1,-9.1,Late,0.58,None,-,0,1
+5003,112.8,Away,mc-leandro-paredes,mc-elliot-anderson,3.0,-0.6,Late+FromBehind,0.69,None,-,0,1
+5003,826.0,Away,wg-antoine-semenyo,mc-ryan-gravenberch,12.4,1.7,Late+FromBehind+Tactical,0.66,Yellow,Issued,1,1
+# seed 5003 issues 0 home needs keeper False away needs keeper False fouls H/A 0/3 | field ids H/A 5/5 active H/A 6/6
+5004,14.0,Home,sd-khvicha-kvaratskhelia,cb-cristian-romero,10.1,-8.9,Late+FromBehind+Tactical,0.65,Yellow,Issued,1,1
+5004,36.8,Away,cb-cristian-romero,dc-harry-kane,12.2,2.4,Late+FromBehind+DeniedGoalChance,0.65,None,-,0,2
+5004,37.4,Away,cb-cristian-romero,dc-harry-kane,13.6,4.9,Late+FromBehind,0.65,None,-,0,2
+5004,77.8,Home,mc-rodri,mq-declan-rice,-18.3,4.0,Late+FromBehind,0.65,None,-,0,3
+5004,80.4,Home,mc-rodri,mq-declan-rice,-12.7,12.7,Late+FromBehind,0.67,None,-,0,3
+5004,483.2,Home,mc-rodri,mq-declan-rice,2.7,-12.6,Late+FromBehind,0.65,None,-,0,3
+# seed 5004 issues 0 home needs keeper False away needs keeper False fouls H/A 4/2 | field ids H/A 5/5 active H/A 6/6
+5005,116.8,Home,mo-martin-odegaard,mo-jude-bellingham,2.5,-1.5,Late+FromBehind+Reckless,0.90,None,-,1,2
+5005,129.3,Home,dc-erling-haaland,mo-florian-wirtz,-6.9,-2.1,Late+FromBehind,0.65,None,-,1,5
+5005,286.3,Home,dc-erling-haaland,mo-florian-wirtz,-7.5,-1.9,Late+Reckless,0.64,None,-,1,5
+5005,373.2,Away,wg-bukayo-saka,mo-martin-odegaard,1.6,1.8,Late+Reckless,0.64,None,-,1,2
+5005,375.4,Away,mq-nicolo-barella,mo-martin-odegaard,8.9,-0.4,Late+FromBehind,0.70,None,-,0,2
+5005,376.8,Away,wg-bukayo-saka,dc-kylian-mbappe,12.0,2.9,Late+FromBehind+Tactical+DeniedGoalChance,0.65,Yellow,Issued,1,2
+5005,391.0,Home,dc-erling-haaland,mo-jude-bellingham,-6.7,-3.7,Late+Reckless,0.82,None,-,1,5
+5005,481.3,Home,mo-martin-odegaard,mo-jude-bellingham,-1.3,-1.7,Late+FromBehind+Reckless,0.96,Yellow,Issued,1,2
+5005,544.7,Away,cb-lisandro-martinez,mo-martin-odegaard,-10.5,-3.4,Late+FromBehind,0.66,None,-,0,2
+5005,568.9,Home,dc-erling-haaland,mo-jude-bellingham,17.7,-8.7,Late+FromBehind,0.65,None,-,1,5
+5005,584.7,Away,cb-lisandro-martinez,mo-martin-odegaard,-8.4,-0.9,Late+FromBehind,0.65,None,-,0,2
+5005,768.3,Home,dc-erling-haaland,mo-jude-bellingham,10.1,0.7,Late+FromBehind+Persistent+DeniedGoalChance,0.65,Yellow,Issued,1,5
+5005,826.9,Away,mq-nicolo-barella,dc-kylian-mbappe,-8.3,-0.8,Late+FromBehind,0.65,None,-,0,2
+# seed 5005 issues 0 home needs keeper False away needs keeper False fouls H/A 7/6 | field ids H/A 5/5 active H/A 6/6
+5006,10.9,Away,dc-erling-haaland,md-federico-valverde,11.1,-4.8,Late+FromBehind,0.65,None,-,0,3
+5006,27.1,Away,wg-vinicius-junior,fb-trent-alexander-arnold,5.1,10.8,Late+FromBehind+Reckless,0.90,None,-,0,2
+5006,88.1,Home,fb-trent-alexander-arnold,mo-martin-odegaard,-3.9,0.6,Late+FromBehind,0.68,None,-,0,4
+5006,98.7,Home,sd-raphinha,cb-william-saliba,4.3,-6.6,Late+FromBehind+Reckless,0.90,None,-,0,1
+5006,107.6,Away,dc-erling-haaland,dc-lautaro-martinez,8.3,2.5,Late+FromBehind,0.77,None,-,0,3
+5006,233.2,Away,dc-erling-haaland,dc-lautaro-martinez,3.7,10.0,Late+FromBehind,0.73,None,-,0,3
+5006,235.4,Away,wg-vinicius-junior,dc-lautaro-martinez,9.9,12.5,Late+FromBehind,0.65,None,-,0,2
+5006,480.8,Home,md-federico-valverde,dc-kylian-mbappe,-0.5,0.9,Late+FromBehind,0.75,None,-,0,1
+5006,491.4,Home,fb-trent-alexander-arnold,wg-vinicius-junior,11.3,-7.1,Late+FromBehind,0.65,None,-,0,4
+5006,493.8,Home,fb-trent-alexander-arnold,mo-martin-odegaard,10.7,-3.1,Late+FromBehind,0.68,None,-,0,4
+5006,497.6,Home,fb-trent-alexander-arnold,mo-martin-odegaard,6.4,-5.8,Late+FromBehind,0.67,None,-,0,4
+# seed 5006 issues 0 home needs keeper False away needs keeper False fouls H/A 6/5 | field ids H/A 5/5 active H/A 6/6
+5007,12.3,Home,dc-troy-parrott,cb-virgil-van-dijk,10.9,5.9,Late+FromBehind+Tactical,0.65,Yellow,Issued,1,1
+5007,17.8,Home,mq-enzo-fernandez,mo-cole-palmer,7.4,8.2,Late+FromBehind,0.65,None,-,0,1
+5007,483.5,Away,dc-joao-pedro,cb-cristian-romero,4.7,-4.2,Late+FromBehind+Reckless,0.90,None,-,0,1
+# seed 5007 issues 0 home needs keeper False away needs keeper False fouls H/A 2/1 | field ids H/A 5/5 active H/A 6/6
+5008,34.2,Away,mc-ryan-gravenberch,dc-alexander-isak,14.3,-9.1,Late+FromBehind,0.65,None,-,0,2
+5008,44.5,Home,mo-bruno-fernandes,mc-elliot-anderson,0.8,1.1,Late+FromBehind,0.67,None,-,0,1
+5008,52.8,Away,mc-ryan-gravenberch,dc-alexander-isak,6.4,-12.6,Late+FromBehind,0.65,None,-,0,2
+5008,61.7,Home,dc-alexander-isak,cb-gabriel-magalhaes,6.7,1.4,Late+FromBehind+Tactical,0.65,Yellow,Issued,1,2
+5008,75.2,Home,dc-alexander-isak,cb-gabriel-magalhaes,5.9,2.8,Late+FromBehind,0.65,None,-,1,2
+# seed 5008 issues 0 home needs keeper False away needs keeper False fouls H/A 3/2 | field ids H/A 5/5 active H/A 6/6
+5009,137.6,Home,sd-neymar-jr,cb-alessandro-bastoni,16.1,12.4,Late+FromBehind,0.71,None,-,0,2
+5009,257.6,Home,cb-micky-van-de-ven,dc-alexander-isak,-5.1,0.9,Late+FromBehind,0.65,None,-,0,1
+5009,481.3,Home,sd-neymar-jr,dc-alexander-isak,1.8,-2.4,Late+Reckless,0.78,None,-,0,2
+5009,490.3,Away,cb-ruben-dias,md-dominik-szoboszlai,-6.0,3.6,Late+FromBehind,0.79,None,-,0,1
+# seed 5009 issues 0 home needs keeper False away needs keeper False fouls H/A 3/1 | field ids H/A 5/5 active H/A 6/6
+5010,15.5,Home,dc-joao-pedro,cb-piero-hincapie,8.1,-4.4,Late+FromBehind+Tactical,0.69,Yellow,Issued,1,1
+5010,33.5,Home,wg-desire-doue,sd-fermin-lopez,-14.9,-8.7,Late+Reckless+DeniedGoalChance,0.88,Red,DismissedByRed,0,1
+5010,34.6,Away,sd-fermin-lopez,cb-virgil-van-dijk,-13.6,-9.4,Late+FromBehind,0.74,None,-,0,1
+# seed 5010 issues 0 home needs keeper False away needs keeper False fouls H/A 2/1 | field ids H/A 5/5 active H/A 5/6

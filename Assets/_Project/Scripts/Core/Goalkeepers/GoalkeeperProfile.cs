@@ -39,18 +39,6 @@ namespace FS27.Core
         Commander = 3
     }
 
-    /// <summary>
-    /// Where a goalkeeper is acting, as a BEHAVIOUR concept (not a player zone: a keeper's zone stays <see cref="PitchZone.Goal"/>).
-    /// Each area asks for a different mix of capabilities; see <see cref="GoalkeeperRatingCalculator.GetAreaRating"/>.
-    /// </summary>
-    public enum GoalkeeperActionArea
-    {
-        GoalLine = 0,
-        Box = 1,
-        Distribution = 2,
-        SweeperArea = 3
-    }
-
     public static class GoalkeeperInfo
     {
         public const int CapabilityCount = 8;
@@ -64,11 +52,6 @@ namespace FS27.Core
         public static readonly GoalkeeperStyle[] Styles =
         {
             GoalkeeperStyle.ShotStopper, GoalkeeperStyle.Distributor, GoalkeeperStyle.Sweeper, GoalkeeperStyle.Commander
-        };
-
-        public static readonly GoalkeeperActionArea[] Areas =
-        {
-            GoalkeeperActionArea.GoalLine, GoalkeeperActionArea.Box, GoalkeeperActionArea.Distribution, GoalkeeperActionArea.SweeperArea
         };
 
         /// <summary>Spanish display names (UI only; data keeps the enum names).</summary>
@@ -105,7 +88,7 @@ namespace FS27.Core
     /// and ALL of the 12 core attributes including Stamina); it holds no copy of any of that. A field player has no profile.
     ///
     /// It is separate from the playing profile: goalkeeper styles are not player roles, and the capabilities do not feed the
-    /// player's Overall (see <see cref="GoalkeeperRatingCalculator"/> for the separate goalkeeper rating). There is deliberately
+    /// player's Overall. The goalkeeper rating is the mean of the 8 capabilities (see <see cref="GoalkeeperRatingCalculator"/>); styles never change it. There is deliberately
     /// no Reaction here either: reaction time comes from the difficulty, and the keeper's Reflexes only modulate it.
     /// </summary>
     [Serializable]

@@ -1,0 +1,1127 @@
+{
+  "players": [
+    {
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 78,
+        "Agility": 80,
+        "BallControl": 90,
+        "Defense": 52,
+        "Dribbling": 85,
+        "Finishing": 92,
+        "Passing": 89,
+        "Shooting": 93,
+        "Speed": 76,
+        "Stamina": 86,
+        "Strength": 83,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "FC Bayern Munich",
+      "creativity": 90,
+      "dateOfBirth": "1993-07-28",
+      "fullName": "Harry Edward Kane",
+      "heightCm": 188,
+      "name": "Harry Kane",
+      "nationality": "England",
+      "naturalPosition": "DC",
+      "playerId": "dc-harry-kane",
+      "polyvalenceNote": "Complete striker / Deep-lying forward",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 72,
+      "roles": [
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Architect"
+        },
+        {
+          "role": "Target"
+        }
+      ],
+      "secondaryPositions": [
+        "SD",
+        "MCO"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 9,
+      "signatureActions": [
+        "DropDeepToLink",
+        "EliteFinishing",
+        "LongRangeStrike",
+        "PrecisionThroughBall"
+      ],
+      "strengths": [],
+      "targetOvr": 88,
+      "weakFootQuality": 88,
+      "weaknesses": []
+    },
+    {
+      "aggression": 70,
+      "attributes": {
+        "Acceleration": 83,
+        "Agility": 84,
+        "BallControl": 87,
+        "Defense": 62,
+        "Dribbling": 85,
+        "Finishing": 83,
+        "Passing": 83,
+        "Shooting": 84,
+        "Speed": 81,
+        "Stamina": 88,
+        "Strength": 78,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Tall",
+      "club": "Arsenal FC",
+      "creativity": 82,
+      "dateOfBirth": "1999-06-11",
+      "fullName": "Kai Havertz",
+      "heightCm": 193,
+      "name": "Kai Havertz",
+      "nationality": "Germany",
+      "naturalPosition": "DC",
+      "playerId": "dc-kai-havertz",
+      "polyvalenceNote": "Supporting striker / Mobile striker",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Target"
+        },
+        {
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "SD",
+        "MCO"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 29,
+      "signatureActions": [
+        "AerialDuels",
+        "OffBallSpaceAttack",
+        "DefensivePressing",
+        "LinkUpPlay"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 82,
+      "weaknesses": []
+    },
+    {
+      "aggression": 85,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 87,
+        "BallControl": 86,
+        "Defense": 68,
+        "Dribbling": 85,
+        "Finishing": 85,
+        "Passing": 82,
+        "Shooting": 86,
+        "Speed": 83,
+        "Stamina": 93,
+        "Strength": 75,
+        "Technique": 85
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Atlético de Madrid",
+      "creativity": 80,
+      "dateOfBirth": "2000-01-31",
+      "fullName": "Julián Álvarez",
+      "heightCm": 170,
+      "name": "Julián Álvarez",
+      "nationality": "Argentina",
+      "naturalPosition": "DC",
+      "playerId": "dc-julian-alvarez",
+      "polyvalenceNote": "Pressing striker / Mobile striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Engine"
+        },
+        {
+          "role": "GoalHunter"
+        }
+      ],
+      "secondaryPositions": [
+        "SD",
+        "MCO"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 19,
+      "signatureActions": [
+        "HighPressSurge",
+        "ClinicalFinishing",
+        "DefensiveRecovery",
+        "InsideBoxMovement"
+      ],
+      "strengths": [],
+      "targetOvr": 84,
+      "weakFootQuality": 82,
+      "weaknesses": []
+    },
+    {
+      "aggression": 86,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 87,
+        "BallControl": 86,
+        "Defense": 60,
+        "Dribbling": 86,
+        "Finishing": 89,
+        "Passing": 79,
+        "Shooting": 87,
+        "Speed": 84,
+        "Stamina": 91,
+        "Strength": 80,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Compact",
+      "club": "Inter Milan",
+      "creativity": 78,
+      "dateOfBirth": "1997-08-22",
+      "fullName": "Lautaro Javier Martínez",
+      "heightCm": 174,
+      "name": "Lautaro Martínez",
+      "nationality": "Argentina",
+      "naturalPosition": "DC",
+      "playerId": "dc-lautaro-martinez",
+      "polyvalenceNote": "Poacher / Physical striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "SD"
+      ],
+      "shirtNumber": 10,
+      "signatureActions": [
+        "CentreBackShielding",
+        "FirstTouchShot",
+        "AggressivePress",
+        "BoxAttacking"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 97,
+        "Agility": 93,
+        "BallControl": 92,
+        "Defense": 45,
+        "Dribbling": 94,
+        "Finishing": 93,
+        "Passing": 85,
+        "Shooting": 91,
+        "Speed": 96,
+        "Stamina": 89,
+        "Strength": 77,
+        "Technique": 91
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Real Madrid",
+      "creativity": 86,
+      "dateOfBirth": "1998-12-20",
+      "fullName": "Kylian Mbappé Lottin",
+      "heightCm": 178,
+      "name": "Kylian Mbappé",
+      "nationality": "France",
+      "naturalPosition": "DC",
+      "playerId": "dc-kylian-mbappe",
+      "polyvalenceNote": "Space attacker / Complete striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 86,
+      "roles": [
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "SD"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 10,
+      "signatureActions": [
+        "LightningBurst",
+        "DiagonalRun",
+        "Clinical1v1Finishing",
+        "CounterAttackPace"
+      ],
+      "strengths": [],
+      "targetOvr": 88,
+      "weakFootQuality": 85,
+      "weaknesses": []
+    },
+    {
+      "aggression": 84,
+      "attributes": {
+        "Acceleration": 91,
+        "Agility": 82,
+        "BallControl": 84,
+        "Defense": 42,
+        "Dribbling": 82,
+        "Finishing": 96,
+        "Passing": 76,
+        "Shooting": 94,
+        "Speed": 90,
+        "Stamina": 88,
+        "Strength": 93,
+        "Technique": 84
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Manchester City",
+      "creativity": 72,
+      "dateOfBirth": "2000-07-21",
+      "fullName": "Erling Braut Haaland",
+      "heightCm": 195,
+      "name": "Erling Haaland",
+      "nationality": "Norway",
+      "naturalPosition": "DC",
+      "playerId": "dc-erling-haaland",
+      "polyvalenceNote": "Target / Poacher / Physical striker",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Target"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 9,
+      "signatureActions": [
+        "ExplosivePowerRun",
+        "FirstTouchFinishing",
+        "CentreBackDomination",
+        "BoxAERIALThreat"
+      ],
+      "strengths": [],
+      "targetOvr": 87,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 86,
+        "BallControl": 88,
+        "Defense": 54,
+        "Dribbling": 87,
+        "Finishing": 81,
+        "Passing": 83,
+        "Shooting": 82,
+        "Speed": 82,
+        "Stamina": 85,
+        "Strength": 76,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Chelsea",
+      "creativity": 85,
+      "dateOfBirth": "2001-09-26",
+      "fullName": "João Pedro Junqueira de Jesus",
+      "heightCm": 186,
+      "name": "João Pedro",
+      "nationality": "Brazil",
+      "naturalPosition": "DC",
+      "playerId": "dc-joao-pedro",
+      "polyvalenceNote": "Technical striker / Supporting striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "SD",
+        "MCO"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 9,
+      "signatureActions": [
+        "CloseControlPocketTurn",
+        "PenaltySpecialist",
+        "LinkUpPassing",
+        "SkillfulDribble"
+      ],
+      "strengths": [],
+      "targetOvr": 81,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 89,
+        "Agility": 84,
+        "BallControl": 85,
+        "Defense": 48,
+        "Dribbling": 84,
+        "Finishing": 88,
+        "Passing": 78,
+        "Shooting": 86,
+        "Speed": 88,
+        "Stamina": 91,
+        "Strength": 88,
+        "Technique": 84
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Arsenal",
+      "creativity": 74,
+      "dateOfBirth": "1998-06-04",
+      "fullName": "Viktor Einar Gyökeres",
+      "heightCm": 189,
+      "name": "Viktor Gyökeres",
+      "nationality": "Sweden",
+      "naturalPosition": "DC",
+      "playerId": "dc-viktor-gyokeres",
+      "polyvalenceNote": "Physical striker / Space attacker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Target"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 14,
+      "signatureActions": [
+        "PowerProgressiveCarry",
+        "CentreBackBully",
+        "DirectGoalDrive",
+        "ClinicalFinishing"
+      ],
+      "strengths": [],
+      "targetOvr": 82,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 66,
+      "attributes": {
+        "Acceleration": 90,
+        "Agility": 88,
+        "BallControl": 88,
+        "Defense": 46,
+        "Dribbling": 89,
+        "Finishing": 87,
+        "Passing": 81,
+        "Shooting": 86,
+        "Speed": 89,
+        "Stamina": 86,
+        "Strength": 78,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Tall",
+      "club": "Liverpool",
+      "creativity": 83,
+      "dateOfBirth": "1999-09-21",
+      "fullName": "Alexander Isak",
+      "heightCm": 190,
+      "name": "Alexander Isak",
+      "nationality": "Sweden",
+      "naturalPosition": "DC",
+      "playerId": "dc-alexander-isak",
+      "polyvalenceNote": "Mobile striker / Technical striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "GoalHunter"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "SD"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 9,
+      "signatureActions": [
+        "SlalomBoxDribble",
+        "FinessePlacement",
+        "ElusiveRun",
+        "LongStridePace"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 85,
+      "weaknesses": []
+    },
+    {
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 87,
+        "Agility": 84,
+        "BallControl": 82,
+        "Defense": 47,
+        "Dribbling": 84,
+        "Finishing": 77,
+        "Passing": 75,
+        "Shooting": 78,
+        "Speed": 85,
+        "Stamina": 83,
+        "Strength": 69,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "AS Roma",
+      "creativity": 78,
+      "dateOfBirth": "1999-01-19",
+      "fullName": "Donyell Malen",
+      "heightCm": 176,
+      "name": "Donyell Malen",
+      "nationality": "Netherlands",
+      "naturalPosition": "DC",
+      "playerId": "dc-donyell-malen",
+      "polyvalenceNote": "Space attacker / Mobile striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 84,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "EI"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 14,
+      "signatureActions": [
+        "WingCutInside",
+        "ExplosiveBurst",
+        "NearPostShot",
+        "CounterAttackSprint"
+      ],
+      "strengths": [],
+      "targetOvr": 79,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 83,
+        "Agility": 81,
+        "BallControl": 85,
+        "Defense": 36,
+        "Dribbling": 84,
+        "Finishing": 92,
+        "Passing": 78,
+        "Shooting": 90,
+        "Speed": 82,
+        "Stamina": 80,
+        "Strength": 82,
+        "Technique": 86
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Al-Nassr",
+      "creativity": 74,
+      "dateOfBirth": "1985-02-05",
+      "fullName": "Cristiano Ronaldo dos Santos Aveiro",
+      "heightCm": 187,
+      "name": "Cristiano Ronaldo",
+      "nationality": "Portugal",
+      "naturalPosition": "DC",
+      "playerId": "dc-cristiano-ronaldo",
+      "polyvalenceNote": "Poacher / Finalizador de área",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 86,
+      "roles": [
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Target"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 7,
+      "signatureActions": [
+        "PenaltyMastery",
+        "AerialBoxThreat",
+        "FirstTimeFinishing",
+        "OffBallMovement"
+      ],
+      "strengths": [],
+      "targetOvr": 81,
+      "weakFootQuality": 85,
+      "weaknesses": []
+    },
+    {
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 83,
+        "BallControl": 84,
+        "Defense": 50,
+        "Dribbling": 83,
+        "Finishing": 80,
+        "Passing": 79,
+        "Shooting": 81,
+        "Speed": 80,
+        "Stamina": 87,
+        "Strength": 76,
+        "Technique": 83
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Real Betis",
+      "creativity": 78,
+      "dateOfBirth": "2002-02-04",
+      "fullName": "Troy Daniel Parrott",
+      "heightCm": 185,
+      "name": "Troy Parrott",
+      "nationality": "Republic of Ireland",
+      "naturalPosition": "DC",
+      "playerId": "dc-troy-parrott",
+      "polyvalenceNote": "Supporting striker / Mobile striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Target"
+        },
+        {
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "SD",
+        "MCO"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 19,
+      "signatureActions": [
+        "LinkUpPassing",
+        "BoxRuns",
+        "PressingDuels",
+        "ClinicalFinish"
+      ],
+      "strengths": [],
+      "targetOvr": 79,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 78,
+        "Agility": 76,
+        "BallControl": 81,
+        "Defense": 45,
+        "Dribbling": 78,
+        "Finishing": 81,
+        "Passing": 75,
+        "Shooting": 80,
+        "Speed": 77,
+        "Stamina": 84,
+        "Strength": 84,
+        "Technique": 79
+      },
+      "bodyTypeLabel": "Tall",
+      "club": "Inter Milan",
+      "creativity": 70,
+      "dateOfBirth": "2005-06-28",
+      "fullName": "Francesco Pio Esposito",
+      "heightCm": 189,
+      "name": "Francesco Pio Esposito",
+      "nationality": "Italy",
+      "naturalPosition": "DC",
+      "playerId": "dc-francesco-pio-esposito",
+      "polyvalenceNote": "Target / Referencia física",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "role": "Target"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "GoalHunter"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 94,
+      "signatureActions": [
+        "AerialShielding",
+        "BackToGoalPlay",
+        "CloseRangeHeader",
+        "CentreBackHolding"
+      ],
+      "strengths": [],
+      "targetOvr": 77,
+      "weakFootQuality": 78,
+      "weaknesses": []
+    },
+    {
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 83,
+        "Agility": 85,
+        "BallControl": 89,
+        "Defense": 58,
+        "Dribbling": 87,
+        "Finishing": 84,
+        "Passing": 86,
+        "Shooting": 83,
+        "Speed": 81,
+        "Stamina": 89,
+        "Strength": 72,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Real Sociedad",
+      "creativity": 85,
+      "dateOfBirth": "1997-04-21",
+      "fullName": "Mikel Oyarzabal Ugarte",
+      "heightCm": 181,
+      "name": "Mikel Oyarzabal",
+      "nationality": "Spain",
+      "naturalPosition": "DC",
+      "playerId": "dc-mikel-oyarzabal",
+      "polyvalenceNote": "Supporting striker / Deep-lying forward",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "SD",
+        "EI"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 10,
+      "signatureActions": [
+        "IntelligentPocketReading",
+        "PreciseFinishing",
+        "CombinationPlay",
+        "DefensiveWorkrate"
+      ],
+      "strengths": [],
+      "targetOvr": 80,
+      "weakFootQuality": 82,
+      "weaknesses": []
+    },
+    {
+      "aggression": 88,
+      "attributes": {
+        "Acceleration": 93,
+        "Agility": 85,
+        "BallControl": 83,
+        "Defense": 44,
+        "Dribbling": 82,
+        "Finishing": 88,
+        "Passing": 74,
+        "Shooting": 86,
+        "Speed": 91,
+        "Stamina": 90,
+        "Strength": 86,
+        "Technique": 83
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Galatasaray",
+      "creativity": 70,
+      "dateOfBirth": "1998-12-29",
+      "fullName": "Victor James Osimhen",
+      "heightCm": 186,
+      "name": "Victor Osimhen",
+      "nationality": "Nigeria",
+      "naturalPosition": "DC",
+      "playerId": "dc-victor-osimhen",
+      "polyvalenceNote": "Space attacker / Physical striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 84,
+      "roles": [
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 45,
+      "signatureActions": [
+        "HighSpeedSpaceAttack",
+        "AerialDuelsAggressive",
+        "DirectGoalDrive",
+        "DefendingFromFront"
+      ],
+      "strengths": [],
+      "targetOvr": 81,
+      "weakFootQuality": 78,
+      "weaknesses": []
+    },
+    {
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 75,
+        "BallControl": 82,
+        "Defense": 42,
+        "Dribbling": 80,
+        "Finishing": 89,
+        "Passing": 77,
+        "Shooting": 87,
+        "Speed": 83,
+        "Stamina": 84,
+        "Strength": 92,
+        "Technique": 83
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Napoli",
+      "creativity": 72,
+      "dateOfBirth": "1993-05-13",
+      "fullName": "Romelu Menama Lukaku",
+      "heightCm": 191,
+      "name": "Romelu Lukaku",
+      "nationality": "Belgium",
+      "naturalPosition": "DC",
+      "playerId": "dc-romelu-lukaku",
+      "polyvalenceNote": "Target / Physical striker",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "role": "Target"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "GoalHunter"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "PhysicalShieldingOfBall",
+        "PowerShot",
+        "CounterAttackHoldUp",
+        "CentreBackDominance"
+      ],
+      "strengths": [],
+      "targetOvr": 80,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 79,
+      "attributes": {
+        "Acceleration": 76,
+        "Agility": 72,
+        "BallControl": 80,
+        "Defense": 40,
+        "Dribbling": 76,
+        "Finishing": 86,
+        "Passing": 73,
+        "Shooting": 84,
+        "Speed": 75,
+        "Stamina": 85,
+        "Strength": 90,
+        "Technique": 79
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Nottingham Forest",
+      "creativity": 65,
+      "dateOfBirth": "1991-12-07",
+      "fullName": "Christopher Grant Wood",
+      "heightCm": 191,
+      "name": "Chris Wood",
+      "nationality": "New Zealand",
+      "naturalPosition": "DC",
+      "playerId": "dc-chris-wood",
+      "polyvalenceNote": "Target / Poacher de área",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 68,
+      "roles": [
+        {
+          "role": "Target"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "GoalHunter"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 11,
+      "signatureActions": [
+        "AerialHeaderExpert",
+        "FirstTouchBoxShot",
+        "HoldUpPlay",
+        "CoreBoxPresence"
+      ],
+      "strengths": [],
+      "targetOvr": 78,
+      "weakFootQuality": 75,
+      "weaknesses": []
+    },
+    {
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 87,
+        "Agility": 83,
+        "BallControl": 82,
+        "Defense": 39,
+        "Dribbling": 83,
+        "Finishing": 84,
+        "Passing": 75,
+        "Shooting": 82,
+        "Speed": 85,
+        "Stamina": 81,
+        "Strength": 71,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Al-Qadsiah",
+      "creativity": 75,
+      "dateOfBirth": "1989-06-18",
+      "fullName": "Pierre-Emerick Emiliano François Aubameyang",
+      "heightCm": 187,
+      "name": "Pierre-Emerick Aubameyang",
+      "nationality": "Gabon",
+      "naturalPosition": "DC",
+      "playerId": "dc-pierre-emerick-aubameyang",
+      "polyvalenceNote": "Space attacker / Mobile striker",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "GoalHunter"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "SD"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "OffsideTrapExploitation",
+        "CounterPaceBurst",
+        "Clinical1v1Finishing",
+        "DiagonalRun"
+      ],
+      "strengths": [],
+      "targetOvr": 80,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 70,
+      "attributes": {
+        "Acceleration": 91,
+        "Agility": 85,
+        "BallControl": 82,
+        "Defense": 44,
+        "Dribbling": 85,
+        "Finishing": 77,
+        "Passing": 75,
+        "Shooting": 78,
+        "Speed": 89,
+        "Stamina": 84,
+        "Strength": 69,
+        "Technique": 81
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "FC Barcelona",
+      "creativity": 78,
+      "dateOfBirth": "2002-01-18",
+      "fullName": "Karim David Adeyemi",
+      "name": "Karim Adeyemi",
+      "nationality": "Germany",
+      "naturalPosition": "DC",
+      "playerId": "dc-karim-adeyemi",
+      "polyvalenceNote": "Space attacker / Mobile striker",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 87,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "EI"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "HyperSpeedBreakaway",
+        "FlankToCenterCut",
+        "ExplosiveAcceleration",
+        "DirectShot"
+      ],
+      "strengths": [],
+      "targetOvr": 80,
+      "weakFootQuality": 82,
+      "weaknesses": []
+    },
+    {
+      "aggression": 85,
+      "attributes": {
+        "Acceleration": 75,
+        "Agility": 70,
+        "BallControl": 79,
+        "Defense": 46,
+        "Dribbling": 75,
+        "Finishing": 84,
+        "Passing": 74,
+        "Shooting": 82,
+        "Speed": 74,
+        "Stamina": 89,
+        "Strength": 91,
+        "Technique": 78
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Fenerbahçe",
+      "creativity": 68,
+      "dateOfBirth": "1994-04-24",
+      "fullName": "Vedat Muriqi",
+      "heightCm": 194,
+      "name": "Vedat Muriqi",
+      "nationality": "Kosovo",
+      "naturalPosition": "DC",
+      "playerId": "dc-vedat-muriqi",
+      "polyvalenceNote": "Target / Physical striker",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "role": "Target"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [],
+      "shirtNumber": 19,
+      "signatureActions": [
+        "AerialDuelDomination",
+        "BackToGoalHoldUp",
+        "DefensiveSetPieceClearance",
+        "PhysicalFriction"
+      ],
+      "strengths": [],
+      "targetOvr": 76,
+      "weakFootQuality": 78,
+      "weaknesses": []
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

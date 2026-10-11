@@ -1,0 +1,897 @@
+{
+  "players": [
+    {
+      "ageAsWritten": 27,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 94,
+        "Agility": 86,
+        "BallControl": 83,
+        "Defense": 77,
+        "Dribbling": 84,
+        "Finishing": 73,
+        "Passing": 79,
+        "Shooting": 75,
+        "Speed": 95,
+        "Stamina": 92,
+        "Strength": 76,
+        "Technique": 82
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Paris Saint-Germain",
+      "creativity": 76,
+      "dateOfBirth": "1998-11-04",
+      "fullName": "Achraf Hakimi Mouh",
+      "functionalPositions": [
+        "RM",
+        "RW"
+      ],
+      "gameplayBehavior": "Ataca constantemente el espacio a la espalda del rival por la banda derecha y regresa con zancada larga en transición defensiva.",
+      "gameplayFeel": "Eléctrico y rapidísimo; perfecto para desbordar y romper líneas a pura velocidad.",
+      "heightCm": 181,
+      "identity": "Lateral derecho de despliegue físico colosal y velocidad supersónica, especializado en romper líneas por la banda y pisar el área rival con extrema verticalidad.",
+      "name": "Achraf Hakimi",
+      "nationality": "Morocco",
+      "naturalPosition": "RB",
+      "playerId": "fb-achraf-hakimi",
+      "polyvalenceNote": "Natural: RB | Secondary: RWB | Functional: RM, RW",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "affinity": 96,
+          "role": "Winger"
+        },
+        {
+          "affinity": 93,
+          "role": "Explosive"
+        },
+        {
+          "affinity": 88,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "RWB"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 2,
+      "shortName": "Hakimi",
+      "signatureActions": [
+        "Overlapping run",
+        "Cutback",
+        "Recovery sprint"
+      ],
+      "strengths": [
+        "Velocidad y aceleración devastadoras",
+        "Despliegue físico inagotable (Stamina)",
+        "Ocupación profunda del espacio y llegada al área"
+      ],
+      "targetOvr": 86,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Desajustes posicionales ocasionales al descuidar la espalda por vocación ofensiva"
+      ],
+      "weightKg": 73
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 79,
+        "BallControl": 88,
+        "Defense": 73,
+        "Dribbling": 82,
+        "Finishing": 63,
+        "Passing": 95,
+        "Shooting": 75,
+        "Speed": 80,
+        "Stamina": 83,
+        "Strength": 71,
+        "Technique": 93
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Real Madrid",
+      "creativity": 96,
+      "dateOfBirth": "1998-10-07",
+      "fullName": "Trent John Alexander-Arnold",
+      "functionalPositions": [
+        "RM"
+      ],
+      "gameplayBehavior": "Busca zonas de creación por carril exterior e interior, habilitando pases largos a la espalda de la defensa rival.",
+      "gameplayFeel": "Organizador retrasado de lujo; ideal para construir el juego desde la banda con precisión milimétrica.",
+      "heightCm": 180,
+      "identity": "Lateral derecho de perfil creativo y visión de juego privilegiada, con capacidad para actuar como organizador exterior o interior desde la banda.",
+      "name": "Trent Alexander-Arnold",
+      "nationality": "England",
+      "naturalPosition": "RB",
+      "playerId": "fb-trent-alexander-arnold",
+      "polyvalenceNote": "Natural: RB | Secondary: CM, RWB | Functional: RM",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 85,
+      "roles": [
+        {
+          "affinity": 95,
+          "role": "Creator"
+        },
+        {
+          "affinity": 89,
+          "role": "Builder"
+        },
+        {
+          "affinity": 76,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "RWB"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 12,
+      "shortName": "Trent",
+      "signatureActions": [
+        "Switch of play",
+        "Early cross",
+        "Inverted play progression"
+      ],
+      "strengths": [
+        "Rango de pase largo y visión de juego excepcional",
+        "Golpeo de balón y centros medidos",
+        "Capacidad de organización interior (inverted role)"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Vulnerabilidad en duelos defensivos 1v1 frente a extremos muy rápidos"
+      ],
+      "weightKg": 69
+    },
+    {
+      "ageAsWritten": 30,
+      "aggression": 86,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 74,
+        "BallControl": 78,
+        "Defense": 81,
+        "Dribbling": 75,
+        "Finishing": 72,
+        "Passing": 76,
+        "Shooting": 74,
+        "Speed": 85,
+        "Stamina": 88,
+        "Strength": 88,
+        "Technique": 77
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Real Madrid",
+      "creativity": 70,
+      "dateOfBirth": "1996-04-18",
+      "fullName": "Denzel Justus Morris Dumfries",
+      "functionalPositions": [
+        "RM"
+      ],
+      "gameplayBehavior": "Ataca el área rival desde segunda línea en centros colgados al segundo palo y aporta una presencia física dominante en banda derecha.",
+      "gameplayFeel": "Fuerte, aéreo y dominador en el juego físico; excelente para rematar centros y frenar rivales por potencia.",
+      "heightCm": 188,
+      "identity": "Lateral derecho de potencia física imponente y vocación aérea dominante, destacado por su llegada constante al segundo palo y contundencia en los duelos.",
+      "name": "Denzel Dumfries",
+      "nationality": "Netherlands",
+      "naturalPosition": "RB",
+      "playerId": "fb-denzel-dumfries",
+      "polyvalenceNote": "Natural: RB | Secondary: RWB | Functional: RM",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Winger"
+        },
+        {
+          "affinity": 85,
+          "role": "Wall"
+        },
+        {
+          "affinity": 84,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "RWB"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 2,
+      "shortName": "Dumfries",
+      "signatureActions": [
+        "Back-post header",
+        "Physical shielding",
+        "Overlapping power run"
+      ],
+      "strengths": [
+        "Poderío físico y dominio aéreo imponente en el área",
+        "Llegada constante al segundo palo como finalizador",
+        "Fortaleza en duelos corporales"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 70,
+      "weaknesses": [
+        "Agilidad reducida en espacios ultrarreducidos ante extremos muy técnicos"
+      ],
+      "weightKg": 80
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 81,
+        "BallControl": 84,
+        "Defense": 75,
+        "Dribbling": 81,
+        "Finishing": 68,
+        "Passing": 89,
+        "Shooting": 80,
+        "Speed": 82,
+        "Stamina": 87,
+        "Strength": 74,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Tottenham Hotspur",
+      "creativity": 88,
+      "dateOfBirth": "1999-09-13",
+      "fullName": "Pedro Antonio Porro Sauceda",
+      "functionalPositions": [
+        "RM",
+        "RW"
+      ],
+      "gameplayBehavior": "Busca espacio para enviar centros precisos al área o asociarse, proyectándose con intensidad por banda derecha.",
+      "gameplayFeel": "Técnico y ofensivo; excelente para poner centros venenosos y disparar desde fuera del área.",
+      "heightCm": 176,
+      "identity": "Lateral derecho de perfil técnico sobresaliente y golpeo de balón excepcional en centros y disparos lejanos.",
+      "name": "Pedro Porro",
+      "nationality": "Spain",
+      "naturalPosition": "RB",
+      "playerId": "fb-pedro-porro",
+      "polyvalenceNote": "Natural: RB | Secondary: RWB | Functional: RM, RW",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Creator"
+        },
+        {
+          "affinity": 84,
+          "role": "Builder"
+        },
+        {
+          "affinity": 80,
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "RWB"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 23,
+      "shortName": "Pedro Porro",
+      "signatureActions": [
+        "Precision cross",
+        "Long-range strike",
+        "Overlapping run"
+      ],
+      "strengths": [
+        "Calidad en centros al área y último pase",
+        "Potente disparo de media y larga distancia",
+        "Vocación ofensiva constante"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Vulnerabilidad defensiva ocasional ante extremos muy rápidos"
+      ],
+      "weightKg": 71
+    },
+    {
+      "ageAsWritten": 30,
+      "aggression": 92,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 83,
+        "BallControl": 78,
+        "Defense": 83,
+        "Dribbling": 79,
+        "Finishing": 71,
+        "Passing": 75,
+        "Shooting": 70,
+        "Speed": 84,
+        "Stamina": 95,
+        "Strength": 80,
+        "Technique": 78
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Crystal Palace",
+      "creativity": 72,
+      "dateOfBirth": "1996-05-26",
+      "fullName": "Daniel Muñoz Mejía",
+      "gameplayBehavior": "Presiona con fiereza en campo rival y recorre la banda de área a área con una energía inagotable durante los 90 minutos.",
+      "gameplayFeel": "Incansable y combativo; un pulmón absoluto para el equipo que muerde en defensa y pisa el área con voracidad.",
+      "heightCm": 177,
+      "identity": "Lateral derecho de perfil extremadamente combativo, intensidad defensiva asfixiante y una llegada constante al área rival basada en energía y desmarques de ruptura.",
+      "name": "Dani Muñoz",
+      "nationality": "Colombia",
+      "naturalPosition": "RB",
+      "playerId": "fb-dani-munoz",
+      "polyvalenceNote": "Natural: RB | Secondary: RWB, RM | Functional: None",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Engine"
+        },
+        {
+          "affinity": 85,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 81,
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "RWB",
+        "RM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 12,
+      "shortName": "Dani Muñoz",
+      "signatureActions": [
+        "High-press tackle",
+        "Late box arrival",
+        "Recovery defensive sprint"
+      ],
+      "strengths": [
+        "Resistencia física extrema (Stamina 95) e intensidad competitiva",
+        "Agresividad en duelos y presión alta muy efectiva",
+        "Llegada por sorpresa al área rival desde segunda línea"
+      ],
+      "targetOvr": 80,
+      "weakFootQuality": 72,
+      "weaknesses": [
+        "Menor precisión técnica refinada en posesiones estáticas prolongadas"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 94,
+        "Agility": 89,
+        "BallControl": 85,
+        "Defense": 82,
+        "Dribbling": 88,
+        "Finishing": 68,
+        "Passing": 81,
+        "Shooting": 70,
+        "Speed": 93,
+        "Stamina": 88,
+        "Strength": 74,
+        "Technique": 85
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Paris Saint-Germain",
+      "creativity": 78,
+      "dateOfBirth": "2002-07-19",
+      "fullName": "Nuno Alexandre Tavares Mendes",
+      "functionalPositions": [
+        "LM"
+      ],
+      "gameplayBehavior": "Desborda por la banda izquierda con velocidad y técnica, estirando el campo y cerrando espacios con rapidez en transición.",
+      "gameplayFeel": "Rápido, ágil y desequilibrante; ideal para romper defensas cerradas mediante regates en velocidad por la banda zurda.",
+      "heightCm": 176,
+      "identity": "Lateral izquierdo de aceleración explosiva y técnica sobresaliente, capaz de desequilibrar partidos en conducción vertical y asegurar solidez en las coberturas defensivas.",
+      "name": "Nuno Mendes",
+      "nationality": "Portugal",
+      "naturalPosition": "LB",
+      "playerId": "fb-nuno-mendes",
+      "polyvalenceNote": "Natural: LB | Secondary: LWB | Functional: LM",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 95,
+          "role": "Explosive"
+        },
+        {
+          "affinity": 91,
+          "role": "Winger"
+        },
+        {
+          "affinity": 84,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [
+        "LWB"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 25,
+      "shortName": "Nuno Mendes",
+      "signatureActions": [
+        "Explosive dribble",
+        "Cutback assist",
+        "Defensive recovery sprint"
+      ],
+      "strengths": [
+        "Aceleración y velocidad punta extraordinarias",
+        "Desborde en el 1v1 ofensivo y agilidad",
+        "Capacidad de corrección defensiva en campo abierto"
+      ],
+      "targetOvr": 85,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Ocasionales descuidos posicionales al sumarse masivamente al ataque"
+      ],
+      "weightKg": 70
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 76,
+        "Agility": 82,
+        "BallControl": 86,
+        "Defense": 76,
+        "Dribbling": 80,
+        "Finishing": 72,
+        "Passing": 92,
+        "Shooting": 84,
+        "Speed": 78,
+        "Stamina": 85,
+        "Strength": 68,
+        "Technique": 93
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Inter Milan",
+      "creativity": 92,
+      "dateOfBirth": "1997-11-10",
+      "fullName": "Federico Dimarco",
+      "functionalPositions": [
+        "LW"
+      ],
+      "gameplayBehavior": "Busca la posición óptima para enviar centros venenosos al área o sorprender con disparos lejanos.",
+      "gameplayFeel": "Especialista técnico exquisito; un auténtico guante en la pierna izquierda para generar peligro constante.",
+      "heightCm": 175,
+      "identity": "Lateral izquierdo dotado de una zurda prodigiosa, famosa por su exquisitez en el golpeo de balón, centros milimétricos, disparos lejanos e inteligencia táctica.",
+      "name": "Federico Dimarco",
+      "nationality": "Italy",
+      "naturalPosition": "LB",
+      "playerId": "fb-federico-dimarco",
+      "polyvalenceNote": "Natural: LB | Secondary: LWB, LM | Functional: LW",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 95,
+          "role": "Creator"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        },
+        {
+          "affinity": 82,
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "LWB",
+        "LM"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 32,
+      "shortName": "Dimarco",
+      "signatureActions": [
+        "Pinpoint cross",
+        "Long-range screamer",
+        "Early cross"
+      ],
+      "strengths": [
+        "Calidad de golpeo y precisión quirúrgica en centros y balón parado",
+        "Disparo exterior letal y capacidad goleadora sorpresiva",
+        "Visión de juego y precisión en el pase largo"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 70,
+      "weaknesses": [
+        "Envergadura física limitada (1.75 m), penalizado en duelos aéreos defensivos"
+      ],
+      "weightKg": 70
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 90,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 88,
+        "BallControl": 83,
+        "Defense": 85,
+        "Dribbling": 81,
+        "Finishing": 64,
+        "Passing": 80,
+        "Shooting": 66,
+        "Speed": 81,
+        "Stamina": 92,
+        "Strength": 70,
+        "Technique": 82
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Chelsea",
+      "creativity": 75,
+      "dateOfBirth": "1998-07-22",
+      "fullName": "Marc Cucurella Saseta",
+      "gameplayBehavior": "Mantiene una presión asfixiante sobre el extremo rival y se asocia con inteligencia en corto, cerrando espacios con gran rapidez.",
+      "gameplayFeel": "Tenaz, pegajoso en la marca y muy ágil; excelente para ahogar las opciones ofensivas del rival por banda.",
+      "heightCm": 172,
+      "identity": "Lateral izquierdo de intensidad defensiva tenaz, gran despliegue físico y capacidad para desorganizar al rival mediante diagonales interiores y presión asfixiante.",
+      "name": "Marc Cucurella",
+      "nationality": "Spain",
+      "naturalPosition": "LB",
+      "playerId": "fb-marc-cucurella",
+      "polyvalenceNote": "Natural: LB | Secondary: LWB, LM | Functional: None",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 68,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Engine"
+        },
+        {
+          "affinity": 86,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 81,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "LWB",
+        "LM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 3,
+      "shortName": "Cucurella",
+      "signatureActions": [
+        "High-press ball win",
+        "Aggressive 1v1 containment",
+        "Inverted passing lane block"
+      ],
+      "strengths": [
+        "Tenacidad defensiva, agresividad y eficacia en la presión alta",
+        "Agilidad excelente y capacidad de giro en espacios reducidos",
+        "Despliegue físico inagotable (Stamina alta)"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Envergadura física reducida (1.72 m), lo que le limita en duelos aéreos frontales"
+      ],
+      "weightKg": 66
+    },
+    {
+      "ageAsWritten": 25,
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 92,
+        "Agility": 84,
+        "BallControl": 79,
+        "Defense": 74,
+        "Dribbling": 83,
+        "Finishing": 67,
+        "Passing": 72,
+        "Shooting": 69,
+        "Speed": 95,
+        "Stamina": 87,
+        "Strength": 75,
+        "Technique": 78
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Bayern Munich",
+      "creativity": 72,
+      "dateOfBirth": "2000-11-02",
+      "fullName": "Alphonso Boyle Davies",
+      "functionalPositions": [
+        "LW"
+      ],
+      "gameplayBehavior": "Desborda por la banda izquierda con velocidad demoledora, estirando el campo y recuperando la posición con zancadas largas.",
+      "gameplayFeel": "Una auténtica exhalación; imparable en carrera larga y perfecto para romper partidos a pura velocidad.",
+      "heightCm": 185,
+      "identity": "Lateral izquierdo de condiciones físicas extraordinarias, famoso por su velocidad supersónica y su capacidad destructiva en campo abierto mediante conducciones kilométricas.",
+      "name": "Alphonso Davies",
+      "nationality": "Canada",
+      "naturalPosition": "LB",
+      "playerId": "fb-alphonso-davies",
+      "polyvalenceNote": "Natural: LB | Secondary: LWB, LM | Functional: LW",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 76,
+      "roles": [
+        {
+          "affinity": 98,
+          "role": "Explosive"
+        },
+        {
+          "affinity": 90,
+          "role": "Winger"
+        },
+        {
+          "affinity": 85,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "LWB",
+        "LM"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 19,
+      "shortName": "Davies",
+      "signatureActions": [
+        "Turbo-carry",
+        "Recovery sprint",
+        "Cutback assist"
+      ],
+      "strengths": [
+        "Velocidad punta y aceleración al máximo nivel mundial",
+        "Capacidad de corrección defensiva inigualable en campo abierto",
+        "Conducciones progresivas devastadoras en transición"
+      ],
+      "targetOvr": 81,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Decisiones técnicas ocasionales en el último tercio bajo presión estática"
+      ],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 75,
+        "Agility": 84,
+        "BallControl": 89,
+        "Defense": 69,
+        "Dribbling": 85,
+        "Finishing": 67,
+        "Passing": 91,
+        "Shooting": 73,
+        "Speed": 76,
+        "Stamina": 81,
+        "Strength": 67,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Barcelona",
+      "creativity": 95,
+      "dateOfBirth": "1994-05-27",
+      "fullName": "João Pedro Cavaco Cancelo",
+      "functionalPositions": [
+        "CM",
+        "LW"
+      ],
+      "gameplayBehavior": "Se desaza hacia el centro del campo para actuar como un mediocampista organizador adicional cuando su equipo domina la posesión, desorganizando al rival mediante pases filtrados.",
+      "gameplayFeel": "Se siente sumamente elegante y técnico; un auténtico director de orquesta que puede partir desde la banda izquierda para dictar el ritmo del juego.",
+      "heightCm": 182,
+      "identity": "Lateral de técnica superlativa y visión táctica de organizador avanzado. Famoso por su capacidad para trazar diagonales hacia el carril central (inverted fullback), filtrar pases imposibles y asociarse con absoluta elegancia.",
+      "name": "João Cancelo",
+      "nationality": "Portugal",
+      "naturalPosition": "LB",
+      "playerId": "fb-joao-cancelo",
+      "polyvalenceNote": "(Registrado como opción principal en el flanco zurdo según solicitud) | Natural: LB | Secondary: RB, RWB, LM | Functional: CM, LW",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 80,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Builder"
+        },
+        {
+          "affinity": 90,
+          "role": "Creator"
+        },
+        {
+          "affinity": 82,
+          "role": "Winger"
+        }
+      ],
+      "secondaryPositions": [
+        "RB",
+        "RWB",
+        "LM"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 2,
+      "shortName": "Cancelo",
+      "signatureActions": [
+        "Inverted half-space pass",
+        "Outside-of-boot cross",
+        "Technical drag-back",
+        "Switch of play"
+      ],
+      "strengths": [
+        "Calidad técnica superlativa y visión de organizador avanzado",
+        "Excepcional manejo de ambos perfiles (Weak Foot 85)",
+        "Capacidad para actuar como falso interior (inverted playmaker) con total naturalidad",
+        "Recursos de regate y control de balón de élite"
+      ],
+      "targetOvr": 81,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Intensidad defensiva en duelos 1v1 físicos ocasionalmente vulnerable",
+        "Fluctuaciones en la concentración defensiva estática ante pérdidas en salida"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 80,
+        "BallControl": 80,
+        "Defense": 78,
+        "Dribbling": 76,
+        "Finishing": 58,
+        "Passing": 84,
+        "Shooting": 62,
+        "Speed": 80,
+        "Stamina": 92,
+        "Strength": 66,
+        "Technique": 80
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Tottenham Hotspur",
+      "creativity": 72,
+      "dateOfBirth": "1994-03-11",
+      "fullName": "Andrew Henry Robertson",
+      "functionalPositions": [
+        "LM"
+      ],
+      "gameplayBehavior": "Sube por fuera durante todo el partido y regresa al repliegue sin pausa.",
+      "gameplayFeel": "Un motor de la banda izquierda: incansable, vertical y generoso en los centros.",
+      "heightCm": 178,
+      "identity": "Lateral izquierdo incansable: despliegue aeróbico enorme, centros constantes desde la banda y llegada por fuera como carrilero.",
+      "name": "Andy Robertson",
+      "nationality": "Scotland",
+      "naturalPosition": "LB",
+      "playerId": "fb-andy-robertson",
+      "polyvalenceNote": "Natural: LB | Secondary: LWB | Functional: LM",
+      "preferredFoot": "Left",
+      "primaryZone": "Wing",
+      "riskPreference": 62,
+      "roles": [
+        {
+          "affinity": 93,
+          "role": "Engine"
+        },
+        {
+          "affinity": 84,
+          "role": "Winger"
+        },
+        {
+          "affinity": 78,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "LWB"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 3,
+      "shortName": "Robertson",
+      "signatureActions": [
+        "Overlapping run",
+        "Early cross",
+        "Recovery sprint"
+      ],
+      "strengths": [
+        "Resistencia y despliegue constantes",
+        "Centros precisos desde la banda",
+        "Intensidad en la presión y la recuperación"
+      ],
+      "weaknesses": [
+        "Fuerza física limitada ante delanteros corpulentos"
+      ],
+      "weightKg": 64
+    },
+    {
+      "ageAsWritten": 31,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 78,
+        "BallControl": 77,
+        "Defense": 76,
+        "Dribbling": 73,
+        "Finishing": 70,
+        "Passing": 76,
+        "Shooting": 78,
+        "Speed": 84,
+        "Stamina": 91,
+        "Strength": 76,
+        "Technique": 76
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Atlético de Madrid",
+      "creativity": 62,
+      "dateOfBirth": "1995-01-30",
+      "fullName": "Marcos Llorente Moreno",
+      "functionalPositions": [
+        "RWB"
+      ],
+      "gameplayBehavior": "Recorre la banda derecha de punta a punta y aparece por sorpresa en el área.",
+      "gameplayFeel": "Un pulmón incansable: potente, vertical y con gol desde segunda línea.",
+      "heightCm": 184,
+      "identity": "Lateral derecho de motor físico: recorre toda la banda, llega al área desde segunda línea y golpea de media distancia.",
+      "name": "Marcos Llorente",
+      "nationality": "Spain",
+      "naturalPosition": "RB",
+      "playerId": "fb-marcos-llorente",
+      "polyvalenceNote": "Natural: RB | Secondary: CM, RM | Functional: RWB",
+      "preferredFoot": "Right",
+      "primaryZone": "Wing",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Engine"
+        },
+        {
+          "affinity": 82,
+          "role": "Explosive"
+        },
+        {
+          "affinity": 78,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [
+        "CM",
+        "RM"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 14,
+      "shortName": "Llorente",
+      "signatureActions": [
+        "Late box arrival",
+        "Long-range strike",
+        "Recovery sprint"
+      ],
+      "strengths": [
+        "Motor físico y recorrido",
+        "Llegada tardía al área",
+        "Disparo de media distancia"
+      ],
+      "weaknesses": [
+        "Menor refinamiento técnico en espacios reducidos"
+      ],
+      "weightKg": 74
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

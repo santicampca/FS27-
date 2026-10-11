@@ -1,0 +1,11 @@
+risky share (forward/through/shot) trailing | level | leading ; swing = trailing-leading   ;  safe share (pass/hold/protect) trailing | level | leading
+Arena   Novice       risky  24.4  19.7  18.7 swing  +5.6 | safe  23.4  26.0  30.1 swing  +6.7
+Arena   Amateur      risky  23.0  18.2  17.5 swing  +5.5 | safe  28.3  31.5  28.4 swing  +0.1
+Arena   Professional risky  21.0  19.8  15.0 swing  +6.0 | safe  33.5  32.8  32.7 swing  -0.9
+Arena   Expert       risky  17.4  16.2  13.2 swing  +4.2 | safe  34.5  32.7  34.7 swing  +0.3
+Arena   Elite        risky  20.1  14.0  11.5 swing  +8.6 | safe  35.6  34.5  42.4 swing  +6.8
+Classic Novice       risky  23.2  21.6  22.1 swing  +1.2 | safe  30.9  34.2  35.7 swing  +4.7
+Classic Amateur      risky  22.0  21.0  19.0 swing  +3.0 | safe  31.7  31.0  35.7 swing  +4.0
+Classic Professional risky  21.7  19.1  14.7 swing  +7.0 | safe  37.4  36.4  39.1 swing  +1.7
+Classic Expert       risky  20.4  17.8  14.5 swing  +5.8 | safe  36.6  35.6  43.1 swing  +6.5
+Classic Elite        risky  15.7  14.1  10.7 swing  +5.0 | safe  39.3  36.7  43.4 swing  +4.1

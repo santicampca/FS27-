@@ -1,0 +1,750 @@
+{
+  "players": [
+    {
+      "ageAsWritten": 30,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 81,
+        "BallControl": 90,
+        "Defense": 87,
+        "Dribbling": 83,
+        "Finishing": 72,
+        "Passing": 91,
+        "Shooting": 78,
+        "Speed": 76,
+        "Stamina": 90,
+        "Strength": 85,
+        "Technique": 91
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Manchester City",
+      "confidence": "High",
+      "creativity": 82,
+      "dateOfBirth": "1996-06-22",
+      "fullName": "Rodrigo Hernández Cascante",
+      "gameplayFeel": "MCD posicional, cerebral y dominante. Mantiene el orden táctico, protege con autoridad a los centrales y distribuye con absoluta seguridad quirúrgica.",
+      "heightCm": 190,
+      "name": "Rodri",
+      "nationality": "Spain",
+      "naturalPosition": "DM",
+      "playerId": "mc-rodri",
+      "polyvalenceNote": "Functional versatility: Eje central absoluto, capacidad de temporización y distribución en bloque bajo y medio. | Emergency cover: CB | Type: MCD Posicional / Organizador de Élite",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 55,
+      "roles": [
+        {
+          "affinity": 96,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 90,
+          "role": "Builder"
+        },
+        {
+          "affinity": 84,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 16,
+      "shortName": "Rodri",
+      "signatureActions": [
+        "DeepBuildUp",
+        "Interception",
+        "ProgressivePass",
+        "DefensiveScreen",
+        "PressResistance"
+      ],
+      "strengths": [
+        "Dominio absoluto del ritmo y tempo del partido",
+        "Inteligencia táctica y colocación defensiva",
+        "Precisión quirúrgica en la distribución y el pase",
+        "Fortaleza en duelos físicos y aéreos",
+        "Impecable resistencia a la presión rival"
+      ],
+      "targetOvr": 86,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Velocidad lineal limitada ante transiciones directas muy vertiginosas",
+        "Desgaste acumulado por alta carga de minutos"
+      ],
+      "weightKg": 82
+    },
+    {
+      "ageAsWritten": 26,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 83,
+        "Agility": 87,
+        "BallControl": 90,
+        "Defense": 76,
+        "Dribbling": 88,
+        "Finishing": 70,
+        "Passing": 89,
+        "Shooting": 75,
+        "Speed": 80,
+        "Stamina": 88,
+        "Strength": 68,
+        "Technique": 91
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Paris Saint-Germain",
+      "confidence": "High",
+      "creativity": 88,
+      "dateOfBirth": "2000-02-13",
+      "fullName": "Vítor Machado Ferreira",
+      "gameplayFeel": "MCD técnico, ágil y escurridizo. Ideal para organizar el juego bajo presión asfixiante, girar sobre sí mismo y limpiar la salida de balón con elegancia.",
+      "heightCm": 172,
+      "name": "Vitinha",
+      "nationality": "Portugal",
+      "naturalPosition": "DM",
+      "playerId": "mc-vitinha",
+      "polyvalenceNote": "Functional versatility: Pivote creador dinámico, capacidad de escape en espacios reducidos. | Type: MCD Organizador / Constructor Dinámico",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Builder"
+        },
+        {
+          "affinity": 88,
+          "role": "Creator"
+        },
+        {
+          "affinity": 84,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 17,
+      "shortName": "Vitinha",
+      "signatureActions": [
+        "PressResistance",
+        "ProgressivePass",
+        "CounterPress",
+        "LineBreakingPass",
+        "DeepBuildUp"
+      ],
+      "strengths": [
+        "Habilidad sobresaliente para escapar de la presión en espacios reducidos",
+        "Calidad técnica y control de balón extraordinarios",
+        "Visión de juego y precisión en el pase vertical",
+        "Movilidad y ofrecimiento constante como salida"
+      ],
+      "targetOvr": 85,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Vulnerabilidad en duelos físicos y aéreos por corpulencia reducida",
+        "Menor contundencia en la destrucción estática comparado con un destructor clásico"
+      ],
+      "weightKg": 64
+    },
+    {
+      "ageAsWritten": 29,
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 88,
+        "BallControl": 92,
+        "Defense": 78,
+        "Dribbling": 89,
+        "Finishing": 66,
+        "Passing": 90,
+        "Shooting": 71,
+        "Speed": 83,
+        "Stamina": 88,
+        "Strength": 75,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "FC Barcelona",
+      "confidence": "High",
+      "creativity": 89,
+      "dateOfBirth": "1997-05-12",
+      "fullName": "Frenkie de Jong",
+      "gameplayFeel": "MCD elegante, dinámico y de conducción limpia. Se desmarca con facilidad, rompe líneas rivales conduciendo el balón en solitario y distribuye con absoluta precisión.",
+      "heightCm": 180,
+      "name": "Frenkie de Jong",
+      "nationality": "Netherlands",
+      "naturalPosition": "CM",
+      "playerId": "mc-frenkie-de-jong",
+      "polyvalenceNote": "Functional versatility: Pivote conductor de ruptura y salida limpia desde atrás. | Emergency cover: CB | Type: MCD Conductor / Organizador Profundo",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 93,
+          "role": "Builder"
+        },
+        {
+          "affinity": 88,
+          "role": "Architect"
+        },
+        {
+          "affinity": 85,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 21,
+      "shortName": "De Jong",
+      "signatureActions": [
+        "ProgressiveCarry",
+        "PressResistance",
+        "DeepBuildUp",
+        "LineBreakingPass",
+        "DefensiveScreen"
+      ],
+      "strengths": [
+        "Conducción progresiva imparable para romper líneas contrarias",
+        "Control y protección del balón de nivel supremo",
+        "Visión de juego y precisión en la distribución",
+        "Agilidad y fluidez en la transición defensa-ataque"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Ocasionales riesgos excesivos en conducciones dentro de zona propia",
+        "Menor agresividad en el contacto físico directo comparado con un pivote puro defensivo"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 22,
+      "aggression": 84,
+      "attributes": {
+        "Acceleration": 83,
+        "Agility": 86,
+        "BallControl": 88,
+        "Defense": 82,
+        "Dribbling": 85,
+        "Finishing": 64,
+        "Passing": 86,
+        "Shooting": 69,
+        "Speed": 81,
+        "Stamina": 92,
+        "Strength": 72,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Paris Saint-Germain",
+      "confidence": "High",
+      "creativity": 82,
+      "dateOfBirth": "2004-09-27",
+      "fullName": "João Pedro Neves",
+      "gameplayFeel": "MCD eléctrico, incansable y muy inteligente en la marca. Recupera balones con una velocidad pasmosiza, presiona sin descanso y entrega rápido para iniciar la transición.",
+      "heightCm": 174,
+      "name": "Joao Neves",
+      "nationality": "Portugal",
+      "naturalPosition": "DM",
+      "playerId": "mc-joao-neves",
+      "polyvalenceNote": "Functional versatility: Pivote recuperador incansable con excelente lectura y distribución rápida. | Type: MCD Recuperador / Mixto Dinámico",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Engine"
+        },
+        {
+          "affinity": 85,
+          "role": "Builder"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 87,
+      "shortName": "Joao Neves",
+      "signatureActions": [
+        "BallRecovery",
+        "CounterPress",
+        "Interception",
+        "ProgressivePass",
+        "DefensiveScreen"
+      ],
+      "strengths": [
+        "Capacidad masiva de recuperación y robos de balón",
+        "Despliegue físico inagotable (Stamina 92)",
+        "Agilidad mental y técnica para iniciar la transición ofensiva",
+        "Timing excepcional en las entradas al suelo y anticipaciones"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Envergadura física reducida frente a delanteros tanque corpulentos",
+        "Experiencia en la élite absoluta en fase de maduración final",
+        "FOX Sports"
+      ],
+      "weightKg": 67
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 75,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 82,
+        "BallControl": 88,
+        "Defense": 79,
+        "Dribbling": 84,
+        "Finishing": 76,
+        "Passing": 90,
+        "Shooting": 83,
+        "Speed": 75,
+        "Stamina": 87,
+        "Strength": 74,
+        "Technique": 90
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Inter Milan",
+      "confidence": "High",
+      "creativity": 86,
+      "dateOfBirth": "1994-02-08",
+      "fullName": "Hakan Çalhanoğlu",
+      "gameplayFeel": "MCD cerebral, elegante y letal en la distribución larga y a balón parado. Dicta el ritmo desde la base, protege zonas con inteligencia y castiga con disparos lejanos.",
+      "heightCm": 178,
+      "name": "Hakan Çalhanoğlu",
+      "nationality": "Turkey",
+      "naturalPosition": "DM",
+      "playerId": "mc-hakan-calhanoglu",
+      "polyvalenceNote": "Functional versatility: Pivote organizador profundo, especialista en balón parado y distribución tensa. | Emergency cover: AM | Type: MCD Organizador / Especialista en Pases Largos",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Architect"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        },
+        {
+          "affinity": 84,
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 20,
+      "shortName": "Çalhanoğlu",
+      "signatureActions": [
+        "LongSwitch",
+        "ProgressivePass",
+        "DeepBuildUp",
+        "Interception",
+        "PressResistance"
+      ],
+      "strengths": [
+        "Precisión quirúrjica en el pase largo y cambios de orientación",
+        "Ejecución magistral de faltas directas, córners y penaltis",
+        "Inteligencia posicional defensiva tras su reconversión a pivote",
+        "Calidad técnica y visión de juego superior",
+        "FOX Sports"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Velocidad punta moderada ante contragolpes muy verticales",
+        "Menor despliegue físico explosivo en duelos físicos puros"
+      ],
+      "weightKg": 76
+    },
+    {
+      "ageAsWritten": 23,
+      "aggression": 76,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 83,
+        "BallControl": 85,
+        "Defense": 78,
+        "Dribbling": 84,
+        "Finishing": 68,
+        "Passing": 84,
+        "Shooting": 74,
+        "Speed": 81,
+        "Stamina": 89,
+        "Strength": 77,
+        "Technique": 84
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Manchester City",
+      "confidence": "High",
+      "creativity": 80,
+      "dateOfBirth": "2002-11-06",
+      "fullName": "Elliot Anderson",
+      "gameplayFeel": "MCD dinámico y versátil. Aporta una mezcla perfecta de recorrido físico, conducción progresiva y calidad en la distribución, conectando la defensa con el ataque con fluidez.",
+      "heightCm": 179,
+      "name": "Elliot Anderson",
+      "nationality": "England",
+      "naturalPosition": "CM",
+      "playerId": "mc-elliot-anderson",
+      "polyvalenceNote": "Functional versatility: Mediocampista dinámico de gran recorrido, capaz de actuar como pivote organizador o interior. | Emergency cover: LM | Type: MCD Constructor / Volante Mixto Dinámico",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 68,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Engine"
+        },
+        {
+          "affinity": 85,
+          "role": "Builder"
+        },
+        {
+          "affinity": 82,
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 5,
+      "shortName": "Anderson",
+      "signatureActions": [
+        "ProgressiveCarry",
+        "ProgressivePass",
+        "CounterPress",
+        "SupportRun",
+        "PressResistance"
+      ],
+      "strengths": [
+        "Dinamismo y recorrido físico constante (Stamina 89)",
+        "Capacidad de conducción y progresión con balón",
+        "FOX Sports",
+        "Calidad técnica en la asociación corta y media",
+        "Versatilidad táctica en el eje del campo"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Experiencia en partidos de máxima exigencia internacional en consolidación",
+        "Menor contundencia en duelos aéreos defensivos profundos"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 81,
+        "Agility": 80,
+        "BallControl": 84,
+        "Defense": 80,
+        "Dribbling": 83,
+        "Finishing": 68,
+        "Passing": 83,
+        "Shooting": 73,
+        "Speed": 82,
+        "Stamina": 86,
+        "Strength": 81,
+        "Technique": 84
+      },
+      "bodyTypeLabel": "Tall",
+      "club": "Liverpool FC",
+      "confidence": "High",
+      "creativity": 78,
+      "dateOfBirth": "2002-05-16",
+      "fullName": "Ryan Jiro Gravenberch",
+      "gameplayFeel": "MCD físico, elegante y de zancada imponente. Rompe líneas rivales conduciendo el balón con autoridad, intercepta balones gracias a su altura y distribuye con seguridad.",
+      "heightCm": 190,
+      "name": "Ryan Gravenberch",
+      "nationality": "Netherlands",
+      "naturalPosition": "DM",
+      "playerId": "mc-ryan-gravenberch",
+      "polyvalenceNote": "Functional versatility: Pivote físico de gran zancada, excelente en la recuperación y transición en conducción. | Emergency cover: AM | Type: MCD Conductor / Recuperador Físico",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Builder"
+        },
+        {
+          "affinity": 85,
+          "role": "Engine"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 38,
+      "shortName": "Gravenberch",
+      "signatureActions": [
+        "ProgressiveCarry",
+        "Interception",
+        "DeepBuildUp",
+        "DefensiveScreen",
+        "SwitchOfPlay"
+      ],
+      "strengths": [
+        "Envergadura física (190 cm) y zancada larga en conducción",
+        "Habilidad para limpiar la presión rival mediante potencia física",
+        "Eficacia en la recuperación usando sus piernas largas",
+        "Calidad técnica en la distribución desde la base"
+      ],
+      "targetOvr": 81,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Agilidad de giro en espacios ultrarreducidos limitada por su altura",
+        "Ocasionales desconcentraciones en marcajes estáticos profundos"
+      ],
+      "weightKg": 83
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 88,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 82,
+        "BallControl": 87,
+        "Defense": 82,
+        "Dribbling": 85,
+        "Finishing": 70,
+        "Passing": 86,
+        "Shooting": 76,
+        "Speed": 78,
+        "Stamina": 91,
+        "Strength": 82,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Newcastle United",
+      "confidence": "High",
+      "creativity": 85,
+      "dateOfBirth": "1997-11-16",
+      "fullName": "Bruno Guimarães Rodriguez Moura",
+      "gameplayFeel": "MCD pasional, técnico y combativo. Destaca por su capacidad para recuperar el balón con agresividad y organizar el ataque de inmediato con pases creativos y gran resistencia a la presión.",
+      "heightCm": 182,
+      "name": "Bruno Guimarães",
+      "nationality": "Brazil",
+      "naturalPosition": "CM",
+      "playerId": "mc-bruno-guimaraes",
+      "polyvalenceNote": "Functional versatility: Mediocampista total con vocación de creación y alta intensidad defensiva y de presión. | Emergency cover: AM | Type: MCD Creador / Recuperador Agresivo",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Creator"
+        },
+        {
+          "affinity": 86,
+          "role": "Builder"
+        },
+        {
+          "affinity": 85,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 39,
+      "shortName": "Guimarães",
+      "signatureActions": [
+        "ProgressivePass",
+        "BallRecovery",
+        "PressResistance",
+        "CounterPress",
+        "DefensiveScreen"
+      ],
+      "strengths": [
+        "Combinación única de creatividad en el pase y agresividad defensiva",
+        "Resistencia a la presión y control de balón bajo asedio",
+        "Liderazgo e intensidad competitiva muy elevada (Aggression 88)",
+        "Despliegue físico constante (Stamina 91)"
+      ],
+      "targetOvr": 81,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Tendencia ocasional a arriesgar en exceso en zonas peligrosas",
+        "Acumulación de tarjetas por su alta intensidad en los duelos"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 34,
+      "aggression": 91,
+      "attributes": {
+        "Acceleration": 74,
+        "Agility": 75,
+        "BallControl": 82,
+        "Defense": 88,
+        "Dribbling": 75,
+        "Finishing": 68,
+        "Passing": 81,
+        "Shooting": 74,
+        "Speed": 72,
+        "Stamina": 85,
+        "Strength": 89,
+        "Technique": 82
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Inter Miami",
+      "confidence": "High",
+      "creativity": 70,
+      "dateOfBirth": "1992-02-23",
+      "fullName": "Carlos Henrique Casimiro",
+      "gameplayFeel": "MCD imponente, tradicional y de máxima seguridad defensiva. Cierra todos los espacios por delante de los centrales, gana cada duelo aéreo y aporta una autoridad defensiva monumental.",
+      "heightCm": 185,
+      "name": "Casemiro",
+      "nationality": "Brazil",
+      "naturalPosition": "DM",
+      "playerId": "mc-casemiro",
+      "polyvalenceNote": "Functional versatility: MCD destructor posicional clásico, máxima autoridad en el juego aéreo y cobertura de área. | Emergency cover: CB | Type: MCD Destructor / Blindaje Defensivo",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 50,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Wall"
+        },
+        {
+          "affinity": 90,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 85,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 5,
+      "shortName": "Casemiro",
+      "signatureActions": [
+        "Interception",
+        "BallRecovery",
+        "DefensiveScreen",
+        "AerialClearance",
+        "TacticalFoul"
+      ],
+      "strengths": [
+        "Contundencia defensiva máxima y dominio aéreo absoluto",
+        "Liderazgo, jerarquía e inteligencia posicional en el eje",
+        "Fuerza física colosal (Strength 89) en duelos directos",
+        "Experiencia inigualable en partidos de máxima presión"
+      ],
+      "targetOvr": 80,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Agilidad de giro limitada frente a mediocampistas muy escurridizos",
+        "The National News",
+        "Velocidad de reacción menor en transiciones defensivas a campo abierto"
+      ],
+      "weightKg": 84
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 89,
+      "attributes": {
+        "Acceleration": 75,
+        "Agility": 79,
+        "BallControl": 86,
+        "Defense": 79,
+        "Dribbling": 81,
+        "Finishing": 66,
+        "Passing": 87,
+        "Shooting": 75,
+        "Speed": 73,
+        "Stamina": 84,
+        "Strength": 78,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Boca Juniors",
+      "confidence": "High",
+      "creativity": 84,
+      "dateOfBirth": "1994-06-29",
+      "fullName": "Leandro Daniel Paredes",
+      "gameplayFeel": "MCD de toque exquisito y carácter fuerte. Dicta el ritmo del equipo con desplazamientos largos milimétricos, protege la zona con intensidad y aporta experiencia táctica incalculable.",
+      "heightCm": 180,
+      "name": "Leandro Paredes",
+      "nationality": "Argentina",
+      "naturalPosition": "DM",
+      "playerId": "mc-leandro-paredes",
+      "polyvalenceNote": "Functional versatility: Pivote organizador de carácter intenso, excelente desplazamiento en largo y rigor táctico. | Type: MCD Organizador / Distribuidor Agresivo",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 72,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 86,
+          "role": "Builder"
+        },
+        {
+          "affinity": 84,
+          "role": "Architect"
+        }
+      ],
+      "secondaryPositions": [
+        "CM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 5,
+      "shortName": "Paredes",
+      "signatureActions": [
+        "LongSwitch",
+        "ProgressivePass",
+        "DeepBuildUp",
+        "TacticalFoul",
+        "PressResistance"
+      ],
+      "strengths": [
+        "Desplazamiento en largo y cambios de orientación impecables",
+        "Calidad técnica y visión de juego como mariscal de campo",
+        "Carácter competitivo elevado e intensidad en la marca (Aggression 89)",
+        "Precisión en la distribución desde la base"
+      ],
+      "targetOvr": 80,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Tendencia a recibir tarjetas debido a su alta agresividad e intensidad",
+        "Movilidad lateral limitada frente a transiciones muy vertiginosas"
+      ],
+      "weightKg": 75
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

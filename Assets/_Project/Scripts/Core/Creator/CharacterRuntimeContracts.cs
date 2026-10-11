@@ -103,28 +103,6 @@ namespace FS27.Core
         public RetargetMode Mode = RetargetMode.None;
     }
 
-    /// <summary>The football actions a character will perform. Gameplay requests one; animation shows it; the BALL stays independent.</summary>
-    public enum FootballActionKind
-    {
-        /// <summary>No action requested (movement only).</summary>
-        None = 0,
-        Control,
-        Dribble,
-        ShortPass,
-        LongPass,
-        Cross,
-        Shot,
-        PlacedShot,
-        Header,
-        Tackle,
-        Intercept,
-        Block,
-        Shield,
-        GoalkeeperSave,
-        GoalkeeperCatch,
-        GoalkeeperDistribution
-    }
-
     /// <summary>
     /// "The foot touches the ball now": sent by an animation to gameplay, which decides what really happens to the ball (Ball Core). An animation
     /// never moves the ball and the ball is never a child of a player.

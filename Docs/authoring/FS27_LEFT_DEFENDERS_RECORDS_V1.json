@@ -1,0 +1,1127 @@
+{
+  "players": [
+    {
+      "ageAsWritten": 24,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 85,
+        "BallControl": 87,
+        "Defense": 82,
+        "Dribbling": 85,
+        "Finishing": 60,
+        "Passing": 86,
+        "Shooting": 62,
+        "Speed": 83,
+        "Stamina": 85,
+        "Strength": 78,
+        "Technique": 88
+      },
+      "club": "Arsenal",
+      "confidence": "High",
+      "creativity": 84,
+      "fullName": "Riccardo Calafiori",
+      "gameplayFeel": "Alta polivalencia real (CB/LB). Destaca por sus conducciones progresivas letales y visión de juego.",
+      "heightCm": 188,
+      "name": "Riccardo Calafiori",
+      "nationality": "Italy",
+      "naturalPosition": "CB",
+      "playerId": "cb-riccardo-calafiori",
+      "polyvalenceNote": "Secundaria: LB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 72,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 84,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 75,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Progressive Carry"
+      ],
+      "strengths": [],
+      "targetOvr": 84,
+      "weaknesses": [],
+      "weightKg": 80
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 78,
+        "BallControl": 81,
+        "Defense": 87,
+        "Dribbling": 75,
+        "Finishing": 55,
+        "Passing": 82,
+        "Shooting": 48,
+        "Speed": 86,
+        "Stamina": 85,
+        "Strength": 89,
+        "Technique": 82
+      },
+      "club": "Paris Saint-Germain",
+      "confidence": "High",
+      "creativity": 68,
+      "fullName": "Willian Pacho",
+      "gameplayFeel": "Central puro muy rápido, contundente en duelos 1v1 y con gran velocidad de corrección.",
+      "heightCm": 187,
+      "name": "Willian Pacho",
+      "nationality": "Ecuador",
+      "naturalPosition": "CB",
+      "playerId": "cb-willian-pacho",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 50,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 86,
+          "role": "Wall"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Dominant 1v1 Lockdown",
+        "Recovery Run"
+      ],
+      "strengths": [],
+      "targetOvr": 84,
+      "weaknesses": [],
+      "weightKg": 82
+    },
+    {
+      "ageAsWritten": 21,
+      "aggression": 70,
+      "attributes": {
+        "Acceleration": 74,
+        "Agility": 75,
+        "BallControl": 86,
+        "Defense": 81,
+        "Dribbling": 80,
+        "Finishing": 62,
+        "Passing": 85,
+        "Shooting": 60,
+        "Speed": 76,
+        "Stamina": 81,
+        "Strength": 84,
+        "Technique": 88
+      },
+      "club": "Real Madrid",
+      "confidence": "High",
+      "creativity": 82,
+      "fullName": "Dean Huijsen",
+      "gameplayFeel": "Imponente altura de 1.97 m con técnica de organizador y absoluto dominio aéreo.",
+      "heightCm": 197,
+      "name": "Dean Huijsen",
+      "nationality": "Spain",
+      "naturalPosition": "CB",
+      "playerId": "cb-dean-huijsen",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Ambidiestro (las fuentes discrepan)",
+      "primaryZone": "Defense",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Wall"
+        },
+        {
+          "affinity": 84,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 78,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Aerial Dominance",
+        "Clean Progressive Pass"
+      ],
+      "strengths": [],
+      "targetOvr": 80,
+      "weaknesses": [],
+      "weightKg": 85
+    },
+    {
+      "ageAsWritten": 26,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 68,
+        "Agility": 66,
+        "BallControl": 75,
+        "Defense": 82,
+        "Dribbling": 65,
+        "Finishing": 54,
+        "Passing": 77,
+        "Shooting": 48,
+        "Speed": 71,
+        "Stamina": 79,
+        "Strength": 89,
+        "Technique": 74
+      },
+      "club": "Newcastle United",
+      "confidence": "High",
+      "creativity": 56,
+      "fullName": "Sven Botman",
+      "gameplayFeel": "Central tanque clásico, infranqueable por alto y muy sólido en bloques bajos.",
+      "heightCm": 195,
+      "name": "Sven Botman",
+      "nationality": "Netherlands",
+      "naturalPosition": "CB",
+      "playerId": "cb-sven-botman",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 38,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Wall"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 74,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Aerial Clearance",
+        "Defensive Block"
+      ],
+      "strengths": [],
+      "targetOvr": 79,
+      "weaknesses": [],
+      "weightKg": 81
+    },
+    {
+      "ageAsWritten": 30,
+      "aggression": 94,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 83,
+        "BallControl": 77,
+        "Defense": 82,
+        "Dribbling": 72,
+        "Finishing": 54,
+        "Passing": 76,
+        "Shooting": 50,
+        "Speed": 82,
+        "Stamina": 84,
+        "Strength": 80,
+        "Technique": 79
+      },
+      "club": "Paris Saint-Germain",
+      "confidence": "High",
+      "creativity": 62,
+      "fullName": "Lucas Hernández",
+      "gameplayFeel": "Defensor ultra-competitivo, aguerrido y eléctrico con gran intensidad en la marca.",
+      "heightCm": 182,
+      "name": "Lucas Hernández",
+      "nationality": "France",
+      "naturalPosition": "CB",
+      "playerId": "cb-lucas-hernandez",
+      "polyvalenceNote": "Secundaria: LB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 78,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 75,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Aggressive Tackle"
+      ],
+      "strengths": [],
+      "targetOvr": 77,
+      "weaknesses": [],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 32,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 73,
+        "Agility": 76,
+        "BallControl": 84,
+        "Defense": 85,
+        "Dribbling": 72,
+        "Finishing": 58,
+        "Passing": 86,
+        "Shooting": 52,
+        "Speed": 75,
+        "Stamina": 82,
+        "Strength": 87,
+        "Technique": 87
+      },
+      "club": "Athletic Bilbao",
+      "confidence": "High",
+      "creativity": 76,
+      "fullName": "Aymeric Laporte",
+      "gameplayFeel": "Central zurdo de jerarquía, excelente distribución en largo y gran lectura posicional.",
+      "heightCm": 190,
+      "name": "Aymeric Laporte",
+      "nationality": "Spain",
+      "naturalPosition": "CB",
+      "playerId": "cb-aymeric-laporte",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 45,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 84,
+          "role": "Wall"
+        },
+        {
+          "affinity": 82,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Accurate Long Diagonal",
+        "Clean Positional Interception"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weaknesses": [],
+      "weightKg": 86
+    },
+    {
+      "ageAsWritten": 36,
+      "aggression": 60,
+      "attributes": {
+        "Acceleration": 70,
+        "Agility": 77,
+        "BallControl": 88,
+        "Defense": 82,
+        "Dribbling": 76,
+        "Finishing": 58,
+        "Passing": 90,
+        "Shooting": 60,
+        "Speed": 68,
+        "Stamina": 80,
+        "Strength": 70,
+        "Technique": 91
+      },
+      "club": "Ajax",
+      "confidence": "High",
+      "creativity": 86,
+      "fullName": "Daley Blind",
+      "gameplayFeel": "Cerebro táctico absoluto con visión de juego de organizador y colocación milimétrica.",
+      "heightCm": 180,
+      "name": "Daley Blind",
+      "nationality": "Netherlands",
+      "naturalPosition": "CB",
+      "playerId": "cb-daley-blind",
+      "polyvalenceNote": "Secundarias: LB, CDM",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 45,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 82,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 68,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "LB",
+        "CDM"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Clean Progressive Pass",
+        "Clean Positional Interception"
+      ],
+      "strengths": [],
+      "targetOvr": 75,
+      "weaknesses": [],
+      "weightKg": 72
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 78,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 82,
+        "BallControl": 82,
+        "Defense": 82,
+        "Dribbling": 76,
+        "Finishing": 60,
+        "Passing": 81,
+        "Shooting": 62,
+        "Speed": 81,
+        "Stamina": 86,
+        "Strength": 81,
+        "Technique": 83
+      },
+      "club": "Atlético de Madrid",
+      "confidence": "High",
+      "creativity": 74,
+      "fullName": "Dávid Hancko",
+      "gameplayFeel": "Muy físico, trabajador y versátil para cubrir el centro o la banda con solvencia.",
+      "heightCm": 188,
+      "name": "Dávid Hancko",
+      "nationality": "Slovakia",
+      "naturalPosition": "CB",
+      "playerId": "cb-david-hancko",
+      "polyvalenceNote": "Secundaria: LB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 78,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Wide Cover"
+      ],
+      "strengths": [],
+      "targetOvr": 78,
+      "weaknesses": [],
+      "weightKg": 78
+    },
+    {
+      "ageAsWritten": 25,
+      "aggression": 85,
+      "attributes": {
+        "Acceleration": 92,
+        "Agility": 80,
+        "BallControl": 80,
+        "Defense": 84,
+        "Dribbling": 81,
+        "Finishing": 56,
+        "Passing": 79,
+        "Shooting": 54,
+        "Speed": 97,
+        "Stamina": 85,
+        "Strength": 87,
+        "Technique": 81
+      },
+      "club": "Tottenham Hotspur",
+      "confidence": "High",
+      "creativity": 68,
+      "fullName": "Micky van de Ven",
+      "gameplayFeel": "Una auténtica bala en defensa; velocidad punta histórica para neutralizar cualquier contragolpe.",
+      "heightCm": 193,
+      "name": "Micky van de Ven",
+      "nationality": "Netherlands",
+      "naturalPosition": "CB",
+      "playerId": "cb-micky-van-de-ven",
+      "polyvalenceNote": "Secundaria: LB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 95,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 85,
+          "role": "Wall"
+        },
+        {
+          "affinity": 76,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Open-Field Recovery Sprint"
+      ],
+      "strengths": [],
+      "targetOvr": 82,
+      "weaknesses": [],
+      "weightKg": 81
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 85,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 86,
+        "BallControl": 82,
+        "Defense": 82,
+        "Dribbling": 76,
+        "Finishing": 56,
+        "Passing": 81,
+        "Shooting": 52,
+        "Speed": 84,
+        "Stamina": 86,
+        "Strength": 78,
+        "Technique": 83
+      },
+      "club": "Arsenal",
+      "confidence": "High",
+      "creativity": 72,
+      "fullName": "Piero Hincapié",
+      "gameplayFeel": "Eléctrico, ágil y de gran despliegue para morder en la marca y cubrir el lateral.",
+      "heightCm": 183,
+      "name": "Piero Hincapié",
+      "nationality": "Ecuador",
+      "naturalPosition": "CB",
+      "playerId": "cb-piero-hincapie",
+      "polyvalenceNote": "Secundaria: LB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 74,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Front-Foot Defending",
+        "Wide Cover"
+      ],
+      "strengths": [],
+      "targetOvr": 81,
+      "weaknesses": [],
+      "weightKg": 76
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 95,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 88,
+        "BallControl": 87,
+        "Defense": 86,
+        "Dribbling": 78,
+        "Finishing": 58,
+        "Passing": 86,
+        "Shooting": 56,
+        "Speed": 79,
+        "Stamina": 86,
+        "Strength": 82,
+        "Technique": 89
+      },
+      "club": "Manchester United",
+      "confidence": "High",
+      "creativity": 80,
+      "fullName": "Lisandro Martínez",
+      "gameplayFeel": "Intenso, agresivo y de una calidad técnica soberbia a pesar de su estatura.",
+      "heightCm": 175,
+      "name": "Lisandro Martínez",
+      "nationality": "Argentina",
+      "naturalPosition": "CB",
+      "playerId": "cb-lisandro-martinez",
+      "polyvalenceNote": "Secundarias: LB, CDM",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 75,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 85,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 75,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "LB",
+        "CDM"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Aggressive Tackle"
+      ],
+      "strengths": [],
+      "targetOvr": 82,
+      "weaknesses": [],
+      "weightKg": 77
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 84,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 87,
+        "BallControl": 88,
+        "Defense": 88,
+        "Dribbling": 84,
+        "Finishing": 66,
+        "Passing": 85,
+        "Shooting": 68,
+        "Speed": 86,
+        "Stamina": 87,
+        "Strength": 89,
+        "Technique": 89
+      },
+      "club": "Manchester City",
+      "confidence": "Elite High",
+      "creativity": 82,
+      "fullName": "Joško Gvardiol",
+      "gameplayFeel": "Potencia física colosal, conducciones imparables y auténtica vocación goleadora.",
+      "heightCm": 185,
+      "name": "Joško Gvardiol",
+      "nationality": "Croatia",
+      "naturalPosition": "CB",
+      "playerId": "cb-josko-gvardiol",
+      "polyvalenceNote": "Secundaria: LB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 88,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 82,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Progressive Power Carry"
+      ],
+      "strengths": [],
+      "targetOvr": 82,
+      "weaknesses": [],
+      "weightKg": 80
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 76,
+        "Agility": 82,
+        "BallControl": 87,
+        "Defense": 87,
+        "Dribbling": 81,
+        "Finishing": 60,
+        "Passing": 91,
+        "Shooting": 56,
+        "Speed": 78,
+        "Stamina": 84,
+        "Strength": 80,
+        "Technique": 90
+      },
+      "club": "Inter Milan",
+      "confidence": "High",
+      "creativity": 88,
+      "fullName": "Alessandro Bastoni",
+      "gameplayFeel": "Central de clase mundial, elegante y con un guante en la zurda para organizar desde atrás.",
+      "heightCm": 190,
+      "name": "Alessandro Bastoni",
+      "nationality": "Italy",
+      "naturalPosition": "CB",
+      "playerId": "cb-alessandro-bastoni",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 80,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Clean Progressive Pass"
+      ],
+      "strengths": [],
+      "targetOvr": 86,
+      "weaknesses": [],
+      "weightKg": 75
+    },
+    {
+      "ageAsWritten": 23,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 76,
+        "BallControl": 81,
+        "Defense": 82,
+        "Dribbling": 75,
+        "Finishing": 60,
+        "Passing": 80,
+        "Shooting": 62,
+        "Speed": 79,
+        "Stamina": 84,
+        "Strength": 88,
+        "Technique": 82
+      },
+      "club": "Villarreal",
+      "confidence": "High",
+      "creativity": 72,
+      "fullName": "Renato Veiga",
+      "gameplayFeel": "Comodín defensivo imponente por físico y con total versatilidad táctica.",
+      "heightCm": 190,
+      "name": "Renato Veiga",
+      "nationality": "Portugal",
+      "naturalPosition": "CB",
+      "playerId": "cb-renato-veiga",
+      "polyvalenceNote": "Secundarias: LB, CDM",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 55,
+      "roles": [
+        {
+          "affinity": 85,
+          "role": "Wall"
+        },
+        {
+          "affinity": 84,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 80,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "LB",
+        "CDM"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [],
+      "strengths": [],
+      "targetOvr": 77,
+      "weaknesses": [],
+      "weightKg": 85
+    },
+    {
+      "ageAsWritten": 26,
+      "aggression": 86,
+      "attributes": {
+        "Acceleration": 81,
+        "Agility": 75,
+        "BallControl": 74,
+        "Defense": 79,
+        "Dribbling": 71,
+        "Finishing": 49,
+        "Passing": 73,
+        "Shooting": 45,
+        "Speed": 80,
+        "Stamina": 82,
+        "Strength": 85,
+        "Technique": 76
+      },
+      "club": "Fulham",
+      "confidence": "High",
+      "creativity": 62,
+      "fullName": "Calvin Bassey",
+      "gameplayFeel": "Potente, físico y combativo para cerrar el centro o la banda con enorme intensidad.",
+      "heightCm": 185,
+      "name": "Calvin Bassey",
+      "nationality": "Nigeria",
+      "naturalPosition": "CB",
+      "playerId": "cb-calvin-bassey",
+      "polyvalenceNote": "Secundaria: LB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 86,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 82,
+          "role": "Wall"
+        },
+        {
+          "affinity": 76,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "LB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Wide Cover"
+      ],
+      "strengths": [],
+      "targetOvr": 76,
+      "weaknesses": [],
+      "weightKg": 80
+    },
+    {
+      "ageAsWritten": 26,
+      "aggression": 75,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 83,
+        "BallControl": 81,
+        "Defense": 84,
+        "Dribbling": 74,
+        "Finishing": 54,
+        "Passing": 80,
+        "Shooting": 48,
+        "Speed": 81,
+        "Stamina": 85,
+        "Strength": 82,
+        "Technique": 82
+      },
+      "club": "Manchester City",
+      "confidence": "High",
+      "creativity": 70,
+      "fullName": "Marc Guéhi",
+      "gameplayFeel": "Sobrio, sumamente fiable y con una capacidad de anticipación limpia excelente.",
+      "heightCm": 182,
+      "name": "Marc Guéhi",
+      "nationality": "England",
+      "naturalPosition": "CB",
+      "playerId": "cb-marc-guehi",
+      "polyvalenceNote": "Sin secundaria / CB puro estricto",
+      "preferredFoot": "Derecho",
+      "primaryZone": "Defense",
+      "riskPreference": 45,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 84,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 76,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Clean Anticipation"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weaknesses": [],
+      "weightKg": 78
+    },
+    {
+      "ageAsWritten": 24,
+      "aggression": 76,
+      "attributes": {
+        "Acceleration": 78,
+        "Agility": 77,
+        "BallControl": 78,
+        "Defense": 81,
+        "Dribbling": 72,
+        "Finishing": 50,
+        "Passing": 77,
+        "Shooting": 48,
+        "Speed": 79,
+        "Stamina": 84,
+        "Strength": 80,
+        "Technique": 78
+      },
+      "club": "FC Barcelona",
+      "confidence": "High",
+      "creativity": 65,
+      "fullName": "Gerard Martín",
+      "gameplayFeel": "Cumplidor, disciplinado y de gran rigor táctico primario en banda con respaldo de central.",
+      "heightCm": 186,
+      "name": "Gerard Martín",
+      "nationality": "Spain",
+      "naturalPosition": "LB",
+      "playerId": "cb-gerard-martin",
+      "polyvalenceNote": "Secundaria independiente: CB",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 45,
+      "roles": [
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 80,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 72,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "CB"
+      ],
+      "secondaryZone": "Wing",
+      "signatureActions": [
+        "Wide Cover"
+      ],
+      "strengths": [],
+      "targetOvr": 77,
+      "weaknesses": [],
+      "weightKg": 77
+    },
+    {
+      "ageAsWritten": 28,
+      "aggression": 90,
+      "attributes": {
+        "Acceleration": 78,
+        "Agility": 75,
+        "BallControl": 80,
+        "Defense": 88,
+        "Dribbling": 72,
+        "Finishing": 74,
+        "Passing": 81,
+        "Shooting": 54,
+        "Speed": 80,
+        "Stamina": 85,
+        "Strength": 93,
+        "Technique": 82
+      },
+      "club": "Arsenal",
+      "confidence": "High",
+      "creativity": 68,
+      "fullName": "Gabriel Magalhães",
+      "gameplayFeel": "Muro defensivo impenetrable por alto y una pesadilla absoluta en jugadas a balón parado.",
+      "heightCm": 190,
+      "name": "Gabriel Magalhães",
+      "nationality": "Brazil",
+      "naturalPosition": "CB",
+      "playerId": "cb-gabriel-magalhaes",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 50,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Wall"
+        },
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Aerial Dominance",
+        "Set-Piece Header"
+      ],
+      "strengths": [],
+      "targetOvr": 87,
+      "weaknesses": [],
+      "weightKg": 87
+    },
+    {
+      "ageAsWritten": 26,
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 77,
+        "Agility": 76,
+        "BallControl": 84,
+        "Defense": 86,
+        "Dribbling": 78,
+        "Finishing": 60,
+        "Passing": 87,
+        "Shooting": 56,
+        "Speed": 81,
+        "Stamina": 82,
+        "Strength": 87,
+        "Technique": 86
+      },
+      "club": "Borussia Dortmund",
+      "confidence": "High",
+      "creativity": 84,
+      "fullName": "Nico Schlotterbeck",
+      "gameplayFeel": "Un guante en la zurda para desplazar en largo y presencia física imponente.",
+      "heightCm": 191,
+      "name": "Nico Schlotterbeck",
+      "nationality": "Germany",
+      "naturalPosition": "CB",
+      "playerId": "cb-nico-schlotterbeck",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 86,
+          "role": "Wall"
+        },
+        {
+          "affinity": 85,
+          "role": "Guardian"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "Accurate Long Diagonal"
+      ],
+      "strengths": [],
+      "targetOvr": 82,
+      "weaknesses": [],
+      "weightKg": 86
+    },
+    {
+      "ageAsWritten": 23,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 84,
+        "BallControl": 82,
+        "Defense": 83,
+        "Dribbling": 76,
+        "Finishing": 52,
+        "Passing": 81,
+        "Shooting": 48,
+        "Speed": 85,
+        "Stamina": 84,
+        "Strength": 78,
+        "Technique": 83
+      },
+      "club": "RB Leipzig",
+      "confidence": "High",
+      "creativity": 72,
+      "fullName": "Castello Lukeba",
+      "gameplayFeel": "Eléctrico, rapidísimo y muy ágil para sistemas de presión alta y defensa adelantada.",
+      "heightCm": 184,
+      "name": "Castello Lukeba",
+      "nationality": "France",
+      "naturalPosition": "CB",
+      "playerId": "cb-castello-lukeba",
+      "polyvalenceNote": "Sin secundaria",
+      "preferredFoot": "Izquierdo",
+      "primaryZone": "Defense",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 88,
+          "role": "Guardian"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 75,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [],
+      "signatureActions": [
+        "High Pressing",
+        "Front-Foot Defending"
+      ],
+      "strengths": [],
+      "targetOvr": 80,
+      "weaknesses": [],
+      "weightKg": 78
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

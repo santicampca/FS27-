@@ -1,0 +1,17 @@
+attributes,kind,quality
+40,ShortPass,0.398
+40,WallPass,0.398
+40,ThroughPass,0.398
+40,LongPass,0.398
+60,ShortPass,0.602
+60,WallPass,0.602
+60,ThroughPass,0.602
+60,LongPass,0.602
+80,ShortPass,0.806
+80,WallPass,0.806
+80,ThroughPass,0.806
+80,LongPass,0.806
+95,ShortPass,0.959
+95,WallPass,0.959
+95,ThroughPass,0.959
+95,LongPass,0.959

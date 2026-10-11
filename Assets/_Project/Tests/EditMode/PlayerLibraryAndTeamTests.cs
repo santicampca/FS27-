@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace FS27.Core.Tests
 
         private TeamDefinition Team(string id)
         {
-            Assert.IsTrue(TeamRoster.TryBuild(id, "Team " + id, new TeamColors(), DefaultFormations.TwoOneTwo, Ids(id), library, out var team, out var problem), problem);
+            Assert.IsTrue(TeamRosterBuilder.TryBuild(id, "Team " + id, new TeamColors(), DefaultFormations.TwoOneTwo, Ids(id), library, out var team, out var problem), problem);
             return team;
         }
 
@@ -77,7 +78,7 @@ namespace FS27.Core.Tests
             var team = Team("blue");
             Assert.AreEqual(6, team.PlayerIds.Count);
             CollectionAssert.AreEqual(Ids("blue"), team.PlayerIds);
-            Assert.IsTrue(TeamRoster.TryResolve(team, library, out var resolved));
+            Assert.IsTrue(TeamRosterBuilder.TryResolve(team, library, out var resolved));
             Assert.AreEqual(6, resolved.Count);
             for (int i = 0; i < 6; i++)
             {
@@ -93,7 +94,7 @@ namespace FS27.Core.Tests
             library.TryGet("blue-f1", out var f1);
             f1.Attributes = f1.Attributes.With(PlayerAttributeId.Finishing, 96);
             f1.Name = "Edited Name";
-            TeamRoster.TryResolve(team, library, out var resolved);
+            TeamRosterBuilder.TryResolve(team, library, out var resolved);
             Assert.AreEqual(96, resolved[4].Attributes.Finishing);
             Assert.AreEqual("Edited Name", resolved[4].Name);
         }
@@ -113,7 +114,7 @@ namespace FS27.Core.Tests
         [Test]
         public void ATeamCanBeBuiltWithAnyNumberOfPlayers_TheSixPlayerRuleIsTheValidatorsJob()
         {
-            Assert.IsTrue(TeamRoster.TryBuild("five", "Five", new TeamColors(), DefaultFormations.TwoOneTwo, Ids("blue").Take(5).ToList(), library, out var five, out _));
+            Assert.IsTrue(TeamRosterBuilder.TryBuild("five", "Five", new TeamColors(), DefaultFormations.TwoOneTwo, Ids("blue").Take(5).ToList(), library, out var five, out _));
             Assert.IsTrue(DataValidator.ValidateTeam(five, library, formations).Has(ValidationCode.TeamPlayerCountInvalid));
             Assert.IsTrue(DataValidator.ValidateTeam(Team("blue"), library, formations).IsValid);
         }
@@ -131,17 +132,17 @@ namespace FS27.Core.Tests
         {
             var ids = Ids("blue").ToList();
             ids[2] = "ghost";
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, ids, library, out var team, out var problem));
+            Assert.IsFalse(TeamRosterBuilder.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, ids, library, out var team, out var problem));
             Assert.IsNull(team);
             StringAssert.Contains("ghost", problem);
 
             ids = Ids("blue").ToList();
             ids[1] = ids[0];
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, ids, library, out team, out problem));
+            Assert.IsFalse(TeamRosterBuilder.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, ids, library, out team, out problem));
             StringAssert.Contains("twice", problem);
 
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, null, library, out _, out _));
-            Assert.IsFalse(TeamRoster.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, Ids("blue"), null, out _, out _));
+            Assert.IsFalse(TeamRosterBuilder.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, null, library, out _, out _));
+            Assert.IsFalse(TeamRosterBuilder.TryBuild("t", "T", new TeamColors(), DefaultFormations.TwoOneTwo, Ids("blue"), null, out _, out _));
         }
 
         [Test]
@@ -149,17 +150,18 @@ namespace FS27.Core.Tests
         {
             var team = Team("blue");
             team.PlayerIds[1] = "ghost";
-            Assert.IsFalse(TeamRoster.TryResolve(team, library, out var resolved));
+            Assert.IsFalse(TeamRosterBuilder.TryResolve(team, library, out var resolved));
             Assert.AreEqual(0, resolved.Count);
-            Assert.IsFalse(TeamRoster.TryResolve(null, library, out _));
-            Assert.IsFalse(TeamRoster.TryResolve(Team("red"), null, out _));
+            Assert.IsFalse(TeamRosterBuilder.TryResolve(null, library, out _));
+            Assert.IsFalse(TeamRosterBuilder.TryResolve(Team("red"), null, out _));
         }
 
         [Test]
         public void TeamDefinition_HoldsIdsAndFormationById_NoPlayerInstances()
         {
             var fields = typeof(TeamDefinition).GetFields(BindingFlags.Public | BindingFlags.Instance).Select(f => f.Name).ToArray();
-            CollectionAssert.AreEquivalent(new[] { "Id", "Name", "Colors", "PlayerIds", "FormationId" }, fields);
+            // Phase 2 added identity/configuration data (still ids and values only: no player instances)
+            CollectionAssert.AreEquivalent(new[] { "Id", "Name", "Colors", "PlayerIds", "FormationId", "ShortName", "Kind", "Level", "CoachId", "BadgeRef", "Theme", "Description" }, fields);
         }
 
         // ================= Moving a player changes data, not copies =================
@@ -184,8 +186,8 @@ namespace FS27.Core.Tests
             library.TryAssignToTeam("blue-f2", "red");   // swap two players
             var blueIds = new[] { "blue-gk", "blue-d1", "blue-d2", "blue-m1", "blue-f1", "red-f2" };
             var redIds = new[] { "red-gk", "red-d1", "red-d2", "red-m1", "red-f1", "blue-f2" };
-            Assert.IsTrue(TeamRoster.TryBuild("blue", "Blue", new TeamColors(), DefaultFormations.TwoOneTwo, blueIds, library, out var blue, out _));
-            Assert.IsTrue(TeamRoster.TryBuild("red", "Red", new TeamColors(), DefaultFormations.TwoOneTwo, redIds, library, out var red, out _));
+            Assert.IsTrue(TeamRosterBuilder.TryBuild("blue", "Blue", new TeamColors(), DefaultFormations.TwoOneTwo, blueIds, library, out var blue, out _));
+            Assert.IsTrue(TeamRosterBuilder.TryBuild("red", "Red", new TeamColors(), DefaultFormations.TwoOneTwo, redIds, library, out var red, out _));
             // Shirt numbers collide only if two players in the SAME team share one; here f2 numbers are 10 and 10 but on different teams.
             var result = DataValidator.ValidateMatchTeams(blue, red, library, formations);
             Assert.IsTrue(result.IsValid, result.ToString());

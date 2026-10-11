@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System;
 using System.Linq;
 using System.Reflection;
@@ -241,10 +242,9 @@ namespace FS27.Core.Tests
         public void TheGoalkeeperTypes_AreSerializable_AndHaveNoSprint()
         {
             const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
-            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperWeights), typeof(GoalkeeperRatingTuning), typeof(GoalkeeperStyleWeightEntry),
-                                       typeof(GoalkeeperAreaWeightEntry), typeof(GoalkeeperTuning) })
+            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperTuning) })
                 Assert.IsTrue(t.IsSerializable, t.Name);
-            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperWeights), typeof(GoalkeeperRatingTuning), typeof(GoalkeeperRatingCalculator),
+            foreach (Type t in new[] { typeof(GoalkeeperProfile), typeof(GoalkeeperRatingCalculator),
                                        typeof(GoalkeeperSkillModel), typeof(GoalkeeperSkill), typeof(GoalkeeperInfo), typeof(GoalkeeperProfileValidator) })
             {
                 Assert.IsFalse(t.Name.ToLowerInvariant().Contains("sprint"), t.Name);
@@ -316,7 +316,7 @@ namespace FS27.Core.Tests
             team.PlayerIds[0] = NicoGkData.Id;
             Assert.AreEqual(NicoGkData.Id, team.PlayerIds[0]);
             Assert.AreEqual(0, team.GoalkeeperIndex(lib));
-            Assert.IsTrue(TeamRoster.TryResolve(team, lib, out var squad));
+            Assert.IsTrue(TeamRosterBuilder.TryResolve(team, lib, out var squad));
             lib.TryGet(NicoGkData.Id, out var nico);
             Assert.AreSame(nico, squad[0]);
             Assert.IsTrue(DataValidator.ValidateTeam(team, lib, FormationLibrary.CreateDefault()).IsValid);

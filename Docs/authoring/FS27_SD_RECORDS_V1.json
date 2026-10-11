@@ -1,0 +1,572 @@
+{
+  "players": [
+    {
+      "aggression": 55,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 88,
+        "BallControl": 91,
+        "Defense": 48,
+        "Dribbling": 90,
+        "Finishing": 84,
+        "Passing": 88,
+        "Shooting": 85,
+        "Speed": 80,
+        "Stamina": 82,
+        "Strength": 65,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Compact",
+      "club": "AS Roma",
+      "creativity": 90,
+      "dateOfBirth": "1993-11-15",
+      "fullName": "Paulo Exequiel Dybala",
+      "heightCm": 177,
+      "name": "Paulo Dybala",
+      "nationality": "Argentina",
+      "naturalPosition": "SD",
+      "playerId": "sd-paulo-dybala",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 82,
+      "roles": [
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Architect"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "MCO",
+        "ED"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 21,
+      "signatureActions": [
+        "PocketReceive",
+        "CurlFinesseShot",
+        "BetweenLinesTurn",
+        "ProgressivePassing"
+      ],
+      "strengths": [],
+      "targetOvr": 82,
+      "weakFootQuality": 85,
+      "weaknesses": []
+    },
+    {
+      "aggression": 45,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 86,
+        "BallControl": 91,
+        "Defense": 31,
+        "Dribbling": 90,
+        "Finishing": 87,
+        "Passing": 89,
+        "Shooting": 85,
+        "Speed": 77,
+        "Stamina": 74,
+        "Strength": 58,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Compact",
+      "club": "Inter Miami",
+      "creativity": 96,
+      "dateOfBirth": "1987-06-24",
+      "fullName": "Lionel Andrés Messi",
+      "heightCm": 170,
+      "name": "Lionel Messi",
+      "nationality": "Argentina",
+      "naturalPosition": "SD",
+      "playerId": "sd-lionel-messi",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 85,
+      "roles": [
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Architect"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "MCO",
+        "ED"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 10,
+      "signatureActions": [
+        "VisionaryThroughBall",
+        "CloseControlSlalom",
+        "FinessePlacement",
+        "HalfSpaceOrbit"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 88,
+      "weaknesses": []
+    },
+    {
+      "aggression": 52,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 88,
+        "BallControl": 90,
+        "Defense": 50,
+        "Dribbling": 91,
+        "Finishing": 82,
+        "Passing": 89,
+        "Shooting": 85,
+        "Speed": 83,
+        "Stamina": 84,
+        "Strength": 72,
+        "Technique": 91
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Bayern Munich",
+      "creativity": 91,
+      "dateOfBirth": "2001-12-12",
+      "fullName": "Michael Akpovie Olise",
+      "name": "Michael Olise",
+      "nationality": "France",
+      "naturalPosition": "SD",
+      "playerId": "sd-michael-olise",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 84,
+      "roles": [
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Architect"
+        },
+        {
+          "role": "Explosive"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "MCO"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 17,
+      "signatureActions": [
+        "InvertedCutInsidePass",
+        "CurvedShot",
+        "HalfSpaceOrchestration",
+        "1v1Isolation"
+      ],
+      "strengths": [],
+      "targetOvr": 86,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 50,
+      "attributes": {
+        "Acceleration": 88,
+        "Agility": 92,
+        "BallControl": 92,
+        "Defense": 45,
+        "Dribbling": 93,
+        "Finishing": 82,
+        "Passing": 88,
+        "Shooting": 84,
+        "Speed": 85,
+        "Stamina": 86,
+        "Strength": 64,
+        "Technique": 92
+      },
+      "bodyTypeLabel": "Light",
+      "club": "FC Barcelona",
+      "creativity": 93,
+      "dateOfBirth": "2007-07-13",
+      "fullName": "Lamine Yamal Nasraoui Ebana",
+      "heightCm": 178,
+      "name": "Lamine Yamal",
+      "nationality": "Spain",
+      "naturalPosition": "SD",
+      "playerId": "sd-lamine-yamal",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 86,
+      "roles": [
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Explosive"
+        }
+      ],
+      "secondaryPositions": [
+        "ED"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 10,
+      "signatureActions": [
+        "ElusivePocketDribble",
+        "LateRunsIntoBox",
+        "PrecisionCurler",
+        "LineBreakingPass"
+      ],
+      "strengths": [],
+      "targetOvr": 86,
+      "weakFootQuality": 82,
+      "weaknesses": []
+    },
+    {
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 86,
+        "Agility": 85,
+        "BallControl": 87,
+        "Defense": 58,
+        "Dribbling": 88,
+        "Finishing": 77,
+        "Passing": 83,
+        "Shooting": 78,
+        "Speed": 84,
+        "Stamina": 89,
+        "Strength": 82,
+        "Technique": 85
+      },
+      "bodyTypeLabel": "Strong",
+      "club": "Chelsea",
+      "creativity": 80,
+      "dateOfBirth": "2002-07-26",
+      "fullName": "Morgan Rogers",
+      "heightCm": 187,
+      "name": "Morgan Rogers",
+      "nationality": "England",
+      "naturalPosition": "SD",
+      "playerId": "sd-morgan-rogers",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 78,
+      "roles": [
+        {
+          "role": "Engine"
+        },
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "MCO",
+        "MC"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 17,
+      "signatureActions": [
+        "PowerCarryThroughCenter",
+        "PhysicalShielding",
+        "DrivingRun",
+        "DirectAssistance"
+      ],
+      "strengths": [],
+      "targetOvr": 81,
+      "weakFootQuality": 75,
+      "weaknesses": []
+    },
+    {
+      "aggression": 82,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 86,
+        "BallControl": 85,
+        "Defense": 62,
+        "Dribbling": 84,
+        "Finishing": 81,
+        "Passing": 80,
+        "Shooting": 82,
+        "Speed": 82,
+        "Stamina": 92,
+        "Strength": 73,
+        "Technique": 84
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "FC Barcelona",
+      "creativity": 78,
+      "dateOfBirth": "2003-05-11",
+      "fullName": "Fermín López Marín",
+      "heightCm": 176,
+      "name": "Fermín López",
+      "nationality": "Spain",
+      "naturalPosition": "SD",
+      "playerId": "sd-fermin-lopez",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 76,
+      "roles": [
+        {
+          "role": "Engine"
+        },
+        {
+          "role": "Finisher"
+        },
+        {
+          "role": "GoalHunter"
+        }
+      ],
+      "secondaryPositions": [
+        "MCO",
+        "MC"
+      ],
+      "secondaryZone": "Midfield",
+      "shirtNumber": 7,
+      "signatureActions": [
+        "HighPressSurge",
+        "LateBoxCrash",
+        "LongRangeStrike",
+        "OffBallPenetration"
+      ],
+      "strengths": [],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 91,
+        "Agility": 89,
+        "BallControl": 89,
+        "Defense": 58,
+        "Dribbling": 90,
+        "Finishing": 84,
+        "Passing": 86,
+        "Shooting": 85,
+        "Speed": 89,
+        "Stamina": 92,
+        "Strength": 73,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "FC Barcelona",
+      "creativity": 86,
+      "dateOfBirth": "1996-12-14",
+      "fullName": "Raphael Dias Belloli",
+      "heightCm": 176,
+      "name": "Raphinha",
+      "nationality": "Brazil",
+      "naturalPosition": "SD",
+      "playerId": "sd-raphinha",
+      "preferredFoot": "Left",
+      "primaryZone": "Attack",
+      "riskPreference": 85,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Finisher"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "EI"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 11,
+      "signatureActions": [
+        "HighIntensityPressRun",
+        "DiagonalPenetration",
+        "ExplosiveTransition",
+        "StrikingFromDistance"
+      ],
+      "strengths": [],
+      "targetOvr": 87,
+      "weakFootQuality": 80,
+      "weaknesses": []
+    },
+    {
+      "aggression": 60,
+      "attributes": {
+        "Acceleration": 81,
+        "Agility": 87,
+        "BallControl": 88,
+        "Defense": 34,
+        "Dribbling": 90,
+        "Finishing": 77,
+        "Passing": 84,
+        "Shooting": 78,
+        "Speed": 78,
+        "Stamina": 73,
+        "Strength": 54,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Santos",
+      "creativity": 95,
+      "dateOfBirth": "1992-02-05",
+      "fullName": "Neymar da Silva Santos Júnior",
+      "heightCm": 175,
+      "name": "Neymar Jr",
+      "nationality": "Brazil",
+      "naturalPosition": "SD",
+      "playerId": "sd-neymar-jr",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 90,
+      "roles": [
+        {
+          "role": "Creator"
+        },
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Architect"
+        }
+      ],
+      "secondaryPositions": [
+        "EI",
+        "MCO"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 10,
+      "signatureActions": [
+        "RainbowFlickDribble",
+        "NoLookPass",
+        "CloseQuarterSkill",
+        "PocketPenetration"
+      ],
+      "strengths": [],
+      "targetOvr": 80,
+      "weakFootQuality": 90,
+      "weaknesses": []
+    },
+    {
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 89,
+        "Agility": 90,
+        "BallControl": 90,
+        "Defense": 52,
+        "Dribbling": 92,
+        "Finishing": 82,
+        "Passing": 85,
+        "Shooting": 84,
+        "Speed": 87,
+        "Stamina": 88,
+        "Strength": 76,
+        "Technique": 90
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Paris Saint-Germain",
+      "creativity": 88,
+      "dateOfBirth": "2001-02-12",
+      "fullName": "Khvicha Kvaratskhelia",
+      "heightCm": 183,
+      "name": "Khvicha Kvaratskhelia",
+      "nationality": "Georgia",
+      "naturalPosition": "SD",
+      "playerId": "sd-khvicha-kvaratskhelia",
+      "preferredFoot": "Right",
+      "primaryZone": "Attack",
+      "riskPreference": 85,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "EI"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 7,
+      "signatureActions": [
+        "ZonalSlalomDribble",
+        "CutInsideAndStrike",
+        "ProgressiveDrive",
+        "CreativeAssistance"
+      ],
+      "strengths": [],
+      "targetOvr": 85,
+      "weakFootQuality": 82,
+      "weaknesses": []
+    },
+    {
+      "aggression": 65,
+      "attributes": {
+        "Acceleration": 94,
+        "Agility": 91,
+        "BallControl": 89,
+        "Defense": 45,
+        "Dribbling": 93,
+        "Finishing": 81,
+        "Passing": 86,
+        "Shooting": 83,
+        "Speed": 92,
+        "Stamina": 85,
+        "Strength": 68,
+        "Technique": 91
+      },
+      "bodyTypeLabel": "Light",
+      "club": "Paris Saint-Germain",
+      "creativity": 87,
+      "dateOfBirth": "1997-05-15",
+      "fullName": "Masour Ousmane Dembélé",
+      "heightCm": 178,
+      "name": "Ousmane Dembélé",
+      "nationality": "France",
+      "naturalPosition": "SD",
+      "playerId": "sd-ousmane-dembele",
+      "preferredFoot": "Both",
+      "primaryZone": "Attack",
+      "riskPreference": 88,
+      "roles": [
+        {
+          "role": "Explosive"
+        },
+        {
+          "role": "Winger"
+        },
+        {
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "ED",
+        "EI"
+      ],
+      "secondaryZone": "Wing",
+      "shirtNumber": 10,
+      "signatureActions": [
+        "AmbidextrousBurst",
+        "SuddenChangeOfPace",
+        "InsideSlash",
+        "FinalThirdAssistance"
+      ],
+      "strengths": [],
+      "targetOvr": 86,
+      "weakFootQuality": 95,
+      "weaknesses": []
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

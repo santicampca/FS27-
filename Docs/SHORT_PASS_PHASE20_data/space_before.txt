@@ -1,0 +1,2 @@
+Arena seeds 301..340 exp='': space attempts 91, completed 23 (0.253); all passes 3179, completed 1095 (0.344)
+Classic seeds 301..340 exp='': space attempts 59, completed 7 (0.119); all passes 3498, completed 1131 (0.323)

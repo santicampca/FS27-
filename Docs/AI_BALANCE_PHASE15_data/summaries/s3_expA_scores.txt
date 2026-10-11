@@ -1,0 +1,4 @@
+Arena    Elite        vs Professional n= 40  W23/D5/L12  score 0.637 [0.500,0.775]  goals A 3.95 B 2.80 diff +1.15 [+0.35,+2.02]
+Arena    Novice       vs Professional n= 40  W14/D9/L17  score 0.463 [0.325,0.588]  goals A 2.75 B 3.10 diff -0.35 [-0.95,+0.28]
+Classic  Elite        vs Professional n= 40  W19/D8/L13  score 0.575 [0.425,0.713]  goals A 3.33 B 3.00 diff +0.33 [-0.40,+1.02]
+Classic  Novice       vs Professional n= 40  W18/D4/L18  score 0.500 [0.350,0.637]  goals A 3.27 B 3.65 diff -0.38 [-1.27,+0.55]

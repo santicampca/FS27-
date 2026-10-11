@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -299,8 +300,9 @@ namespace FS27.Core.Tests
         [Test]
         public void NothingInGameplayOrTheAiInfrastructure_KnowsTheCard()
         {
+            // PlayerCardCoachView is the coach system's card-side view (a card seen through a coach); like CharacterCardView it belongs on the card side.
             // CharacterCardView is the Creator Engine's card-side view (it reads a card and a specification): it belongs on the card side, so nothing else may depend on it either.
-            var cardTypes = new[] { typeof(PlayerCardData), typeof(PlayerCardBuilder), typeof(PlayerCardCatalog), typeof(ZoneSuitability), typeof(ZoneDeclaration), typeof(CharacterCardView) };
+            var cardTypes = new[] { typeof(PlayerCardData), typeof(PlayerCardBuilder), typeof(PlayerCardCatalog), typeof(ZoneSuitability), typeof(ZoneDeclaration), typeof(CharacterCardView), typeof(PlayerCardCoachView) };
             var cardNames = new HashSet<string>(cardTypes.Select(t => t.FullName));
             const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
 

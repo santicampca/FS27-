@@ -1,0 +1,1 @@
+C.FreeKick.WallMaxPlayers=0

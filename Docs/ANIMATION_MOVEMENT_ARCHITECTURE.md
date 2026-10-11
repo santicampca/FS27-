@@ -39,7 +39,7 @@ El Animator recibe la velocidad real relativa a la máxima del jugador (como ya 
 
 ## 4. Acciones de fútbol y el balón
 
-`FootballActionKind` enumera las acciones (control, regate, pases, centro, tiro, cabezazo, entrada, intercepción, bloqueo, protección, acciones de portero). El flujo previsto:
+`FootballActionKind` (ahora en `Core/FootballActionKind.cs`, no en el Creator) enumera las acciones (control, regate, pases, centro, tiro, cabezazo, entrada, intercepción, bloqueo, protección, acciones de portero y los controles de gameplay: tiro con efecto, vaselina, pared, pase al hueco, regate, pase elevado especial, salida del portero). El flujo previsto:
 
 ```
 Gameplay decide la acción → Animation la muestra → evento de contacto (ActionContactEvent) → Ball Core → física/trayectoria

@@ -1,0 +1,6 @@
+== Arena ==
+level            n | keeper of this level faces: shots goals conv%  saves save%  xG  goals/xG | level's own score vs Professional (W/D/L, rate [95%CI]) | goals per match (own/against)
+Professional   100 |  2951   412  14.0  2533  85.8  288.0   1.43 | 46/8/46 0.500 [0.405,0.590] | 4.12 / 4.12
+== Classic ==
+level            n | keeper of this level faces: shots goals conv%  saves save%  xG  goals/xG | level's own score vs Professional (W/D/L, rate [95%CI]) | goals per match (own/against)
+Professional   100 |  3955   309   7.8  3577  90.4  181.3   1.70 | 43/14/43 0.500 [0.415,0.590] | 3.09 / 3.09

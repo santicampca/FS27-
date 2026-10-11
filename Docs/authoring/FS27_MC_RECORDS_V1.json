@@ -1,0 +1,745 @@
+{
+  "players": [
+    {
+      "ageAsWritten": 30,
+      "aggression": 72,
+      "attributes": {
+        "Acceleration": 76,
+        "Agility": 79,
+        "BallControl": 88,
+        "Defense": 75,
+        "Dribbling": 85,
+        "Finishing": 72,
+        "Passing": 87,
+        "Shooting": 77,
+        "Speed": 74,
+        "Stamina": 86,
+        "Strength": 81,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Tall",
+      "club": "Paris Saint-Germain",
+      "confidence": "High",
+      "creativity": 80,
+      "dateOfBirth": "1996-04-03",
+      "fullName": "Fabián Ruiz Peña",
+      "gameplayFeel": "MC elegante, cerebral y de perfil zurdo muy seguro. Controla el ritmo del partido, ofrece líneas de pase constantes y distribuye con suma limpieza.",
+      "heightCm": 189,
+      "name": "Fabián Ruiz",
+      "nationality": "Spain",
+      "naturalPosition": "CM",
+      "playerId": "mq-fabian-ruiz",
+      "polyvalenceNote": "Functional versatility: Mediocampista organizador de perfil izquierdo, excelente manejo del tempo y disparo exterior con zurda. | Emergency cover: AM | Type: Central Playmaker / Possession Midfielder",
+      "preferredFoot": "Left",
+      "primaryZone": "Midfield",
+      "riskPreference": 55,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Builder"
+        },
+        {
+          "affinity": 84,
+          "role": "Creator"
+        },
+        {
+          "affinity": 80,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 8,
+      "shortName": "Fabián",
+      "signatureActions": [
+        "DeepBuildUp",
+        "ProgressivePass",
+        "LongSwitch",
+        "PressResistance",
+        "LateBoxArrival"
+      ],
+      "strengths": [
+        "Exquisito manejo de la pierna izquierda y control del ritmo",
+        "Calidad técnica y seguridad en la circulación del balón",
+        "Envergadura física combinada con elegancia asociativa",
+        "Inteligencia posicional en la medular"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Falta de aceleración explosiva en arrancadas cortas",
+        "Menor agresividad en duelos de recuperación pura"
+      ],
+      "weightKg": 78
+    },
+    {
+      "ageAsWritten": 23,
+      "aggression": 62,
+      "attributes": {
+        "Acceleration": 84,
+        "Agility": 91,
+        "BallControl": 93,
+        "Defense": 68,
+        "Dribbling": 92,
+        "Finishing": 70,
+        "Passing": 91,
+        "Shooting": 76,
+        "Speed": 82,
+        "Stamina": 88,
+        "Strength": 70,
+        "Technique": 93
+      },
+      "bodyTypeLabel": "Light",
+      "club": "FC Barcelona",
+      "confidence": "High",
+      "creativity": 91,
+      "dateOfBirth": "2002-11-25",
+      "fullName": "Pedro González López",
+      "gameplayFeel": "MC creativo, mágico y supremamente técnico. Gira sobre sí mismo con total naturalidad, limpia jugadas en callejones sin salida y filtra balones definitivos.",
+      "heightCm": 174,
+      "name": "Pedri",
+      "nationality": "Spain",
+      "naturalPosition": "CM",
+      "playerId": "mq-pedri",
+      "polyvalenceNote": "Functional versatility: Mediocampista creativo total, capacidad excepcional para asociarse en espacios minúsculos y entender los tiempos del juego. | Emergency cover: LW | Type: Creative Midfielder / Progressive Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 68,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Creator"
+        },
+        {
+          "affinity": 90,
+          "role": "Builder"
+        },
+        {
+          "affinity": 88,
+          "role": "Architect"
+        }
+      ],
+      "secondaryPositions": [
+        "AM"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 8,
+      "shortName": "Pedri",
+      "signatureActions": [
+        "LineBreakingPass",
+        "PressResistance",
+        "TurnAndAccelerate",
+        "ProgressiveCarry",
+        "CounterPress"
+      ],
+      "strengths": [
+        "Habilidad sobrenatural para jugar en espacios reducidos",
+        "Calidad técnica y control de balón de categoría mundial (93)",
+        "Visión de juego y claridad en el último tercio",
+        "Comprensión táctica absoluta del juego de posición"
+      ],
+      "targetOvr": 86,
+      "weakFootQuality": 85,
+      "weaknesses": [
+        "Vulnerabilidad en duelos físicos y forcejeos intensos",
+        "Historial de fragilidad física por acumulación de minutos"
+      ],
+      "weightKg": 61
+    },
+    {
+      "ageAsWritten": 25,
+      "aggression": 74,
+      "attributes": {
+        "Acceleration": 78,
+        "Agility": 81,
+        "BallControl": 89,
+        "Defense": 76,
+        "Dribbling": 86,
+        "Finishing": 72,
+        "Passing": 90,
+        "Shooting": 79,
+        "Speed": 76,
+        "Stamina": 89,
+        "Strength": 79,
+        "Technique": 90
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Chelsea FC",
+      "confidence": "High",
+      "creativity": 88,
+      "dateOfBirth": "2001-01-17",
+      "fullName": "Enzo Jeremías Fernández",
+      "gameplayFeel": "MC director de orquesta y mariscal de campo. Dicta el ritmo con precisión milimétrica en los desplazamientos largos y ordena la transición ofensiva con absoluta clase.",
+      "heightCm": 178,
+      "name": "Enzo Fernández",
+      "nationality": "Argentina",
+      "naturalPosition": "CM",
+      "playerId": "mq-enzo-fernandez",
+      "polyvalenceNote": "Functional versatility: Mediocampista constructor y organizador profundo con gran desplazamiento de balón en largo. | Emergency cover: AM | Type: Deep-Lying Playmaker / Progressive Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 70,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Architect"
+        },
+        {
+          "affinity": 89,
+          "role": "Builder"
+        },
+        {
+          "affinity": 85,
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 8,
+      "shortName": "Fernández",
+      "signatureActions": [
+        "LongSwitch",
+        "ProgressivePass",
+        "LineBreakingPass",
+        "DeepBuildUp",
+        "PressResistance"
+      ],
+      "strengths": [
+        "Desplazamiento en largo y cambios de juego milimétricos",
+        "Visión de juego panorámica y creatividad en la distribución",
+        "Resistencia física y despliegue en la medular (Stamina 89)",
+        "Calidad en el golpeo de media distancia"
+      ],
+      "targetOvr": 84,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Falta de punta de velocidad en transiciones defensivas rápidas",
+        "Fluctuación ocasional en duelos físicos muy cerrados"
+      ],
+      "weightKg": 76
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 84,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 81,
+        "BallControl": 85,
+        "Defense": 87,
+        "Dribbling": 82,
+        "Finishing": 68,
+        "Passing": 85,
+        "Shooting": 75,
+        "Speed": 79,
+        "Stamina": 92,
+        "Strength": 86,
+        "Technique": 85
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Arsenal FC",
+      "confidence": "High",
+      "creativity": 74,
+      "dateOfBirth": "1999-01-14",
+      "fullName": "Declan Rice",
+      "gameplayFeel": "MC todoterreno, imponente y de recorrido infinito. Abarca todo el campo, roba balones con autoridad, conduce con potencia y sella la medular con jerarquía.",
+      "heightCm": 185,
+      "name": "Declan Rice",
+      "nationality": "England",
+      "naturalPosition": "CM",
+      "playerId": "mq-declan-rice",
+      "polyvalenceNote": "Functional versatility: Mediocampista de recorrido total con enorme capacidad de cobertura, recuperación y conducción vertical. | Emergency cover: CB | Type: Box-to-Box Midfielder / Balanced Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 55,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Anchor"
+        },
+        {
+          "affinity": 90,
+          "role": "Engine"
+        },
+        {
+          "affinity": 85,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 41,
+      "shortName": "Rice",
+      "signatureActions": [
+        "BallRecovery",
+        "ProgressiveCarry",
+        "DefensiveScreen",
+        "Interception",
+        "CounterPress"
+      ],
+      "strengths": [
+        "Despliegue físico colosal y resistencia inagotable (Stamina 92)",
+        "Capacidad defensiva superlativa en el centro del campo (Defense 87)",
+        "Conducciones verticales imparables para romper líneas rivales",
+        "Liderazgo e intensidad competitiva constante"
+      ],
+      "targetOvr": 85,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Menor registro de pases creativos de último tercio en comparación con un organizador puro",
+        "Margen de mejora en la sutileza técnica bajo presión ultra-reducida"
+      ],
+      "weightKg": 80
+    },
+    {
+      "ageAsWritten": 27,
+      "aggression": 80,
+      "attributes": {
+        "Acceleration": 79,
+        "Agility": 83,
+        "BallControl": 87,
+        "Defense": 78,
+        "Dribbling": 85,
+        "Finishing": 72,
+        "Passing": 88,
+        "Shooting": 78,
+        "Speed": 77,
+        "Stamina": 91,
+        "Strength": 78,
+        "Technique": 89
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Liverpool FC",
+      "confidence": "High",
+      "creativity": 85,
+      "dateOfBirth": "1998-12-24",
+      "fullName": "Alexis Mac Allister",
+      "gameplayFeel": "MC inteligente, equilibrado y muy completo. Conecta la defensa con el ataque con absoluta precisión, presiona con agresividad inteligente y distribuye con criterio.",
+      "heightCm": 176,
+      "name": "Alexis Mac Allister",
+      "nationality": "Argentina",
+      "naturalPosition": "CM",
+      "playerId": "mq-alexis-mac-allister",
+      "polyvalenceNote": "Functional versatility: Mediocampista inteligente, excelente lectura táctica, presión intensa y calidad en la distribución corta y larga. | Emergency cover: AM | Type: Balanced Midfielder / Progressive Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 89,
+          "role": "Builder"
+        },
+        {
+          "affinity": 86,
+          "role": "Engine"
+        },
+        {
+          "affinity": 85,
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 10,
+      "shortName": "Mac Allister",
+      "signatureActions": [
+        "ProgressivePass",
+        "CounterPress",
+        "BallRecovery",
+        "PressResistance",
+        "LateBoxArrival"
+      ],
+      "strengths": [
+        "Inteligencia táctica superior y lectura defensiva/ofensiva",
+        "Resistencia y despliegue físico intenso (Stamina 91)",
+        "Calidad técnica en la distribución y golpeo lejano",
+        "Capacidad para recuperar balones gracias a su posicionamiento"
+      ],
+      "targetOvr": 83,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Falta de velocidad pura en contragolpes muy abiertos a campo abierto",
+        "Cierta tendencia a acumular faltas por intensidad en la marca"
+      ],
+      "weightKg": 73
+    },
+    {
+      "ageAsWritten": 26,
+      "aggression": 86,
+      "attributes": {
+        "Acceleration": 82,
+        "Agility": 83,
+        "BallControl": 85,
+        "Defense": 81,
+        "Dribbling": 83,
+        "Finishing": 70,
+        "Passing": 84,
+        "Shooting": 76,
+        "Speed": 81,
+        "Stamina": 93,
+        "Strength": 82,
+        "Technique": 85
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Newcastle United",
+      "confidence": "High",
+      "creativity": 80,
+      "dateOfBirth": "2000-05-08",
+      "fullName": "Sandro Tonali",
+      "gameplayFeel": "MC motorizado, intenso y muy completo. Destaca por su capacidad para presionar sin descanso, recuperar balones, lanzar en largo y llegar con peligro desde segunda línea.",
+      "heightCm": 181,
+      "name": "Sandro Tonali",
+      "nationality": "Italy",
+      "naturalPosition": "CM",
+      "playerId": "mq-sandro-tonali",
+      "polyvalenceNote": "Functional versatility: Mediocampista dinámico de gran despliegue físico, excelente golpeo en largo y vocación de presión e interceptación. | Type: Box-to-Box Midfielder / Progressive Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 92,
+          "role": "Engine"
+        },
+        {
+          "affinity": 86,
+          "role": "Builder"
+        },
+        {
+          "affinity": 82,
+          "role": "Anchor"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 8,
+      "shortName": "Tonali",
+      "signatureActions": [
+        "CounterPress",
+        "LongSwitch",
+        "ProgressivePass",
+        "BallRecovery",
+        "LateBoxArrival"
+      ],
+      "strengths": [
+        "Despliegue físico masivo e inagotable (Stamina 93)",
+        "Capacidad de presión y recuperación en campo contrario",
+        "Desplazamiento en largo y golpeo potente desde fuera del área",
+        "Intensidad competitiva y rigor táctico defensivo"
+      ],
+      "targetOvr": 81,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Fluctuación ocasional en la creatividad en espacios ultra-reducidos",
+        "Exceso de ímpetu en algunas acciones defensivas de presión"
+      ],
+      "weightKg": 79
+    },
+    {
+      "ageAsWritten": 41,
+      "aggression": 60,
+      "attributes": {
+        "Acceleration": 73,
+        "Agility": 82,
+        "BallControl": 88,
+        "Defense": 66,
+        "Dribbling": 86,
+        "Finishing": 70,
+        "Passing": 88,
+        "Shooting": 76,
+        "Speed": 70,
+        "Stamina": 81,
+        "Strength": 64,
+        "Technique": 91
+      },
+      "bodyTypeLabel": "Light",
+      "club": "AC Milan",
+      "confidence": "High",
+      "creativity": 93,
+      "dateOfBirth": "1985-09-09",
+      "fullName": "Luka Modrić",
+      "gameplayFeel": "MC leyenda, cerebral y de una elegancia técnica inigualable. Dirige el ritmo a voluntad, escapa de cualquier presión con un toque sutil y distribuye con maestría artística.",
+      "heightCm": 172,
+      "name": "Luka Modrić",
+      "nationality": "Croatia",
+      "naturalPosition": "CM",
+      "playerId": "mq-luka-modric",
+      "polyvalenceNote": "Functional versatility: Mediocampista organizador legendario, control absoluto del tempo, conducciones exteriores con exterior del pie y visión de élite. | Type: Central Playmaker / Creative Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 96,
+          "role": "Architect"
+        },
+        {
+          "affinity": 90,
+          "role": "Creator"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        }
+      ],
+      "secondaryPositions": [
+        "AM"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 14,
+      "shortName": "Modrić",
+      "signatureActions": [
+        "OutsideOfFootPass",
+        "PressResistance",
+        "TempoControl",
+        "LineBreakingPass",
+        "ProgressiveCarry"
+      ],
+      "strengths": [
+        "Maestría técnica y golpeo con el exterior del pie inigualables",
+        "Inteligencia suprema para dictar y controlar el ritmo del juego",
+        "Visión de juego y precisión milimétrica en la distribución",
+        "Resistencia competitiva y liderazgo legendario"
+      ],
+      "targetOvr": 81,
+      "weakFootQuality": 90,
+      "weaknesses": [
+        "Limitación en duelos físicos frontales de máxima potencia por envergadura",
+        "Desgaste físico lógico condicionado por la edad avanzada"
+      ],
+      "weightKg": 66
+    },
+    {
+      "ageAsWritten": 29,
+      "aggression": 90,
+      "attributes": {
+        "Acceleration": 85,
+        "Agility": 88,
+        "BallControl": 87,
+        "Defense": 78,
+        "Dribbling": 86,
+        "Finishing": 71,
+        "Passing": 86,
+        "Shooting": 77,
+        "Speed": 83,
+        "Stamina": 95,
+        "Strength": 77,
+        "Technique": 88
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Inter Milan",
+      "confidence": "High",
+      "creativity": 86,
+      "dateOfBirth": "1997-02-07",
+      "fullName": "Nicolò Barella",
+      "gameplayFeel": "MC eléctrico, incansable y de vocación ofensiva-defensiva total. Presiona con furia, rompe líneas conduciendo a gran velocidad y pisa el área contraria constantemente.",
+      "heightCm": 172,
+      "name": "Nicolò Barella",
+      "nationality": "Italy",
+      "naturalPosition": "CM",
+      "playerId": "mq-nicolo-barella",
+      "polyvalenceNote": "Functional versatility: Mediocampista box-to-box eléctrico, alta intensidad defensiva, llegada incisiva al área rival y calidad técnica asociativa. | Emergency cover: RM | Type: Box-to-Box Midfielder / Progressive Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 72,
+      "roles": [
+        {
+          "affinity": 94,
+          "role": "Engine"
+        },
+        {
+          "affinity": 88,
+          "role": "Builder"
+        },
+        {
+          "affinity": 85,
+          "role": "Creator"
+        }
+      ],
+      "secondaryPositions": [
+        "AM"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 23,
+      "shortName": "Barella",
+      "signatureActions": [
+        "CounterPress",
+        "LateBoxArrival",
+        "ProgressiveCarry",
+        "LineBreakingPass",
+        "BallRecovery"
+      ],
+      "strengths": [
+        "Despliegue físico inagotable y resistencia extrema (Stamina 95)",
+        "Intensidad competitiva y agresividad en la presión (Aggression 90)",
+        "Agilidad y velocidad en la conducción vertical",
+        "Capacidad de sorpresa con llegadas constantes al área rival"
+      ],
+      "targetOvr": 82,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Envergadura física limitada en duelos aéreos profundos defensivos",
+        "Ocasionales excesos de revoluciones que conllevan tarjetas"
+      ],
+      "weightKg": 68
+    },
+    {
+      "ageAsWritten": 21,
+      "aggression": 68,
+      "attributes": {
+        "Acceleration": 80,
+        "Agility": 85,
+        "BallControl": 88,
+        "Defense": 73,
+        "Dribbling": 86,
+        "Finishing": 68,
+        "Passing": 85,
+        "Shooting": 73,
+        "Speed": 78,
+        "Stamina": 86,
+        "Strength": 74,
+        "Technique": 87
+      },
+      "bodyTypeLabel": "Athletic",
+      "club": "Manchester United",
+      "confidence": "High",
+      "creativity": 84,
+      "dateOfBirth": "2005-04-19",
+      "fullName": "Kobbie Mainoo",
+      "gameplayFeel": "MC técnico, calmado y muy cerebral. Destaca por su extraordinaria resistencia a la presión, girando con elegancia y organizando la salida de balón con absoluta serenidad.",
+      "heightCm": 185,
+      "name": "Kobbie Mainoo",
+      "nationality": "England",
+      "naturalPosition": "CM",
+      "playerId": "mq-kobbie-mainoo",
+      "polyvalenceNote": "Functional versatility: Mediocampista técnico de gran compostura bajo presión, excelente manejo de espacios reducidos y pausa organizativa. | Type: Possession Midfielder / Progressive Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 65,
+      "roles": [
+        {
+          "affinity": 90,
+          "role": "Builder"
+        },
+        {
+          "affinity": 85,
+          "role": "Creator"
+        },
+        {
+          "affinity": 82,
+          "role": "Engine"
+        }
+      ],
+      "secondaryPositions": [
+        "DM"
+      ],
+      "secondaryZone": "Defense",
+      "shirtNumber": 37,
+      "shortName": "Mainoo",
+      "signatureActions": [
+        "PressResistance",
+        "ProgressiveCarry",
+        "LineBreakingPass",
+        "DeepBuildUp",
+        "TurnAndAccelerate"
+      ],
+      "strengths": [
+        "Compostura y frialdad sobresaliente bajo presión asfixiante",
+        "Calidad técnica y elegancia en la conducción en espacios reducidos",
+        "Visión de juego y precisión en la asociación corta y media",
+        "Inteligencia táctica impropia de su edad"
+      ],
+      "targetOvr": 80,
+      "weakFootQuality": 80,
+      "weaknesses": [
+        "Experiencia en la élite absoluta en fase de consolidación definitiva",
+        "Menor agresividad en duelos de contacto físico puro frente a rivales corpulentos"
+      ],
+      "weightKg": 74
+    },
+    {
+      "ageAsWritten": 29,
+      "aggression": 85,
+      "attributes": {
+        "Acceleration": 81,
+        "Agility": 78,
+        "BallControl": 79,
+        "Defense": 77,
+        "Dribbling": 76,
+        "Finishing": 78,
+        "Passing": 77,
+        "Shooting": 81,
+        "Speed": 80,
+        "Stamina": 90,
+        "Strength": 85,
+        "Technique": 79
+      },
+      "bodyTypeLabel": "Tall",
+      "club": "SSC Napoli",
+      "confidence": "High",
+      "creativity": 68,
+      "dateOfBirth": "1996-12-08",
+      "fullName": "Scott McTominay",
+      "gameplayFeel": "MC físico, contundente y con alma de delantero sorpresivo. Rompe desde atrás con potencia descomunal, domina el juego aéreo y define con gran eficacia en el área rival.",
+      "heightCm": 191,
+      "name": "Scott McTominay",
+      "nationality": "Scotland",
+      "naturalPosition": "CM",
+      "playerId": "mq-scott-mctominay",
+      "polyvalenceNote": "Functional versatility: Mediocampista físico de llegada masiva al área, potente zancada, juego aéreo dominante y olfato goleador desde segunda línea. | Emergency cover: CB | Type: Box-to-Box Midfielder / Balanced Midfielder",
+      "preferredFoot": "Right",
+      "primaryZone": "Midfield",
+      "riskPreference": 60,
+      "roles": [
+        {
+          "affinity": 91,
+          "role": "Finisher"
+        },
+        {
+          "affinity": 86,
+          "role": "Engine"
+        },
+        {
+          "affinity": 82,
+          "role": "Wall"
+        }
+      ],
+      "secondaryPositions": [
+        "AM"
+      ],
+      "secondaryZone": "Attack",
+      "shirtNumber": 8,
+      "shortName": "McTominay",
+      "signatureActions": [
+        "LateBoxArrival",
+        "AerialThreat",
+        "ProgressiveCarry",
+        "DefensiveScreen",
+        "BallRecovery"
+      ],
+      "strengths": [
+        "Llegada masiva y letal desde segunda línea al área contraria",
+        "Envergadura imponente (191 cm) y dominio total del juego aéreo",
+        "Potencia física (Strength 85) y despliegue inagotable (Stamina 90)",
+        "Olfato goleador inusual para un mediocampista"
+      ],
+      "targetOvr": 79,
+      "weakFootQuality": 75,
+      "weaknesses": [
+        "Rango de pases asociativos complejos limitado comparado con un constructor puro",
+        "Agilidad de giro en espacios ultrarreducidos limitada por su altura"
+      ],
+      "weightKg": 88
+    }
+  ],
+  "schemaVersion": "FS27.FieldPlayerRecord.v1"
+}

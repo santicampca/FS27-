@@ -11,6 +11,8 @@ namespace FS27.Core
         public const string TwoOneTwo = "2-1-2";
         public const string OneTwoTwo = "1-2-2";
         public const string TwoTwoOne = "2-2-1";
+        /// <summary>A back line of three, used by the coach formation variants. Not part of <see cref="CreateAll"/> (which keeps the three starter formations).</summary>
+        public const string ThreeOneOne = "3-1-1";
 
         // Slot 0 is always the goalkeeper, a little off the goal line.
         private static FormationPosition Keeper() { return new FormationPosition(0, PlayerRole.Goalkeeper, PitchZone.Goal, 0.06f, 0.5f); }
@@ -49,6 +51,26 @@ namespace FS27.Core
                 new FormationPosition(3, PlayerRole.Midfielder, PitchZone.Midfield, 0.50f, 0.30f),
                 new FormationPosition(4, PlayerRole.Midfielder, PitchZone.Midfield, 0.50f, 0.70f),
                 new FormationPosition(5, PlayerRole.Forward, PitchZone.Attack, 0.78f, 0.50f));
+        }
+
+        /// <summary>Three defenders, one midfielder and a lone attacker.</summary>
+        public static FormationDefinition CreateThreeOneOne()
+        {
+            return new FormationDefinition(ThreeOneOne, "3-1-1",
+                Keeper(),
+                new FormationPosition(1, PlayerRole.Defender, PitchZone.Defense, 0.24f, 0.22f),
+                new FormationPosition(2, PlayerRole.Defender, PitchZone.Defense, 0.22f, 0.50f),
+                new FormationPosition(3, PlayerRole.Defender, PitchZone.Defense, 0.24f, 0.78f),
+                new FormationPosition(4, PlayerRole.Midfielder, PitchZone.Midfield, 0.50f, 0.50f),
+                new FormationPosition(5, PlayerRole.Forward, PitchZone.Attack, 0.78f, 0.50f));
+        }
+
+        /// <summary>The three starter formations plus the back-three structure used by coach variants.</summary>
+        public static List<FormationDefinition> CreateExtended()
+        {
+            List<FormationDefinition> all = CreateAll();
+            all.Add(CreateThreeOneOne());
+            return all;
         }
 
         public static List<FormationDefinition> CreateAll()

@@ -1,0 +1,78 @@
+# 1. goals per match (both teams), paired by seed, free kick OFF (A) -> ON (B)
+level         block      n       A       B    diff     SE      z
+Professional  5000      40    5.88    4.70   -1.18   0.55   -2.1
+Professional  6000     100    5.40    5.27   -0.13   0.32   -0.4
+Professional  7000     100    5.44    5.49   +0.05   0.30   +0.2
+Novice        5000      40    8.43    8.35   -0.07   0.56   -0.1
+Novice        6000      60    8.32    7.43   -0.88   0.43   -2.1
+Novice        7000     100    7.99    7.85   -0.14   0.35   -0.4
+Elite         5000      40    4.17    4.00   -0.17   0.34   -0.5
+Elite         6000      60    4.40    4.55   +0.15   0.36   +0.4
+
+Professional  pooled n=240  A 5.50  B 5.27  diff -0.23 (SE 0.20, z -1.1)  relative -4.2%
+Novice        pooled n=200  A 8.18  B 7.83  diff -0.35 (SE 0.24, z -1.4)  relative -4.3%
+Elite         pooled n=100  A 4.31  B 4.33  diff +0.02 (SE 0.25, z +0.1)  relative +0.5%
+ALL           pooled n=540  A 6.27  B 6.04  diff -0.23 (SE 0.14, z -1.7)  relative -3.6%
+  block 5000: n=120 diff -0.47 (SE 0.29)
+  block 6000: n=220 diff -0.26 (SE 0.21)
+  block 7000: n=200 diff -0.04 (SE 0.23)
+
+# 2. Professional mechanism table (blocks with the diagnostic columns: seeds 5001-5120, 6001-6500, 7001-7500; paired by seed)
+matches: 240
+metric             A (off)    B (on)       B-A     SE      z
+goals                 5.50      5.27     -0.23   0.20   -1.1
+shotsRated           73.43     75.25     +1.82   0.86   +2.1
+shotsGoal             4.29      4.16     -0.13   0.18   -0.7
+xgSum                 3.82      3.82     +0.01   0.06   +0.1
+shotQuality           1.06      1.05     -0.01   0.01   -1.8
+dangerEntries        77.15     77.15     +0.00   0.79   +0.0
+finalThird          120.20    118.85     -1.35   0.78   -1.7
+clearChances         58.49     56.70     -1.79   1.22   -1.5
+possessions         370.63    372.40     +1.77   1.51   +1.2
+passAtt             514.77    512.05     -2.73   2.61   -1.0
+passDone            211.44    209.37     -2.07   1.88   -1.1
+tackles               4.35      4.13     -0.22   0.18   -1.2
+challenges           21.01     20.03     -0.98   0.44   -2.2
+contacts             25.37     24.16     -1.21   0.52   -2.3
+fouls                 5.05      4.69     -0.36   0.18   -2.0
+yellow                0.85      0.85     +0.00   0.07   +0.0
+red                   0.11      0.11     -0.00   0.03   -0.1
+fkTaken               0.00      4.69     +4.69   0.18  +25.4
+fkShot                0.00      1.61     +1.61   0.11  +15.1
+fkPass                0.00      2.57     +2.57   0.11  +23.5
+fkOther               0.00      0.50     +0.50   0.05  +11.0
+fkGoal                0.00      0.17     +0.17   0.03   +6.7
+dgFoulsFinal          1.61      1.33     -0.28   0.10   -2.7
+dgFoulsChance         2.07      1.75     -0.32   0.11   -2.8
+dgShot                1.34      2.27     +0.93   0.11   +8.2
+dgGoal                0.32      0.23     -0.09   0.06   -1.5
+dgChanceShot          0.89      1.63     +0.75   0.10   +7.6
+dgChanceGoal          0.23      0.12     -0.11   0.05   -2.2
+dgLostTime           10.17      7.30     -2.88   0.57   -5.0
+dgProgress          -12.12     -7.83     +4.29   2.76   +1.6
+dgCtlN               22.07     22.14     +0.07   0.35   +0.2
+dgCtlShot            11.06     11.24     +0.18   0.26   +0.7
+dgCtlGoal             1.14      0.93     -0.21   0.09   -2.4
+dgAnomalies           0.00      0.10     +0.10   0.02   +4.9
+dgStopSteps           0.00      9.38     +9.38   0.37  +25.4
+match seconds played (of 960 steps): A 949.71 B 949.64
+free kicks 1125, set-up anomalies 24 (2.1%), awarded==prepared==taken in every match: True
+per free kick: shot 34%, pass 55%, other 11%; goals within 8 s 3.7% of free kicks (10.9% of the shots); taken by the taker 100%
+goals OUTSIDE the 10 s after a foul: A 5.18 B 5.04 (inside: A 0.32 B 0.23)
+
+# 3. noise scale and placebo (Professional, seeds 6001-6500, free kick ON in all three; tiny changes of unrelated geometry)
+A  free kick off                   goals 5.40 (SE 0.26)  fouls 4.85  free kicks 0.00
+B  free kick on                    goals 5.27 (SE 0.22)  fouls 4.51  free kicks 4.51
+P1 on, taker offset 1.0 -> 1.1     goals 5.25 (SE 0.21)  fouls 4.77  free kicks 4.77
+P2 on, wall distance 4.0 -> 4.3    goals 5.83 (SE 0.28)  fouls 4.76  free kicks 4.76
+  B vs P1  matches that came out identical: 4 of 100; sd of the per-match goal difference 2.69
+  B vs P2  matches that came out identical: 2 of 100; sd of the per-match goal difference 3.03
+  A vs B   matches that came out identical: 3 of 100; sd of the per-match goal difference 3.14
+
+# 4. wall removed (WallMaxPlayers=0), same seeds
+Professional  n=100  goals off 5.40  on 5.27  no-wall 5.39   fkGoal on 0.18 no-wall 0.26   fkShot on 1.55 no-wall 1.73
+Novice        n=60  goals off 8.32  on 7.43  no-wall 8.20   fkGoal on 0.18 no-wall 0.50   fkShot on 2.40 no-wall 2.15
+
+# 5. Arena (control): free kick tuning cannot change it
+Arena Professional 5001: 214 shared columns x 20 matches, 0 differing values; fouls 0 free kicks 0 stopped steps 0
+Arena Professional 5101: 214 shared columns x 20 matches, 0 differing values; fouls 0 free kicks 0 stopped steps 0

@@ -12,6 +12,13 @@ namespace FS27.Core
         public static BallJudgement Evaluate(FieldDimensions field, MatchSettings settings, in BallObservation ball,
                                              bool hasLastTouch, TeamSide lastTouch)
         {
+            return Evaluate(field, settings.HomeAttacksPositiveX, settings.KickoffTeam, ball, hasLastTouch, lastTouch);
+        }
+
+        /// <summary>Same, with the attacking direction given explicitly: it changes at the side switch, and settings are configuration, not state.</summary>
+        public static BallJudgement Evaluate(FieldDimensions field, bool homeAttacksPositiveX, TeamSide kickoffTeam, in BallObservation ball,
+                                             bool hasLastTouch, TeamSide lastTouch)
+        {
             float halfL = field.Length * 0.5f;
             float halfW = field.Width * 0.5f;
             Vec3 p = ball.Position;
@@ -21,10 +28,9 @@ namespace FS27.Core
             if (Math.Abs(p.X) - r > halfL)
             {
                 int endSign = p.X > 0f ? 1 : -1;
-                TeamSide attacker = settings.AttackerAtEnd(endSign);
+                TeamSide attacker = AttackerAtEnd(homeAttacksPositiveX, endSign);
 
-                bool insideMouth = Math.Abs(p.Z) <= field.GoalWidth * 0.5f && p.Y - r <= field.GoalHeight;
-                if (insideMouth)
+                if (HasCrossedGoalLine(field, ball))
                     return new BallJudgement { Outcome = BallOutcome.Goal, ScoringTeam = attacker };
 
                 TeamSide defender = attacker.Opponent();
@@ -52,7 +58,7 @@ namespace FS27.Core
             // Sidelines: throw-in for the opponent of whoever touched it last.
             if (Math.Abs(p.Z) - r > halfW)
             {
-                TeamSide taker = hasLastTouch ? lastTouch.Opponent() : settings.KickoffTeam;
+                TeamSide taker = hasLastTouch ? lastTouch.Opponent() : kickoffTeam;
                 float x = Math.Max(-halfL + field.ThrowInEndMargin, Math.Min(halfL - field.ThrowInEndMargin, p.X));
                 return new BallJudgement
                 {
@@ -64,6 +70,22 @@ namespace FS27.Core
             }
 
             return new BallJudgement { Outcome = BallOutcome.InPlay };
+        }
+
+        /// <summary>
+        /// THE test of a goal (Phase 18): the WHOLE ball is beyond the goal line (its centre further than the radius, so a ball touching the line or partly over it is still in play) and it is inside the mouth
+        /// (between the posts, with the lowest part of the ball under the bar). The judgement and the keeper's hands (a ball that has crossed completely can no longer be played) both use this one function.
+        /// </summary>
+        public static bool HasCrossedGoalLine(FieldDimensions field, in BallObservation ball)
+        {
+            Vec3 p = ball.Position;
+            return Math.Abs(p.X) - ball.Radius > field.Length * 0.5f && Math.Abs(p.Z) <= field.GoalWidth * 0.5f && p.Y - ball.Radius <= field.GoalHeight;
+        }
+
+        private static TeamSide AttackerAtEnd(bool homeAttacksPositiveX, int endSign)
+        {
+            bool homeAttacksThatEnd = homeAttacksPositiveX == (endSign > 0);
+            return homeAttacksThatEnd ? TeamSide.Home : TeamSide.Away;
         }
     }
 }

@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // uses the LEGACY PlayerDefinition.TeamId / PlayerAttributes.Reaction on purpose (see their documentation)
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace FS27.Core.Tests
             typeof(PlayerAttributeId), typeof(PlayerAttributeGroup), typeof(PlayerAttributeInfo), typeof(PreferredFoot), typeof(BodyType), typeof(CardType),
             typeof(PlayerRules), typeof(AttributeWeights), typeof(RoleWeightEntry), typeof(ZoneWeightEntry), typeof(RatingTuning), typeof(RatingTuningValidator),
             typeof(DefaultRatingTuning), typeof(PlayerRatingCalculator), typeof(RoleInfo), typeof(RoleGroup), typeof(RoleAffinity), typeof(ZoneDeclaration),
-            typeof(ZoneSuitability), typeof(PlayerCardData), typeof(PlayerCardCatalog), typeof(PlayerCardBuilder), typeof(PlayerLibrary), typeof(TeamRoster),
+            typeof(ZoneSuitability), typeof(PlayerCardData), typeof(PlayerCardCatalog), typeof(PlayerCardBuilder), typeof(PlayerLibrary), typeof(TeamRosterBuilder),
             typeof(PlayerSystemReport), typeof(PlayerSystemValidator)
         };
 
@@ -229,7 +230,7 @@ namespace FS27.Core.Tests
             library.TryAdd(TestData.Player("cobalt-f1", 9, PlayerRole.Forward));
             foreach (var p in library.All) library.TryAssignToTeam(p.Id, "cobalt");
 
-            Assert.IsTrue(TeamRoster.TryBuild("cobalt", "Cobalt Test Team", new TeamColors(), DefaultFormations.TwoOneTwo,
+            Assert.IsTrue(TeamRosterBuilder.TryBuild("cobalt", "Cobalt Test Team", new TeamColors(), DefaultFormations.TwoOneTwo,
                 new[] { "cobalt-gk", "cobalt-d1", "cobalt-d2", "cobalt-m1", "cobalt-f1", "fs27-p-sak" }, library, out var team, out var problem), problem);
             Assert.IsTrue(DataValidator.ValidateTeam(team, library, formations).IsValid, DataValidator.ValidateTeam(team, library, formations).ToString());
             Assert.IsTrue(PlayerSystemValidator.ValidateAll(library, new[] { SakData.Profile() }).IsValid);
@@ -243,7 +244,7 @@ namespace FS27.Core.Tests
             int overall = card.Overall;
             library.TryGet("fs27-p-sak", out var same);
             Assert.AreSame(sak, same);
-            Assert.IsTrue(TeamRoster.TryResolve(team, library, out var squad));
+            Assert.IsTrue(TeamRosterBuilder.TryResolve(team, library, out var squad));
             Assert.AreSame(sak, squad[5], "the team (by id), the library and the card all point at the one definition");
 
             // One edit, seen everywhere.

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FS27 — Menú principal</title>
+  <meta name="description" content="Menú de FS27, fútbol 6 contra 6 para móviles. Esta web es solo una demostración de la interfaz: no ejecuta partidos.">
+  <meta name="theme-color" content="#040814">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-view="menu">
+  <!-- Fondo: estadio de noche, focos, césped en perspectiva y balón. Decorativo. -->
+  <div class="stage" aria-hidden="true">
+    <div class="stage__sky"></div>
+    <div class="stage__beams"><i></i><i></i><i></i><i></i></div>
+    <div class="stage__crowd"></div>
+    <div class="stage__pitch"><div class="stage__lines"></div></div>
+    <svg class="stage__ball" viewBox="0 0 100 100" width="120" height="120" focusable="false">
+      <defs>
+        <radialGradient id="ballShade" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset="0.7" stop-color="#d9e4f7"/><stop offset="1" stop-color="#8aa0c8"/></radialGradient>
+      </defs>
+      <g class="stage__ballspin">
+        <circle cx="50" cy="50" r="46" fill="url(#ballShade)"/>
+        <path d="M50 30 66 41 60 60H40L34 41z" fill="#0b1226"/>
+        <path d="M50 30V12M66 41l17-6M60 60l11 15M40 60 29 75M34 41 17 35" stroke="#0b1226" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#0b1226" stroke-opacity=".25" stroke-width="2"/>
+      </g>
+    </svg>
+    <div class="stage__vignette"></div>
+  </div>
+
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#/" aria-label="FS27, volver al menú principal">
+        <svg class="brand__emblem" viewBox="0 0 64 64" width="44" height="44" aria-hidden="true" focusable="false">
+          <defs><linearGradient id="emb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B8FF2C"/><stop offset="1" stop-color="#2BD9FF"/></linearGradient></defs>
+          <path d="M32 6 54 19v26L32 58 10 45V19z" fill="rgba(8,16,40,.85)" stroke="url(#emb)" stroke-width="3.5" stroke-linejoin="round"/>
+          <path d="M23 41V25h12M23 33h9M39 25l7 16" fill="none" stroke="#EAF2FF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand__word"><b>FS</b>27</span>
+      </a>
+      <p class="topbar__season" aria-hidden="true"><span class="dot"></span> TEMPORADA DEMO</p>
+      <ul class="topbar__chips" aria-label="Datos de demostración del jugador">
+        <li class="chip chip--lvl" title="Dato de demostración"><small>NIV</small> 12</li>
+        <li class="chip chip--zp" title="Dato de demostración. Los Zenit Points no están conectados."><span class="gem" aria-hidden="true"></span> 120 <small>ZP · DEMO</small></li>
+      </ul>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <!-- MENÚ PRINCIPAL: exactamente seis opciones -->
+      <section class="home" id="home" aria-labelledby="home-title">
+        <div class="home__intro">
+          <p class="kicker">Fútbol 6 contra 6</p>
+          <h1 id="home-title">Elige tu <span>partido</span></h1>
+        </div>
+        <nav class="menu" aria-label="Menú principal">
+          <a class="tile tile--arena" href="#/arena" data-route="arena">
+            <span class="tile__index" aria-hidden="true">01</span>
+            <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 5 56 19v26L32 59 8 45V19z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M35 14 22 35h9l-3 15 14-22h-9z" fill="currentColor"/></svg></span>
+            <span class="tile__name">ARENA</span>
+            <span class="tile__tag">Arcade · muros · sin faltas</span>
+            <span class="tile__go" aria-hidden="true">ENTRAR <i></i></span>
+          </a>
+          <a class="tile tile--classic" href="#/classic" data-route="classic">
+            <span class="tile__ribbon">MODO PRINCIPAL</span>
+            <span class="tile__index" aria-hidden="true">02</span>
+            <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><rect x="6" y="12" width="52" height="40" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><path d="M32 12v40M6 32h6M52 32h6" stroke="currentColor" stroke-width="3" fill="none"/><circle cx="32" cy="32" r="8" fill="none" stroke="currentColor" stroke-width="3"/><rect x="6" y="22" width="8" height="20" fill="none" stroke="currentColor" stroke-width="3"/><rect x="50" y="22" width="8" height="20" fill="none" stroke="currentColor" stroke-width="3"/></svg></span>
+            <span class="tile__name">CLASSIC</span>
+            <span class="tile__tag">Árbitro · tarjetas · penales · VAR</span>
+            <span class="tile__go" aria-hidden="true">ENTRAR <i></i></span>
+          </a>
+          <a class="tile tile--small tile--team" href="#/equipo" data-route="equipo">
+            <span class="tile__index" aria-hidden="true">03</span>
+            <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M22 8 8 16l5 12 7-3v31h24V25l7 3 5-12-14-8c-2 4-6 6-10 6s-8-2-10-6z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg></span>
+            <span class="tile__name">EQUIPO</span>
+            <span class="tile__tag">Plantilla y formación</span>
+          </a>
+          <a class="tile tile--small tile--train" href="#/entrenamiento" data-route="entrenamiento">
+            <span class="tile__index" aria-hidden="true">04</span>
+            <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 8 46 50H18z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M24 34h16M20 46h24M10 54h44" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span>
+            <span class="tile__name">ENTRENAMIENTO</span>
+            <span class="tile__tag">En desarrollo</span>
+          </a>
+          <a class="tile tile--small tile--shop" href="#/tienda" data-route="tienda">
+            <span class="tile__index" aria-hidden="true">05</span>
+            <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 22h40l-3 34H15z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M22 28V18a10 10 0 0 1 20 0v10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+            <span class="tile__name">TIENDA</span>
+            <span class="tile__tag">Vista previa · sin compras</span>
+          </a>
+          <a class="tile tile--small tile--settings" href="#/configuracion" data-route="configuracion">
+            <span class="tile__index" aria-hidden="true">06</span>
+            <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13.6 13.6l6.4 6.4M44 44l6.4 6.4M13.6 50.4 20 44M44 20l6.4-6.4" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg></span>
+            <span class="tile__name">CONFIGURACIÓN</span>
+            <span class="tile__tag">Ajustes iniciales</span>
+          </a>
+        </nav>
+        <p class="home__hint"><span class="kbd">←</span><span class="kbd">↑</span><span class="kbd">↓</span><span class="kbd">→</span> moverse · <span class="kbd">Intro</span> entrar · <span class="kbd">Esc</span> volver</p>
+      </section>
+
+      <!-- PANTALLAS PROVISIONALES: las dibuja app.js -->
+      <section class="screen" id="screen" hidden></section>
+    </main>
+
+    <footer class="ticker" aria-label="Aviso">
+      <p><b>DEMO DE INTERFAZ</b> Esta web solo muestra el menú de FS27. Los partidos, el Core, los penales y el VAR no se ejecutan aquí. Los datos que ves son de ejemplo.</p>
+    </footer>
+  </div>
+
+  <noscript><p class="noscript">Esta demostración necesita JavaScript para mostrar las pantallas de cada opción.</p></noscript>
+  <script src="app.js" defer></script>
+</body>
+</html>

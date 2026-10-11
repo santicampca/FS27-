@@ -1,0 +1,6 @@
+n train 69964 val 13812
+Arena fit a,b -5.5323464878099955 5.764497840773611
+Classic fit -7.644775441092075 8.268283731013828
+pooled -6.556717545248633 6.988531495539911
+Arena val shots 5902 goals 620 xG current 576.0 xG refit 623.8
+Classic val shots 7910 goals 394 xG current 362.6 xG refit 451.7
