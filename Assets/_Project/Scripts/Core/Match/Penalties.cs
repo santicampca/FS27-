@@ -304,6 +304,8 @@ namespace FS27.Core
         /// <summary>The last valid contact with the ball (a player's touch, not a post or the bar).</summary>
         public string LastContactPlayerId;
         public bool Goal;
+        /// <summary>The VAR cancelled it (the foul did not happen).</summary>
+        public bool Cancelled;
         /// <summary>Arena: seconds the ball takes to go in (what a client animates). Classic: 0.</summary>
         public float FlightSeconds;
         internal float KeeperDelay, KeeperSpeed;

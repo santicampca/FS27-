@@ -72,7 +72,7 @@ namespace FS27.Core.Tests
             public double[] DgProgress = new double[2], DgLostTime = new double[2];
             public int[] DgCtlN = new int[2], DgCtlShot = new int[2], DgCtlGoal = new int[2], DgCtlLost = new int[2];
             /// <summary>Per side of the team that takes the free kick: awarded / prepared / taken events, set-up anomalies found at the whistle, and (total) steps spent stopped for a free kick and match seconds played.</summary>
-            public int[] DgAwarded = new int[2], DgPrepared = new int[2], DgTaken = new int[2], DgAnomalies = new int[2];
+            public int[] DgPenalties = new int[2], DgAwarded = new int[2], DgPrepared = new int[2], DgTaken = new int[2], DgAnomalies = new int[2];
             public int DgStopSteps; public float DgPlayed;
             public int AttackSamples, PassDecisions; public long PassLanes; public double Spread, PassDistance;
             public int MoreThanOnePerJob, JobSamples, SupportersNearBall;
@@ -143,6 +143,7 @@ namespace FS27.Core.Tests
                         foreach (DgWin w in windows) if (!w.Lost && ev.HasTeam && (int)ev.Team != w.Side && now - w.T0 <= DgWindow) { w.Lost = true; w.LostAt = now - w.T0; }
                         break;
                     case GameplayEventKind.FreeKickAwarded: r.DgAwarded[(int)ev.Team]++; break;
+                    case GameplayEventKind.PenaltyAwarded: r.DgPenalties[(int)ev.Team]++; break;
                     case GameplayEventKind.FreeKickPrepared: r.DgPrepared[(int)ev.Team]++; break;
                     case GameplayEventKind.FreeKickTaken:
                         {

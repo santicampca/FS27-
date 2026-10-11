@@ -352,7 +352,7 @@ namespace FS27.Core
             pen.TakerConfirmed = true;
             pen.TakerChoiceRemaining = 0f;
 
-            if (pen.Kind == PenaltyKind.Shootout && settings.Mode == GameMode.Arena) return TakeArenaShootoutKick(aim);
+            if (pen.Kind == PenaltyKind.Shootout && !rules.PlaysPenaltiesPhysically) return TakeArenaShootoutKick(aim);
 
             if (pen.Waiting)
             {
@@ -688,7 +688,7 @@ namespace FS27.Core
                     PlacePlayer(team.Side, p.PlayerId, new Vec2(0f, -10f + 1.4f * (n++ % 15)), p.Locomotion.Heading);
                 }
             infrastructure.EnforcePlayerSpace = true;
-            if (settings.Mode == GameMode.Classic) SetGoalFrame(true);
+            if (rules.PlaysPenaltiesPhysically) SetGoalFrame(true);
             Emit(GameplayEventKind.PenaltyPrepared, side, takerId, Vec3.FromXZ(spot, ballParameters.Radius), "Shootout", pen.KeeperId);
         }
 

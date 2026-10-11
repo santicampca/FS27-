@@ -11,7 +11,7 @@ namespace FS27.Core.Tests
     /// </summary>
     public partial class AiInfrastructureTests
     {
-        private static MatchController PenLive(GameMode mode = GameMode.Classic, int seed = 1, IPlayerLookup lookup = null) { return FkLive(mode, seed, lookup); }
+        private static MatchController PenLive(GameMode mode = GameMode.Classic, int seed = 1, IPlayerLookup lookup = null) { MatchController c = FkLive(mode, seed, lookup); c.Penalties.Enabled = true; return c; }
 
         /// <summary>Away fouls home's hs3 inside the away area: a penalty for home.</summary>
         private static MatchController PenAwarded(int seed = 1, float x = 17f, float z = 0f, IPlayerLookup lookup = null, bool humanHome = false)

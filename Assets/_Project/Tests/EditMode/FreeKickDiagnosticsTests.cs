@@ -19,17 +19,17 @@ namespace FS27.Core.Tests
         [Test]
         public void FreeKickDiagnostics_TheCountersAgree_AwardedPreparedTakenAndStoppedSteps()
         {
-            int awarded = 0, prepared = 0, taken = 0, stopped = 0, fk = 0, fouls = 0;
+            int awarded = 0, prepared = 0, taken = 0, stopped = 0, fk = 0, fouls = 0, penalties = 0;
             foreach (int seed in new[] { 1, 2, 3 })
             {
                 AttackSim s = FkRun(GameMode.Classic, seed, true);
                 Assert.AreEqual(0, s.Issues);
-                awarded += s.DgAwarded.Sum(); prepared += s.DgPrepared.Sum(); taken += s.DgTaken.Sum(); stopped += s.DgStopSteps; fk += s.FkTaken.Sum(); fouls += s.DgFouls.Sum();
+                awarded += s.DgAwarded.Sum(); prepared += s.DgPrepared.Sum(); taken += s.DgTaken.Sum(); stopped += s.DgStopSteps; fk += s.FkTaken.Sum(); fouls += s.DgFouls.Sum(); penalties += s.DgPenalties.Sum();
                 Assert.LessOrEqual(s.DgAwarded.Sum() - s.DgTaken.Sum(), 1, "at most the last free kick is still pending when the run ends");
             }
             Assert.Greater(taken, 0, "the runs produced free kicks");
             Assert.AreEqual(prepared, taken, "every free kick that was prepared was taken, once");
-            Assert.AreEqual(awarded, fouls, "one free kick per foul");
+            Assert.AreEqual(awarded + penalties, fouls, "one free kick per foul, or one penalty when the foul was inside the area (Phase 23)");
             Assert.AreEqual(taken, stopped, "in the harness each free kick stops the play for exactly one step (the harness whistles at once)");
             Assert.LessOrEqual(Math.Abs(fk - taken), 3, "the free kicks the harness finished are the ones taken (a kick may still be protected at the end)");
         }

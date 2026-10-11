@@ -223,6 +223,7 @@ namespace FS27.Core
         public void Tick(float dt, in BallObservation ball)
         {
             if (dt < 0f) dt = 0f;
+            ProcessAutomaticVar();
 
             switch (State.Phase)
             {
@@ -234,6 +235,9 @@ namespace FS27.Core
                     break;
                 case MatchPhase.Shootout:
                     TickShootout(dt, ball);
+                    break;
+                case MatchPhase.VarReview:
+                    TickVarReview(dt);
                     break;
                 case MatchPhase.GoalCelebration:
                     TickCelebration(dt);
@@ -461,7 +465,9 @@ namespace FS27.Core
             team.Fouls++;
             var record = new DisciplineRecord { MatchTime = State.MatchTimeSeconds, Period = State.Period, Team = offenderTeam, PlayerId = offenderId, VictimId = victimId, Position = Flat(position), Reasons = decision.Reasons, Severity = decision.Severity, Card = decision.Card };
             Emit(GameplayEventKind.FoulCommitted, offenderTeam, offenderId, position, decision.Reasons.ToString(), victimId);
-            Emit(GameplayEventKind.FreeKickAwarded, offenderTeam.Opponent(), victimId, position, decision.Reasons.ToString(), offenderId);
+            // a foul inside the area is a penalty, announced by its own event
+            if (!(penalty.Enabled && rules.HasPenalties && State.Phase == MatchPhase.Playing && InPenaltyArea(Flat(position), offenderTeam)))
+                Emit(GameplayEventKind.FreeKickAwarded, offenderTeam.Opponent(), victimId, position, decision.Reasons.ToString(), offenderId);
             if (decision.Card != CardDecision.None)
             {
                 result.Card = decision.Card;
@@ -472,6 +478,7 @@ namespace FS27.Core
             // Phase 22: the foul stops play and the fouled team takes the free kick (only in live play, once)
             if (!BeginPenalty(offenderTeam, offenderId, victimId, decision.Reasons, Flat(position), State.Discipline.Count - 1))
                 BeginFreeKick(offenderTeam, offenderId, victimId, decision.Reasons, Flat(position), State.Discipline.Count - 1);
+            NoteCalledFoulForVar(offenderTeam, offenderId, victimId, decision, Flat(position), State.Discipline.Count - 1);
             return result;
         }
 
@@ -572,6 +579,7 @@ namespace FS27.Core
                     goal.AssistId = b.PreviousTouchPlayerId;
             }
             State.AddGoal(goal);
+            NoteGoalForVar(scoring, State.Goals.Count - 1);
             OnPenaltyGoal();
             Emit(GameplayEventKind.GoalScored, scoring, goal.ScorerId, b.Physics.Position, goal.OwnGoal ? "OwnGoal" : "", goal.AssistId);
         }
@@ -762,7 +770,7 @@ namespace FS27.Core
             if (previous == next) return;
             State.Phase = next;
             // pausing and resuming do not change what the ball is doing; any other interruption stops it
-            if (next != MatchPhase.Paused && previous != MatchPhase.Paused)
+            if (next != MatchPhase.Paused && previous != MatchPhase.Paused && next != MatchPhase.VarReview && previous != MatchPhase.VarReview)
             {
                 if (next != MatchPhase.Playing) State.Ball.Mode = next == MatchPhase.GoalCelebration ? BallMode.Goal : BallMode.Dead;
                 else if (State.Ball.Mode == BallMode.Dead || State.Ball.Mode == BallMode.Goal) State.Ball.Mode = State.Ball.HasPossession ? BallMode.Controlled : BallMode.Free;

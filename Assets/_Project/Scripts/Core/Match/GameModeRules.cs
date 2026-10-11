@@ -22,6 +22,10 @@ namespace FS27.Core
         bool HasInjuries { get; }
         /// <summary>A real break (the Break phase) between periods. False = only a side switch, play goes straight on.</summary>
         bool HasHalfTimeBreak { get; }
+        /// <summary>Phase 23: a penalty (and a shoot-out kick) is played with the real ball, the goal frame and the goalkeeper's dive (true), or is an arcade duel resolved at once from the two aims and the attributes (false).</summary>
+        bool PlaysPenaltiesPhysically { get; }
+        /// <summary>Phase 23: there is a VAR (a review layer over the referee's decisions). It needs a referee.</summary>
+        bool HasVar { get; }
 
         /// <summary>Can an event of this kind exist in this mode.</summary>
         bool Allows(GameplayEventKind kind);
@@ -67,6 +71,8 @@ namespace FS27.Core
         public bool HasReferee => false;
         public bool HasInjuries => false;
         public bool HasHalfTimeBreak => false;
+        public bool PlaysPenaltiesPhysically => false;
+        public bool HasVar => false;
 
         public bool Allows(GameplayEventKind kind)
         {
@@ -85,6 +91,13 @@ namespace FS27.Core
                 case GameplayEventKind.FreeKickTaken:
                 case GameplayEventKind.PenaltyFrameHit:
                 case GameplayEventKind.PenaltySecondTouch:
+                case GameplayEventKind.PenaltyCancelled:
+                case GameplayEventKind.GoalDisallowed:
+                case GameplayEventKind.RedCardRescinded:
+                case GameplayEventKind.VarReviewRequested:
+                case GameplayEventKind.VarCostCharged:
+                case GameplayEventKind.VarRequestRejected:
+                case GameplayEventKind.VarDecisionMade:
                 case GameplayEventKind.YellowCardIssued:
                 case GameplayEventKind.RedCardIssued:
                 case GameplayEventKind.PlayerDismissed:
@@ -128,6 +141,8 @@ namespace FS27.Core
         public bool HasReferee => true;
         public bool HasInjuries => false;
         public bool HasHalfTimeBreak => true;
+        public bool PlaysPenaltiesPhysically => true;
+        public bool HasVar => true;
 
         public bool Allows(GameplayEventKind kind)
         {

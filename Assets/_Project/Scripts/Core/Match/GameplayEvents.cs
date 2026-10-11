@@ -58,7 +58,21 @@ namespace FS27.Core
         /// <summary>The ball hit a post or the crossbar during a penalty (detail Post / Bar).</summary>
         PenaltyFrameHit,
         /// <summary>The taker of a penalty in the match played the ball a second time before anybody else touched it.</summary>
-        PenaltySecondTouch
+        PenaltySecondTouch,
+        /// <summary>The VAR cancelled a penalty (the foul did not happen).</summary>
+        PenaltyCancelled,
+        /// <summary>The VAR disallowed a goal.</summary>
+        GoalDisallowed,
+        /// <summary>The VAR rescinded a red card: the player is back.</summary>
+        RedCardRescinded,
+        /// <summary>A review began (asked by a team, or automatic). Detail: category and kind; other: the cost in ZP.</summary>
+        VarReviewRequested,
+        /// <summary>The cost of a review was charged (once). Detail: cost and balances; other: the request id.</summary>
+        VarCostCharged,
+        /// <summary>A request was refused before it started: nothing was charged. Detail: the reason.</summary>
+        VarRequestRejected,
+        /// <summary>The review has its decision (Confirmed / Corrected and what stands).</summary>
+        VarDecisionMade
     }
 
     /// <summary>One thing that happened. Plain data, stamped with the Core time, never with Unity time.</summary>

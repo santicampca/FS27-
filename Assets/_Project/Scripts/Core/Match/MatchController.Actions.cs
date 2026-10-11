@@ -576,9 +576,11 @@ namespace FS27.Core
             bool won = margin >= actions.TackleCleanMargin, loose = !won && margin >= actions.TackleDeflectMargin;
             if (rules.HasFouls)
             {
-                RefereeDecision call = RefereeDecisionSystem.Decide(EvidenceOf(attacker, carrier, res.Kind == FootballActionKind.SlidingTackle, won || loose, margin <= foulMargin), RefereeStyle, RefereeTuning);
+                ContactEvidence seen = EvidenceOf(attacker, carrier, res.Kind == FootballActionKind.SlidingTackle, won || loose, margin <= foulMargin);
+                RefereeDecision call = RefereeDecisionSystem.Decide(seen, RefereeStyle, RefereeTuning);
                 if (call.IsFoul)
                 {
+                    assessmentHint = RefereeDecisionSystem.Decide(seen, RefereeStyle.Neutral, RefereeTuning); hasAssessmentHint = true;
                     attacker.ActionLockRemaining = Math.Max(attacker.ActionLockRemaining, actions.FailedTackleLockSeconds * SkillFailLockFactor(attacker));
                     res.Outcome = ActionOutcome.Failed;
                     res.Detail = ActionDetail.Foul;
@@ -586,6 +588,7 @@ namespace FS27.Core
                     Emit(eventKind, attacker.Team, attacker.PlayerId, b.Physics.Position, res.Kind + ":Lost", carrier.PlayerId);
                     return res;
                 }
+                NoteUncalledContactForVar(attacker, carrier, seen, Flat(b.Physics.Position));
             }
 
             if (won)

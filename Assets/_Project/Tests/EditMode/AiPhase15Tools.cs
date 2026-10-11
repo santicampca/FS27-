@@ -51,7 +51,7 @@ namespace FS27.Core.Tests
             "goalsShot", "goalsRebound", "goalsDeflection", "goalsCross", "goalsUnknown", "goalsDirect", "goalsInferred", "goalsNoEvidence", "goalsShotLogged",
             "fkTaken", "fkKicked", "fkShot", "fkPass", "fkOther", "fkGoal", "fkWall",
             "dgFouls", "dgFoulsFinal", "dgFoulsChance", "dgClosed", "dgLostTime", "dgShot", "dgGoal", "dgLost", "dgProgress", "dgChanceClosed", "dgChanceShot", "dgChanceGoal",
-            "dgCtlN", "dgCtlShot", "dgCtlGoal", "dgCtlLost", "dgAwarded", "dgPrepared", "dgTaken", "dgAnomalies", "dgStopSteps", "dgPlayed"
+            "dgCtlN", "dgCtlShot", "dgCtlGoal", "dgCtlLost", "dgPenalties", "dgAwarded", "dgPrepared", "dgTaken", "dgAnomalies", "dgStopSteps", "dgPlayed"
         };
 
         private static double[] SideValues(AiDiagnostics d, AttackSim r, int sideIndex)
@@ -80,7 +80,7 @@ namespace FS27.Core.Tests
                 d.GoalsByEvidence(GoalEvidence.Direct), d.GoalsByEvidence(GoalEvidence.Inferred), d.GoalsByEvidence(GoalEvidence.None), Enumerable.Range(0, d.GoalLogCount).Count(i => d.GoalAt(i).ShotLogged),
                 r.FkTaken[sideIndex], r.FkKicked[sideIndex], r.FkShot[sideIndex], r.FkPass[sideIndex], r.FkOther[sideIndex], r.FkGoal[sideIndex], r.FkWall[sideIndex],
                 r.DgFouls[sideIndex], r.DgFoulsFinal[sideIndex], r.DgFoulsChance[sideIndex], r.DgClosed[sideIndex], r.DgLostTime[sideIndex], r.DgShot[sideIndex], r.DgGoal[sideIndex], r.DgLost[sideIndex], r.DgProgress[sideIndex], r.DgChanceClosed[sideIndex], r.DgChanceShot[sideIndex], r.DgChanceGoal[sideIndex],
-                r.DgCtlN[sideIndex], r.DgCtlShot[sideIndex], r.DgCtlGoal[sideIndex], r.DgCtlLost[sideIndex], r.DgAwarded[sideIndex], r.DgPrepared[sideIndex], r.DgTaken[sideIndex], r.DgAnomalies[sideIndex], r.DgStopSteps, r.DgPlayed
+                r.DgCtlN[sideIndex], r.DgCtlShot[sideIndex], r.DgCtlGoal[sideIndex], r.DgCtlLost[sideIndex], r.DgPenalties[sideIndex], r.DgAwarded[sideIndex], r.DgPrepared[sideIndex], r.DgTaken[sideIndex], r.DgAnomalies[sideIndex], r.DgStopSteps, r.DgPlayed
             };
         }
 

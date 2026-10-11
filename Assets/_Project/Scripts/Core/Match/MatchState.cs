@@ -13,6 +13,8 @@ namespace FS27.Core
         public bool OwnGoal { get; internal set; }
         public float MatchTime { get; internal set; }
         public MatchPeriod Period { get; internal set; }
+        /// <summary>Phase 23: the VAR disallowed this goal (it stays in the list as a record; the score no longer counts it).</summary>
+        public bool Disallowed { get; internal set; }
     }
 
     /// <summary>
@@ -33,6 +35,12 @@ namespace FS27.Core
         public CardDecision Card { get; internal set; }
         /// <summary>What showing the card did (Issued, a second yellow, a red). Meaningful only when <see cref="Card"/> is not None.</summary>
         public CardResult CardResult { get; internal set; }
+        /// <summary>Phase 23: the VAR decided there was no foul (a cancelled penalty): the record stays, the counts were taken back.</summary>
+        public bool Overturned { get; internal set; }
+        /// <summary>Phase 23: the VAR rescinded the red card of this foul.</summary>
+        public bool CardOverturned { get; internal set; }
+        /// <summary>Phase 23: the VAR gave a red card the referee had not shown.</summary>
+        public bool CardUpgraded { get; internal set; }
     }
 
     /// <summary>
@@ -93,6 +101,8 @@ namespace FS27.Core
         public int FreeKicksAwarded { get; internal set; }
         /// <summary>Phase 23: the penalty (in the match or a kick of the shoot-out) the match is handling, or the last one (null before the first).</summary>
         public PenaltyState Penalty { get; internal set; }
+        /// <summary>Phase 23: the VAR of the match (incidents, reviews, the one running). Always present; empty in Arena.</summary>
+        public VarState Var { get; } = new VarState();
         /// <summary>Phase 23: how many penalties and shoot-out kicks were set up.</summary>
         public int PenaltiesAwarded { get; internal set; }
         public bool HasResult { get; internal set; }

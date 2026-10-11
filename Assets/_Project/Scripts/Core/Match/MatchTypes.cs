@@ -31,7 +31,9 @@ namespace FS27.Core
         /// <summary>The interval between two timed periods (half-time, extra-time break). Only modes with a break use it. The clock is stopped.</summary>
         Break,
         /// <summary>The penalty shoot-out. The match clock is not used; no ball is judged.</summary>
-        Shootout
+        Shootout,
+        /// <summary>Phase 23: the VAR is reviewing an incident. The clock is stopped, nobody acts, the AI waits; the ball keeps whatever it was doing (like a pause).</summary>
+        VarReview
     }
 
     public enum RestartKind
@@ -306,6 +308,13 @@ namespace FS27.Core
         {
             if (side == TeamSide.Home) Home++;
             else Away++;
+        }
+
+        /// <summary>Phase 23: a goal the VAR disallowed is taken off the score.</summary>
+        internal void Remove(TeamSide side)
+        {
+            if (side == TeamSide.Home) Home = Math.Max(0, Home - 1);
+            else Away = Math.Max(0, Away - 1);
         }
     }
 

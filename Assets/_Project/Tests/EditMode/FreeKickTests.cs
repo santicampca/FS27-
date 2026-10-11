@@ -44,6 +44,7 @@ namespace FS27.Core.Tests
                 c.PlacePlayer(TeamSide.Away, "as" + i, new Vec2(i == 0 ? 19f : 10f + i, i == 0 ? 3f : -10f + i * 4f), FkWest.ToHeading());
             }
             Assert.IsTrue(c.ConfirmRestartReady());
+            c.Penalties.Enabled = false;   // Phase 23: these tests are about the free kick, also near the goal; a foul inside the area is a penalty (PenaltyTests) unless the penalties are switched off
             return c;
         }
 
