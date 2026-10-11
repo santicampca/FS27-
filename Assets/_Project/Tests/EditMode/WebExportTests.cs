@@ -41,7 +41,7 @@ namespace FS27.Core.Tests
 
         private static void WebCheckOrWrite(string file, string text)
         {
-            string path = WebDataPath(file);
+            string path = WebDataPath(file.Replace('/', Path.DirectorySeparatorChar));
             if (WebWrite) { Directory.CreateDirectory(Path.GetDirectoryName(path)); File.WriteAllText(path, text + "\n"); return; }
             Assert.IsTrue(File.Exists(path), file + " does not exist: run Tools/webdata.sh");
             Assert.AreEqual(text + "\n", File.ReadAllText(path), file + " is stale: the Core changed. Run Tools/webdata.sh and commit the result.");
@@ -69,7 +69,7 @@ namespace FS27.Core.Tests
             var o = JsonValue.NewObject();
             o.Set("id", S(Pid(p.Id))).Set("name", S(p.Name)).Set("shortName", S(p.ResolveShortName())).Set("number", N(p.Number)).Set("line", S(p.Role.ToString())).Set("nationality", S(p.NationalityCode))
                 .Set("age", N(p.Age)).Set("heightCm", N(p.HeightCm)).Set("weightKg", N(p.WeightKg)).Set("foot", S(p.PreferredFoot.ToString())).Set("weakFoot", N(p.WeakFootQuality)).Set("body", S(p.BodyType.ToString()))
-                .Set("rating", N(card.HeadlineRating)).Set("overall", N(card.Overall)).Set("isGoalkeeper", B(card.IsGoalkeeper)).Set("attributes", attrs);
+                .Set("maxSpeed", N(LocomotionProfile.Resolve(a, new LocomotionTuning()).MaxSpeed)).Set("rating", N(card.HeadlineRating)).Set("overall", N(card.Overall)).Set("isGoalkeeper", B(card.IsGoalkeeper)).Set("attributes", attrs);
             if (card.IsGoalkeeper)
             {
                 var caps = JsonValue.NewObject();
@@ -116,12 +116,22 @@ namespace FS27.Core.Tests
                 teamsArr.Add(tv);
             }
             root.Set("teams", teamsArr);
+            var assignerAll = new RolePositionAssigner(Db.Profiles);
+            JsonValue LineupValue(RoleAssignment ra) { return JsonValue.NewObject().Set("goalkeeper", S(Pid(ra.GoalkeeperId))).Set("field", Arr(Enumerable.Range(0, ra.FieldPlayerIds.Count), i => JsonValue.NewObject().Set("id", S(Pid(ra.FieldPlayerIds[i]))).Set("depth", N(ra.FieldSlots[i].Relative.X)).Set("width", N(ra.FieldSlots[i].Relative.Y)).Set("zone", S(ra.FieldSlots[i].Zone.ToString())))); }
+            TeamDefinition userTeam = Db.Teams.First(t => t.Kind == TeamKind.User);
+            Assert.IsTrue(Rosters.TryGetRoster(userTeam.Id, out TeamRoster userRoster));
+            root.Set("userFormations", Arr(Db.BaseFormations.All, f => { Assert.IsTrue(assignerAll.TryAssign(userRoster, f, Db.Players, out RoleAssignment ura, out string up), up); return JsonValue.NewObject().Set("id", S(f.Id)).Set("name", S(f.Name)).Set("lineup", LineupValue(ura)); }));
+            var orders = JsonValue.NewObject();
+            for (int ti = 0; ti < Db.Teams.Count; ti++) { MatchController oc = RealMatch(ti, (ti + 1) % Db.Teams.Count, 1, MatchSettings.CreateClassic()); orders.Set(Db.Teams[ti].Id, Arr(oc.ShootoutOrderFor(TeamSide.Home), x => S(Pid(x)))); }
+            root.Set("shootoutDefaultOrder", orders);
             root.Set("unassignedPlayerIds", Arr(Db.Players.All.Select(p => p.Id).Where(id => !assigned.Contains(id)).OrderBy(x => x, StringComparer.Ordinal).Select(Pid), x => S(x)));
 
-            var pt = new PenaltyTuning(); var vt = new VarTuning(); var zt = new ZenitTuning();
+            var pt = new PenaltyTuning(); var vt = new VarTuning(); var zt = new ZenitTuning(); var lt = new LocomotionTuning();
             root.Set("config", JsonValue.NewObject()
                 .Set("var", JsonValue.NewObject().Set("enabledInClassic", B(vt.Enabled)).Set("costGoalZp", N(vt.CostGoalZp)).Set("costRedCardZp", N(vt.CostRedCardZp)).Set("costPenaltyZp", N(vt.CostPenaltyZp)).Set("requestsPerTeam", N(vt.RequestsPerTeam)).Set("reviewSeconds", N(vt.ReviewSeconds)).Set("windowSeconds", N(vt.WindowSeconds)).Set("requireHumanRequester", B(vt.RequireHumanRequester)))
-                .Set("penalty", JsonValue.NewObject().Set("spotDistance", N(pt.SpotDistance)).Set("areaDepth", N(pt.AreaDepth)).Set("maxHeight", N(pt.MaxHeight)))
+                .Set("penalty", JsonValue.NewObject().Set("spotDistance", N(pt.SpotDistance)).Set("areaDepth", N(pt.AreaDepth)).Set("maxHeight", N(pt.MaxHeight)).Set("maxLateral", N(pt.MaxLateral))
+                    .Set("ai", JsonValue.NewObject().Set("sideLateral", N(pt.AiSideLateral)).Set("sideAccuracyBonus", N(pt.AiSideAccuracyBonus)).Set("centreChance", N(pt.AiCentreChance)).Set("highChance", N(pt.AiHighChance)).Set("keeperCentreChance", N(pt.AiKeeperCentreChance)).Set("keeperHighChance", N(pt.AiKeeperHighChance)).Set("power", N(pt.AiPower))))
+                .Set("locomotion", JsonValue.NewObject().Set("walkThreshold", N(lt.WalkThreshold)).Set("sprintThreshold", N(lt.SprintThreshold)).Set("maxStamina", N(lt.MaxStamina)).Set("baseStaminaDrain", N(lt.BaseStaminaDrain)).Set("sprintMultiplier", N(lt.SprintMultiplier)).Set("baseStaminaRecovery", N(lt.BaseStaminaRecovery)).Set("walkRecoveryFactor", N(lt.WalkRecoveryFactor)).Set("exhaustedThreshold", N(lt.ExhaustedThreshold)))
                 .Set("zenit", JsonValue.NewObject().Set("starterGrant", N(zt.StarterGrant)).Set("rewardMatchCompleted", N(zt.RewardMatchCompleted)).Set("rewardMatchWon", N(zt.RewardMatchWon)).Set("rewardMatchDrawn", N(zt.RewardMatchDrawn)).Set("rewardTrainingCompleted", N(zt.RewardTrainingCompleted)).Set("trainingRewardsPerDay", N(zt.TrainingRewardsPerDay)).Set("maxBalance", N(zt.MaxBalance))));
             return Json.Write(root, false);
         }
@@ -453,7 +463,15 @@ namespace FS27.Core.Tests
               for (int i = 1; i <= 5; i++) { int k = i; r("training:2026-01-01:s" + k + ":true", () => ZenitRewards.AwardTrainingCompleted(l, "2026-01-01", "s" + k, true, "t")); }
               r("training:2026-01-01:s1:true", () => ZenitRewards.AwardTrainingCompleted(l, "2026-01-01", "s1", true, "t")); r("training:2026-01-02:s9:true", () => ZenitRewards.AwardTrainingCompleted(l, "2026-01-02", "s9", true, "t")); r("training:2026-01-02:s10:false", () => ZenitRewards.AwardTrainingCompleted(l, "2026-01-02", "s10", false, "t"));
               ledgerScripts.Add(finish("rewards", l, ops)); }
-            var root = JsonValue.NewObject().Set("schema", S(WebSchema)).Set("kind", S("vectors")).Set("shootout", shoot).Set("ledger", ledgerScripts)
+            var ai = JsonValue.NewArray(); var pt2 = new PenaltyTuning(); var prng = new Random(77);
+            for (int i = 0; i < 60; i++)
+            {
+                float r1 = (float)Math.Round(prng.NextDouble(), 3), r2 = (float)Math.Round(prng.NextDouble(), 3), r3 = (float)Math.Round(prng.NextDouble(), 3), q = (float)Math.Round(prng.NextDouble(), 3);
+                PenaltyShotAim k = PenaltyAi.Kick(q, r1, r2, r3, pt2); PenaltyKeeperAim g = PenaltyAi.Keeper(r1, r2, r3, pt2);
+                ai.Add(JsonValue.NewObject().Set("r1", N(r1)).Set("r2", N(r2)).Set("r3", N(r3)).Set("quality", N(q)).Set("kick", JsonValue.NewObject().Set("lateral", N(k.Lateral)).Set("height", N(k.Height)).Set("power", N(k.Power)))
+                    .Set("keeper", JsonValue.NewObject().Set("lateral", N(g.Lateral)).Set("high", B(g.High))));
+            }
+            var root = JsonValue.NewObject().Set("schema", S(WebSchema)).Set("kind", S("vectors")).Set("penaltyAi", ai).Set("shootout", shoot).Set("ledger", ledgerScripts)
                 .Set("zenit", JsonValue.NewObject().Set("tuning", JsonValue.NewObject().Set("starterGrant", N(ZenitDefaults.StarterGrant)).Set("rewardMatchCompleted", N(ZenitDefaults.RewardMatchCompleted)).Set("rewardMatchWon", N(ZenitDefaults.RewardMatchWon)).Set("rewardMatchDrawn", N(ZenitDefaults.RewardMatchDrawn)).Set("rewardTrainingCompleted", N(ZenitDefaults.RewardTrainingCompleted)).Set("trainingRewardsPerDay", N(ZenitDefaults.TrainingRewardsPerDay)).Set("maxBalance", N(ZenitDefaults.MaxBalance))));
             return Json.Write(root, false);
         }
@@ -498,23 +516,37 @@ namespace FS27.Core.Tests
                 .Set("frames", frames).Set("events", events);
         }
 
-        private static string BuildTraces()
+        private static readonly int[][] TracePairs = { new[] { 11, 0 }, new[] { 0, 1 }, new[] { 2, 3 }, new[] { 9, 10 } };
+
+        private static string TraceId(GameMode mode, int h, int a) { return mode.ToString().ToLowerInvariant() + "-" + Db.Teams[h].Id.Replace("team-", "") + "-vs-" + Db.Teams[a].Id.Replace("team-", ""); }
+
+        private static Dictionary<string, string> BuildTraces()
         {
-            var list = JsonValue.NewArray();
-            list.Add(TraceOf(GameMode.Arena, 5003, 0, 3, 90f));
-            list.Add(TraceOf(GameMode.Classic, 5007, 1, 4, 90f));
-            var root = JsonValue.NewObject().Set("schema", S(WebSchema)).Set("kind", S("traces")).Set("traces", list)
-                .Set("note", S("Grabaciones de partidos reales simulados por el Core (IA del Core en ambos equipos, dificultad Professional). Son repeticiones: la web las reproduce, no las decide."));
-            return Json.Write(root, false);
+            var files = new Dictionary<string, string>(); var index = JsonValue.NewArray();
+            foreach (GameMode mode in new[] { GameMode.Arena, GameMode.Classic })
+                foreach (int[] pr in TracePairs)
+                {
+                    string id = TraceId(mode, pr[0], pr[1]);
+                    JsonValue t = TraceOf(mode, 5000 + pr[0] * 13 + pr[1], pr[0], pr[1], 90f);
+                    files["traces/" + id + ".json"] = Json.Write(JsonValue.NewObject().Set("schema", S(WebSchema)).Set("kind", S("trace")).Set("id", S(id)).Set("trace", t), false);
+                    index.Add(JsonValue.NewObject().Set("id", S(id)).Set("mode", S(mode.ToString())).Set("home", S(Db.Teams[pr[0]].Id)).Set("away", S(Db.Teams[pr[1]].Id)).Set("seconds", N(90)).Set("file", S("traces/" + id + ".json")));
+                }
+            files["traces/index.json"] = Json.Write(JsonValue.NewObject().Set("schema", S(WebSchema)).Set("kind", S("trace-index")).Set("traces", index)
+                .Set("note", S("Grabaciones de partidos reales simulados por el Core (IA del Core en ambos equipos, dificultad Professional, 90 s). Son repeticiones: la web las reproduce, no las decide.")), false);
+            return files;
         }
 
         [Test]
-        public void WebExport_Traces_AreRealMatches_AndTheCommittedFileIsNotStale()
+        public void WebExport_Traces_AreRealMatches_AndTheCommittedFilesAreNotStale()
         {
-            string text = BuildTraces();
-            JsonValue v = Json.Parse(text);
-            foreach (JsonValue t in v.Members["traces"].Items) { Assert.Greater(t.Members["frames"].Items.Count, 800); Assert.AreEqual(4 + 24, t.Members["frames"].Items[0].Items.Count); }
-            WebCheckOrWrite("fs27-traces.json", text);
+            Dictionary<string, string> files = BuildTraces();
+            Assert.AreEqual(2 * TracePairs.Length + 1, files.Count);
+            foreach (var kv in files.Where(f => f.Key != "traces/index.json"))
+            {
+                JsonValue t = Json.Parse(kv.Value).Members["trace"];
+                Assert.Greater(t.Members["frames"].Items.Count, 800, kv.Key); Assert.AreEqual(4 + 24, t.Members["frames"].Items[0].Items.Count);
+            }
+            foreach (var kv in files) WebCheckOrWrite(kv.Key, kv.Value);
         }
     }
 }
