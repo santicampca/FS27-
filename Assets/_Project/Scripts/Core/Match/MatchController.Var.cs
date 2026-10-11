@@ -153,6 +153,9 @@ namespace FS27.Core
             return r;
         }
 
+        /// <summary>What the review of an incident would conclude right now (for a client that shows "the VAR would..." and for the tests): Confirmed or Corrected.</summary>
+        public VarResult DecisionPreview(int incidentId) { RefereeIncident i = State.Var.Find(incidentId); return i == null ? VarResult.NotReviewable : DecisionFor(i).Result; }
+
         /// <summary>The consequence of the original decision is still waiting (a penalty not yet kicked, a goal not yet restarted from the centre, a free kick not yet whistled): the review stays possible while it is.</summary>
         private bool ConsequencePending(RefereeIncident i)
         {
