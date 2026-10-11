@@ -95,7 +95,10 @@ namespace FS27.Core
         /// <summary>The taker of a free kick plays it to a team-mate.</summary>
         FreeKickPass,
         /// <summary>The taker of a free kick has nobody to pass to: he sends it forward.</summary>
-        FreeKickClear
+        FreeKickClear,
+        // Phase 23 (appended)
+        /// <summary>A penalty is being taken: the goalkeeper's dive is moved by the Core.</summary>
+        PenaltyHold
     }
 
     /// <summary>

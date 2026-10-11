@@ -49,7 +49,16 @@ namespace FS27.Core
         /// <summary>The foul stopped play: the ball is at the spot and taker and wall are being set up. Published once per free kick. Position = the spot, Team = the team that takes it, PlayerId = the taker.</summary>
         FreeKickPrepared,
         /// <summary>The whistle: the free kick is in play. Published once per free kick. Position = the spot, Team = the team that takes it, PlayerId = the taker.</summary>
-        FreeKickTaken
+        FreeKickTaken,
+        // ---- Phase 23 (appended)
+        /// <summary>A penalty (or a kick of the shoot-out) is set up: taker, goalkeeper and everybody else are in place.</summary>
+        PenaltyPrepared,
+        /// <summary>The whistle of a penalty: the taker may kick.</summary>
+        PenaltyWhistled,
+        /// <summary>The ball hit a post or the crossbar during a penalty (detail Post / Bar).</summary>
+        PenaltyFrameHit,
+        /// <summary>The taker of a penalty in the match played the ball a second time before anybody else touched it.</summary>
+        PenaltySecondTouch
     }
 
     /// <summary>One thing that happened. Plain data, stamped with the Core time, never with Unity time.</summary>

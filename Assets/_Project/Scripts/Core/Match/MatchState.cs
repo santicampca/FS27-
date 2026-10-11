@@ -91,6 +91,10 @@ namespace FS27.Core
         public FreeKickState FreeKick { get; internal set; }
         /// <summary>Phase 22: how many free kicks were awarded (and stopped play).</summary>
         public int FreeKicksAwarded { get; internal set; }
+        /// <summary>Phase 23: the penalty (in the match or a kick of the shoot-out) the match is handling, or the last one (null before the first).</summary>
+        public PenaltyState Penalty { get; internal set; }
+        /// <summary>Phase 23: how many penalties and shoot-out kicks were set up.</summary>
+        public int PenaltiesAwarded { get; internal set; }
         public bool HasResult { get; internal set; }
         public MatchResult Result { get; internal set; }
         public MatchTerminationReason Termination => Result.Reason;

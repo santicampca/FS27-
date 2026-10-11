@@ -37,6 +37,10 @@ namespace FS27.Core
         public Vec2 RestartPosition;
         /// <summary>Phase 22: the taker of the free kick that has just been whistled and not yet played (null otherwise). He must play it (shoot or pass), not carry it.</summary>
         public string FreeKickTakerId;
+        /// <summary>Phase 23: the whistle of a penalty has gone and nobody has kicked yet: nobody decides anything (the taker is told by the Core).</summary>
+        public bool PenaltyHold;
+        /// <summary>Phase 23: the goalkeeper who is diving on a penalty (the Core moves him until he touches the ball); the AI leaves him alone. Null otherwise.</summary>
+        public string PenaltyKeeperId;
     }
 
     /// <summary>The ball as the AI needs to see it.</summary>

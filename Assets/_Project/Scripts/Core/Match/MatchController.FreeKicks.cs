@@ -350,6 +350,7 @@ namespace FS27.Core
         /// </summary>
         private void TickRestartWait(float dt)
         {
+            if (State.PendingRestart.Kind == RestartKind.Penalty) { TickPenaltyWait(dt); return; }
             FreeKickState fk = State.FreeKick;
             if (State.PendingRestart.Kind != RestartKind.FreeKick || fk == null || !fk.Active) return;
 
@@ -364,7 +365,7 @@ namespace FS27.Core
             if (State.Home.NeedsGoalkeeper || State.Away.NeedsGoalkeeper)
             {
                 fk.KeeperWaitSeconds += dt;
-                if (fk.KeeperWaitSeconds >= freeKick.KeeperVacancySeconds) FillVacantGoals();
+                if (fk.KeeperWaitSeconds >= freeKick.KeeperVacancySeconds) FillVacantGoals(fk.Spot, fk.TakerId);
                 return;
             }
             fk.KeeperWaitSeconds = 0f;
@@ -378,9 +379,8 @@ namespace FS27.Core
         /// Safety net: a team that still has nobody in goal gets a keeper. A substitute keeper comes on when the team still has a substitution (for the field player farthest from the ball, never the taker);
         /// otherwise the field player with the best reading of the game puts the gloves on. Deterministic. The normal way is the coach calling <see cref="TryReplaceDismissedKeeper"/> / <see cref="TryAssignEmergencyKeeper"/> first.
         /// </summary>
-        private void FillVacantGoals()
+        private void FillVacantGoals(Vec2 spot, string takerId)
         {
-            FreeKickState fk = State.FreeKick;
             foreach (TeamMatchState team in new[] { State.Home, State.Away })
             {
                 if (!team.NeedsGoalkeeper) continue;
@@ -392,8 +392,8 @@ namespace FS27.Core
                     for (int i = 0; i < team.Players.Count; i++)
                     {
                         MatchPlayer p = team.Players[i];
-                        if (!p.IsActive || p.InGoal || p.PlayerId == fk.TakerId) continue;
-                        float d = (p.Locomotion.Position - fk.Spot).Magnitude;
+                        if (!p.IsActive || p.InGoal || p.PlayerId == takerId) continue;
+                        float d = (p.Locomotion.Position - spot).Magnitude;
                         if (d > farthest + 1e-6f) { leaving = p; farthest = d; }
                     }
                     if (leaving != null && TryReplaceDismissedKeeper(team.Side, bench.PlayerId, leaving.PlayerId) == SubstitutionResult.Accepted) continue;
@@ -403,13 +403,13 @@ namespace FS27.Core
                 for (int i = 0; i < team.Players.Count; i++)
                 {
                     MatchPlayer p = team.Players[i];
-                    if (!p.IsActive || p.InGoal || p.PlayerId == fk.TakerId) continue;
+                    if (!p.IsActive || p.InGoal || p.PlayerId == takerId) continue;
                     if (p.ActionProfile.InterceptQuality > best + 1e-6f) { reader = p; best = p.ActionProfile.InterceptQuality; }
                 }
                 if (reader != null) TryAssignEmergencyKeeper(team.Side, reader.PlayerId);
             }
             // the set-up is done again with the new keeper in goal
-            if (State.PendingRestart.Status == RestartStatus.Placed) PrepareRestart();
+            if (State.PendingRestart.Status == RestartStatus.Placed && State.Phase == MatchPhase.WaitingForRestart) PrepareRestart();
         }
 
         // ------------------------------------------------------------------ the whistle
@@ -417,6 +417,7 @@ namespace FS27.Core
         /// <summary>The whistle of a free kick (called by <see cref="ConfirmRestartReady"/> when play resumes): the opponents are protected from the ball for a moment, <see cref="GameplayEventKind.FreeKickTaken"/> once.</summary>
         private void OnRestartWhistle()
         {
+            OnPenaltyWhistle();
             FreeKickState fk = State.FreeKick;
             if (fk == null || !fk.Active || State.PendingRestart.Kind != RestartKind.FreeKick) return;
             fk.Stage = FreeKickStage.Protected;

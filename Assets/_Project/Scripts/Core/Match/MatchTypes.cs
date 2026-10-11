@@ -46,6 +46,13 @@ namespace FS27.Core
     }
 
     /// <summary>Where a restart is in its life: asked for, players placed, play resumed.</summary>
+    /// <summary>How the kicks of a shoot-out are played (Phase 23).</summary>
+    public enum ShootoutExecutionMode
+    {
+        Recorded = 0,
+        Simulated
+    }
+
     public enum RestartStatus
     {
         Pending = 0,
@@ -181,6 +188,8 @@ namespace FS27.Core
         /// <summary>Kicks per team before sudden death (3). The ONLY place the number is read from; the shoot-out state takes it as a parameter.</summary>
         public int ShootoutKicksPerTeam = MatchDefaults.ShootoutKicksPerTeam;
         public bool ShootoutSuddenDeath = true;
+        /// <summary>Phase 23: how the kicks of a shoot-out are played. Recorded (the default, the older behaviour) = the host reports each result with RecordShootoutKick; Simulated = the Core plays them (Classic: real ball, goal frame and goalkeeper; Arena: the arcade duel).</summary>
+        public ShootoutExecutionMode ShootoutExecution = ShootoutExecutionMode.Recorded;
         public TeamSide ShootoutFirstTeam = TeamSide.Home;
 
         // ---- squads, substitutions, minimum players ----

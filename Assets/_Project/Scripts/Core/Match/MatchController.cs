@@ -63,7 +63,7 @@ namespace FS27.Core
         private readonly MatchSettings settings;
         private readonly IGameModeRules rules;
         private readonly BallParameters ballParameters;
-        private readonly IBallCollider[] colliders;
+        private IBallCollider[] colliders;
         private readonly ArenaWalls walls;
         private readonly LocomotionTuning locomotion;
         private MatchPhase phaseBeforePause;
@@ -162,7 +162,7 @@ namespace FS27.Core
         public void Advance(float dt)
         {
             if (dt < 0f) dt = 0f;
-            if (State.Phase == MatchPhase.Playing)
+            if (ActionsLive)
             {
                 int bouncesBefore = walls != null ? walls.BounceCount : 0;
                 BallSimulator.Step(ref State.Ball.Physics, ballParameters, dt, colliders);
@@ -172,8 +172,8 @@ namespace FS27.Core
                     Emit(GameplayEventKind.BallBouncedOffWall, null, null, walls.LastBouncePosition, "Wall");
                 }
             }
-            if (State.Phase == MatchPhase.Playing) { StepLocomotion(dt); StepPlayerSpace(); StepFreeKickProtection(dt); }
-            if (State.Phase == MatchPhase.Playing) StepBallInteractions(dt);
+            if (ActionsLive) { StepLocomotion(dt); StepPlayerSpace(); StepFreeKickProtection(dt); StepPenalty(dt); }
+            if (ActionsLive) StepBallInteractions(dt);
             Tick(dt, new BallObservation(State.Ball.Physics.Position, ballParameters.Radius));
         }
 
@@ -232,6 +232,9 @@ namespace FS27.Core
                 case MatchPhase.WaitingForRestart:
                     TickRestartWait(dt);
                     break;
+                case MatchPhase.Shootout:
+                    TickShootout(dt, ball);
+                    break;
                 case MatchPhase.GoalCelebration:
                     TickCelebration(dt);
                     break;
@@ -286,7 +289,7 @@ namespace FS27.Core
         /// <summary>The ball is in the hands/feet of a player: his team has possession. Raises PossessionChanged when the team changes.</summary>
         public bool GiveBallTo(TeamSide team, string playerId)
         {
-            if (State.Phase != MatchPhase.Playing) return false;
+            if (!ActionsLive) return false;
             if (playerId != null)
             {
                 MatchPlayer p = State.Team(team).Find(playerId);
@@ -297,6 +300,7 @@ namespace FS27.Core
             State.Ball.PossessingTeam = team;
             State.Ball.PossessingPlayerId = playerId;
             State.Ball.Mode = BallMode.Controlled;
+            OnPenaltyPossession(playerId);
             if (!hasLastPossessor || lastPossessor != team)
             {
                 hasLastPossessor = true;
@@ -466,7 +470,8 @@ namespace FS27.Core
             }
             State.AddDiscipline(record);
             // Phase 22: the foul stops play and the fouled team takes the free kick (only in live play, once)
-            BeginFreeKick(offenderTeam, offenderId, victimId, decision.Reasons, Flat(position), State.Discipline.Count - 1);
+            if (!BeginPenalty(offenderTeam, offenderId, victimId, decision.Reasons, Flat(position), State.Discipline.Count - 1))
+                BeginFreeKick(offenderTeam, offenderId, victimId, decision.Reasons, Flat(position), State.Discipline.Count - 1);
             return result;
         }
 
@@ -502,7 +507,7 @@ namespace FS27.Core
         /// <summary>Records the next penalty of the shoot-out (the physical execution is a later phase). Returns false when there is no shoot-out running.</summary>
         public bool RecordShootoutKick(bool scored)
         {
-            if (State.Phase != MatchPhase.Shootout || State.Shootout == null) return false;
+            if (State.Phase != MatchPhase.Shootout || State.Shootout == null || settings.ShootoutExecution == ShootoutExecutionMode.Simulated) return false;
             TeamSide taker = State.Shootout.NextTeam;
             if (!State.Shootout.RecordKick(scored)) return false;
             Emit(GameplayEventKind.PenaltyKickTaken, taker, null, Vec3.Zero, scored ? "Scored" : "Missed");
@@ -567,6 +572,7 @@ namespace FS27.Core
                     goal.AssistId = b.PreviousTouchPlayerId;
             }
             State.AddGoal(goal);
+            OnPenaltyGoal();
             Emit(GameplayEventKind.GoalScored, scoring, goal.ScorerId, b.Physics.Position, goal.OwnGoal ? "OwnGoal" : "", goal.AssistId);
         }
 
@@ -681,6 +687,7 @@ namespace FS27.Core
             State.Shootout = new PenaltyShootoutState(settings.ShootoutKicksPerTeam, settings.ShootoutSuddenDeath, settings.ShootoutFirstTeam);
             SetPhase(MatchPhase.Shootout);
             Emit(GameplayEventKind.PenaltyShootoutStarted);
+            OnShootoutStarted();
         }
 
         private void Finish(MatchTerminationReason reason, TeamSide? technicalWinner)
@@ -720,6 +727,7 @@ namespace FS27.Core
         {
             // another restart closes a free kick that was still open (the ball went out, a goal was scored before it was played)
             if (request.Kind != RestartKind.FreeKick && State.FreeKick != null && State.FreeKick.Stage != FreeKickStage.None && State.FreeKick.Stage != FreeKickStage.Done) State.FreeKick.Stage = FreeKickStage.Done;
+            if (request.Kind != RestartKind.Penalty && PenaltyOn && State.Penalty.Kind == PenaltyKind.InMatch) FinishPenalty(null);
             State.PendingRestart = request;
             State.Ball.Physics = new BallState(Vec3.FromXZ(request.Position, ballParameters.Radius), Vec3.Zero) { IsGrounded = true };
             SetPhase(request.Kind == RestartKind.KickOff ? MatchPhase.WaitingForKickoff : MatchPhase.WaitingForRestart);

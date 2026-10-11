@@ -198,6 +198,7 @@ namespace FS27.Core
             RestartRequest r = State.PendingRestart;
             if (r.Status == RestartStatus.Confirmed) return false;
             if (r.Kind == RestartKind.FreeKick) return PrepareFreeKick();
+            if (r.Kind == RestartKind.Penalty) return PreparePenaltyInMatch();
             if (r.Kind == RestartKind.KickOff) { PlaceFormation(TeamSide.Home, true); PlaceFormation(TeamSide.Away, true); }
 
             MatchPlayer taker = r.TakerId != null ? State.Team(r.Team).Find(r.TakerId) : null;
@@ -283,7 +284,7 @@ namespace FS27.Core
         {
             if (State.Phase != MatchPhase.WaitingForKickoff && State.Phase != MatchPhase.WaitingForRestart) return false;
             // a free kick is set up again at the whistle (a card, a formation change or a substitution during the wait must not leave a stale wall)
-            bool setUpAgain = State.PendingRestart.Kind == RestartKind.FreeKick || State.PendingRestart.Status == RestartStatus.Pending;
+            bool setUpAgain = State.PendingRestart.Kind == RestartKind.FreeKick || State.PendingRestart.Kind == RestartKind.Penalty || State.PendingRestart.Status == RestartStatus.Pending;
             if (setUpAgain && !PrepareRestart()) return false;
             RestartRequest r = State.PendingRestart;
             if (State.Home.NeedsGoalkeeper || State.Away.NeedsGoalkeeper) return false;

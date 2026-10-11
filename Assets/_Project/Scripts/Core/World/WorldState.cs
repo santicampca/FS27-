@@ -110,6 +110,10 @@ namespace FS27.Core
             RestartRequest r = st.PendingRestart;
             match.RestartKind = pending ? r.Kind : RestartKind.KickOff;
             match.RestartTeam = r.Team; match.RestartTakerId = pending ? r.TakerId : null; match.RestartStatus = r.Status; match.RestartPosition = r.Position;
+            PenaltyState pen = st.Penalty;
+            match.PenaltyHold = pen != null && pen.Stage == PenaltyStage.Whistled;
+            match.PenaltyKeeperId = pen != null && pen.Stage == PenaltyStage.Kicked && !pen.KeeperTouched ? pen.KeeperId : null;
+            match.BallLive = match.BallLive && !match.PenaltyHold;
             match.FreeKickTakerId = st.FreeKick != null && st.FreeKick.InProtection ? st.FreeKick.TakerId : null;
         }
 

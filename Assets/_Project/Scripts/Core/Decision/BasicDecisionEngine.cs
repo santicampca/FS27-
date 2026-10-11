@@ -122,6 +122,7 @@ namespace FS27.Core
             stamina = me.Stamina;
             if (!me.IsOnPitch) return PlayerDecision.Idle(playerId, DecisionReason.NotOnPitch);
             if (!view.Match.BallLive) return PlayerDecision.Idle(playerId, DecisionReason.NotPlaying);
+            if (view.Match.PenaltyKeeperId != null && view.Match.PenaltyKeeperId == playerId) return PlayerDecision.Idle(playerId, DecisionReason.PenaltyHold);
             if (me.ActionLocked) return PlayerDecision.Idle(playerId, DecisionReason.Locked);
             view.Observe(idx, obs);
             if (me.IsGoalkeeper) return Keeper(view, idx, me);

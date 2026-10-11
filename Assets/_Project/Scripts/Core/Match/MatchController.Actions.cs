@@ -69,7 +69,7 @@ namespace FS27.Core
             var res = new ActionResult { Kind = r.Kind, Team = r.Team, PlayerId = r.PlayerId, Outcome = ActionOutcome.Rejected, Source = r.Source };
 
             if (r.Kind == FootballActionKind.None) return Reject(res, ActionRejection.InvalidInput);
-            if (State.Phase != MatchPhase.Playing) return Reject(res, ActionRejection.MatchNotLive);
+            if (!ActionsLive) return Reject(res, ActionRejection.MatchNotLive);
             MatchPlayer p = State.Team(r.Team).Find(r.PlayerId);
             if (p == null) return Reject(res, ActionRejection.UnknownPlayer);
             if (!p.IsActive) return Reject(res, ActionRejection.PlayerNotActive);
@@ -380,6 +380,7 @@ namespace FS27.Core
         /// </summary>
         private ActionResult FirstTouch(MatchPlayer p, float bonus, bool deliberate)
         {
+            NotePenaltyContact(p);
             MatchBall b = State.Ball;
             bool keeper = p.InGoal;
             ActionProfile prof = p.ActionProfile;
@@ -393,7 +394,7 @@ namespace FS27.Core
 
             Vec2 relative = Flat(b.Physics.Velocity) - p.Locomotion.Velocity;
             float vy = b.Physics.Velocity.Y;
-            float relSpeed = (float)Math.Sqrt(relative.X * relative.X + relative.Y * relative.Y + vy * vy);
+            float relSpeed = (float)Math.Sqrt(relative.X * relative.X + relative.Y * relative.Y + vy * vy) * PenaltyKeeperSpeedFactor(p);
 
             var res = new ActionResult { Team = p.Team, PlayerId = p.PlayerId, Foot = foot, Direction = toBallDir };
             float score;
@@ -787,13 +788,14 @@ namespace FS27.Core
                 for (int i = 0; i < team.Players.Count; i++)
                 {
                     MatchPlayer p = team.Players[i];
-                    if (!p.IsActive) continue;
+                    if (!p.IsActive || ShootoutTakerExcluded(p)) continue;
                     if (b.HasLastTouch && b.LastTouchTeam == p.Team && b.LastTouchPlayerId == p.PlayerId && b.SecondsSinceTouch < actions.ReTouchCooldown) continue;
                     // Phase 14: the ball he has just kicked is not his again while his kick is still recovering, even if somebody else touched it in between (a team-mate's control, an opponent's block): before, the
                     // re-touch cooldown above followed the LAST toucher, so one touch by anyone else let the kicker take his own pass back on the very next step
                     if (actions.KickerKeepsOffHisKick > 0f && p.KickCooldownRemaining > 0f) continue;
                     bool keeper = p.InGoal;
                     float reach = keeper ? actions.TouchReach * (actions.KeeperReachBase + actions.KeeperReachRange * p.ActionProfile.KeeperDiving) : actions.TouchReach;
+                    reach = PenaltyKeeperReach(p, reach);
                     float maxHeight = keeper ? field.GoalHeight : actions.MaxTouchHeight;
                     if (height > maxHeight) continue;
                     float d = (ballXY - p.Locomotion.Position).Magnitude;
@@ -802,7 +804,7 @@ namespace FS27.Core
                     bestDistance = d;
                 }
             }
-            if (best == null) return;
+            if (best == null || PenaltyBlocksTouch(best)) return;
             FirstTouch(best, 0f, false);
         }
 
