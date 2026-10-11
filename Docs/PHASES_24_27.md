@@ -90,5 +90,5 @@ Las seis opciones se mantienen (ARENA, CLASSIC, EQUIPO, ENTRENAMIENTO, TIENDA, C
 
 ## 8. Pruebas
 
-* Core: `dotnet test Tests/Core.Tests` (suite completa; ver el informe final para el recuento).
+* Core: `dotnet test Tests/Core.Tests` (suite completa: 2562 pruebas, 0 fallos, 7 min 47 s; incluye 18 de la cartera de ZP y 5 de exportación web).
 * Web: `cd Web/menu && npm run build` ejecuta `check` (rutas, imports, sintaxis, sin recursos externos) + `test` (vectores del Core, datos, laboratorio, VAR) + build. Recorrido en navegador: `node scripts/e2e.mjs [url] [carpeta]` (Playwright opcional): 21 comprobaciones en escritorio (1366×768) y móvil (390×844) — rutas, penal, tanda, VAR, entrenamiento, tienda, cartera, ajustes, teclado, sin errores de consola ni desbordes.
