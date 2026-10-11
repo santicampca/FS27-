@@ -9,7 +9,8 @@ Estado por capa (no se mezclan "hecho" y "pendiente"):
 | Tanda de penales (orden, elegibilidad, muerte súbita) | sí | sí | sí | no |
 | Segundo toque / rebotes | sí | sí | sí | no |
 | VAR Classic + coste ZP | sí | sí (fase `VarReview`) | sí | no |
-| Cartera ZP real, cliente de VAR | **no** (solo contrato `IZenitWallet`) | — | contrato probado con cartera de prueba | — |
+| Cartera ZP (libro, historial, persistencia) | sí, Fase 25 (`ZenitLedger`) | sí (`ZenitLedgerWallet`) | sí | ver `PHASES_24_27.md` |
+| Cliente visual de penales/VAR | web de Fase 24 | resultados reales del Core exportados | sí | ver `PHASES_24_27.md` |
 | Menú web | n/a (separado del Core) | no aplica | `npm run check` | sí (Playwright, escritorio y móvil) |
 
 ## Archivos
@@ -34,7 +35,7 @@ El motor pregunta a `IGameModeRules` (`PlaysPenaltiesPhysically`, `HasVar`); no 
 
 ## Limitaciones honestas
 - Marco de portería solo existe durante penales; en jugada normal el gol sigue siendo el modelo previo.
-- La economía ZP real y el cliente (UI/Unity) del VAR no están conectados; solo el contrato.
+- (Resuelto en las Fases 24-25 para la web; ver `PHASES_24_27.md`.) El cliente Unity sigue sin existir.
 - Sin datos de repetición (replay).
 - Controles de penal de Classic: interpretación propia sin validar con jugadores.
 - El impacto de balance de los penales en Classic no se ha ajustado (ver batería abajo).
