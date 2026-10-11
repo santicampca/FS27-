@@ -1,0 +1,7 @@
+Manual-taker extension check: free kick ON now (commit 3882b61 + diagnostics) against the Phase 22 data (commit cd033aa, before the extension), same seeds
+Novice       5001: 228 shared columns x 20 matches, 0 differing values
+Novice       5101: 228 shared columns x 20 matches, 0 differing values
+Elite        5001: 228 shared columns x 20 matches, 0 differing values
+Elite        5101: 228 shared columns x 20 matches, 0 differing values
+Professional 5001: 228 shared columns x 20 matches, 0 differing values
+Professional 5101: 228 shared columns x 20 matches, 0 differing values

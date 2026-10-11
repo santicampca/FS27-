@@ -15,6 +15,7 @@ namespace FS27.Core.Tests
             foreach (string item in spec.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] kv = item.Split('='), path = kv[0].Trim().Split('.');
+                if (path.Length == 3 && path[1] == "FreeKick") continue;   // Phase 22.1: applied to the controller by ApplyFreeKickExploration
                 if (path.Length != 3 || (path[0] != "A" && path[0] != "C" && path[0] != "*")) throw new ArgumentException("bad exploration item " + item);
                 if (path[0] == "A" && mode != GameMode.Arena) continue;
                 if (path[0] == "C" && mode != GameMode.Classic) continue;
@@ -25,6 +26,24 @@ namespace FS27.Core.Tests
             }
         }
 
+        /// <summary>Phase 22.1 (diagnostics only): FS27_EXP items of the form "C.FreeKick.Field=value" ("C" = Classic only, "*" = both) change a field of the controller's free-kick tuning for this run, e.g. "C.FreeKick.Enabled=0" plays the Phase-21 rules with the Phase-22 code.</summary>
+        private static void ApplyFreeKickExploration(GameMode mode, MatchController c)
+        {
+            string spec = Environment.GetEnvironmentVariable("FS27_EXP");
+            if (string.IsNullOrEmpty(spec)) return;
+            foreach (string item in spec.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                string[] kv = item.Split('='), path = kv[0].Trim().Split('.');
+                if (path.Length != 3 || path[1] != "FreeKick") continue;
+                if (path[0] == "A" && mode != GameMode.Arena) continue;
+                if (path[0] == "C" && mode != GameMode.Classic) continue;
+                System.Reflection.FieldInfo f = c.FreeKick.GetType().GetField(path[2]);
+                if (f == null) throw new ArgumentException("no free-kick field " + item);
+                string v = kv[1].Trim();
+                f.SetValue(c.FreeKick, f.FieldType == typeof(bool) ? (object)(v == "1" || v == "true") : f.FieldType == typeof(int) ? (object)int.Parse(v, System.Globalization.CultureInfo.InvariantCulture) : (object)float.Parse(v, System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
+
         /// <summary>The driver of the last simulation (so that diagnostics can be checked against the driver's own counters).</summary>
         private static BasicDecisionDriver LastDriver;
 
@@ -32,6 +51,10 @@ namespace FS27.Core.Tests
         private const float LowStamina = 20f, VeryLowStamina = 5f;
         /// <summary>Phase 22 diagnostics: a goal counts as coming from a free kick when it is scored by the team that took it within this many seconds of the kick.</summary>
         private const float FkGoalWindow = 8f;
+        /// <summary>Phase 22.1 diagnostics: the length of the window after a foul (and after a control moment), the distance that counts as a chance, the final third (fraction of the pitch length), the control windows' spacing.</summary>
+        private const float DgWindow = 10f, DgChanceDistance = 16f, DgFinalThird = 1f / 3f, DgControlEvery = 15f;
+
+        private sealed class DgWin { public float T0, Dist0, LostAt = -1f; public int Side; public bool Control, Chance, Shot, Goal, Lost; }
 
         /// <summary>Phase 18 diagnostics: called after every step of a simulated match (reading only). Null in the normal tests.</summary>
         private static Action<MatchController, int> StepHook;
@@ -43,6 +66,14 @@ namespace FS27.Core.Tests
             public int Support, Forward, Width, GetOpen;
             /// <summary>Phase 22, per side of the team that took the free kick: taken, kicked by the taker (the rest: lost or run out), shots, passes, other, goals within FkGoalWindow seconds, wall players.</summary>
             public int[] FkTaken = new int[2], FkKicked = new int[2], FkShot = new int[2], FkPass = new int[2], FkOther = new int[2], FkGoal = new int[2], FkWall = new int[2];
+            /// <summary>Phase 22.1 diagnostics (reading only), per side of the FOULED team (the team a foul interrupts), windows of DgWindow match seconds: fouls, fouls in the final third, fouls on a team that had the ball within DgChanceDistance of the goal it attacks,
+            /// windows closed, shots / goals by that team inside the window, possession lost inside it, the progress of the ball towards its goal (metres, summed), and the same for control windows opened every DgControlEvery seconds on the team with the ball.</summary>
+            public int[] DgFouls = new int[2], DgFoulsFinal = new int[2], DgFoulsChance = new int[2], DgClosed = new int[2], DgShot = new int[2], DgGoal = new int[2], DgLost = new int[2], DgChanceClosed = new int[2], DgChanceShot = new int[2], DgChanceGoal = new int[2];
+            public double[] DgProgress = new double[2], DgLostTime = new double[2];
+            public int[] DgCtlN = new int[2], DgCtlShot = new int[2], DgCtlGoal = new int[2], DgCtlLost = new int[2];
+            /// <summary>Per side of the team that takes the free kick: awarded / prepared / taken events, set-up anomalies found at the whistle, and (total) steps spent stopped for a free kick and match seconds played.</summary>
+            public int[] DgAwarded = new int[2], DgPrepared = new int[2], DgTaken = new int[2], DgAnomalies = new int[2];
+            public int DgStopSteps; public float DgPlayed;
             public int AttackSamples, PassDecisions; public long PassLanes; public double Spread, PassDistance;
             public int MoreThanOnePerJob, JobSamples, SupportersNearBall;
             public int[] ToJob = new int[5];
@@ -55,6 +86,7 @@ namespace FS27.Core.Tests
             MatchController c = RealRoles(homeTeam, awayTeam, seed, s);
             var r = new AttackSim();
             r.Assignment = string.Join(",", c.GetRoleAssignment(TeamSide.Home).FieldPlayerIds) + "|" + string.Join(",", c.GetRoleAssignment(TeamSide.Away).FieldPlayerIds);
+            ApplyFreeKickExploration(mode, c);
             Assert.IsTrue(c.ConfirmRestart());
             // the tunings of the mode (what the engine itself would use), with the switches of this run and, for Phase 13 exploration only, overrides from FS27_EXP ("A.BallCarrier.DribbleSpaceHorizon=7;C.Defense.X=1")
             BasicDecisionTuning basicT = BasicDecisionTuning.ForMode(mode); DefenseTuning defenseT = DefenseTuning.ForMode(mode);
@@ -81,6 +113,57 @@ namespace FS27.Core.Tests
                 else r.FkOther[sd]++;
             };
             c.Events.Published += ev => { if (ev.Kind == GameplayEventKind.GoalScored && ev.HasTeam && (int)ev.Team == fkDoneSide && c.State.MatchTimeSeconds - fkDoneTime <= FkGoalWindow) r.FkGoal[fkDoneSide]++; };
+            // Phase 22.1: the windows after each foul and after control moments (reading only)
+            var windows = new List<DgWin>();
+            float nextControl = DgControlEvery;
+            Func<int, float> ballToGoal = side => { Vec2 g = c.Pitch.OpponentGoalCentre(c.State.HomeAttacksPositiveX, side == 0 ? TeamSide.Home : TeamSide.Away); Vec3 b = c.State.Ball.Physics.Position; return (new Vec2(b.X, b.Z) - g).Magnitude; };
+            c.Events.Published += ev =>
+            {
+                float now = c.State.MatchTimeSeconds;
+                switch (ev.Kind)
+                {
+                    case GameplayEventKind.FoulCommitted:
+                        {
+                            int fouled = ev.Team == TeamSide.Home ? 1 : 0;   // the offender's opponent
+                            Vec2 g = c.Pitch.OpponentGoalCentre(c.State.HomeAttacksPositiveX, fouled == 0 ? TeamSide.Home : TeamSide.Away);
+                            float d = (new Vec2(ev.Position.X, ev.Position.Z) - g).Magnitude;
+                            bool had = c.State.Ball.HasPossession && (int)c.State.Ball.PossessingTeam == fouled;
+                            var w = new DgWin { T0 = now, Dist0 = d, Side = fouled, Chance = had && d <= DgChanceDistance };
+                            r.DgFouls[fouled]++; if (d <= c.Pitch.Field.Length * DgFinalThird) r.DgFoulsFinal[fouled]++; if (w.Chance) r.DgFoulsChance[fouled]++;
+                            windows.Add(w);
+                            break;
+                        }
+                    case GameplayEventKind.ShotPerformed:
+                        foreach (DgWin w in windows) if (!w.Shot && (int)ev.Team == w.Side && now - w.T0 <= DgWindow) w.Shot = true;
+                        break;
+                    case GameplayEventKind.GoalScored:
+                        foreach (DgWin w in windows) if (!w.Goal && ev.HasTeam && (int)ev.Team == w.Side && now - w.T0 <= DgWindow) w.Goal = true;
+                        break;
+                    case GameplayEventKind.PossessionChanged:
+                        foreach (DgWin w in windows) if (!w.Lost && ev.HasTeam && (int)ev.Team != w.Side && now - w.T0 <= DgWindow) { w.Lost = true; w.LostAt = now - w.T0; }
+                        break;
+                    case GameplayEventKind.FreeKickAwarded: r.DgAwarded[(int)ev.Team]++; break;
+                    case GameplayEventKind.FreeKickPrepared: r.DgPrepared[(int)ev.Team]++; break;
+                    case GameplayEventKind.FreeKickTaken:
+                        {
+                            int sd = (int)ev.Team; r.DgTaken[sd]++;
+                            FreeKickState f = c.State.FreeKick; MatchPlayer tk = c.State.Team(f.Beneficiary).Find(f.TakerId);
+                            var why = new List<string>();
+                            if (tk == null || !tk.IsActive || tk.InGoal || f.Beneficiary != ev.Team) why.Add("taker");
+                            Vec3 bp = c.State.Ball.Physics.Position;
+                            if ((new Vec2(bp.X, bp.Z) - f.Spot).Magnitude > 0.05f) why.Add("ball-off-spot");
+                            if (Math.Abs(f.Spot.X) > c.Pitch.Field.Length * 0.5f || Math.Abs(f.Spot.Y) > c.Pitch.Field.Width * 0.5f) why.Add("spot-outside");
+                            foreach (MatchPlayer q in c.State.Team(f.Beneficiary.Opponent()).Players)
+                                if (q.IsActive && !q.InGoal && !f.Wall.Contains(q.PlayerId) && (q.Locomotion.Position - f.Spot).Magnitude < c.FreeKick.WallDistance - 0.8f) why.Add("opponent-in-circle " + q.PlayerId + " " + (q.Locomotion.Position - f.Spot).Magnitude.ToString("0.00") + " spot " + f.Spot.X.ToString("0.0") + "," + f.Spot.Y.ToString("0.0"));
+                            foreach (string id in f.Wall) { MatchPlayer q = c.State.Team(f.Beneficiary.Opponent()).Find(id); if (q == null || !q.IsActive || q.InGoal) why.Add("wall-member"); }
+                            bool bad = why.Count > 0;
+                            string anomalyFile = Environment.GetEnvironmentVariable("BAT_ANOM");
+                            if (bad && !string.IsNullOrEmpty(anomalyFile)) System.IO.File.AppendAllText(anomalyFile, "seed " + seed + " t=" + now.ToString("0.0") + " fk#" + f.Number + " " + string.Join("; ", why) + "\n");
+                            if (bad) r.DgAnomalies[sd]++;
+                            break;
+                        }
+                }
+            };
             bool hasLast = false; TeamSide last = TeamSide.Home;
             int steps = (int)(seconds * 60f);
             for (int step = 0; step < steps; step++)
@@ -88,8 +171,30 @@ namespace FS27.Core.Tests
                 driver.Step(c);
                 c.Advance(Dt);
                 StepHook?.Invoke(c, step);
+                if (c.State.Phase == MatchPhase.WaitingForRestart && c.State.PendingRestart.Kind == RestartKind.FreeKick) r.DgStopSteps++;
                 if (c.State.Phase == MatchPhase.WaitingForKickoff || c.State.Phase == MatchPhase.WaitingForRestart) { if (c.ConfirmRestart()) r.Restarts++; else r.Issues++; }
                 else if (c.State.Phase == MatchPhase.GoalCelebration) c.Advance(5f);
+                                {
+                    float now = c.State.MatchTimeSeconds;
+                    if (now >= nextControl)
+                    {
+                        nextControl += DgControlEvery;
+                        if (c.State.Phase == MatchPhase.Playing && c.State.Ball.HasPossession) windows.Add(new DgWin { T0 = now, Side = (int)c.State.Ball.PossessingTeam, Control = true, Dist0 = ballToGoal((int)c.State.Ball.PossessingTeam) });
+                    }
+                    for (int wi = windows.Count - 1; wi >= 0; wi--)
+                    {
+                        DgWin w = windows[wi];
+                        if (now - w.T0 < DgWindow) continue;
+                        double progress = w.Dist0 - ballToGoal(w.Side);
+                        if (w.Control) { r.DgCtlN[w.Side]++; if (w.Shot) r.DgCtlShot[w.Side]++; if (w.Goal) r.DgCtlGoal[w.Side]++; if (w.Lost) r.DgCtlLost[w.Side]++; }
+                        else
+                        {
+                            r.DgClosed[w.Side]++; r.DgProgress[w.Side] += progress; r.DgLostTime[w.Side] += w.Lost ? w.LostAt : DgWindow; if (w.Shot) r.DgShot[w.Side]++; if (w.Goal) r.DgGoal[w.Side]++; if (w.Lost) r.DgLost[w.Side]++;
+                            if (w.Chance) { r.DgChanceClosed[w.Side]++; if (w.Shot) r.DgChanceShot[w.Side]++; if (w.Goal) r.DgChanceGoal[w.Side]++; }
+                        }
+                        windows.RemoveAt(wi);
+                    }
+                }
                 FreeKickState fkNow = c.State.FreeKick;
                 if (fkNow != null && fkNow.Stage == FreeKickStage.Done && fkNow.Number > fkFinal)
                 {
@@ -168,7 +273,7 @@ namespace FS27.Core.Tests
             for (int j = 0; j < 5; j++) r.ToJob[j] = driver.PassesToJob((AttackJob)j);
             for (int j = 0; j < 17; j++) r.Kinds[j] = driver.CountOf((DecisionKind)j);
             r.Dribbles = driver.CountOf(DecisionKind.Dribble); r.Protects = driver.CountOf(DecisionKind.Protect); r.Holds = driver.CountOf(DecisionKind.Hold); r.SpacePasses = driver.SpacePasses; r.ShotOpportunities = driver.ShotOpportunities; r.CarrierDecisions = driver.CarrierDecisions; r.PassCandidates = driver.PassCandidateSum; for (int j = 0; j < 8; j++) { r.Chosen[j] = driver.ChosenCount((CandidateType)j); r.ChosenScore[j] = driver.ChosenScoreSum((CandidateType)j); }
-            r.Goals = c.State.Score.Home + c.State.Score.Away; r.GoalsHome = c.State.Score.Home; r.GoalsAway = c.State.Score.Away;
+            r.DgPlayed = c.State.MatchTimeSeconds; r.Goals = c.State.Score.Home + c.State.Score.Away; r.GoalsHome = c.State.Score.Home; r.GoalsAway = c.State.Score.Away;
             r.Fingerprint = Fingerprint(c) + "|" + r.Decisions + "|" + r.Actions + "|" + r.Passes + "|" + r.Shots + "|" + r.Recoveries + "|" + r.Fouls + "|" + r.Possessions + "|" + r.Losses + "|" + r.Support + "|" + r.Forward + "|" + r.Width + "|" + r.GetOpen + "|" + r.PassLanes + "|" + r.Spread.ToString("R") + "|" + r.Dribbles + "|" + r.Protects + "|" + r.Holds + "|" + r.SpacePasses + "|" + r.ShotOpportunities + "|" + c.State.Score.Home + "-" + c.State.Score.Away;
             return r;
         }

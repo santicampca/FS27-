@@ -1,0 +1,8 @@
+seed 5007 t=489.8 fk#3 opponent-in-circle mo-cole-palmer 3.03 spot 1.2,-11.5
+seed 5016 t=15.0 fk#2 opponent-in-circle mq-declan-rice 1.41 spot -19.0,11.5
+seed 5110 t=33.6 fk#3 opponent-in-circle md-dominik-szoboszlai 3.00 spot -1.1,11.5
+seed 5114 t=40.7 fk#5 opponent-in-circle wg-vinicius-junior 1.82 spot 3.1,11.5
+seed 6002 t=905.1 fk#9 opponent-in-circle sd-raphinha 1.45 spot -13.4,11.5
+seed 6005 t=32.4 fk#1 opponent-in-circle mo-bruno-fernandes 3.02 spot -10.2,-11.5
+seed 6110 t=500.5 fk#5 opponent-in-circle sd-raphinha 2.74 spot 0.2,11.5
+seed 6203 t=265.0 fk#7 opponent-in-circle mc-ryan-gravenberch 2.37 spot 0.7,11.5
