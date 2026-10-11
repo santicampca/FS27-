@@ -9,7 +9,10 @@ namespace FS27.Core.Tests
         private static void Book(MatchController c, string id, int yellows, int fouls)
         {
             TeamSide side = id.StartsWith("h") ? TeamSide.Home : TeamSide.Away;
+            // the history of fouls is the point here, not the restart that Phase 22 gives each one: the play is not stopped
+            bool stops = c.FreeKick.Enabled; c.FreeKick.Enabled = false;
             for (int i = 0; i < fouls; i++) c.CallFoul(side, id, "as2", new RefereeDecision { IsFoul = true }, Vec3.Zero);
+            c.FreeKick.Enabled = stops;
             if (yellows > 0) c.IssueCard(side, id, CardKind.Yellow);
         }
 

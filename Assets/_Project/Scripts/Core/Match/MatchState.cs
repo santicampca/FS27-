@@ -87,6 +87,10 @@ namespace FS27.Core
         /// <summary>Phase 21: every foul the referee called, in order.</summary>
         public IReadOnlyList<DisciplineRecord> Discipline => discipline;
         internal void AddDiscipline(DisciplineRecord r) { discipline.Add(r); }
+        /// <summary>Phase 22: the free kick the match is handling, or the last one it handled (null before the first). Classic only; Arena never has one.</summary>
+        public FreeKickState FreeKick { get; internal set; }
+        /// <summary>Phase 22: how many free kicks were awarded (and stopped play).</summary>
+        public int FreeKicksAwarded { get; internal set; }
         public bool HasResult { get; internal set; }
         public MatchResult Result { get; internal set; }
         public MatchTerminationReason Termination => Result.Reason;

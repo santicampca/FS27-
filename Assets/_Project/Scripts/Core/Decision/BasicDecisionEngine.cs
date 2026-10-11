@@ -455,6 +455,7 @@ namespace FS27.Core
 
         private PlayerDecision WithBall(WorldView view, int idx, in WorldPlayer me)
         {
+            if (view.Match.FreeKickTakerId != null && view.Match.FreeKickTakerId == me.PlayerId) return TakeFreeKick(view, idx, me);
             if (carrier.Tuning.Enabled) return CarrierDecision(view, idx, me);
             bool canKick = !me.KickCooldown;
             float nearestOpponent = obs.NearestOpponentDistance;
@@ -479,6 +480,34 @@ namespace FS27.Core
                 PlayerId = me.PlayerId, Kind = DecisionKind.Dribble, Reason = DecisionReason.NoActionFallback, HasMovement = true,
                 Movement = MovementIntent.TowardsTarget(me.Position, bounds.ClampPlayer(goal), t.DribbleMagnitude, 0f)
             };
+        }
+
+        /// <summary>
+        /// Phase 22: the taker of a free kick plays it, he does not carry it: a shot when he is near enough (the wall and the keeper are part of the shot, so the lane is not asked for; a curve when he may), otherwise a pass
+        /// to the best team-mate, otherwise the ball forward. The AI knows no more than any player: it looks at the same view.
+        /// </summary>
+        private PlayerDecision TakeFreeKick(WorldView view, int idx, in WorldPlayer me)
+        {
+            Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
+            float distance = (goal - me.Position).Magnitude;
+            if (distance <= t.FreeKickShootRange)
+            {
+                PlayerDecision shot = BuildShot(view, me, goal, distance);
+                shot.Reason = DecisionReason.FreeKickShot;
+                // something (the wall) stands on the lane to goal: over it, not into it
+                if (!WorldGeometry.IsLaneClear(view, me.Team, me.Position, goal, t.ShootLaneClearance, true))
+                {
+                    shot.Action.Kind = FootballActionKind.Chip;
+                    shot.Action.Curve = 0f;
+                    shot.Action.Power = t.FreeKickLobPower;
+                }
+                return shot;
+            }
+            int receiver = BestReceiver(view, idx, me, false, false, out float gain);
+            if (receiver < 0) receiver = BestReceiver(view, idx, me, true, true, out gain);
+            if (receiver >= 0) return PassTo(view, me, view[receiver], DecisionReason.FreeKickPass);
+            var clear = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.Clearance, AttackDirection(view, me.Team), t.ShotPower);
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.FreeKickClear, HasAction = true, Action = clear, HasMovement = true, Movement = MovementIntent.Stand };
         }
 
         private bool TryShoot(WorldView view, in WorldPlayer me, Vec2 goal, float nearestOpponent, out PlayerDecision decision)

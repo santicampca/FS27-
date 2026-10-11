@@ -30,6 +30,8 @@ namespace FS27.Core.Tests
 
         /// <summary>Phase 17 diagnostics: the field samples below these stamina levels count as low / very low (reading only).</summary>
         private const float LowStamina = 20f, VeryLowStamina = 5f;
+        /// <summary>Phase 22 diagnostics: a goal counts as coming from a free kick when it is scored by the team that took it within this many seconds of the kick.</summary>
+        private const float FkGoalWindow = 8f;
 
         /// <summary>Phase 18 diagnostics: called after every step of a simulated match (reading only). Null in the normal tests.</summary>
         private static Action<MatchController, int> StepHook;
@@ -39,6 +41,8 @@ namespace FS27.Core.Tests
             public string Fingerprint, Assignment;
             public int GoalsHome, GoalsAway; public double[] StaminaSum = new double[8]; public int[] StaminaN = new int[8]; public double[] KeeperStaminaSum = new double[2]; public int[] KeeperStaminaN = new int[2], LowN = new int[2], VeryLowN = new int[2]; public int Issues, Possessions, Losses, Goals, Restarts, Decisions, Actions, Passes, Shots, Recoveries, Fouls;
             public int Support, Forward, Width, GetOpen;
+            /// <summary>Phase 22, per side of the team that took the free kick: taken, kicked by the taker (the rest: lost or run out), shots, passes, other, goals within FkGoalWindow seconds, wall players.</summary>
+            public int[] FkTaken = new int[2], FkKicked = new int[2], FkShot = new int[2], FkPass = new int[2], FkOther = new int[2], FkGoal = new int[2], FkWall = new int[2];
             public int AttackSamples, PassDecisions; public long PassLanes; public double Spread, PassDistance;
             public int MoreThanOnePerJob, JobSamples, SupportersNearBall;
             public int[] ToJob = new int[5];
@@ -65,6 +69,18 @@ namespace FS27.Core.Tests
             if (ad != null) driver.SetDifficulty(TeamSide.Away, ad, Db.Players, c, profileT);
             if (diagnostics != null) { diagnostics.Attach(c); driver.Diagnostics = diagnostics; if (twin != null) { twin.Attach(c); diagnostics.Twin = twin; } }
             var world = new WorldState();
+            // Phase 22: free kicks (reading only)
+            int fkFinal = 0; float fkDoneTime = -100f; int fkDoneSide = 0;
+            c.ActionPerformed += res =>
+            {
+                FreeKickState f = c.State.FreeKick;
+                if (f == null || !f.InProtection || res.PlayerId != f.TakerId || res.Outcome == ActionOutcome.Rejected) return;
+                int sd = f.Beneficiary == TeamSide.Home ? 0 : 1;
+                if (res.Kind == FootballActionKind.Shot || res.Kind == FootballActionKind.CurvedShot || res.Kind == FootballActionKind.Chip) r.FkShot[sd]++;
+                else if (res.Kind == FootballActionKind.ShortPass || res.Kind == FootballActionKind.LongPass || res.Kind == FootballActionKind.ThroughPass || res.Kind == FootballActionKind.WallPass || res.Kind == FootballActionKind.SkillLobPass) r.FkPass[sd]++;
+                else r.FkOther[sd]++;
+            };
+            c.Events.Published += ev => { if (ev.Kind == GameplayEventKind.GoalScored && ev.HasTeam && (int)ev.Team == fkDoneSide && c.State.MatchTimeSeconds - fkDoneTime <= FkGoalWindow) r.FkGoal[fkDoneSide]++; };
             bool hasLast = false; TeamSide last = TeamSide.Home;
             int steps = (int)(seconds * 60f);
             for (int step = 0; step < steps; step++)
@@ -74,6 +90,13 @@ namespace FS27.Core.Tests
                 StepHook?.Invoke(c, step);
                 if (c.State.Phase == MatchPhase.WaitingForKickoff || c.State.Phase == MatchPhase.WaitingForRestart) { if (c.ConfirmRestart()) r.Restarts++; else r.Issues++; }
                 else if (c.State.Phase == MatchPhase.GoalCelebration) c.Advance(5f);
+                FreeKickState fkNow = c.State.FreeKick;
+                if (fkNow != null && fkNow.Stage == FreeKickStage.Done && fkNow.Number > fkFinal)
+                {
+                    fkFinal = fkNow.Number; int sd = fkNow.Beneficiary == TeamSide.Home ? 0 : 1;
+                    r.FkTaken[sd]++; if (fkNow.KickedByTaker) r.FkKicked[sd]++; r.FkWall[sd] += fkNow.Wall.Count;
+                    fkDoneTime = c.State.MatchTimeSeconds; fkDoneSide = (int)fkNow.Beneficiary;
+                }
                 if (c.State.Ball.HasPossession)
                 {
                     TeamSide t = c.State.Ball.PossessingTeam;

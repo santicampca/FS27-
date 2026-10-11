@@ -88,7 +88,14 @@ namespace FS27.Core
         /// <summary>Phase 16: the keeper goes to where he reads a shot will cross the line.</summary>
         KeeperSave,
         /// <summary>Phase 16: the keeper comes out for a ball nobody has.</summary>
-        KeeperExit
+        KeeperExit,
+        // Phase 22 (appended)
+        /// <summary>The taker of a free kick shoots at goal (near enough).</summary>
+        FreeKickShot,
+        /// <summary>The taker of a free kick plays it to a team-mate.</summary>
+        FreeKickPass,
+        /// <summary>The taker of a free kick has nobody to pass to: he sends it forward.</summary>
+        FreeKickClear
     }
 
     /// <summary>

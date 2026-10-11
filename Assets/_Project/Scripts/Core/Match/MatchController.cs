@@ -143,6 +143,7 @@ namespace FS27.Core
             State.Ball.LastTouchTeam = State.PendingRestart.Team;
             State.Ball.LastTouchPlayerId = null;
             SetPhase(MatchPhase.Playing);
+            OnRestartWhistle();
 
             if (!periodKickoffDone)
             {
@@ -171,7 +172,7 @@ namespace FS27.Core
                     Emit(GameplayEventKind.BallBouncedOffWall, null, null, walls.LastBouncePosition, "Wall");
                 }
             }
-            if (State.Phase == MatchPhase.Playing) { StepLocomotion(dt); StepPlayerSpace(); }
+            if (State.Phase == MatchPhase.Playing) { StepLocomotion(dt); StepPlayerSpace(); StepFreeKickProtection(dt); }
             if (State.Phase == MatchPhase.Playing) StepBallInteractions(dt);
             Tick(dt, new BallObservation(State.Ball.Physics.Position, ballParameters.Radius));
         }
@@ -227,6 +228,9 @@ namespace FS27.Core
             {
                 case MatchPhase.Playing:
                     TickPlaying(dt, ball);
+                    break;
+                case MatchPhase.WaitingForRestart:
+                    TickRestartWait(dt);
                     break;
                 case MatchPhase.GoalCelebration:
                     TickCelebration(dt);
@@ -438,8 +442,8 @@ namespace FS27.Core
 
         /// <summary>
         /// Records a foul the referee has called (Phase 21): it counts against the player and his team, goes into the disciplinary history, is published (<see cref="GameplayEventKind.FoulCommitted"/>, and
-        /// <see cref="GameplayEventKind.FreeKickAwarded"/> for the free-kick phase to use) and, if the decision carries a card, the card is shown with <see cref="IssueCard"/>. Only where the mode has fouls (Classic). The play is NOT
-        /// stopped here: the free kick itself is a later phase, so for now the fouled team simply keeps the ball.
+        /// <see cref="GameplayEventKind.FreeKickAwarded"/> for the free-kick phase to use) and, if the decision carries a card, the card is shown with <see cref="IssueCard"/>. Only where the mode has fouls (Classic). Phase 22: in live play the
+        /// foul now STOPS the play (<see cref="BeginFreeKick"/>): the fouled team keeps the ball and takes the free kick at the spot, the match clock stops until the whistle.
         /// </summary>
         public FoulCallResult CallFoul(TeamSide offenderTeam, string offenderId, string victimId, RefereeDecision decision, Vec3 position)
         {
@@ -461,6 +465,8 @@ namespace FS27.Core
                 record.CardResult = result.CardResult;
             }
             State.AddDiscipline(record);
+            // Phase 22: the foul stops play and the fouled team takes the free kick (only in live play, once)
+            BeginFreeKick(offenderTeam, offenderId, victimId, decision.Reasons, Flat(position), State.Discipline.Count - 1);
             return result;
         }
 
@@ -712,6 +718,8 @@ namespace FS27.Core
 
         private void RequestRestart(RestartRequest request)
         {
+            // another restart closes a free kick that was still open (the ball went out, a goal was scored before it was played)
+            if (request.Kind != RestartKind.FreeKick && State.FreeKick != null && State.FreeKick.Stage != FreeKickStage.None && State.FreeKick.Stage != FreeKickStage.Done) State.FreeKick.Stage = FreeKickStage.Done;
             State.PendingRestart = request;
             State.Ball.Physics = new BallState(Vec3.FromXZ(request.Position, ballParameters.Radius), Vec3.Zero) { IsGrounded = true };
             SetPhase(request.Kind == RestartKind.KickOff ? MatchPhase.WaitingForKickoff : MatchPhase.WaitingForRestart);

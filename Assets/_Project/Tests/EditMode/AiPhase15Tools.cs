@@ -48,7 +48,8 @@ namespace FS27.Core.Tests
             "stam1", "stam2", "stam3", "stam4", "stamMean",
             "shotsRated", "xgSum", "xgOnTarget", "saves", "shotQuality", "keeperMisread", "keeperBadExit",
             "keeperStamina", "stamLow20", "stamLow5",
-            "goalsShot", "goalsRebound", "goalsDeflection", "goalsCross", "goalsUnknown", "goalsDirect", "goalsInferred", "goalsNoEvidence", "goalsShotLogged"
+            "goalsShot", "goalsRebound", "goalsDeflection", "goalsCross", "goalsUnknown", "goalsDirect", "goalsInferred", "goalsNoEvidence", "goalsShotLogged",
+            "fkTaken", "fkKicked", "fkShot", "fkPass", "fkOther", "fkGoal", "fkWall"
         };
 
         private static double[] SideValues(AiDiagnostics d, AttackSim r, int sideIndex)
@@ -74,7 +75,8 @@ namespace FS27.Core.Tests
                 d.ShotsRated, d.ExpectedGoalsSum, d.ExpectedGoalsOnTargetSum, d.SavesMade, d.ShotQualityAverage, d.MistakeCount(DecisionErrorKind.KeeperMisread), d.MistakeCount(DecisionErrorKind.KeeperBadExit),
                 r.KeeperStaminaN[sideIndex] > 0 ? r.KeeperStaminaSum[sideIndex] / r.KeeperStaminaN[sideIndex] : double.NaN, n > 0 ? r.LowN[sideIndex] / n : double.NaN, n > 0 ? r.VeryLowN[sideIndex] / n : double.NaN,
                 d.GoalsByOrigin(GoalOrigin.Shot), d.GoalsByOrigin(GoalOrigin.Rebound), d.GoalsByOrigin(GoalOrigin.Deflection), d.GoalsByOrigin(GoalOrigin.Cross), d.GoalsByOrigin(GoalOrigin.Unknown),
-                d.GoalsByEvidence(GoalEvidence.Direct), d.GoalsByEvidence(GoalEvidence.Inferred), d.GoalsByEvidence(GoalEvidence.None), Enumerable.Range(0, d.GoalLogCount).Count(i => d.GoalAt(i).ShotLogged)
+                d.GoalsByEvidence(GoalEvidence.Direct), d.GoalsByEvidence(GoalEvidence.Inferred), d.GoalsByEvidence(GoalEvidence.None), Enumerable.Range(0, d.GoalLogCount).Count(i => d.GoalAt(i).ShotLogged),
+                r.FkTaken[sideIndex], r.FkKicked[sideIndex], r.FkShot[sideIndex], r.FkPass[sideIndex], r.FkOther[sideIndex], r.FkGoal[sideIndex], r.FkWall[sideIndex]
             };
         }
 

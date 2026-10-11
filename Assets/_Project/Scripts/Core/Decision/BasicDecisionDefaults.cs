@@ -46,6 +46,10 @@ namespace FS27.Core
         public const float ShootLaneClearance = 1.0f;
         public const float ShootMinOpponentDistance = 1.5f;
         public const float ShotPower = 1.0f;
+        /// <summary>Phase 22: the taker of a free kick shoots up to this distance from the goal (the wall and the keeper are part of the shot); further away he plays it.</summary>
+        public const float FreeKickShootRange = 16.0f;
+        /// <summary>Phase 22: power of the lob the taker plays over a wall (a ground shot at 28 m/s is stopped by it).</summary>
+        public const float FreeKickLobPower = 0.6f;
         /// <summary>The shot is aimed this far from the middle of the goal, to the side the goalkeeper is not.</summary>
         public const float ShotAimOffset = 1.2f;
         public const float CurveMinDistance = 5.0f;
@@ -127,6 +131,8 @@ namespace FS27.Core
         public float ShootLaneClearance = BasicDecisionDefaults.ShootLaneClearance;
         public float ShootMinOpponentDistance = BasicDecisionDefaults.ShootMinOpponentDistance;
         public float ShotPower = BasicDecisionDefaults.ShotPower;
+        public float FreeKickShootRange = BasicDecisionDefaults.FreeKickShootRange;
+        public float FreeKickLobPower = BasicDecisionDefaults.FreeKickLobPower;
         public float ShotAimOffset = BasicDecisionDefaults.ShotAimOffset;
         public float CurveMinDistance = BasicDecisionDefaults.CurveMinDistance;
         public float CurveAmount = BasicDecisionDefaults.CurveAmount;

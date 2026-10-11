@@ -110,6 +110,7 @@ namespace FS27.Core
             RestartRequest r = st.PendingRestart;
             match.RestartKind = pending ? r.Kind : RestartKind.KickOff;
             match.RestartTeam = r.Team; match.RestartTakerId = pending ? r.TakerId : null; match.RestartStatus = r.Status; match.RestartPosition = r.Position;
+            match.FreeKickTakerId = st.FreeKick != null && st.FreeKick.InProtection ? st.FreeKick.TakerId : null;
         }
 
         private void RefreshBall(MatchState st, MatchController controller)

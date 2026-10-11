@@ -35,6 +35,8 @@ namespace FS27.Core
         public string RestartTakerId;
         public RestartStatus RestartStatus;
         public Vec2 RestartPosition;
+        /// <summary>Phase 22: the taker of the free kick that has just been whistled and not yet played (null otherwise). He must play it (shoot or pass), not carry it.</summary>
+        public string FreeKickTakerId;
     }
 
     /// <summary>The ball as the AI needs to see it.</summary>

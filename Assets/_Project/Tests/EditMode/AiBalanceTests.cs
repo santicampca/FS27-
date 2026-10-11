@@ -294,7 +294,8 @@ namespace FS27.Core.Tests
         {
             AiDiagnostics d = Eight(GameMode.Classic, true).Diagnostics;
             Assert.Greater(d.DuelContacts(2), 120.0, "the physical challenge is still made (Phase 12: 212)");
-            Assert.Greater(d.DuelContacts(0), 60.0); Assert.Greater(d.TotalContacts, 200.0);
+            // Phase 22: every foul now stops the play for a free kick, so the same two minutes hold fewer duels (measured with the free kick switched off / on: tackles 61 / 55, contacts 255 / 206, challenges 177 / 140)
+            Assert.Greater(d.DuelContacts(0), 45.0); Assert.Greater(d.TotalContacts, 170.0);
             Assert.Less(d.TotalFouls, 0.4 * d.TotalContacts, "Phase 12: 18 in the same eight matches. Phase 21: the referee calls the late contacts, 43 here; still well under half of the contacts");
             Assert.Greater(d.TotalFouls, 0.0, "fouls are still part of Classic");
             Assert.AreEqual(d.FoulEvents, d.TotalFouls);

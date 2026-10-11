@@ -208,7 +208,7 @@ namespace FS27.Core.Tests
         private static RefereeDecision Call(CardDecision card, FoulReason reasons = FoulReason.Late) { return new RefereeDecision { IsFoul = true, Card = card, Reasons = reasons, Severity = 0.8f }; }
 
         [Test]
-        public void Match_AFoul_IsCountedAgainstThePlayerAndTheTeam_RecordedAndPublished_WithoutStoppingThePlay()
+        public void Match_AFoul_IsCountedAgainstThePlayerAndTheTeam_RecordedAndPublished_AndItStopsThePlay()
         {
             MatchController c = Live();
             var events = new List<GameplayEvent>(); c.Events.Published += events.Add;
@@ -223,7 +223,20 @@ namespace FS27.Core.Tests
             Assert.AreEqual(1, events.Count(e => e.Kind == GameplayEventKind.FoulCommitted && e.Team == TeamSide.Away));
             GameplayEvent fk = events.Single(e => e.Kind == GameplayEventKind.FreeKickAwarded);
             Assert.AreEqual(TeamSide.Home, fk.Team, "the fouled team is the one entitled to the free kick"); Assert.AreEqual("hs3", fk.PlayerId);
-            Assert.AreEqual(before, c.State.Phase, "the free kick itself is a later phase: the play goes on"); Assert.AreEqual(ball, c.State.Ball.Physics.Position);
+            // Phase 22: the foul now stops the play and the ball goes to the spot of the foul (it was a Phase-21 limitation that the fouled team just kept playing)
+            Assert.AreEqual(MatchPhase.WaitingForRestart, c.State.Phase); Assert.AreEqual(RestartKind.FreeKick, c.State.PendingRestart.Kind);
+            Assert.AreEqual(1f, c.State.Ball.Physics.Position.X, 1e-3f); Assert.AreEqual(2f, c.State.Ball.Physics.Position.Z, 1e-3f);
+        }
+
+        [Test]
+        public void Match_AFoul_WithTheFreeKickSwitchedOff_KeepsThePhase21Behaviour_ThePlayGoesOn()
+        {
+            MatchController c = Live();
+            c.FreeKick.Enabled = false;
+            Vec3 ball = c.State.Ball.Physics.Position;
+            Assert.IsTrue(c.CallFoul(TeamSide.Away, "as2", "hs3", Call(CardDecision.None), new Vec3(1f, 0.2f, 2f)).Called);
+            Assert.AreEqual(MatchPhase.Playing, c.State.Phase); Assert.AreEqual(ball, c.State.Ball.Physics.Position); Assert.IsNull(c.State.FreeKick);
+            Assert.AreEqual(1, c.State.Away.Fouls);
         }
 
         [Test]

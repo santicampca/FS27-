@@ -44,7 +44,12 @@ namespace FS27.Core
         ClearancePerformed,
         // ---- Phase 21 (appended)
         /// <summary>The referee called a foul and the other team is entitled to a free kick. PREPARED for the free-kick phase: nothing restarts the game from it yet. Team = the team that was fouled; Detail = the reasons.</summary>
-        FreeKickAwarded
+        FreeKickAwarded,
+        // ---- Phase 22 (appended)
+        /// <summary>The foul stopped play: the ball is at the spot and taker and wall are being set up. Published once per free kick. Position = the spot, Team = the team that takes it, PlayerId = the taker.</summary>
+        FreeKickPrepared,
+        /// <summary>The whistle: the free kick is in play. Published once per free kick. Position = the spot, Team = the team that takes it, PlayerId = the taker.</summary>
+        FreeKickTaken
     }
 
     /// <summary>One thing that happened. Plain data, stamped with the Core time, never with Unity time.</summary>
