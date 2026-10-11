@@ -70,3 +70,7 @@ Thumbs.db
 /Docs/previews/*.glb
 /Tools/**/bin/
 /Tools/**/obj/
+
+# Web del menú
+Web/menu/dist/
+Web/menu/node_modules/
