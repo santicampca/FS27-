@@ -309,7 +309,18 @@ namespace FS27.Core.Tests
             IdentityCatalog a = IdentityGenerator.Generate(subjects, null, problems), b = IdentityGenerator.Generate(subjects, null, problems);
             Assert.AreEqual(IdentityJson.ToJson(a), IdentityJson.ToJson(b), "same subjects, same names");
             Assert.IsEmpty(problems, string.Join("\n", problems));
-            Assert.AreEqual(IdentityJson.ToJson(a).Trim(), Authoring("FS27_IDENTITIES_V1.json").Replace("\r\n", "\n").Trim(), "regenerate FS27_IDENTITIES_V1.json when the generator or the pools change");
+            // The data file is the generator's output, except for the entries a person edited by hand (IdentityEntry.Edited: "the generator never overwrites an edited entry, and the regeneration test skips it").
+            // Every entry that is NOT edited must equal what the generator makes for it on its own; an edited one keeps its subject (kind, culture, original name) but its names are the person's.
+            Assert.AreEqual(a.All.Count(), db.Identities.All.Count(), "the same people");
+            foreach (IdentityEntry generated in a.All)
+            {
+                Assert.IsTrue(db.Identities.TryGet(generated.Id, out IdentityEntry published), generated.Id);
+                Assert.AreEqual(generated.Kind, published.Kind, generated.Id); Assert.AreEqual(generated.Culture, published.Culture, generated.Id); Assert.AreEqual(generated.OriginalName, published.OriginalName, generated.Id);
+                if (published.Edited) continue;
+                Assert.AreEqual(generated.Name, published.Name, generated.Id + ": regenerate FS27_IDENTITIES_V1.json when the generator or the pools change");
+                Assert.AreEqual(generated.FullName, published.FullName, generated.Id); Assert.AreEqual(generated.ShortName, published.ShortName, generated.Id);
+            }
+            Assert.AreEqual(IdentityJson.ToJson(db.Identities).Trim(), Authoring("FS27_IDENTITIES_V1.json").Replace("\r\n", "\n").Trim(), "the data file is exactly what the writer produces (stable order and format)");
         }
 
         private static string NationalityOf(IdentityEntry e)

@@ -98,30 +98,30 @@ Relación entre el dato original y el publicado: **ninguna léxica**. Solo se co
 | `fb-nuno-mendes` | Player | Portuguese | Nuno Mendes | Nuno Teles | Nuno Teles | Teles |
 | `fb-pedro-porro` | Player | Spanish | Pedro Porro | Mauro Salcedo | Mauro Salcedo Quintanilla | Salcedo |
 | `fb-trent-alexander-arnold` | Player | Anglo | Trent Alexander-Arnold | Nolan Holloway | Nolan Holloway | Holloway |
-| `gk-aaron-ramsdale` | Player | Anglo | Aaron Ramsdale | Linus Hargreave | Linus Hargreave | Hargreave |
-| `gk-alisson-becker` | Player | Portuguese | Alisson Becker | Nélson Quintela | Nélson Quintela | Quintela |
-| `gk-andre-onana` | Player | WestAfricanFrench | André Onana | Abdou Diatta | Abdou Diatta | Diatta |
-| `gk-david-de-gea` | Player | Spanish | David de Gea | Olegario Juncal | Olegario Juncal Cordero | Juncal |
-| `gk-david-raya` | Player | Spanish | David Raya | Valentín Navarrete | Valentín Navarrete Beltrán | Navarrete |
-| `gk-dean-henderson` | Player | Anglo | Dean Henderson | Cormac Kendrick | Cormac Kendrick | Kendrick |
-| `gk-emiliano-martinez` | Player | LatinAmerican | Emiliano Martínez | Iván Larrea | Iván Larrea Domínguez | Larrea |
-| `gk-gianluigi-donnarumma` | Player | Italian | Gianluigi Donnarumma | Domenico Del Moro | Domenico Del Moro | Del Moro |
-| `gk-gregor-kobel` | Player | German | Gregor Kobel | Lars Mahler | Lars Mahler | Mahler |
-| `gk-jan-oblak` | Player | EastEuropean | Jan Oblak | Radek Filipović | Radek Filipović | Filipović |
-| `gk-joan-garcia` | Player | Spanish | Joan García | Ulises Roldán | Ulises Roldán Abellán | Roldán |
-| `gk-jordan-pickford` | Player | Anglo | Jordan Pickford | Rory Binnie | Rory Binnie | Binnie |
-| `gk-manuel-neuer` | Player | German | Manuel Neuer | Konrad Grabowski | Konrad Grabowski | Grabowski |
-| `gk-marc-andre-ter-stegen` | Player | German | Marc-André ter Stegen | Niklas Tiedemann | Niklas Tiedemann | Tiedemann |
-| `gk-mathew-ryan` | Player | Anglo | Mathew Ryan | Harvey Dunmore | Harvey Dunmore | Dunmore |
-| `gk-matvey-safonov` | Player | EastEuropean | Matvey Safonov | Zoran Tomić | Zoran Tomić | Tomić |
-| `gk-mike-maignan` | Player | French | Mike Maignan | Ilan Armand | Ilan Armand | Armand |
-| `gk-pedro-gallese` | Player | LatinAmerican | Pedro Gallese | Emiliano Jiménez | Emiliano Jiménez Nogueira | Jiménez |
-| `gk-thibaut-courtois` | Player | French | Thibaut Courtois | Mathis Quesnel | Mathis Quesnel | Quesnel |
-| `gk-unai-simon` | Player | Spanish | Unai Simón | Gonzalo Valdivia | Gonzalo Valdivia Ferreiro | Valdivia |
-| `gk-vozinha` | Player | Portuguese | Vozinha | Osvaldo Esteves | Osvaldo Esteves | Esteves |
-| `gk-yann-sommer` | Player | German | Yann Sommer | Dirk Ullmann | Dirk Ullmann | Ullmann |
-| `gk-yassine-bounou` | Player | Arabic | Yassine Bounou | Tarek Gamal | Tarek Gamal | Gamal |
-| `gk-zion-suzuki` | Player | Japanese | Zion Suzuki | Jun Okabe | Jun Okabe | Okabe |
+| `gk-aaron-ramsdale` | Player | Anglo | Aaron Ramsdale | Aron Ramsdail | Aron Ramsdail | Ramsdail |
+| `gk-alisson-becker` | Player | Portuguese | Alisson Becker | Alison Beckerdo | Alison Beckerdo | Beckerdo |
+| `gk-andre-onana` | Player | WestAfricanFrench | André Onana | Andres Onane | Andres Onane | Onane |
+| `gk-david-de-gea` | Player | Spanish | David de Gea | Davis de Gee | Davis de Gee | de Gee |
+| `gk-david-raya` | Player | Spanish | David Raya | Deivid Raja | Deivid Raja | Raja |
+| `gk-dean-henderson` | Player | Anglo | Dean Henderson | Dan Jenderson | Dan Jenderson | Jenderson |
+| `gk-emiliano-martinez` | Player | LatinAmerican | Emiliano Martínez | Dibu Martino | Dibu Martino | Martino |
+| `gk-gianluigi-donnarumma` | Player | Italian | Gianluigi Donnarumma | Luigi Dollarruma | Luigi Dollarruma | Dollarruma |
+| `gk-gregor-kobel` | Player | German | Gregor Kobel | Gregorio Kobal | Gregorio Kobal | Kobal |
+| `gk-jan-oblak` | Player | EastEuropean | Jan Oblak | Jan Oblea | Jan Oblea | Oblea |
+| `gk-joan-garcia` | Player | Spanish | Joan García | Yoan Garsia | Yoan Garsia | Garsia |
+| `gk-jordan-pickford` | Player | Anglo | Jordan Pickford | Yordan Plickford | Yordan Plickford | Plickford |
+| `gk-manuel-neuer` | Player | German | Manuel Neuer | Manu Never | Manu Never | Never |
+| `gk-marc-andre-ter-stegen` | Player | German | Marc-André ter Stegen | Ter Statuen | Ter Statuen | Ter Statuen |
+| `gk-mathew-ryan` | Player | Anglo | Mathew Ryan | Matew Rayan | Matew Rayan | Rayan |
+| `gk-matvey-safonov` | Player | EastEuropean | Matvey Safonov | Matviyei Safonob | Matviyei Safonob | Safonob |
+| `gk-mike-maignan` | Player | French | Mike Maignan | Mice Maigan | Mice Maigan | Maigan |
+| `gk-pedro-gallese` | Player | LatinAmerican | Pedro Gallese | Paco Galese | Paco Galese | Galese |
+| `gk-thibaut-courtois` | Player | French | Thibaut Courtois | Tibut Curtua | Tibut Curtua | Curtua |
+| `gk-unai-simon` | Player | Spanish | Unai Simón | Unes Simao | Unes Simao | Simao |
+| `gk-vozinha` | Player | Portuguese | Vozinha | Vosina | Vosina | Vosina |
+| `gk-yann-sommer` | Player | German | Yann Sommer | Jan Summer | Jan Summer | Summer |
+| `gk-yassine-bounou` | Player | Arabic | Yassine Bounou | Bono | Bono | Bono |
+| `gk-zion-suzuki` | Player | Japanese | Zion Suzuki | Sion Zusuki | Sion Zusuki | Zusuki |
 | `mc-bruno-guimaraes` | Player | Portuguese | Bruno Guimarães | Plácido Ferrão | Plácido Ferrão | Ferrão |
 | `mc-casemiro` | Player | Portuguese | Casemiro | Leonel Ilharco | Leonel Ilharco | Ilharco |
 | `mc-elliot-anderson` | Player | Anglo | Elliot Anderson | Declan Ellerby | Declan Ellerby | Ellerby |
