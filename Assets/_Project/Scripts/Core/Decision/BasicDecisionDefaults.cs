@@ -97,10 +97,10 @@ namespace FS27.Core
         // ---- Phase 28: pass power from the physics of the ball (see PassPhysics). Off = the older distance-linear power.
         public const bool PassPhysicsEnabled = true;
         /// <summary>m/s the ball should still have when it reaches a team-mate's feet (a first touch takes it cleanly at about this speed).</summary>
-        public const float GroundArrivalSpeed = 6.5f;
+        public const float GroundArrivalSpeed = 9.0f;
         /// <summary>The same when a rival is close to the receiver: a faster ball leaves him less time to close in.</summary>
-        public const float PressedArrivalSpeed = 8.0f;
-        public const float ThroughArrivalSpeed = 8.5f;
+        public const float PressedArrivalSpeed = 9.5f;
+        public const float ThroughArrivalSpeed = 9.5f;
         /// <summary>A lofted pass bounces this share of the distance short of the receiver, so that he gets it low after the bounce.</summary>
         public const float LandingShare = 0.9f;
         /// <summary>The share of his pass quality the passer plans with (stamina and pressure take some at the moment of the kick).</summary>
@@ -130,6 +130,32 @@ namespace FS27.Core
         public const float PassRiskWeight = 2.5f;
         public const float PassRiskOwnGoalFactor = 1.0f;
         public const float PassRiskOwnZone = 14.0f;
+        /// <summary>How far from the ball's path (m) a rival can still take it: the reach of his intercept.</summary>
+        public const float PassInterceptReach = 1.2f;
+
+        // ---- Phase 28: the taker of a throw-in, goal kick or corner and his team-mates (see TakeSetPiece)
+        /// <summary>The taker plays at once when the best option arrives with at least this chance (see PassRisk).</summary>
+        public const float SetPieceMinChance = 0.5f;
+        /// <summary>He waits this long (the ball is held on the spot, the rivals are kept out of the circle) for an option to open before he settles for less.</summary>
+        public const float SetPieceWaitSeconds = 0.5f;
+        /// <summary>After the wait he plays the best option that arrives with at least this chance; otherwise he clears.</summary>
+        public const float SetPieceFallbackChance = 0.3f;
+        /// <summary>The value of an option is this plus the gain, the room around him and, at a corner, being in the box; the taker maximises value times the chance it arrives.</summary>
+        public const float SetPieceBaseValue = 0.5f;
+        public const float SetPieceGainWeight = 1.5f;
+        /// <summary>A pass this far back (share of the pitch length) still counts as zero gain, not less.</summary>
+        public const float SetPieceBackFloor = 0.1f;
+        public const float SetPieceSpaceWeight = 0.4f;
+        public const float SetPieceSpaceCap = 6.0f;
+        /// <summary>At a corner a team-mate this close to the goal is in the box: the ball is lofted to him and he is worth more.</summary>
+        public const float SetPieceBoxDepth = 9.0f;
+        public const float SetPieceBoxBonus = 0.6f;
+        /// <summary>The clearance of a taker with nothing to play: the attack direction bent this far towards the middle of the pitch (share of the attack direction).</summary>
+        public const float SetPieceClearInward = 0.6f;
+        public const float SetPieceClearPower = 0.8f;
+        /// <summary>A team-mate who offers himself steps away from a rival who comes closer than this (m), this far (m).</summary>
+        public const float SetPieceOfferRivalDistance = 2.2f;
+        public const float SetPieceOfferStep = 1.5f;
     }
 
     /// <summary>The editable copy of <see cref="BasicDecisionDefaults"/>.</summary>
@@ -219,5 +245,20 @@ namespace FS27.Core
         public float PassRiskWeight = BasicDecisionDefaults.PassRiskWeight;
         public float PassRiskOwnGoalFactor = BasicDecisionDefaults.PassRiskOwnGoalFactor;
         public float PassRiskOwnZone = BasicDecisionDefaults.PassRiskOwnZone;
+        public float PassInterceptReach = BasicDecisionDefaults.PassInterceptReach;
+        public float SetPieceMinChance = BasicDecisionDefaults.SetPieceMinChance;
+        public float SetPieceWaitSeconds = BasicDecisionDefaults.SetPieceWaitSeconds;
+        public float SetPieceFallbackChance = BasicDecisionDefaults.SetPieceFallbackChance;
+        public float SetPieceBaseValue = BasicDecisionDefaults.SetPieceBaseValue;
+        public float SetPieceGainWeight = BasicDecisionDefaults.SetPieceGainWeight;
+        public float SetPieceBackFloor = BasicDecisionDefaults.SetPieceBackFloor;
+        public float SetPieceSpaceWeight = BasicDecisionDefaults.SetPieceSpaceWeight;
+        public float SetPieceSpaceCap = BasicDecisionDefaults.SetPieceSpaceCap;
+        public float SetPieceBoxDepth = BasicDecisionDefaults.SetPieceBoxDepth;
+        public float SetPieceBoxBonus = BasicDecisionDefaults.SetPieceBoxBonus;
+        public float SetPieceClearInward = BasicDecisionDefaults.SetPieceClearInward;
+        public float SetPieceClearPower = BasicDecisionDefaults.SetPieceClearPower;
+        public float SetPieceOfferRivalDistance = BasicDecisionDefaults.SetPieceOfferRivalDistance;
+        public float SetPieceOfferStep = BasicDecisionDefaults.SetPieceOfferStep;
     }
 }

@@ -221,6 +221,14 @@ namespace FS27.Core
             float score = b.PassWeight * baseScore + runBonus;
             bool forward = gain >= b.ForwardPassGain;
             if (forward) score += b.ForwardPassBonus;
+            // Phase 28: a cross from the flank to a team-mate in the box, lofted over the defenders; worth what the ball gains times the chance it arrives
+            float crossBonus = 0f;
+            bool cross = IsCross(view, me, r);
+            if (cross)
+            {
+                crossBonus = b.CrossBonus * PassRisk.SuccessChance(view, me, r, (r.Position - me.Position).Magnitude, t, true);
+                score += crossBonus;
+            }
 
             // under pressure a safe pass is worth more: a free receiver on a clear lane
             float space = WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position);
@@ -234,16 +242,37 @@ namespace FS27.Core
             float backTurned = 0f;
             if (r.Facing.X * dir.X + r.Facing.Y * dir.Y > b.BackTurnedCosine && WorldGeometry.OpponentsWithin(view, me.Team, r.Position, a.ReceiverPressureRadius) > 0) { backTurned = b.BackTurnedPenalty; score -= backTurned; }
 
+            // a rival who presses the passer reaches the ball in the first metres of its path: the pass is worth less the surer he is to
+            float releasePenalty = 0f;
+            if (b.ReleaseWeight > 0f && WorldGeometry.NearestOpponentDistanceTo(view, me.Team, me.Position) < t.PressureRadius + b.ReleaseReach)
+            {
+                float margin = PassRisk.ReleaseMargin(view, me, r.Position, t, b);
+                if (!float.IsPositiveInfinity(margin)) releasePenalty = b.ReleaseWeight * Clamp01((b.ReleaseSlack - margin) / b.ReleaseScale);
+                score -= releasePenalty;
+            }
+
             summary.PassCandidates++;
             float w = b.PassWeight;
             var parts = new CandidateParts
             {
                 P0 = w * rp.Advance, P1 = w * rp.Space, P2 = w * rp.Distance, P3 = w * rp.Angle, P4 = w * rp.Lane, P5 = w * rp.Pressure, P6 = w * rp.Move,
-                P7 = runBonus, P8 = forward ? b.ForwardPassBonus : 0f, P9 = safePass, P10 = -backTurned
+                P7 = runBonus, P8 = (forward ? b.ForwardPassBonus : 0f) + crossBonus, P9 = safePass, P10 = -backTurned, P11 = w * rp.Risk - releasePenalty
             };
             Add(forward ? CandidateType.ForwardPass : CandidateType.Pass, score, i, r.Position, run,
-                run == RunKind.Forward ? DecisionReason.RunnerPass : (pressure > 0f ? DecisionReason.UnderPressurePass : DecisionReason.FreePass), parts);
+                cross ? DecisionReason.CrossToBox : (run == RunKind.Forward ? DecisionReason.RunnerPass : (pressure > 0f ? DecisionReason.UnderPressurePass : DecisionReason.FreePass)), parts);
             return true;
+        }
+
+        /// <summary>A cross: the carrier is wide, in the attacking third, and the receiver stands in the box with room around him, at a distance a lofted ball can cover.</summary>
+        private bool IsCross(WorldView view, in WorldPlayer me, in WorldPlayer r)
+        {
+            if (b.CrossBonus <= 0f) return false;
+            Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
+            if (Math.Abs(me.Position.Y) < view.Field.Width / 2f - b.CrossWideZone || (goal - me.Position).Magnitude > b.CrossMaxGoalDistance) return false;
+            if (Math.Abs(goal.X - r.Position.X) > b.CrossBoxDepth || Math.Abs(r.Position.Y - goal.Y) > b.CrossBoxHalfWidth) return false;
+            float d = (r.Position - me.Position).Magnitude;
+            if (d < b.CrossMinDistance || d > b.CrossMaxDistance) return false;
+            return WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position) >= b.CrossMinSpace;
         }
 
         /// <summary>

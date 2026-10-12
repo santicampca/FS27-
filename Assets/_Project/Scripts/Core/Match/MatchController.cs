@@ -172,7 +172,7 @@ namespace FS27.Core
                     Emit(GameplayEventKind.BallBouncedOffWall, null, null, walls.LastBouncePosition, "Wall");
                 }
             }
-            if (ActionsLive) { StepLocomotion(dt); StepPlayerSpace(); StepFreeKickProtection(dt); StepPenalty(dt); }
+            if (ActionsLive) { StepLocomotion(dt); StepPlayerSpace(); StepFreeKickProtection(dt); StepSetPiece(dt); StepPenalty(dt); }
             if (ActionsLive) StepBallInteractions(dt);
             Tick(dt, new BallObservation(State.Ball.Physics.Position, ballParameters.Radius));
         }
@@ -736,6 +736,7 @@ namespace FS27.Core
             // another restart closes a free kick that was still open (the ball went out, a goal was scored before it was played)
             if (request.Kind != RestartKind.FreeKick && State.FreeKick != null && State.FreeKick.Stage != FreeKickStage.None && State.FreeKick.Stage != FreeKickStage.Done) State.FreeKick.Stage = FreeKickStage.Done;
             if (request.Kind != RestartKind.Penalty && PenaltyOn && State.Penalty.Kind == PenaltyKind.InMatch) FinishPenalty(null);
+            EndSetPiece();
             State.PendingRestart = request;
             State.Ball.Physics = new BallState(Vec3.FromXZ(request.Position, ballParameters.Radius), Vec3.Zero) { IsGrounded = true };
             SetPhase(request.Kind == RestartKind.KickOff ? MatchPhase.WaitingForKickoff : MatchPhase.WaitingForRestart);

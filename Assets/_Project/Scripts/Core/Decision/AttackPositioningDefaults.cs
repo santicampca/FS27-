@@ -85,6 +85,33 @@ namespace FS27.Core
         public const float ReceiverMoveMinSpeed = 1.0f;
         public const float ReceiverPressureRadius = 3.0f;
         public const float ReceiverPressureWeight = 0.5f;
+
+        // ---- Phase 28: a defender who overlaps (joins the attack on the flank of the ball while the team has it and the others cover)
+        /// <summary>At most this many players overlap at the same time (the rest of the defenders stay: balance between going forward and covering).</summary>
+        public const int OverlapRunners = 1;
+        /// <summary>The team has had the ball at least this long (s): not in the middle of a transition.</summary>
+        public const float OverlapMinPossession = 0.8f;
+        /// <summary>The ball may be this far short of the middle of the pitch (m, along the attack): the overlap starts a little before it.</summary>
+        public const float OverlapBackTolerance = 4.0f;
+        /// <summary>The carrier is at least this far from the middle line (m), on the flank of the overlapper.</summary>
+        public const float OverlapMinCarrierWidth = 2.5f;
+        /// <summary>The overlapper starts level with the carrier or behind him (at most this far ahead, m) and not further than this from him (m).</summary>
+        public const float OverlapMaxAhead = 2.0f;
+        public const float OverlapMaxCarrierDistance = 12.0f;
+        /// <summary>At least this many other field players stay behind the ball (further back than the carrier by this margin, m): the cover.</summary>
+        public const int OverlapMinCover = 1;
+        public const float OverlapCoverMargin = 1.0f;
+        /// <summary>Only a player whose place is in the back part of the pitch overlaps: at least this far behind the middle (m, along the attack). It is the place of the formation, not the position written in his card.</summary>
+        public const float OverlapMinHomeDepth = 4.0f;
+        public const float OverlapMinStamina = 12.0f;
+        /// <summary>He runs to a point this far ahead of the carrier (m) and this far from the touchline (m), within this leash from his place (m).</summary>
+        public const float OverlapAhead = 6.0f;
+        public const float OverlapMargin = 2.0f;
+        public const float OverlapMaxHomeDeviation = 11.0f;
+        public const float OverlapMagnitude = 1.0f;
+        /// <summary>Who of the eligible players goes: stamina plus how close he is to the ideal distance behind the carrier.</summary>
+        public const float OverlapIdealDistance = 6.0f;
+        public const float OverlapStaminaScale = 100.0f;
     }
 
     /// <summary>The editable copy of <see cref="AttackPositioningDefaults"/>.</summary>
@@ -133,6 +160,22 @@ namespace FS27.Core
         public float WidthMargin = AttackPositioningDefaults.WidthMargin;
         public float WidthMinCarrierDistance = AttackPositioningDefaults.WidthMinCarrierDistance;
         public float WidthMaxCarrierDistance = AttackPositioningDefaults.WidthMaxCarrierDistance;
+        public int OverlapRunners = AttackPositioningDefaults.OverlapRunners;
+        public int OverlapMinCover = AttackPositioningDefaults.OverlapMinCover;
+        public float OverlapMinPossession = AttackPositioningDefaults.OverlapMinPossession;
+        public float OverlapBackTolerance = AttackPositioningDefaults.OverlapBackTolerance;
+        public float OverlapMinCarrierWidth = AttackPositioningDefaults.OverlapMinCarrierWidth;
+        public float OverlapMaxAhead = AttackPositioningDefaults.OverlapMaxAhead;
+        public float OverlapMaxCarrierDistance = AttackPositioningDefaults.OverlapMaxCarrierDistance;
+        public float OverlapCoverMargin = AttackPositioningDefaults.OverlapCoverMargin;
+        public float OverlapMinHomeDepth = AttackPositioningDefaults.OverlapMinHomeDepth;
+        public float OverlapMinStamina = AttackPositioningDefaults.OverlapMinStamina;
+        public float OverlapAhead = AttackPositioningDefaults.OverlapAhead;
+        public float OverlapMargin = AttackPositioningDefaults.OverlapMargin;
+        public float OverlapMaxHomeDeviation = AttackPositioningDefaults.OverlapMaxHomeDeviation;
+        public float OverlapMagnitude = AttackPositioningDefaults.OverlapMagnitude;
+        public float OverlapIdealDistance = AttackPositioningDefaults.OverlapIdealDistance;
+        public float OverlapStaminaScale = AttackPositioningDefaults.OverlapStaminaScale;
         public float SupportRunMagnitude = AttackPositioningDefaults.SupportRunMagnitude;
         public float ForwardRunMagnitude = AttackPositioningDefaults.ForwardRunMagnitude;
         public float WidthMagnitude = AttackPositioningDefaults.WidthMagnitude;

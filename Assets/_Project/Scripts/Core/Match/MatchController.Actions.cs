@@ -840,6 +840,16 @@ namespace FS27.Core
                 return;
             }
 
+            if (HoldsSetPieceBall(p))
+            {
+                // Phase 28: a throw-in, goal kick or corner is played from the spot: the ball waits there until the taker kicks it
+                SetPieceState sp = State.SetPiece;
+                b.Physics.Position = new Vec3(sp.Spot.X, ballParameters.Radius, sp.Spot.Y);
+                b.Physics.Velocity = Vec3.Zero;
+                b.Physics.IsGrounded = true;
+                return;
+            }
+
             Vec2 ballXY = Flat(b.Physics.Position);
             Vec2 toBall = ballXY - p.Locomotion.Position;
             if (toBall.Magnitude > actions.LooseBallDistance)

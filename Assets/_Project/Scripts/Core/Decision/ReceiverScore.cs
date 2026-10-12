@@ -45,7 +45,9 @@ namespace FS27.Core
             {
                 float chance = PassRisk.SuccessChance(view, me, r, d, t);
                 float own = Math.Max(0f, Math.Min(1f, 1f - WorldGeometry.DistanceToOwnGoal(view, me) / t.PassRiskOwnZone));
-                score -= t.PassRiskWeight * (1f + t.PassRiskOwnGoalFactor * own) * (1f - chance);
+                float riskTerm = t.PassRiskWeight * (1f + t.PassRiskOwnGoalFactor * own) * (1f - chance);
+                score -= riskTerm;
+                parts.Risk = -riskTerm;
             }
             if (!a.Enabled) return score;
 
