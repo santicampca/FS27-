@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>FS27 — Menú principal</title>
-  <meta name="description" content="Menú de FS27, fútbol 6 contra 6 para móviles. Esta web es solo una demostración de la interfaz: no ejecuta partidos.">
+  <meta name="description" content="Menú de FS27, fútbol 6 contra 6 para móviles. Datos reales del Core, penales y VAR con resultados reales del Core. No ejecuta partidos completos.">
   <meta name="theme-color" content="#040814">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="app.css">
 </head>
 <body data-view="menu">
   <!-- Fondo: estadio de noche, focos, césped en perspectiva y balón. Decorativo. -->
@@ -42,11 +43,8 @@
         </svg>
         <span class="brand__word"><b>FS</b>27</span>
       </a>
-      <p class="topbar__season" aria-hidden="true"><span class="dot"></span> TEMPORADA DEMO</p>
-      <ul class="topbar__chips" aria-label="Datos de demostración del jugador">
-        <li class="chip chip--lvl" title="Dato de demostración"><small>NIV</small> 12</li>
-        <li class="chip chip--zp" title="Dato de demostración. Los Zenit Points no están conectados."><span class="gem" aria-hidden="true"></span> 120 <small>ZP · DEMO</small></li>
-      </ul>
+      <p class="topbar__season" aria-hidden="true"><span class="dot"></span> PROTOTIPO · DATOS REALES DEL CORE</p>
+      <ul class="topbar__chips" aria-label="Cartera de Zenit Points"><li><a id="zp-chip" class="chip chip--zp" href="#/cartera" title="Tu cartera de Zenit Points (guardada en este navegador)"><span class="gem" aria-hidden="true"></span> <b>–</b> <small>ZP</small></a></li></ul>
     </header>
 
     <main id="main" tabindex="-1">
@@ -76,25 +74,25 @@
             <span class="tile__index" aria-hidden="true">03</span>
             <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M22 8 8 16l5 12 7-3v31h24V25l7 3 5-12-14-8c-2 4-6 6-10 6s-8-2-10-6z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg></span>
             <span class="tile__name">EQUIPO</span>
-            <span class="tile__tag">Plantilla y formación</span>
+            <span class="tile__tag">12 equipos · 160 jugadores</span>
           </a>
           <a class="tile tile--small tile--train" href="#/entrenamiento" data-route="entrenamiento">
             <span class="tile__index" aria-hidden="true">04</span>
             <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 8 46 50H18z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M24 34h16M20 46h24M10 54h44" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span>
             <span class="tile__name">ENTRENAMIENTO</span>
-            <span class="tile__tag">En desarrollo</span>
+            <span class="tile__tag">Práctica de penales</span>
           </a>
           <a class="tile tile--small tile--shop" href="#/tienda" data-route="tienda">
             <span class="tile__index" aria-hidden="true">05</span>
             <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 22h40l-3 34H15z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M22 28V18a10 10 0 0 1 20 0v10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
             <span class="tile__name">TIENDA</span>
-            <span class="tile__tag">Vista previa · sin compras</span>
+            <span class="tile__tag">Cosméticos con ZP</span>
           </a>
           <a class="tile tile--small tile--settings" href="#/configuracion" data-route="configuracion">
             <span class="tile__index" aria-hidden="true">06</span>
             <span class="tile__art" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13.6 13.6l6.4 6.4M44 44l6.4 6.4M13.6 50.4 20 44M44 20l6.4-6.4" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg></span>
             <span class="tile__name">CONFIGURACIÓN</span>
-            <span class="tile__tag">Ajustes iniciales</span>
+            <span class="tile__tag">Ajustes reales</span>
           </a>
         </nav>
         <p class="home__hint"><span class="kbd">←</span><span class="kbd">↑</span><span class="kbd">↓</span><span class="kbd">→</span> moverse · <span class="kbd">Intro</span> entrar · <span class="kbd">Esc</span> volver</p>
@@ -104,12 +102,10 @@
       <section class="screen" id="screen" hidden></section>
     </main>
 
-    <footer class="ticker" aria-label="Aviso">
-      <p><b>DEMO DE INTERFAZ</b> Esta web solo muestra el menú de FS27. Los partidos, el Core, los penales y el VAR no se ejecutan aquí. Los datos que ves son de ejemplo.</p>
-    </footer>
+    <footer class="ticker" aria-label="Aviso"><p><b>PROTOTIPO</b> Los datos de jugadores y equipos, los resultados de los penales y las revisiones del VAR son reales: los generó el Core de FS27. Esta web no ejecuta el Core en vivo ni juega partidos completos. Los ZP y los ajustes viven solo en este navegador.</p></footer>
   </div>
 
-  <noscript><p class="noscript">Esta demostración necesita JavaScript para mostrar las pantallas de cada opción.</p></noscript>
-  <script src="app.js" defer></script>
+  <noscript><p class="noscript">Esta web necesita JavaScript para mostrar las pantallas de cada opción.</p></noscript>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
