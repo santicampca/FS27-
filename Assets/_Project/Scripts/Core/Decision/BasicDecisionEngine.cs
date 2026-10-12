@@ -570,6 +570,12 @@ namespace FS27.Core
             if (d >= t.LobPassDistance && view.CanUse(me.PlayerId, FootballActionKind.SkillLobPass).Allowed) { kind = FootballActionKind.SkillLobPass; reason = DecisionReason.LobPassAvailable; }
             else if (d >= t.LongPassDistance) kind = FootballActionKind.LongPass;
             float power = Math.Min(1f, t.PassPowerBase + (1f - t.PassPowerBase) * d / t.PassPowerRefDistance);
+            if (t.PassPhysicsEnabled)
+            {
+                float planned = me.Profile.PassQuality * t.PlannedQualityShare;
+                bool closeRival = WorldGeometry.OpponentsWithin(view, me.Team, receiver.Position, attack.Tuning.ReceiverPressureRadius) > 0;
+                power = kind == FootballActionKind.ShortPass ? PassPhysics.GroundPower(d, closeRival ? t.PressedArrivalSpeed : t.GroundArrivalSpeed, planned, 1f) : PassPhysics.LoftedPower(d * t.LandingShare, planned);
+            }
             var intent = new ActionIntent(me.Team, me.PlayerId, kind, dir, power) { Target = PassTarget.ToPlayer(receiver.PlayerId) };
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = reason, HasAction = true, Action = intent, TargetPlayerId = receiver.PlayerId, HasMovement = true, Movement = MovementIntent.Stand };
         }
@@ -678,6 +684,7 @@ namespace FS27.Core
             Vec2 dir = ActionModel.DirectionOr(point - me.Position, me.Facing);
             float d = (point - me.Position).Magnitude;
             float power = Math.Min(1f, t.PassPowerBase + (1f - t.PassPowerBase) * d / t.PassPowerRefDistance);
+            if (t.PassPhysicsEnabled) power = PassPhysics.GroundPower(d, t.ThroughArrivalSpeed, me.Profile.PassQuality * t.PlannedQualityShare, ActionDefaults.ThroughSpeedBoost);
             var intent = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.ThroughPass, dir, power) { Target = PassTarget.ToPosition(point) };
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.SpacePass, HasAction = true, Action = intent, TargetPlayerId = runner.PlayerId, HasMovement = true, Movement = MovementIntent.Stand };
         }
@@ -706,7 +713,15 @@ namespace FS27.Core
                 if (receiver >= 0) { dir = ActionModel.DirectionOr(view[receiver].Position - me.Position, me.Facing); targetId = view[receiver].PlayerId; }
                 else dir = AttackDirection(view, me.Team);
                 float d = receiver >= 0 ? (view[receiver].Position - me.Position).Magnitude : t.LongPassDistance;
-                var intent = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.GoalkeeperDistribution, dir, t.KeeperDistributePower) { Long = d >= t.LongPassDistance };
+                bool longKick = d >= t.LongPassDistance;
+                float kickPower = t.KeeperDistributePower;
+                if (t.PassPhysicsEnabled)
+                {
+                    float keeperQuality = (longKick ? ActionDefaults.KeeperLongKickShare * me.Profile.KeeperKicking + (1f - ActionDefaults.KeeperLongKickShare) * me.Profile.KeeperDistribution
+                                                    : ActionDefaults.KeeperShortDistributionShare * me.Profile.KeeperDistribution + (1f - ActionDefaults.KeeperShortDistributionShare) * me.Profile.KeeperKicking) * t.PlannedQualityShare;
+                    kickPower = longKick ? PassPhysics.LoftedPower(d * t.LandingShare, keeperQuality) : PassPhysics.GroundPower(d, t.GroundArrivalSpeed, keeperQuality, 1f);
+                }
+                var intent = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.GoalkeeperDistribution, dir, kickPower) { Long = longKick };
                 if (targetId != null) intent.Target = PassTarget.ToPlayer(targetId);
                 return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.KeeperDistribute, HasAction = true, Action = intent, TargetPlayerId = targetId, HasMovement = true, Movement = MovementIntent.Stand };
             }

@@ -93,6 +93,43 @@ namespace FS27.Core
         public const float KeeperReactDistance = 7.0f;
         public const float KeeperLineDepth = 1.5f;
         public const float KeeperDistributePower = 0.8f;
+
+        // ---- Phase 28: pass power from the physics of the ball (see PassPhysics). Off = the older distance-linear power.
+        public const bool PassPhysicsEnabled = true;
+        /// <summary>m/s the ball should still have when it reaches a team-mate's feet (a first touch takes it cleanly at about this speed).</summary>
+        public const float GroundArrivalSpeed = 6.5f;
+        /// <summary>The same when a rival is close to the receiver: a faster ball leaves him less time to close in.</summary>
+        public const float PressedArrivalSpeed = 8.0f;
+        public const float ThroughArrivalSpeed = 8.5f;
+        /// <summary>A lofted pass bounces this share of the distance short of the receiver, so that he gets it low after the bounce.</summary>
+        public const float LandingShare = 0.9f;
+        /// <summary>The share of his pass quality the passer plans with (stamina and pressure take some at the moment of the kick).</summary>
+        public const float PlannedQualityShare = 0.9f;
+
+        // ---- Phase 28: the chance a pass arrives (see PassRisk) and what losing the ball costs
+        /// <summary>The pass-risk model is off by default: it made the teams shoot and score far more (Classic Professional goals +75 %) without raising the pass completion; it stays available for tuning (FS27_EXP *.Basic.PassRiskDisabled=false).</summary>
+        public const bool PassRiskDisabled = true;
+        /// <summary>Points along the path of a ground pass where a rival's arrival is compared with the ball's.</summary>
+        public const int PassRiskSamples = 4;
+        /// <summary>Seconds a rival needs to react before he runs to the ball's path.</summary>
+        public const float PassReactionSeconds = 0.3f;
+        /// <summary>How far in front of the passer the first point of the ball's path is taken (m).</summary>
+        public const float PassRiskStartOffset = 0.5f;
+        /// <summary>The share of his top speed a rival is assumed to run at to cut the ball out.</summary>
+        public const float PassInterceptorSpeedShare = 0.8f;
+        /// <summary>The margin (seconds) at which the lane is half safe, and the width of the transition.</summary>
+        public const float PassMarginCenter = 0.15f;
+        public const float PassMarginScale = 0.35f;
+        /// <summary>How far from the receiver (m) a kick can land and still be played.</summary>
+        public const float PassAccuracyReach = 1.5f;
+        /// <summary>The power the passer is assumed to kick with when estimating the error.</summary>
+        public const float PassRiskPowerEstimate = 0.6f;
+        /// <summary>A rival this close to the receiver makes the passer use the faster ball.</summary>
+        public const float PassRiskPressureRadius = 3.0f;
+        /// <summary>Score taken from a pass for a certain loss of the ball, and how much more it costs in front of one's own goal (up to this factor extra, inside this many metres of it).</summary>
+        public const float PassRiskWeight = 2.5f;
+        public const float PassRiskOwnGoalFactor = 1.0f;
+        public const float PassRiskOwnZone = 14.0f;
     }
 
     /// <summary>The editable copy of <see cref="BasicDecisionDefaults"/>.</summary>
@@ -163,5 +200,24 @@ namespace FS27.Core
         public float KeeperReactDistance = BasicDecisionDefaults.KeeperReactDistance;
         public float KeeperLineDepth = BasicDecisionDefaults.KeeperLineDepth;
         public float KeeperDistributePower = BasicDecisionDefaults.KeeperDistributePower;
+        public bool PassPhysicsEnabled = BasicDecisionDefaults.PassPhysicsEnabled;
+        public float GroundArrivalSpeed = BasicDecisionDefaults.GroundArrivalSpeed;
+        public float PressedArrivalSpeed = BasicDecisionDefaults.PressedArrivalSpeed;
+        public float ThroughArrivalSpeed = BasicDecisionDefaults.ThroughArrivalSpeed;
+        public float LandingShare = BasicDecisionDefaults.LandingShare;
+        public float PlannedQualityShare = BasicDecisionDefaults.PlannedQualityShare;
+        public bool PassRiskDisabled = BasicDecisionDefaults.PassRiskDisabled;
+        public int PassRiskSamples = BasicDecisionDefaults.PassRiskSamples;
+        public float PassReactionSeconds = BasicDecisionDefaults.PassReactionSeconds;
+        public float PassRiskStartOffset = BasicDecisionDefaults.PassRiskStartOffset;
+        public float PassInterceptorSpeedShare = BasicDecisionDefaults.PassInterceptorSpeedShare;
+        public float PassMarginCenter = BasicDecisionDefaults.PassMarginCenter;
+        public float PassMarginScale = BasicDecisionDefaults.PassMarginScale;
+        public float PassAccuracyReach = BasicDecisionDefaults.PassAccuracyReach;
+        public float PassRiskPowerEstimate = BasicDecisionDefaults.PassRiskPowerEstimate;
+        public float PassRiskPressureRadius = BasicDecisionDefaults.PassRiskPressureRadius;
+        public float PassRiskWeight = BasicDecisionDefaults.PassRiskWeight;
+        public float PassRiskOwnGoalFactor = BasicDecisionDefaults.PassRiskOwnGoalFactor;
+        public float PassRiskOwnZone = BasicDecisionDefaults.PassRiskOwnZone;
     }
 }
