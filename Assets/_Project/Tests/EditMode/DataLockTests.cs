@@ -386,7 +386,8 @@ namespace FS27.Core.Tests
         {
             var people = db.Identities.All.Where(e => e.Kind != IdentityKind.Referee).ToList();
             CollectionAssert.AllItemsAreUnique(people.Select(e => ShortNameRule.Key(e.FullName)));
-            CollectionAssert.AllItemsAreUnique(people.Select(e => ShortNameRule.Key(e.Name.Split(' ').Last())), "no two people share a family name");
+            // the family name is the last word, except that a generational suffix ("Jr") is not one: "Vinichus Jr" and "Reymar Jr" do not share the family name "Jr"
+            CollectionAssert.AllItemsAreUnique(people.Select(e => { string[] w = e.Name.Split(' '); int i = w.Length - 1; if (i > 0 && IdentityGenerator.IsGenerationalSuffix(w[i])) i--; return ShortNameRule.Key(w[i]); }), "no two people share a family name");
             var given = people.GroupBy(e => ShortNameRule.Key(e.Name.Split(' ')[0])).Select(g => g.Count());
             Assert.LessOrEqual(given.Max(), 3, "a given name repeats only rarely");
             Assert.Greater(people.Select(e => e.Culture).Distinct().Count(), 8, "several name cultures are in use");
