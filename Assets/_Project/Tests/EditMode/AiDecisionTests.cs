@@ -176,6 +176,7 @@ namespace FS27.Core.Tests
             MatchController alone = Quiet();
             Carrier(alone, TeamSide.Home, "hs0", -18f, 0f, East);
             Put(alone, TeamSide.Home, "hs3", -18f, 9f, East); Put(alone, TeamSide.Away, "as3", -17f, 9f, West);
+            for (float held = 0f; held < new GoalkeeperAiTuning().DistributionPatienceSeconds + 0.1f; held += Dt) alone.Advance(Dt); // Phase 29: with nobody free he first waits for a lane, then clears
             PlayerDecision longKick = Decide(alone, "hs0");
             Assert.AreEqual(DecisionKind.Pass, longKick.Kind); Assert.IsNull(longKick.TargetPlayerId, "nobody is free: he kicks it long upfield"); Assert.IsTrue(longKick.Action.Long); Assert.Greater(longKick.Action.Direction.X, 0.9f);
         }

@@ -109,7 +109,9 @@ namespace FS27.Core
         /// <summary>A team-mate of the taker offers himself: he keeps clear of the rivals so the taker has a lane.</summary>
         SetPieceOffer,
         /// <summary>A cross from the flank to a team-mate in the box.</summary>
-        CrossToBox
+        CrossToBox,
+        /// <summary>Phase 29: the keeper holds the ball and waits for a lane to open.</summary>
+        KeeperWaitForLane
     }
 
     /// <summary>

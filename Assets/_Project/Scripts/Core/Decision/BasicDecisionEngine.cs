@@ -711,11 +711,23 @@ namespace FS27.Core
             if (me.HasBall)
             {
                 if (view.Match.SetPieceTakerId != null && view.Match.SetPieceTakerId == me.PlayerId) return TakeSetPiece(view, idx, me);
+                if (keeperAi.Enabled && keeperAi.DistributionEnabled) return KeeperPlayBall(view, idx, me);
                 return KeeperKick(view, me, BestReceiver(view, idx, me, true, false, out _));
             }
 
             if (!keeperAi.Enabled) return LegacyKeeper(view, me, attacksPlusX);
             return KeeperAi(view, me);
+        }
+
+        /// <summary>Phase 29: the keeper with the ball in his hands waits for a lane, plays short or long to the best option, or clears (see <see cref="GoalkeeperDistribution"/>).</summary>
+        private PlayerDecision KeeperPlayBall(WorldView view, int idx, in WorldPlayer me)
+        {
+            GoalkeeperParameters level = profile != null && profile.Goalkeeper != null ? profile.Goalkeeper : NeutralKeeper;
+            GoalkeeperSkill skill = GoalkeeperSkillModel.ResolveNormalized(level, me.Profile.KeeperReflexes, me.Profile.KeeperPositioning, me.Profile.KeeperCommand, me.Profile.KeeperDiving, me.Profile.KeeperHandling, keeperAi.Skill);
+            GoalkeeperPlayChoice choice = GoalkeeperDistribution.Choose(view, idx, me, t, keeperAi, view.Ball.SecondsSinceTouch, skill.DecisionMaking);
+            if (choice.Play == GoalkeeperPlay.Wait)
+                return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Idle, Reason = DecisionReason.KeeperWaitForLane, HasMovement = true, Movement = MovementIntent.Stand };
+            return KeeperKick(view, me, choice.Receiver);
         }
 
         /// <summary>The goalkeeper plays the ball he holds: to the team-mate (or, with nobody, long up the pitch), short or long by the distance, with the power the ball needs to get there.</summary>
