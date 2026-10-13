@@ -122,13 +122,13 @@
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Ramiro Maldonado Frías",
+      "edited": true,
+      "fullName": "Ger Martao",
       "id": "cb-gerard-martin",
       "kind": "Player",
-      "name": "Ramiro Maldonado",
+      "name": "Ger Martao",
       "originalName": "Gerard Martín",
-      "shortName": "Maldonado"
+      "shortName": "Martao"
     },
     {
       "culture": "Anglo",
@@ -802,123 +802,123 @@
     },
     {
       "culture": "Arabic",
-      "edited": false,
-      "fullName": "Ghali Ouazzani",
+      "edited": true,
+      "fullName": "Arrak Sasimi",
       "id": "fb-achraf-hakimi",
       "kind": "Player",
-      "name": "Ghali Ouazzani",
+      "name": "Arrak Sasimi",
       "originalName": "Achraf Hakimi",
-      "shortName": "Ouazzani"
+      "shortName": "Sasimi"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Kit Kelsall",
+      "edited": true,
+      "fullName": "Alpon Davis",
       "id": "fb-alphonso-davies",
       "kind": "Player",
-      "name": "Kit Kelsall",
+      "name": "Alpon Davis",
       "originalName": "Alphonso Davies",
-      "shortName": "Kelsall"
+      "shortName": "Davis"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Reuben Redfern",
+      "edited": true,
+      "fullName": "Aand Robbie",
       "id": "fb-andy-robertson",
       "kind": "Player",
-      "name": "Reuben Redfern",
+      "name": "Aand Robbie",
       "originalName": "Andy Robertson",
-      "shortName": "Redfern"
+      "shortName": "Robbie"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Ismael Escalante Herrera",
+      "edited": true,
+      "fullName": "Dann Mulo",
       "id": "fb-dani-munoz",
       "kind": "Player",
-      "name": "Ismael Escalante",
+      "name": "Dann Mulo",
       "originalName": "Dani Muñoz",
-      "shortName": "Escalante"
+      "shortName": "Mulo"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Luuk Brouwers",
+      "edited": true,
+      "fullName": "Pretzel Donfis",
       "id": "fb-denzel-dumfries",
       "kind": "Player",
-      "name": "Luuk Brouwers",
+      "name": "Pretzel Donfis",
       "originalName": "Denzel Dumfries",
-      "shortName": "Brouwers"
+      "shortName": "Donfis"
     },
     {
       "culture": "Italian",
-      "edited": false,
-      "fullName": "Pellegrino Mazzanti",
+      "edited": true,
+      "fullName": "Fideo di Mateo",
       "id": "fb-federico-dimarco",
       "kind": "Player",
-      "name": "Pellegrino Mazzanti",
+      "name": "Fideo di Mateo",
       "originalName": "Federico Dimarco",
-      "shortName": "Mazzanti"
+      "shortName": "di Mateo"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Quirino Valadares",
+      "edited": true,
+      "fullName": "Janik Cancelado",
       "id": "fb-joao-cancelo",
       "kind": "Player",
-      "name": "Quirino Valadares",
+      "name": "Janik Cancelado",
       "originalName": "João Cancelo",
-      "shortName": "Valadares"
+      "shortName": "Cancelado"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Leandro Carrasco Ibarra",
+      "edited": true,
+      "fullName": "Mart Cinderella",
       "id": "fb-marc-cucurella",
       "kind": "Player",
-      "name": "Leandro Carrasco",
+      "name": "Mart Cinderella",
       "originalName": "Marc Cucurella",
-      "shortName": "Carrasco"
+      "shortName": "Cinderella"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Quico Dorado Heredia",
+      "edited": true,
+      "fullName": "Mark Lore",
       "id": "fb-marcos-llorente",
       "kind": "Player",
-      "name": "Quico Dorado",
+      "name": "Mark Lore",
       "originalName": "Marcos Llorente",
-      "shortName": "Dorado"
+      "shortName": "Lore"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Nuno Teles",
+      "edited": true,
+      "fullName": "Nuuno Telles",
       "id": "fb-nuno-mendes",
       "kind": "Player",
-      "name": "Nuno Teles",
+      "name": "Nuuno Telles",
       "originalName": "Nuno Mendes",
-      "shortName": "Teles"
+      "shortName": "Telles"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Mauro Salcedo Quintanilla",
+      "edited": true,
+      "fullName": "Pedre Smoke",
       "id": "fb-pedro-porro",
       "kind": "Player",
-      "name": "Mauro Salcedo",
+      "name": "Pedre Smoke",
       "originalName": "Pedro Porro",
-      "shortName": "Salcedo"
+      "shortName": "Smoke"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Nolan Holloway",
+      "edited": true,
+      "fullName": "Tren Arnoldonson",
       "id": "fb-trent-alexander-arnold",
       "kind": "Player",
-      "name": "Nolan Holloway",
+      "name": "Tren Arnoldonson",
       "originalName": "Trent Alexander-Arnold",
-      "shortName": "Holloway"
+      "shortName": "Arnoldonson"
     },
     {
       "culture": "Anglo",
@@ -1162,13 +1162,13 @@
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Plácido Ferrão",
+      "edited": true,
+      "fullName": "Brunson Gomarez",
       "id": "mc-bruno-guimaraes",
       "kind": "Player",
-      "name": "Plácido Ferrão",
+      "name": "Brunson Gomarez",
       "originalName": "Bruno Guimarães",
-      "shortName": "Ferrão"
+      "shortName": "Gomarez"
     },
     {
       "culture": "Portuguese",
@@ -1182,23 +1182,23 @@
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Declan Ellerby",
+      "edited": true,
+      "fullName": "Helio Anders",
       "id": "mc-elliot-anderson",
       "kind": "Player",
-      "name": "Declan Ellerby",
+      "name": "Helio Anders",
       "originalName": "Elliot Anderson",
-      "shortName": "Ellerby"
+      "shortName": "Anders"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Eelco Kok",
+      "edited": true,
+      "fullName": "Frank de Gon",
       "id": "mc-frenkie-de-jong",
       "kind": "Player",
-      "name": "Eelco Kok",
+      "name": "Frank de Gon",
       "originalName": "Frenkie de Jong",
-      "shortName": "Kok"
+      "shortName": "de Gon"
     },
     {
       "culture": "Turkish",
@@ -1262,43 +1262,43 @@
     },
     {
       "culture": "EastEuropean",
-      "edited": false,
-      "fullName": "Gheorghe Ionescu",
+      "edited": true,
+      "fullName": "Dominico Losbay",
       "id": "md-dominik-szoboszlai",
       "kind": "Player",
-      "name": "Gheorghe Ionescu",
+      "name": "Dominico Losbay",
       "originalName": "Dominik Szoboszlai",
-      "shortName": "Ionescu"
+      "shortName": "Losbay"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Agustín Jofré Naranjo",
+      "edited": true,
+      "fullName": "Fedor Valgreen",
       "id": "md-federico-valverde",
       "kind": "Player",
-      "name": "Agustín Jofré",
+      "name": "Fedor Valgreen",
       "originalName": "Federico Valverde",
-      "shortName": "Jofré"
+      "shortName": "Valgreen"
     },
     {
       "culture": "German",
-      "edited": false,
-      "fullName": "Rainer Lindner",
+      "edited": true,
+      "fullName": "Yosua Kimiki",
       "id": "md-joshua-kimmich",
       "kind": "Player",
-      "name": "Rainer Lindner",
+      "name": "Yosua Kimiki",
       "originalName": "Joshua Kimmich",
-      "shortName": "Lindner"
+      "shortName": "Kimiki"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Idris Strickland",
+      "edited": true,
+      "fullName": "Luis Joll",
       "id": "md-lewis-hall",
       "kind": "Player",
-      "name": "Idris Strickland",
+      "name": "Luis Joll",
       "originalName": "Lewis Hall",
-      "shortName": "Strickland"
+      "shortName": "Joll"
     },
     {
       "culture": "LatinAmerican",
@@ -1312,73 +1312,73 @@
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Tristan Northcott",
+      "edited": true,
+      "fullName": "Malis Scally",
       "id": "md-myles-lewis-skelly",
       "kind": "Player",
-      "name": "Tristan Northcott",
+      "name": "Malis Scally",
       "originalName": "Myles Lewis-Skelly",
-      "shortName": "Northcott"
+      "shortName": "Scally"
     },
     {
       "culture": "German",
-      "edited": false,
-      "fullName": "Sven Freudenberg",
+      "edited": true,
+      "fullName": "Natt Brownie",
       "id": "md-nathaniel-brown",
       "kind": "Player",
-      "name": "Sven Freudenberg",
+      "name": "Natt Brownie",
       "originalName": "Nathaniel Brown",
-      "shortName": "Freudenberg"
+      "shortName": "Brownie"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Fergus Wetherby",
+      "edited": true,
+      "fullName": "Nik Orrolis",
       "id": "md-nico-o-reilly",
       "kind": "Player",
-      "name": "Fergus Wetherby",
+      "name": "Nik Orrolis",
       "originalName": "Nico O'Reilly",
-      "shortName": "Wetherby"
+      "shortName": "Orrolis"
     },
     {
       "culture": "EastEuropean",
-      "edited": false,
-      "fullName": "Kamil Beridze",
+      "edited": true,
+      "fullName": "Ola Inssenko",
       "id": "md-oleksandr-zinchenko",
       "kind": "Player",
-      "name": "Kamil Beridze",
+      "name": "Ola Inssenko",
       "originalName": "Oleksandr Zinchenko",
-      "shortName": "Beridze"
+      "shortName": "Inssenko"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Kieran Aldous",
+      "edited": true,
+      "fullName": "Reiss Yeimsi",
       "id": "md-reece-james",
       "kind": "Player",
-      "name": "Kieran Aldous",
+      "name": "Reiss Yeimsi",
       "originalName": "Reece James",
-      "shortName": "Aldous"
+      "shortName": "Yeimsi"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Lucio Cabrera Haro",
+      "edited": true,
+      "fullName": "Valentino Boat",
       "id": "md-valentin-barco",
       "kind": "Player",
-      "name": "Lucio Cabrera",
+      "name": "Valentino Boat",
       "originalName": "Valentín Barco",
-      "shortName": "Cabrera"
+      "shortName": "Boat"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Étienne Delacroix",
+      "edited": true,
+      "fullName": "Sair Mery",
       "id": "md-warren-zaire-emery",
       "kind": "Player",
-      "name": "Étienne Delacroix",
+      "name": "Sair Mery",
       "originalName": "Warren Zaïre-Emery",
-      "shortName": "Delacroix"
+      "shortName": "Mery"
     },
     {
       "culture": "Portuguese",
@@ -1482,103 +1482,103 @@
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Genaro Campos Jiménez",
+      "edited": true,
+      "fullName": "Mic Dister",
       "id": "mq-alexis-mac-allister",
       "kind": "Player",
-      "name": "Genaro Campos",
+      "name": "Mic Dister",
       "originalName": "Alexis Mac Allister",
-      "shortName": "Campos"
+      "shortName": "Dister"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Nigel Blackwood",
+      "edited": true,
+      "fullName": "Decano Ice",
       "id": "mq-declan-rice",
       "kind": "Player",
-      "name": "Nigel Blackwood",
+      "name": "Decano Ice",
       "originalName": "Declan Rice",
-      "shortName": "Blackwood"
+      "shortName": "Ice"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Uriel Fierro Vallejos",
+      "edited": true,
+      "fullName": "Henxo Ferraes",
       "id": "mq-enzo-fernandez",
       "kind": "Player",
-      "name": "Uriel Fierro",
+      "name": "Henxo Ferraes",
       "originalName": "Enzo Fernández",
-      "shortName": "Fierro"
+      "shortName": "Ferraes"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Gael Yáñez Valdivia",
+      "edited": true,
+      "fullName": "Falia Tuiz",
       "id": "mq-fabian-ruiz",
       "kind": "Player",
-      "name": "Gael Yáñez",
+      "name": "Falia Tuiz",
       "originalName": "Fabián Ruiz",
-      "shortName": "Yáñez"
+      "shortName": "Tuiz"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Barnaby Denholm",
+      "edited": true,
+      "fullName": "Cobb Meinjo",
       "id": "mq-kobbie-mainoo",
       "kind": "Player",
-      "name": "Barnaby Denholm",
+      "name": "Cobb Meinjo",
       "originalName": "Kobbie Mainoo",
-      "shortName": "Denholm"
+      "shortName": "Meinjo"
     },
     {
       "culture": "EastEuropean",
-      "edited": false,
-      "fullName": "Nikola Oprea",
+      "edited": true,
+      "fullName": "Luc Molis",
       "id": "mq-luka-modric",
       "kind": "Player",
-      "name": "Nikola Oprea",
+      "name": "Luc Molis",
       "originalName": "Luka Modrić",
-      "shortName": "Oprea"
+      "shortName": "Molis"
     },
     {
       "culture": "Italian",
-      "edited": false,
-      "fullName": "Vittorio Lombardi",
+      "edited": true,
+      "fullName": "Nicho Baralla",
       "id": "mq-nicolo-barella",
       "kind": "Player",
-      "name": "Vittorio Lombardi",
+      "name": "Nicho Baralla",
       "originalName": "Nicolò Barella",
-      "shortName": "Lombardi"
+      "shortName": "Baralla"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Teodoro Tejedor Zamudio",
+      "edited": true,
+      "fullName": "Peridi",
       "id": "mq-pedri",
       "kind": "Player",
-      "name": "Teodoro Tejedor",
+      "name": "Peridi",
       "originalName": "Pedri",
-      "shortName": "Tejedor"
+      "shortName": "Peridi"
     },
     {
       "culture": "Italian",
-      "edited": false,
-      "fullName": "Ippolito Vitale",
+      "edited": true,
+      "fullName": "Sanders Tonsali",
       "id": "mq-sandro-tonali",
       "kind": "Player",
-      "name": "Ippolito Vitale",
+      "name": "Sanders Tonsali",
       "originalName": "Sandro Tonali",
-      "shortName": "Vitale"
+      "shortName": "Tonsali"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Finlay Whitcombe",
+      "edited": true,
+      "fullName": "Escoti Macdomini",
       "id": "mq-scott-mctominay",
       "kind": "Player",
-      "name": "Finlay Whitcombe",
+      "name": "Escoti Macdomini",
       "originalName": "Scott McTominay",
-      "shortName": "Whitcombe"
+      "shortName": "Macdomini"
     },
     {
       "culture": "French",
