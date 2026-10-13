@@ -6,46 +6,46 @@ Relación entre el dato original y el publicado: **ninguna léxica**. Solo se co
 
 | Id | Tipo | Cultura | Nombre en la investigación (solo referencia de authoring) | Nombre publicado | Nombre completo | Corto |
 |---|---|---|---|---|---|---|
-| `cb-alessandro-bastoni` | Player | Italian | Alessandro Bastoni | Bruno Tagliaferri | Bruno Tagliaferri | Tagliaferri |
-| `cb-antonio-rudiger` | Player | German | Antonio Rüdiger | Florian Hellwig | Florian Hellwig | Hellwig |
-| `cb-aymeric-laporte` | Player | Spanish | Aymeric Laporte | Eloy Hontoria | Eloy Hontoria Ferreiro | Hontoria |
-| `cb-calvin-bassey` | Player | WestAfricanEnglish | Calvin Bassey | Tetteh Jegede | Tetteh Jegede | Jegede |
-| `cb-castello-lukeba` | Player | French | Castello Lukeba | Gaspard Aubry | Gaspard Aubry | Aubry |
-| `cb-cristian-romero` | Player | LatinAmerican | Cristian Romero | Camilo Funes | Camilo Funes Echegaray | Funes |
-| `cb-daley-blind` | Player | Dutch | Daley Blind | Rutger Nijhuis | Rutger Nijhuis | Nijhuis |
-| `cb-david-hancko` | Player | EastEuropean | Dávid Hancko | Ilija Ilić | Ilija Ilić | Ilić |
-| `cb-dayot-upamecano` | Player | French | Dayot Upamecano | Rémi Gerbier | Rémi Gerbier | Gerbier |
-| `cb-dean-huijsen` | Player | Spanish | Dean Huijsen | Rodrigo Narváez | Rodrigo Narváez Galindo | Narváez |
-| `cb-ezri-konsa` | Player | Anglo | Ezri Konsa | Isaac Ashworth | Isaac Ashworth | Ashworth |
-| `cb-gabriel-magalhaes` | Player | Portuguese | Gabriel Magalhães | Duarte Zagalo | Duarte Zagalo | Zagalo |
+| `cb-alessandro-bastoni` | Player | Italian | Alessandro Bastoni | Alessio Baaston | Alessio Baaston | Baaston |
+| `cb-antonio-rudiger` | Player | German | Antonio Rüdiger | Tony Pulicser | Tony Pulicser | Pulicser |
+| `cb-aymeric-laporte` | Player | Spanish | Aymeric Laporte | Emery Aport | Emery Aport | Aport |
+| `cb-calvin-bassey` | Player | WestAfricanEnglish | Calvin Bassey | Calvin Clenssey | Calvin Clenssey | Clenssey |
+| `cb-castello-lukeba` | Player | French | Castello Lukeba | Castal Lakaba | Castal Lakaba | Lakaba |
+| `cb-cristian-romero` | Player | LatinAmerican | Cristian Romero | Cufi Plomero | Cufi Plomero | Plomero |
+| `cb-daley-blind` | Player | Dutch | Daley Blind | Daylie Baind | Daylie Baind | Baind |
+| `cb-david-hancko` | Player | EastEuropean | Dávid Hancko | Davide Jankkou | Davide Jankkou | Jankkou |
+| `cb-dayot-upamecano` | Player | French | Dayot Upamecano | Doyitt Opomocono | Doyitt Opomocono | Opomocono |
+| `cb-dean-huijsen` | Player | Spanish | Dean Huijsen | Dani Luipseen | Dani Luipseen | Luipseen |
+| `cb-ezri-konsa` | Player | Anglo | Ezri Konsa | Espi Lonsa | Espi Lonsa | Lonsa |
+| `cb-gabriel-magalhaes` | Player | Portuguese | Gabriel Magalhães | Gabba Magalaha | Gabba Magalaha | Magalaha |
 | `cb-gerard-martin` | Player | Spanish | Gerard Martín | Ger Martao | Ger Martao | Martao |
-| `cb-harry-maguire` | Player | Anglo | Harry Maguire | Lachlan Garrick | Lachlan Garrick | Garrick |
-| `cb-jon-aramburu` | Player | LatinAmerican | Jon Aramburu | Dante Naranjo | Dante Naranjo Funes | Naranjo |
-| `cb-jonathan-tah` | Player | German | Jonathan Tah | Gerrit Thalmann | Gerrit Thalmann | Thalmann |
-| `cb-josko-gvardiol` | Player | EastEuropean | Joško Gvardiol | Hamza Vlahović | Hamza Vlahović | Vlahović |
-| `cb-jules-kounde` | Player | French | Jules Koundé | Florian Dupuis | Florian Dupuis | Dupuis |
-| `cb-jurrien-timber` | Player | Dutch | Jurriën Timber | Arjen Faber | Arjen Faber | Faber |
-| `cb-kalidou-koulibaly` | Player | WestAfricanFrench | Kalidou Koulibaly | Kalidou Ndiaye | Kalidou Ndiaye | Ndiaye |
-| `cb-kim-min-jae` | Player | Korean | Kim Min-jae | Changmin Hong | Changmin Hong | Hong |
-| `cb-lisandro-martinez` | Player | LatinAmerican | Lisandro Martínez | Patricio Vallejos | Patricio Vallejos Jiménez | Vallejos |
+| `cb-harry-maguire` | Player | Anglo | Harry Maguire | Jarry Maguaya | Jarry Maguaya | Maguaya |
+| `cb-jon-aramburu` | Player | LatinAmerican | Jon Aramburu | Jonny Alanturu | Jonny Alanturu | Alanturu |
+| `cb-jonathan-tah` | Player | German | Jonathan Tah | Jons Tahs | Jons Tahs | Tahs |
+| `cb-josko-gvardiol` | Player | EastEuropean | Joško Gvardiol | Biosko Barvio | Biosko Barvio | Barvio |
+| `cb-jules-kounde` | Player | French | Jules Koundé | Jude Kounfre | Jude Kounfre | Kounfre |
+| `cb-jurrien-timber` | Player | Dutch | Jurriën Timber | Yuri Timbre | Yuri Timbre | Timbre |
+| `cb-kalidou-koulibaly` | Player | WestAfricanFrench | Kalidou Koulibaly | Kala Kuolabily | Kala Kuolabily | Kuolabily |
+| `cb-kim-min-jae` | Player | Korean | Kim Min-jae | Mini Je | Mini Je | Je |
+| `cb-lisandro-martinez` | Player | LatinAmerican | Lisandro Martínez | Licha Filipinez | Licha Filipinez | Filipinez |
 | `cb-lucas-hernandez` | Player | French | Lucas Hernández | Fabrice Lemaire | Fabrice Lemaire | Lemaire |
-| `cb-marc-guehi` | Player | Anglo | Marc Guéhi | Jonty Nuttall | Jonty Nuttall | Nuttall |
-| `cb-marc-pubill` | Player | Spanish | Marc Pubill | Damián Toledano | Damián Toledano Palencia | Toledano |
-| `cb-marquinhos` | Player | Portuguese | Marquinhos | Telmo Evangelista | Telmo Evangelista | Evangelista |
-| `cb-matthijs-de-ligt` | Player | Dutch | Matthijs de Ligt | Olaf Peeters | Olaf Peeters | Peeters |
+| `cb-marc-guehi` | Player | Anglo | Marc Guéhi | Mac Guhie | Mac Guhie | Mac Guhie |
+| `cb-marc-pubill` | Player | Spanish | Marc Pubill | Maraca Pubilil | Maraca Pubilil | Pubilil |
+| `cb-marquinhos` | Player | Portuguese | Marquinhos | Mc Qinhos | Mc Qinhos | Qinhos |
+| `cb-matthijs-de-ligt` | Player | Dutch | Matthijs de Ligt | Matias de Lait | Matias de Lait | de Lait |
 | `cb-micky-van-de-ven` | Player | Dutch | Micky van de Ven | Lodewijk Jonker | Lodewijk Jonker | Jonker |
-| `cb-nico-schlotterbeck` | Player | German | Nico Schlotterbeck | Torsten Detmers | Torsten Detmers | Detmers |
-| `cb-pau-cubarsi` | Player | Spanish | Pau Cubarsí | Nicanor Ferreiro | Nicanor Ferreiro Ordóñez | Ferreiro |
-| `cb-piero-hincapie` | Player | LatinAmerican | Piero Hincapié | Wilmer Ramos | Wilmer Ramos Rivadeneira | Ramos |
-| `cb-pierre-kalulu` | Player | French | Pierre Kalulu | Bastien Jouvet | Bastien Jouvet | Jouvet |
-| `cb-renato-veiga` | Player | Portuguese | Renato Veiga | Hugo Aragão | Hugo Aragão | Aragão |
-| `cb-riccardo-calafiori` | Player | Italian | Riccardo Calafiori | Piero Faccini | Piero Faccini | Faccini |
-| `cb-ronald-araujo` | Player | LatinAmerican | Ronald Araújo | Ramón Soria | Ramón Soria Uribe | Soria |
-| `cb-ruben-dias` | Player | Portuguese | Rúben Dias | Ulisses Eusébio | Ulisses Eusébio | Eusébio |
-| `cb-sven-botman` | Player | Dutch | Sven Botman | Maarten Eijkelboom | Maarten Eijkelboom | Eijkelboom |
-| `cb-virgil-van-dijk` | Player | Dutch | Virgil van Dijk | Koen Everts | Koen Everts | Everts |
-| `cb-william-saliba` | Player | French | William Saliba | Yann Salmon | Yann Salmon | Salmon |
-| `cb-willian-pacho` | Player | LatinAmerican | Willian Pacho | Diego Quiroga | Diego Quiroga Zalazar | Quiroga |
+| `cb-nico-schlotterbeck` | Player | German | Nico Schlotterbeck | Nikki Eslotebec | Nikki Eslotebec | Eslotebec |
+| `cb-pau-cubarsi` | Player | Spanish | Pau Cubarsí | Pua Bularsi | Pua Bularsi | Bularsi |
+| `cb-piero-hincapie` | Player | LatinAmerican | Piero Hincapié | Pair Intape | Pair Intape | Intape |
+| `cb-pierre-kalulu` | Player | French | Pierre Kalulu | Piero Cafulu | Piero Cafulu | Cafulu |
+| `cb-renato-veiga` | Player | Portuguese | Renato Veiga | Reny Vegas | Reny Vegas | Vegas |
+| `cb-riccardo-calafiori` | Player | Italian | Riccardo Calafiori | Richie Lalatori | Richie Lalatori | Lalatori |
+| `cb-ronald-araujo` | Player | LatinAmerican | Ronald Araújo | Ron Alauto | Ron Alauto | Alauto |
+| `cb-ruben-dias` | Player | Portuguese | Rúben Dias | Rubenjo Dais | Rubenjo Dais | Dais |
+| `cb-sven-botman` | Player | Dutch | Sven Botman | Ben Bottmen | Ben Bottmen | Ben Bottmen |
+| `cb-virgil-van-dijk` | Player | Dutch | Virgil van Dijk | Virgilio Vin Daiki | Virgilio Vin Daiki | Daiki |
+| `cb-william-saliba` | Player | French | William Saliba | Willo Salba | Willo Salba | Salba |
+| `cb-willian-pacho` | Player | LatinAmerican | Willian Pacho | Willie Pahco | Willie Pahco | Pahco |
 | `coach-carlo-ancelotti` | Coach | Italian | Carlo Ancelotti | Alberto Tedesco | Alberto Tedesco | Tedesco |
 | `coach-cesc-fabregas` | Coach | Spanish | Cesc Fàbregas | Pelayo Olmedo | Pelayo Olmedo Fontanals | Olmedo |
 | `coach-diego-simeone` | Coach | LatinAmerican | Diego Simeone | Baltasar Yrigoyen | Baltasar Yrigoyen Ramos | Yrigoyen |
@@ -66,26 +66,26 @@ Relación entre el dato original y el publicado: **ninguna léxica**. Solo se co
 | `coach-vincent-kompany` | Coach | French | Vincent Kompany | Pascal Pelletier | Pascal Pelletier | Pelletier |
 | `coach-yaya-toure` | Coach | WestAfricanFrench | Yaya Touré | Famara Abena | Famara Abena | Abena |
 | `coach-zinedine-zidane` | Coach | French | Zinedine Zidane | Oscar Gaillard | Oscar Gaillard | Gaillard |
-| `dc-alexander-isak` | Player | Nordic | Alexander Isak | Karl Ulvestad | Karl Ulvestad | Ulvestad |
-| `dc-chris-wood` | Player | Anglo | Chris Wood | Warren Fairbanks | Warren Fairbanks | Fairbanks |
-| `dc-cristiano-ronaldo` | Player | Portuguese | Cristiano Ronaldo | Gilberto Bettencourt | Gilberto Bettencourt | Bettencourt |
-| `dc-donyell-malen` | Player | Dutch | Donyell Malen | Ruud Bosman | Ruud Bosman | Bosman |
-| `dc-erling-haaland` | Player | Nordic | Erling Haaland | Gustav Wallin | Gustav Wallin | Wallin |
-| `dc-francesco-pio-esposito` | Player | Italian | Francesco Pio Esposito | Matteo Lunardi | Matteo Lunardi | Lunardi |
-| `dc-harry-kane` | Player | Anglo | Harry Kane | Oakley Gresham | Oakley Gresham | Gresham |
-| `dc-joao-pedro` | Player | Portuguese | João Pedro | Edmundo Rebelo | Edmundo Rebelo | Rebelo |
-| `dc-julian-alvarez` | Player | LatinAmerican | Julián Álvarez | Lautaro Zalazar | Lautaro Zalazar Soria | Zalazar |
-| `dc-kai-havertz` | Player | German | Kai Havertz | Hannes Neumeier | Hannes Neumeier | Neumeier |
-| `dc-karim-adeyemi` | Player | German | Karim Adeyemi | Norbert Dorfmeister | Norbert Dorfmeister | Dorfmeister |
-| `dc-kylian-mbappe` | Player | French | Kylian Mbappé | Quentin Rochefort | Quentin Rochefort | Rochefort |
-| `dc-lautaro-martinez` | Player | LatinAmerican | Lautaro Martínez | Bruno Duarte | Bruno Duarte Zárate | Duarte |
-| `dc-mikel-oyarzabal` | Player | Spanish | Mikel Oyarzabal | Severo Abellán | Severo Abellán Juncal | Abellán |
-| `dc-pierre-emerick-aubameyang` | Player | WestAfricanFrench | Pierre-Emerick Aubameyang | Jean-Luc Samb | Jean-Luc Samb | Samb |
-| `dc-romelu-lukaku` | Player | French | Romelu Lukaku | Loïc Deschamps | Loïc Deschamps | Deschamps |
-| `dc-troy-parrott` | Player | Anglo | Troy Parrott | Vaughn Cresswell | Vaughn Cresswell | Cresswell |
-| `dc-vedat-muriqi` | Player | EastEuropean | Vedat Muriqi | Hristo Stanković | Hristo Stanković | Stanković |
-| `dc-victor-osimhen` | Player | WestAfricanEnglish | Victor Osimhen | Dayo Eze | Dayo Eze | Eze |
-| `dc-viktor-gyokeres` | Player | Nordic | Viktor Gyökeres | Emil Holmgren | Emil Holmgren | Holmgren |
+| `dc-alexander-isak` | Player | Nordic | Alexander Isak | Alex Isaac | Alex Isaac | Isaac |
+| `dc-chris-wood` | Player | Anglo | Chris Wood | Cris Hollywood | Cris Hollywood | Hollywood |
+| `dc-cristiano-ronaldo` | Player | Portuguese | Cristiano Ronaldo | Cristian Orlando | Cristian Orlando | Orlando |
+| `dc-donyell-malen` | Player | Dutch | Donyell Malen | Doni Melon | Doni Melon | Melon |
+| `dc-erling-haaland` | Player | Nordic | Erling Haaland | Perrin Paaland | Perrin Paaland | Paaland |
+| `dc-francesco-pio-esposito` | Player | Italian | Francesco Pio Esposito | Pio Poxito | Pio Poxito | Poxito |
+| `dc-harry-kane` | Player | Anglo | Harry Kane | Parry Pane | Parry Pane | Pane |
+| `dc-joao-pedro` | Player | Portuguese | João Pedro | Joao Pelao | Joao Pelao | Pelao |
+| `dc-julian-alvarez` | Player | LatinAmerican | Julián Álvarez | Gulians Patarez | Gulians Patarez | Patarez |
+| `dc-kai-havertz` | Player | German | Kai Havertz | Pai Traverz | Pai Traverz | Traverz |
+| `dc-karim-adeyemi` | Player | German | Karim Adeyemi | Karin Aledemy | Karin Aledemy | Aledemy |
+| `dc-kylian-mbappe` | Player | French | Kylian Mbappé | Kiki Enbape | Kiki Enbape | Enbape |
+| `dc-lautaro-martinez` | Player | LatinAmerican | Lautaro Martínez | Toro Martinis | Toro Martinis | Martinis |
+| `dc-mikel-oyarzabal` | Player | Spanish | Mikel Oyarzabal | Maik Oriztizabal | Maik Oriztizabal | Oriztizabal |
+| `dc-pierre-emerick-aubameyang` | Player | WestAfricanFrench | Pierre-Emerick Aubameyang | Aurameyang | Aurameyang | Aurameyang |
+| `dc-romelu-lukaku` | Player | French | Romelu Lukaku | Lakaka | Lakaka | Lakaka |
+| `dc-troy-parrott` | Player | Anglo | Troy Parrott | Troy Tarot | Troy Tarot | Tarot |
+| `dc-vedat-muriqi` | Player | EastEuropean | Vedat Muriqi | Verdad Murizi | Verdad Murizi | Murizi |
+| `dc-victor-osimhen` | Player | WestAfricanEnglish | Victor Osimhen | Oyesmhen | Oyesmhen | Oyesmhen |
+| `dc-viktor-gyokeres` | Player | Nordic | Viktor Gyökeres | Vik Masckeres | Vik Masckeres | Masckeres |
 | `fb-achraf-hakimi` | Player | Arabic | Achraf Hakimi | Arrak Sasimi | Arrak Sasimi | Sasimi |
 | `fb-alphonso-davies` | Player | Anglo | Alphonso Davies | Alpon Davis | Alpon Davis | Davis |
 | `fb-andy-robertson` | Player | Anglo | Andy Robertson | Aand Robbie | Aand Robbie | Robbie |

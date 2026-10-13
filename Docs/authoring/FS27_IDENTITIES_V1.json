@@ -2,123 +2,123 @@
   "identities": [
     {
       "culture": "Italian",
-      "edited": false,
-      "fullName": "Bruno Tagliaferri",
+      "edited": true,
+      "fullName": "Alessio Baaston",
       "id": "cb-alessandro-bastoni",
       "kind": "Player",
-      "name": "Bruno Tagliaferri",
+      "name": "Alessio Baaston",
       "originalName": "Alessandro Bastoni",
-      "shortName": "Tagliaferri"
+      "shortName": "Baaston"
     },
     {
       "culture": "German",
-      "edited": false,
-      "fullName": "Florian Hellwig",
+      "edited": true,
+      "fullName": "Tony Pulicser",
       "id": "cb-antonio-rudiger",
       "kind": "Player",
-      "name": "Florian Hellwig",
+      "name": "Tony Pulicser",
       "originalName": "Antonio Rüdiger",
-      "shortName": "Hellwig"
+      "shortName": "Pulicser"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Eloy Hontoria Ferreiro",
+      "edited": true,
+      "fullName": "Emery Aport",
       "id": "cb-aymeric-laporte",
       "kind": "Player",
-      "name": "Eloy Hontoria",
+      "name": "Emery Aport",
       "originalName": "Aymeric Laporte",
-      "shortName": "Hontoria"
+      "shortName": "Aport"
     },
     {
       "culture": "WestAfricanEnglish",
-      "edited": false,
-      "fullName": "Tetteh Jegede",
+      "edited": true,
+      "fullName": "Calvin Clenssey",
       "id": "cb-calvin-bassey",
       "kind": "Player",
-      "name": "Tetteh Jegede",
+      "name": "Calvin Clenssey",
       "originalName": "Calvin Bassey",
-      "shortName": "Jegede"
+      "shortName": "Clenssey"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Gaspard Aubry",
+      "edited": true,
+      "fullName": "Castal Lakaba",
       "id": "cb-castello-lukeba",
       "kind": "Player",
-      "name": "Gaspard Aubry",
+      "name": "Castal Lakaba",
       "originalName": "Castello Lukeba",
-      "shortName": "Aubry"
+      "shortName": "Lakaba"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Camilo Funes Echegaray",
+      "edited": true,
+      "fullName": "Cufi Plomero",
       "id": "cb-cristian-romero",
       "kind": "Player",
-      "name": "Camilo Funes",
+      "name": "Cufi Plomero",
       "originalName": "Cristian Romero",
-      "shortName": "Funes"
+      "shortName": "Plomero"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Rutger Nijhuis",
+      "edited": true,
+      "fullName": "Daylie Baind",
       "id": "cb-daley-blind",
       "kind": "Player",
-      "name": "Rutger Nijhuis",
+      "name": "Daylie Baind",
       "originalName": "Daley Blind",
-      "shortName": "Nijhuis"
+      "shortName": "Baind"
     },
     {
       "culture": "EastEuropean",
-      "edited": false,
-      "fullName": "Ilija Ilić",
+      "edited": true,
+      "fullName": "Davide Jankkou",
       "id": "cb-david-hancko",
       "kind": "Player",
-      "name": "Ilija Ilić",
+      "name": "Davide Jankkou",
       "originalName": "Dávid Hancko",
-      "shortName": "Ilić"
+      "shortName": "Jankkou"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Rémi Gerbier",
+      "edited": true,
+      "fullName": "Doyitt Opomocono",
       "id": "cb-dayot-upamecano",
       "kind": "Player",
-      "name": "Rémi Gerbier",
+      "name": "Doyitt Opomocono",
       "originalName": "Dayot Upamecano",
-      "shortName": "Gerbier"
+      "shortName": "Opomocono"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Rodrigo Narváez Galindo",
+      "edited": true,
+      "fullName": "Dani Luipseen",
       "id": "cb-dean-huijsen",
       "kind": "Player",
-      "name": "Rodrigo Narváez",
+      "name": "Dani Luipseen",
       "originalName": "Dean Huijsen",
-      "shortName": "Narváez"
+      "shortName": "Luipseen"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Isaac Ashworth",
+      "edited": true,
+      "fullName": "Espi Lonsa",
       "id": "cb-ezri-konsa",
       "kind": "Player",
-      "name": "Isaac Ashworth",
+      "name": "Espi Lonsa",
       "originalName": "Ezri Konsa",
-      "shortName": "Ashworth"
+      "shortName": "Lonsa"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Duarte Zagalo",
+      "edited": true,
+      "fullName": "Gabba Magalaha",
       "id": "cb-gabriel-magalhaes",
       "kind": "Player",
-      "name": "Duarte Zagalo",
+      "name": "Gabba Magalaha",
       "originalName": "Gabriel Magalhães",
-      "shortName": "Zagalo"
+      "shortName": "Magalaha"
     },
     {
       "culture": "Spanish",
@@ -132,93 +132,93 @@
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Lachlan Garrick",
+      "edited": true,
+      "fullName": "Jarry Maguaya",
       "id": "cb-harry-maguire",
       "kind": "Player",
-      "name": "Lachlan Garrick",
+      "name": "Jarry Maguaya",
       "originalName": "Harry Maguire",
-      "shortName": "Garrick"
+      "shortName": "Maguaya"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Dante Naranjo Funes",
+      "edited": true,
+      "fullName": "Jonny Alanturu",
       "id": "cb-jon-aramburu",
       "kind": "Player",
-      "name": "Dante Naranjo",
+      "name": "Jonny Alanturu",
       "originalName": "Jon Aramburu",
-      "shortName": "Naranjo"
+      "shortName": "Alanturu"
     },
     {
       "culture": "German",
-      "edited": false,
-      "fullName": "Gerrit Thalmann",
+      "edited": true,
+      "fullName": "Jons Tahs",
       "id": "cb-jonathan-tah",
       "kind": "Player",
-      "name": "Gerrit Thalmann",
+      "name": "Jons Tahs",
       "originalName": "Jonathan Tah",
-      "shortName": "Thalmann"
+      "shortName": "Tahs"
     },
     {
       "culture": "EastEuropean",
-      "edited": false,
-      "fullName": "Hamza Vlahović",
+      "edited": true,
+      "fullName": "Biosko Barvio",
       "id": "cb-josko-gvardiol",
       "kind": "Player",
-      "name": "Hamza Vlahović",
+      "name": "Biosko Barvio",
       "originalName": "Joško Gvardiol",
-      "shortName": "Vlahović"
+      "shortName": "Barvio"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Florian Dupuis",
+      "edited": true,
+      "fullName": "Jude Kounfre",
       "id": "cb-jules-kounde",
       "kind": "Player",
-      "name": "Florian Dupuis",
+      "name": "Jude Kounfre",
       "originalName": "Jules Koundé",
-      "shortName": "Dupuis"
+      "shortName": "Kounfre"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Arjen Faber",
+      "edited": true,
+      "fullName": "Yuri Timbre",
       "id": "cb-jurrien-timber",
       "kind": "Player",
-      "name": "Arjen Faber",
+      "name": "Yuri Timbre",
       "originalName": "Jurriën Timber",
-      "shortName": "Faber"
+      "shortName": "Timbre"
     },
     {
       "culture": "WestAfricanFrench",
-      "edited": false,
-      "fullName": "Kalidou Ndiaye",
+      "edited": true,
+      "fullName": "Kala Kuolabily",
       "id": "cb-kalidou-koulibaly",
       "kind": "Player",
-      "name": "Kalidou Ndiaye",
+      "name": "Kala Kuolabily",
       "originalName": "Kalidou Koulibaly",
-      "shortName": "Ndiaye"
+      "shortName": "Kuolabily"
     },
     {
       "culture": "Korean",
-      "edited": false,
-      "fullName": "Changmin Hong",
+      "edited": true,
+      "fullName": "Mini Je",
       "id": "cb-kim-min-jae",
       "kind": "Player",
-      "name": "Changmin Hong",
+      "name": "Mini Je",
       "originalName": "Kim Min-jae",
-      "shortName": "Hong"
+      "shortName": "Je"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Patricio Vallejos Jiménez",
+      "edited": true,
+      "fullName": "Licha Filipinez",
       "id": "cb-lisandro-martinez",
       "kind": "Player",
-      "name": "Patricio Vallejos",
+      "name": "Licha Filipinez",
       "originalName": "Lisandro Martínez",
-      "shortName": "Vallejos"
+      "shortName": "Filipinez"
     },
     {
       "culture": "French",
@@ -232,43 +232,43 @@
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Jonty Nuttall",
+      "edited": true,
+      "fullName": "Mac Guhie",
       "id": "cb-marc-guehi",
       "kind": "Player",
-      "name": "Jonty Nuttall",
+      "name": "Mac Guhie",
       "originalName": "Marc Guéhi",
-      "shortName": "Nuttall"
+      "shortName": "Mac Guhie"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Damián Toledano Palencia",
+      "edited": true,
+      "fullName": "Maraca Pubilil",
       "id": "cb-marc-pubill",
       "kind": "Player",
-      "name": "Damián Toledano",
+      "name": "Maraca Pubilil",
       "originalName": "Marc Pubill",
-      "shortName": "Toledano"
+      "shortName": "Pubilil"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Telmo Evangelista",
+      "edited": true,
+      "fullName": "Mc Qinhos",
       "id": "cb-marquinhos",
       "kind": "Player",
-      "name": "Telmo Evangelista",
+      "name": "Mc Qinhos",
       "originalName": "Marquinhos",
-      "shortName": "Evangelista"
+      "shortName": "Qinhos"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Olaf Peeters",
+      "edited": true,
+      "fullName": "Matias de Lait",
       "id": "cb-matthijs-de-ligt",
       "kind": "Player",
-      "name": "Olaf Peeters",
+      "name": "Matias de Lait",
       "originalName": "Matthijs de Ligt",
-      "shortName": "Peeters"
+      "shortName": "de Lait"
     },
     {
       "culture": "Dutch",
@@ -282,123 +282,123 @@
     },
     {
       "culture": "German",
-      "edited": false,
-      "fullName": "Torsten Detmers",
+      "edited": true,
+      "fullName": "Nikki Eslotebec",
       "id": "cb-nico-schlotterbeck",
       "kind": "Player",
-      "name": "Torsten Detmers",
+      "name": "Nikki Eslotebec",
       "originalName": "Nico Schlotterbeck",
-      "shortName": "Detmers"
+      "shortName": "Eslotebec"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Nicanor Ferreiro Ordóñez",
+      "edited": true,
+      "fullName": "Pua Bularsi",
       "id": "cb-pau-cubarsi",
       "kind": "Player",
-      "name": "Nicanor Ferreiro",
+      "name": "Pua Bularsi",
       "originalName": "Pau Cubarsí",
-      "shortName": "Ferreiro"
+      "shortName": "Bularsi"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Wilmer Ramos Rivadeneira",
+      "edited": true,
+      "fullName": "Pair Intape",
       "id": "cb-piero-hincapie",
       "kind": "Player",
-      "name": "Wilmer Ramos",
+      "name": "Pair Intape",
       "originalName": "Piero Hincapié",
-      "shortName": "Ramos"
+      "shortName": "Intape"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Bastien Jouvet",
+      "edited": true,
+      "fullName": "Piero Cafulu",
       "id": "cb-pierre-kalulu",
       "kind": "Player",
-      "name": "Bastien Jouvet",
+      "name": "Piero Cafulu",
       "originalName": "Pierre Kalulu",
-      "shortName": "Jouvet"
+      "shortName": "Cafulu"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Hugo Aragão",
+      "edited": true,
+      "fullName": "Reny Vegas",
       "id": "cb-renato-veiga",
       "kind": "Player",
-      "name": "Hugo Aragão",
+      "name": "Reny Vegas",
       "originalName": "Renato Veiga",
-      "shortName": "Aragão"
+      "shortName": "Vegas"
     },
     {
       "culture": "Italian",
-      "edited": false,
-      "fullName": "Piero Faccini",
+      "edited": true,
+      "fullName": "Richie Lalatori",
       "id": "cb-riccardo-calafiori",
       "kind": "Player",
-      "name": "Piero Faccini",
+      "name": "Richie Lalatori",
       "originalName": "Riccardo Calafiori",
-      "shortName": "Faccini"
+      "shortName": "Lalatori"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Ramón Soria Uribe",
+      "edited": true,
+      "fullName": "Ron Alauto",
       "id": "cb-ronald-araujo",
       "kind": "Player",
-      "name": "Ramón Soria",
+      "name": "Ron Alauto",
       "originalName": "Ronald Araújo",
-      "shortName": "Soria"
+      "shortName": "Alauto"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Ulisses Eusébio",
+      "edited": true,
+      "fullName": "Rubenjo Dais",
       "id": "cb-ruben-dias",
       "kind": "Player",
-      "name": "Ulisses Eusébio",
+      "name": "Rubenjo Dais",
       "originalName": "Rúben Dias",
-      "shortName": "Eusébio"
+      "shortName": "Dais"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Maarten Eijkelboom",
+      "edited": true,
+      "fullName": "Ben Bottmen",
       "id": "cb-sven-botman",
       "kind": "Player",
-      "name": "Maarten Eijkelboom",
+      "name": "Ben Bottmen",
       "originalName": "Sven Botman",
-      "shortName": "Eijkelboom"
+      "shortName": "Ben Bottmen"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Koen Everts",
+      "edited": true,
+      "fullName": "Virgilio Vin Daiki",
       "id": "cb-virgil-van-dijk",
       "kind": "Player",
-      "name": "Koen Everts",
+      "name": "Virgilio Vin Daiki",
       "originalName": "Virgil van Dijk",
-      "shortName": "Everts"
+      "shortName": "Daiki"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Yann Salmon",
+      "edited": true,
+      "fullName": "Willo Salba",
       "id": "cb-william-saliba",
       "kind": "Player",
-      "name": "Yann Salmon",
+      "name": "Willo Salba",
       "originalName": "William Saliba",
-      "shortName": "Salmon"
+      "shortName": "Salba"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Diego Quiroga Zalazar",
+      "edited": true,
+      "fullName": "Willie Pahco",
       "id": "cb-willian-pacho",
       "kind": "Player",
-      "name": "Diego Quiroga",
+      "name": "Willie Pahco",
       "originalName": "Willian Pacho",
-      "shortName": "Quiroga"
+      "shortName": "Pahco"
     },
     {
       "culture": "Italian",
@@ -602,203 +602,203 @@
     },
     {
       "culture": "Nordic",
-      "edited": false,
-      "fullName": "Karl Ulvestad",
+      "edited": true,
+      "fullName": "Alex Isaac",
       "id": "dc-alexander-isak",
       "kind": "Player",
-      "name": "Karl Ulvestad",
+      "name": "Alex Isaac",
       "originalName": "Alexander Isak",
-      "shortName": "Ulvestad"
+      "shortName": "Isaac"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Warren Fairbanks",
+      "edited": true,
+      "fullName": "Cris Hollywood",
       "id": "dc-chris-wood",
       "kind": "Player",
-      "name": "Warren Fairbanks",
+      "name": "Cris Hollywood",
       "originalName": "Chris Wood",
-      "shortName": "Fairbanks"
+      "shortName": "Hollywood"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Gilberto Bettencourt",
+      "edited": true,
+      "fullName": "Cristian Orlando",
       "id": "dc-cristiano-ronaldo",
       "kind": "Player",
-      "name": "Gilberto Bettencourt",
+      "name": "Cristian Orlando",
       "originalName": "Cristiano Ronaldo",
-      "shortName": "Bettencourt"
+      "shortName": "Orlando"
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Ruud Bosman",
+      "edited": true,
+      "fullName": "Doni Melon",
       "id": "dc-donyell-malen",
       "kind": "Player",
-      "name": "Ruud Bosman",
+      "name": "Doni Melon",
       "originalName": "Donyell Malen",
-      "shortName": "Bosman"
+      "shortName": "Melon"
     },
     {
       "culture": "Nordic",
-      "edited": false,
-      "fullName": "Gustav Wallin",
+      "edited": true,
+      "fullName": "Perrin Paaland",
       "id": "dc-erling-haaland",
       "kind": "Player",
-      "name": "Gustav Wallin",
+      "name": "Perrin Paaland",
       "originalName": "Erling Haaland",
-      "shortName": "Wallin"
+      "shortName": "Paaland"
     },
     {
       "culture": "Italian",
-      "edited": false,
-      "fullName": "Matteo Lunardi",
+      "edited": true,
+      "fullName": "Pio Poxito",
       "id": "dc-francesco-pio-esposito",
       "kind": "Player",
-      "name": "Matteo Lunardi",
+      "name": "Pio Poxito",
       "originalName": "Francesco Pio Esposito",
-      "shortName": "Lunardi"
+      "shortName": "Poxito"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Oakley Gresham",
+      "edited": true,
+      "fullName": "Parry Pane",
       "id": "dc-harry-kane",
       "kind": "Player",
-      "name": "Oakley Gresham",
+      "name": "Parry Pane",
       "originalName": "Harry Kane",
-      "shortName": "Gresham"
+      "shortName": "Pane"
     },
     {
       "culture": "Portuguese",
-      "edited": false,
-      "fullName": "Edmundo Rebelo",
+      "edited": true,
+      "fullName": "Joao Pelao",
       "id": "dc-joao-pedro",
       "kind": "Player",
-      "name": "Edmundo Rebelo",
+      "name": "Joao Pelao",
       "originalName": "João Pedro",
-      "shortName": "Rebelo"
+      "shortName": "Pelao"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Lautaro Zalazar Soria",
+      "edited": true,
+      "fullName": "Gulians Patarez",
       "id": "dc-julian-alvarez",
       "kind": "Player",
-      "name": "Lautaro Zalazar",
+      "name": "Gulians Patarez",
       "originalName": "Julián Álvarez",
-      "shortName": "Zalazar"
+      "shortName": "Patarez"
     },
     {
       "culture": "German",
-      "edited": false,
-      "fullName": "Hannes Neumeier",
+      "edited": true,
+      "fullName": "Pai Traverz",
       "id": "dc-kai-havertz",
       "kind": "Player",
-      "name": "Hannes Neumeier",
+      "name": "Pai Traverz",
       "originalName": "Kai Havertz",
-      "shortName": "Neumeier"
+      "shortName": "Traverz"
     },
     {
       "culture": "German",
-      "edited": false,
-      "fullName": "Norbert Dorfmeister",
+      "edited": true,
+      "fullName": "Karin Aledemy",
       "id": "dc-karim-adeyemi",
       "kind": "Player",
-      "name": "Norbert Dorfmeister",
+      "name": "Karin Aledemy",
       "originalName": "Karim Adeyemi",
-      "shortName": "Dorfmeister"
+      "shortName": "Aledemy"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Quentin Rochefort",
+      "edited": true,
+      "fullName": "Kiki Enbape",
       "id": "dc-kylian-mbappe",
       "kind": "Player",
-      "name": "Quentin Rochefort",
+      "name": "Kiki Enbape",
       "originalName": "Kylian Mbappé",
-      "shortName": "Rochefort"
+      "shortName": "Enbape"
     },
     {
       "culture": "LatinAmerican",
-      "edited": false,
-      "fullName": "Bruno Duarte Zárate",
+      "edited": true,
+      "fullName": "Toro Martinis",
       "id": "dc-lautaro-martinez",
       "kind": "Player",
-      "name": "Bruno Duarte",
+      "name": "Toro Martinis",
       "originalName": "Lautaro Martínez",
-      "shortName": "Duarte"
+      "shortName": "Martinis"
     },
     {
       "culture": "Spanish",
-      "edited": false,
-      "fullName": "Severo Abellán Juncal",
+      "edited": true,
+      "fullName": "Maik Oriztizabal",
       "id": "dc-mikel-oyarzabal",
       "kind": "Player",
-      "name": "Severo Abellán",
+      "name": "Maik Oriztizabal",
       "originalName": "Mikel Oyarzabal",
-      "shortName": "Abellán"
+      "shortName": "Oriztizabal"
     },
     {
       "culture": "WestAfricanFrench",
-      "edited": false,
-      "fullName": "Jean-Luc Samb",
+      "edited": true,
+      "fullName": "Aurameyang",
       "id": "dc-pierre-emerick-aubameyang",
       "kind": "Player",
-      "name": "Jean-Luc Samb",
+      "name": "Aurameyang",
       "originalName": "Pierre-Emerick Aubameyang",
-      "shortName": "Samb"
+      "shortName": "Aurameyang"
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Loïc Deschamps",
+      "edited": true,
+      "fullName": "Lakaka",
       "id": "dc-romelu-lukaku",
       "kind": "Player",
-      "name": "Loïc Deschamps",
+      "name": "Lakaka",
       "originalName": "Romelu Lukaku",
-      "shortName": "Deschamps"
+      "shortName": "Lakaka"
     },
     {
       "culture": "Anglo",
-      "edited": false,
-      "fullName": "Vaughn Cresswell",
+      "edited": true,
+      "fullName": "Troy Tarot",
       "id": "dc-troy-parrott",
       "kind": "Player",
-      "name": "Vaughn Cresswell",
+      "name": "Troy Tarot",
       "originalName": "Troy Parrott",
-      "shortName": "Cresswell"
+      "shortName": "Tarot"
     },
     {
       "culture": "EastEuropean",
-      "edited": false,
-      "fullName": "Hristo Stanković",
+      "edited": true,
+      "fullName": "Verdad Murizi",
       "id": "dc-vedat-muriqi",
       "kind": "Player",
-      "name": "Hristo Stanković",
+      "name": "Verdad Murizi",
       "originalName": "Vedat Muriqi",
-      "shortName": "Stanković"
+      "shortName": "Murizi"
     },
     {
       "culture": "WestAfricanEnglish",
-      "edited": false,
-      "fullName": "Dayo Eze",
+      "edited": true,
+      "fullName": "Oyesmhen",
       "id": "dc-victor-osimhen",
       "kind": "Player",
-      "name": "Dayo Eze",
+      "name": "Oyesmhen",
       "originalName": "Victor Osimhen",
-      "shortName": "Eze"
+      "shortName": "Oyesmhen"
     },
     {
       "culture": "Nordic",
-      "edited": false,
-      "fullName": "Emil Holmgren",
+      "edited": true,
+      "fullName": "Vik Masckeres",
       "id": "dc-viktor-gyokeres",
       "kind": "Player",
-      "name": "Emil Holmgren",
+      "name": "Vik Masckeres",
       "originalName": "Viktor Gyökeres",
-      "shortName": "Holmgren"
+      "shortName": "Masckeres"
     },
     {
       "culture": "Arabic",
