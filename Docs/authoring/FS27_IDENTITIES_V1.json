@@ -3,12 +3,12 @@
     {
       "culture": "Italian",
       "edited": true,
-      "fullName": "Alessio Baaston",
+      "fullName": "Alessio Baston",
       "id": "cb-alessandro-bastoni",
       "kind": "Player",
-      "name": "Alessio Baaston",
+      "name": "Alessio Baston",
       "originalName": "Alessandro Bastoni",
-      "shortName": "Baaston"
+      "shortName": "Baston"
     },
     {
       "culture": "German",
@@ -222,13 +222,13 @@
     },
     {
       "culture": "French",
-      "edited": false,
-      "fullName": "Fabrice Lemaire",
+      "edited": true,
+      "fullName": "Lukas Fernandez",
       "id": "cb-lucas-hernandez",
       "kind": "Player",
-      "name": "Fabrice Lemaire",
+      "name": "Lukas Fernandez",
       "originalName": "Lucas Hernández",
-      "shortName": "Lemaire"
+      "shortName": "Fernandez"
     },
     {
       "culture": "Anglo",
@@ -272,13 +272,13 @@
     },
     {
       "culture": "Dutch",
-      "edited": false,
-      "fullName": "Lodewijk Jonker",
+      "edited": true,
+      "fullName": "Mickei van de Vao",
       "id": "cb-micky-van-de-ven",
       "kind": "Player",
-      "name": "Lodewijk Jonker",
+      "name": "Mickei van de Vao",
       "originalName": "Micky van de Ven",
-      "shortName": "Jonker"
+      "shortName": "van de Vao"
     },
     {
       "culture": "German",
@@ -823,10 +823,10 @@
     {
       "culture": "Anglo",
       "edited": true,
-      "fullName": "Aand Robbie",
+      "fullName": "Andy Robbie",
       "id": "fb-andy-robertson",
       "kind": "Player",
-      "name": "Aand Robbie",
+      "name": "Andy Robbie",
       "originalName": "Andy Robertson",
       "shortName": "Robbie"
     },
@@ -893,10 +893,10 @@
     {
       "culture": "Portuguese",
       "edited": true,
-      "fullName": "Nuuno Telles",
+      "fullName": "Nuno Telles",
       "id": "fb-nuno-mendes",
       "kind": "Player",
-      "name": "Nuuno Telles",
+      "name": "Nuno Telles",
       "originalName": "Nuno Mendes",
       "shortName": "Telles"
     },

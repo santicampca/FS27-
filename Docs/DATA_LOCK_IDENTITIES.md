@@ -2,11 +2,11 @@
 
 **Solo para auditoría.** Esta tabla une cada id interno con el nombre que aparecía en la investigación (columna "referencia de authoring") y el nombre ficticio que FS27 publica. La columna de investigación **no** se muestra nunca en el juego ni la lee ningún sistema en ejecución. La política y las reglas están en [DATA_LOCK.md](DATA_LOCK.md); la fuente de verdad de los nombres es `Docs/authoring/FS27_IDENTITIES_V1.json`.
 
-Relación entre el dato original y el publicado: **ninguna léxica**. Solo se conservan el id, el tipo (jugador, coach, árbitro) y la cultura del nombre, que sale de la nacionalidad. El nombre publicado nunca repite una palabra de ningún nombre de la investigación como apellido.
+Relación entre el dato original y el publicado: **ninguna léxica**. Solo se conservan el id, el tipo (jugador, coach, árbitro) y la cultura del nombre, que sale de la nacionalidad. El nombre publicado que genera el programa nunca repite una palabra de ningún nombre de la investigación como apellido. **Excepción decidida por el propietario:** las entradas editadas a mano (`edited: true`) pueden parecerse léxicamente al nombre original e incluso compartir una palabra (por ejemplo `Lukas Fernandez`, `Mickei van de Vao`); el test solo exige que no sean idénticas al nombre de la investigación.
 
 | Id | Tipo | Cultura | Nombre en la investigación (solo referencia de authoring) | Nombre publicado | Nombre completo | Corto |
 |---|---|---|---|---|---|---|
-| `cb-alessandro-bastoni` | Player | Italian | Alessandro Bastoni | Alessio Baaston | Alessio Baaston | Baaston |
+| `cb-alessandro-bastoni` | Player | Italian | Alessandro Bastoni | Alessio Baston | Alessio Baston | Baston |
 | `cb-antonio-rudiger` | Player | German | Antonio Rüdiger | Tony Pulicser | Tony Pulicser | Pulicser |
 | `cb-aymeric-laporte` | Player | Spanish | Aymeric Laporte | Emery Aport | Emery Aport | Aport |
 | `cb-calvin-bassey` | Player | WestAfricanEnglish | Calvin Bassey | Calvin Clenssey | Calvin Clenssey | Clenssey |
@@ -28,12 +28,12 @@ Relación entre el dato original y el publicado: **ninguna léxica**. Solo se co
 | `cb-kalidou-koulibaly` | Player | WestAfricanFrench | Kalidou Koulibaly | Kala Kuolabily | Kala Kuolabily | Kuolabily |
 | `cb-kim-min-jae` | Player | Korean | Kim Min-jae | Mini Je | Mini Je | Je |
 | `cb-lisandro-martinez` | Player | LatinAmerican | Lisandro Martínez | Licha Filipinez | Licha Filipinez | Filipinez |
-| `cb-lucas-hernandez` | Player | French | Lucas Hernández | Fabrice Lemaire | Fabrice Lemaire | Lemaire |
+| `cb-lucas-hernandez` | Player | French | Lucas Hernández | Lukas Fernandez | Lukas Fernandez | Fernandez |
 | `cb-marc-guehi` | Player | Anglo | Marc Guéhi | Mac Guhie | Mac Guhie | Mac Guhie |
 | `cb-marc-pubill` | Player | Spanish | Marc Pubill | Maraca Pubilil | Maraca Pubilil | Pubilil |
 | `cb-marquinhos` | Player | Portuguese | Marquinhos | Mc Qinhos | Mc Qinhos | Qinhos |
 | `cb-matthijs-de-ligt` | Player | Dutch | Matthijs de Ligt | Matias de Lait | Matias de Lait | de Lait |
-| `cb-micky-van-de-ven` | Player | Dutch | Micky van de Ven | Lodewijk Jonker | Lodewijk Jonker | Jonker |
+| `cb-micky-van-de-ven` | Player | Dutch | Micky van de Ven | Mickei van de Vao | Mickei van de Vao | van de Vao |
 | `cb-nico-schlotterbeck` | Player | German | Nico Schlotterbeck | Nikki Eslotebec | Nikki Eslotebec | Eslotebec |
 | `cb-pau-cubarsi` | Player | Spanish | Pau Cubarsí | Pua Bularsi | Pua Bularsi | Bularsi |
 | `cb-piero-hincapie` | Player | LatinAmerican | Piero Hincapié | Pair Intape | Pair Intape | Intape |
@@ -88,14 +88,14 @@ Relación entre el dato original y el publicado: **ninguna léxica**. Solo se co
 | `dc-viktor-gyokeres` | Player | Nordic | Viktor Gyökeres | Vik Masckeres | Vik Masckeres | Masckeres |
 | `fb-achraf-hakimi` | Player | Arabic | Achraf Hakimi | Arrak Sasimi | Arrak Sasimi | Sasimi |
 | `fb-alphonso-davies` | Player | Anglo | Alphonso Davies | Alpon Davis | Alpon Davis | Davis |
-| `fb-andy-robertson` | Player | Anglo | Andy Robertson | Aand Robbie | Aand Robbie | Robbie |
+| `fb-andy-robertson` | Player | Anglo | Andy Robertson | Andy Robbie | Andy Robbie | Robbie |
 | `fb-dani-munoz` | Player | LatinAmerican | Dani Muñoz | Dann Mulo | Dann Mulo | Mulo |
 | `fb-denzel-dumfries` | Player | Dutch | Denzel Dumfries | Pretzel Donfis | Pretzel Donfis | Donfis |
 | `fb-federico-dimarco` | Player | Italian | Federico Dimarco | Fideo di Mateo | Fideo di Mateo | di Mateo |
 | `fb-joao-cancelo` | Player | Portuguese | João Cancelo | Janik Cancelado | Janik Cancelado | Cancelado |
 | `fb-marc-cucurella` | Player | Spanish | Marc Cucurella | Mart Cinderella | Mart Cinderella | Cinderella |
 | `fb-marcos-llorente` | Player | Spanish | Marcos Llorente | Mark Lore | Mark Lore | Lore |
-| `fb-nuno-mendes` | Player | Portuguese | Nuno Mendes | Nuuno Telles | Nuuno Telles | Telles |
+| `fb-nuno-mendes` | Player | Portuguese | Nuno Mendes | Nuno Telles | Nuno Telles | Telles |
 | `fb-pedro-porro` | Player | Spanish | Pedro Porro | Pedre Smoke | Pedre Smoke | Smoke |
 | `fb-trent-alexander-arnold` | Player | Anglo | Trent Alexander-Arnold | Tren Arnoldonson | Tren Arnoldonson | Arnoldonson |
 | `gk-aaron-ramsdale` | Player | Anglo | Aaron Ramsdale | Aron Ramsdail | Aron Ramsdail | Ramsdail |

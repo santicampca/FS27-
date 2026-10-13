@@ -371,6 +371,8 @@ namespace FS27.Core.Tests
             {
                 Assert.AreNotEqual(ShortNameRule.Key(e.OriginalName), ShortNameRule.Key(e.Name), e.Id);
                 Assert.AreNotEqual(ShortNameRule.Key(e.OriginalName), ShortNameRule.Key(e.FullName), e.Id);
+                // generated names never share a word with a research name; a name a person wrote by hand (IdentityEntry.Edited) may (decision of the owner: the rule is relaxed for edited entries, which still may not equal the research name)
+                if (e.Edited) continue;
                 foreach (string w in e.FullName.Split(' ').Skip(1)) if (w.Length > 2) Assert.IsFalse(original.Contains(ShortNameRule.Key(w)), e.Id + ": '" + w + "' is a word of a research name");
                 Assert.IsFalse(original.Contains(ShortNameRule.Key(e.ShortName)), e.Id + ": short name '" + e.ShortName + "' is a word of a research name");
             }
