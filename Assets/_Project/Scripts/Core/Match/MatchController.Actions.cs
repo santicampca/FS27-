@@ -49,8 +49,56 @@ namespace FS27.Core
                 request.Long = context.IsGoalkeeper && context.HasBall && input.Gesture == ActionGesture.SwipeUp;
                 request.Curve = input.Curve;
                 if (request.Kind == FootballActionKind.CurvedShot && request.Curve == 0f) request.Curve = (p.ActionProfile.PreferredFoot == PreferredFoot.Right ? 1f : -1f) * skillTuning.DefaultCurve;
+                if (AimAssist.Enabled) request = AssistAim(p, request, input);
             }
             return Perform(request);
+        }
+
+        /// <summary>Phase 31: how a person's pass and shot are helped to go where he meant (off by default; see <see cref="HumanAssist"/>).</summary>
+        public HumanAssistTuning AimAssist { get; set; } = new HumanAssistTuning();
+
+        /// <summary>The push of a person at the ball becomes a pass TO the team-mate he pushed towards (with the power the ball needs to arrive), a through ball into the runner's path, or a shot at the corner he aimed at. Nobody in the cone: unchanged.</summary>
+        private ActionRequest AssistAim(MatchPlayer p, ActionRequest r, ActionInput input)
+        {
+            if (!IsCarrier(p) || p.InGoal || !r.Target.IsNone) return r;
+            HumanAssistTuning t = AimAssist;
+            Vec2 aim = input.Direction.Magnitude > t.PushMinimum ? input.Direction.Normalized : p.Locomotion.FacingDirection;
+            Vec2 from = p.Locomotion.Position;
+            float quality = p.ActionProfile.PassQuality * BasicDecisionDefaults.PlannedQualityShare;
+            switch (r.Kind)
+            {
+                case FootballActionKind.ShortPass:
+                {
+                    MatchPlayer receiver = HumanAssist.PickReceiver(State, p, aim, t, out float d);
+                    if (receiver == null) return r;
+                    bool lofted = d >= BasicDecisionDefaults.LongPassDistance;
+                    r.Kind = lofted ? FootballActionKind.LongPass : FootballActionKind.ShortPass;
+                    r.Power = lofted ? PassPhysics.LoftedPower(d * BasicDecisionDefaults.LandingShare, quality) : PassPhysics.GroundPower(d, BasicDecisionDefaults.GroundArrivalSpeed, quality, 1f);
+                    r.Target = PassTarget.ToPlayer(receiver.PlayerId);
+                    r.Direction = ActionModel.DirectionOr(receiver.Locomotion.Position - from, aim);
+                    return r;
+                }
+                case FootballActionKind.ThroughPass:
+                {
+                    MatchPlayer runner = HumanAssist.PickReceiver(State, p, aim, t, out float d);
+                    if (runner == null) return r;
+                    Vec2 ahead = runner.Locomotion.Position + runner.Locomotion.FacingDirection * (runner.Locomotion.CurrentSpeed * t.ThroughLeadSeconds);
+                    float lead = (ahead - from).Magnitude;
+                    r.Power = PassPhysics.GroundPower(lead, BasicDecisionDefaults.GroundArrivalSpeed, quality, 1f);
+                    r.Target = PassTarget.ToPosition(Pitch.ClampPlayer(ahead));
+                    r.Direction = ActionModel.DirectionOr(ahead - from, aim);
+                    return r;
+                }
+                case FootballActionKind.Shot:
+                {
+                    Vec2 goal = Pitch.OpponentGoalCentre(State.HomeAttacksPositiveX, p.Team);
+                    if (!HumanAssist.TryShotTarget(State, p, goal, Pitch.Field.GoalWidth, aim, t, out Vec2 target)) return r;
+                    r.Target = PassTarget.ToPosition(target);
+                    r.Direction = ActionModel.DirectionOr(target - from, aim);
+                    return r;
+                }
+            }
+            return r;
         }
 
         /// <summary>Performs an action. Never throws for normal gameplay: a refusal is an <see cref="ActionResult"/> with its reason.</summary>

@@ -70,7 +70,7 @@ const end = await snap(); const bt = await page.evaluate(() => ({ ...window.__fs
 check('touch buttons reach the Core (actions performed by the person)', Object.keys(actions).length > 0, actions);
 check('the person had the ball at least once', gotBall > 0, { framesWithBall: gotBall });
 check('still real time while playing', bt.sps >= 55, { fps: bt.fps, stepsPerSecond: bt.sps, worstFrameMs: +bt.worstFrameMs.toFixed(1) });
-check('match clock advances', end[0] > 40, { matchSeconds: +end[0].toFixed(1), score: end[2] + '-' + end[3] });
+check('match clock advances (goal celebrations and restarts stop it for a few seconds)', end[0] > 30, { matchSeconds: +end[0].toFixed(1), score: end[2] + '-' + end[3] });
 await page.screenshot({ path: shot });
 
 // capacity: how much faster than real time the Core can run on this machine (a phone is slower than this)

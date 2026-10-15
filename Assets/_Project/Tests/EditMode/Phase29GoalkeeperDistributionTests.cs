@@ -104,5 +104,32 @@ namespace FS27.Core.Tests
             }
             Assert.Fail("he never played the ball");
         }
+
+        // ---- Phase 31: the hurry is predictive and the clearance is a real one
+
+        [Test]
+        public void ARivalWhoCanReachTheKeeperSoon_HurriesHim_ThoughHeIsNotClose()
+        {
+            var g = new GoalkeeperAiTuning();
+            MatchController far = KeeperScene(true, 16f); WorldView vf = WorldState.Capture(far).View;
+            Assert.IsFalse(GoalkeeperDistribution.Hurried(vf, vf[vf.IndexOf("hs0")], g), "sixteen metres away: time to look for a lane");
+            MatchController mid = KeeperScene(true, 7f); WorldView vm = WorldState.Capture(mid).View;
+            Assert.IsTrue(GoalkeeperDistribution.Hurried(vm, vm[vm.IndexOf("hs0")], g), "seven metres away, and he runs: he reaches him before a lane opens");
+        }
+
+        [Test]
+        public void TheClearance_IsLong_AndGoesToTheChannelWithoutARival()
+        {
+            MatchController c = KeeperScene(true, 3f);
+            HoldFor(c, 0.1f);
+            PlayerDecision d = KeeperDecides(c);
+            Assert.AreEqual(DecisionKind.Pass, d.Kind); Assert.IsNull(d.TargetPlayerId); Assert.IsTrue(d.Action.Long);
+            Assert.Greater(d.Action.Power, 0.12f, "it carries: more than the minimum-power lob (power 0.05, landing about twelve metres away) he played before; 20 m of landing is about 0.19");
+            MatchController blocked = KeeperScene(true, 3f);
+            Put(blocked, TeamSide.Away, "as2", -8f, 4.4f, West);   // on the left channel, ten metres out
+            HoldFor(blocked, 0.1f);
+            PlayerDecision e = KeeperDecides(blocked);
+            Assert.Less(e.Action.Direction.Y, -0.1f, "he plays it the other way: away from the rival's channel");
+        }
     }
 }

@@ -84,6 +84,16 @@ namespace FS27.Core.Tests
 
         private static string BenchF(float v) { return v.ToString("0.000", CultureInfo.InvariantCulture); }
 
+        /// <summary>Exploration only: SCEN_TUNE="ClearLandingMeters=20;DistributionHurrySeconds=1.1" overrides fields of the keeper's tuning for the whole run (the committed numbers are the defaults).</summary>
+        private static void BenchTune(GoalkeeperAiTuning t)
+        {
+            foreach (string item in (Environment.GetEnvironmentVariable("SCEN_TUNE") ?? "").Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                string[] kv = item.Split('='); System.Reflection.FieldInfo f = typeof(GoalkeeperAiTuning).GetField(kv[0].Trim());
+                Assert.IsNotNull(f, "unknown tuning " + kv[0]); f.SetValue(t, float.Parse(kv[1], CultureInfo.InvariantCulture));
+            }
+        }
+
         private static string BenchRun(BenchVariant v, int seed, bool distribution)
         {
             MatchController c = RealRoles(3, 8, seed, MatchSettings.CreateClassic());
@@ -92,6 +102,7 @@ namespace FS27.Core.Tests
             BasicDecisionTuning basicT = BasicDecisionTuning.ForMode(GameMode.Classic); DefenseTuning defenseT = DefenseTuning.ForMode(GameMode.Classic);
             AttackPositioningTuning attackT = AttackPositioningTuning.ForMode(GameMode.Classic); BallCarrierTuning carrierT = BallCarrierTuning.ForMode(GameMode.Classic);
             GoalkeeperAiTuning keeperT = GoalkeeperAiTuning.ForMode(GameMode.Classic); keeperT.DistributionEnabled = distribution;
+            BenchTune(keeperT);
             var profileT = new DecisionProfileTuning();
             var driver = new BasicDecisionDriver(c, basicT, defenseT, null, attackT, carrierT, keeperT);
             DifficultyDefinition home = DefaultDifficulties.Create(v.Level); if (v.DecisionMaking.HasValue) home.Goalkeeper.DecisionMaking = v.DecisionMaking.Value;
@@ -236,6 +247,23 @@ namespace FS27.Core.Tests
             }
             // 4) he always plays the ball or loses it: never holds it for the whole run
             foreach (string[] r in data) Assert.IsTrue(BenchCell(r, "released") == "yes" || BenchCell(r, "ballOwnerAt3s") != "home", "held the ball without playing it: " + string.Join(",", r));
+        }
+
+        [Test]
+        public void WithTheDistributionOn_TheKeeperNeverHandsOverMoreGoalsThanPlayingAtOnce_InTheRivalScenes()
+        {
+            // Phase 31 regression guard (found by the bench: waiting until a rival was within 5 m and then lobbing the ball twelve metres gave 17 goals against in 40 runs, against 1 playing at once)
+            foreach (string scenario in new[] { "S3_Rival3m", "S4_Rival7m" })
+            {
+                BenchVariant v = BenchVariants().First(x => x.Scenario == scenario);
+                int on = 0, off = 0;
+                for (int seed = 1; seed <= 12; seed++)
+                {
+                    if (BenchCell(BenchRun(v, seed, true).Split(','), "goalBy") == "away") on++;
+                    if (BenchCell(BenchRun(v, seed, false).Split(','), "goalBy") == "away") off++;
+                }
+                Assert.LessOrEqual(on, off, scenario + ": goals against with the distribution on " + on + " vs off " + off);
+            }
         }
     }
 }

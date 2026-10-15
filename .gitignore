@@ -81,3 +81,5 @@ Web/menu/node_modules/
 /Client/.pub/
 /Client/**/bin/
 /Client/**/obj/
+# Client/dist-offline is the single-file build for hand-delivered human tests (node Client/pack-offline.mjs): generated, not committed
+/Client/dist-offline/

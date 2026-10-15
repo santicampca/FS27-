@@ -102,6 +102,9 @@ namespace FS27.Client
             var profileTuning = new DecisionProfileTuning();
             driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(lv), db.Players, match, profileTuning);
             driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(lv), db.Players, match, profileTuning);
+            // the teams play the way their coaches' data says (Phase 31) and the person's passes and shots are helped to go where he meant
+            driver.SetTactic(TeamSide.Home, TeamTactic.Of(h, db)); driver.SetTactic(TeamSide.Away, TeamTactic.Of(a, db));
+            match.AimAssist.Enabled = aimAssist;
             match.SetControl(TeamSide.Home, ControlSource.Human);
             clock = new SimulationClock(settings.SimulationStepSeconds);
             stick = Vec2.Zero; hasPress = false; restartWait = 0f; lastAction = ""; lastActionAt = -100f;
@@ -124,6 +127,11 @@ namespace FS27.Client
         }
 
         // ------------------------------------------------------------------ input (the person's side is Home)
+
+        private static bool aimAssist = true;
+
+        /// <summary>Whether the person's passes and shots are helped to go where he pushed (on by default; takes effect at the next match).</summary>
+        [JSExport] public static void SetAimAssist(bool on) { aimAssist = on; if (match != null) match.AimAssist.Enabled = on; }
 
         [JSExport] public static void SetStick(double x, double y) { stick = new Vec2((float)x, (float)y); }
 

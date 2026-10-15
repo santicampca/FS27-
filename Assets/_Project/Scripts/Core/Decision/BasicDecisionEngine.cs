@@ -26,6 +26,9 @@ namespace FS27.Core
         private readonly ModeSet[,] profiledSets = new ModeSet[2, 2];
         private readonly DecisionProfile[] profiles = new DecisionProfile[2];
         private DecisionProfile profile;
+        // Phase 31: the plan of each team (null = no plan: the formation as it is, as before)
+        private readonly TeamTactic[] tactics = new TeamTactic[2];
+        private TeamTactic tactic;
         private ModeSet current;
         private BasicDecisionTuning t;
         private DefenseTuning d;
@@ -39,6 +42,8 @@ namespace FS27.Core
         /// <summary>Metres the last decision was off the ideal place because of the level's positioning (0 when none).</summary>
         public float LastDrift;
         public BasicDecisionTuning Tuning => t;
+        /// <summary>The goalkeeper tuning of the mode last played (for the explanations).</summary>
+        public GoalkeeperAiTuning KeeperTuning => keeperAi;
         public DefenseTuning DefenseTuning => d;
         /// <summary>The attack without the ball (Phase 10): who does which job, and where each stands (of the mode last played).</summary>
         public AttackSupport Attack => attack;
@@ -74,6 +79,11 @@ namespace FS27.Core
 
         /// <summary>The difficulty profile of a team, or null (decides as in Phase 13). Changing it never changes the players, only how they choose.</summary>
         public DecisionProfile ProfileOf(TeamSide team) { return profiles[(int)team]; }
+
+        /// <summary>Phase 31: the plan of a team (its coach's identity and the game state change where it stands and what it prefers), or null for none.</summary>
+        public void SetTactic(TeamSide team, TeamTactic plan) { tactics[(int)team] = plan; }
+
+        public TeamTactic TacticOf(TeamSide team) { return tactics[(int)team]; }
 
         public void SetProfile(TeamSide team, DecisionProfile p)
         {
@@ -119,6 +129,7 @@ namespace FS27.Core
             WorldPlayer me = view[idx];
             LastError = default(DecisionError); LastDrift = 0f;
             UseTeam(view.Match.Mode, me.Team);
+            tactic = tactics[(int)me.Team];
             stamina = me.Stamina;
             if (!me.IsOnPitch) return PlayerDecision.Idle(playerId, DecisionReason.NotOnPitch);
             if (!view.Match.BallLive) return PlayerDecision.Idle(playerId, DecisionReason.NotPlaying);
@@ -197,7 +208,7 @@ namespace FS27.Core
         private PlayerDecision WithoutBall(WorldView view, int idx, in WorldPlayer me)
         {
             WorldBall ball = view.Ball;
-            Vec2 home = me.HasHome ? me.Home : me.Position;
+            Vec2 home = TacticalHome(view, me);
             bool nearest = IsNearestFieldPlayerToBall(view, idx, me);
 
             if (!ball.HasPossessor)
@@ -261,6 +272,19 @@ namespace FS27.Core
             return MoveTo(me.PlayerId, me.Position, HomeTarget(view, home, pull) + Drift(me, view), t.PositionMagnitude, DecisionKind.MoveToPoint, reason);
         }
 
+        /// <summary>The place of his formation under his team's plan (its line up or down the pitch, its width, the game state): the formation's own place when the team has no plan.</summary>
+        private Vec2 TacticalHome(WorldView view, in WorldPlayer me)
+        {
+            if (!me.HasHome) return me.Position;
+            if (tactic == null) return me.Home;
+            float sign = AttackDirection(view, me.Team).X >= 0f ? 1f : -1f;
+            bool hasBall = view.Match.HasPossession && view.Match.PossessingTeam == me.Team;
+            return bounds.ClampPlayer(tactic.ShapeHome(me.Home, sign, tactic.Urgency(view.Match, me.Team), hasBall));
+        }
+
+        /// <summary>How far from the ball his team starts to close it down, as a multiple of the usual distance (1 without a plan).</summary>
+        private float PressFactor(WorldView view, TeamSide team) { return tactic == null ? 1f : tactic.PressScale(tactic.Urgency(view.Match, team)); }
+
         private Vec2 HomeTarget(WorldView view, Vec2 home, float pull)
         {
             Vec2 toBall = view.Ball.Ground - home;
@@ -282,7 +306,7 @@ namespace FS27.Core
             if (idx == secondary) return Secondary(view, me, carrier, home);
 
             // the others: back to their place, at full speed during the first moments after losing the ball
-            if (view.Ball.SecondsSincePossessionChange < d.TransitionSeconds && (me.Position - home).Magnitude > t.IdleRadius)
+            if (view.Ball.SecondsSincePossessionChange < d.TransitionSeconds * PressFactor(view, me.Team) && (me.Position - home).Magnitude > t.IdleRadius)
                 return MoveTo(me.PlayerId, me.Position, HomeTarget(view, home, t.DefendBallPull), t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.TransitionReturn);
             if (me.Stamina < d.PressMinStamina) return Position(view, me, home, t.DefendBallPull, DecisionReason.TiredReturnHome);
             return Position(view, me, home, t.DefendBallPull, DecisionReason.OpponentHasBall);
@@ -310,7 +334,7 @@ namespace FS27.Core
 
             float magnitude = me.Stamina < d.TiredStamina ? d.TiredMagnitude : (toCarrier <= d.PressDistance ? d.PressMagnitude : d.CloseMagnitude);
             Vec2 target = ball;
-            if (toCarrier > d.ApproachDistance)
+            if (toCarrier > d.ApproachDistance * PressFactor(view, me.Team))
             {
                 Vec2 own = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
                 target = carrier.Position + ActionModel.DirectionOr(own - carrier.Position, me.Facing) * d.GoalSideStandOff;
@@ -614,7 +638,8 @@ namespace FS27.Core
             Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
             ITeammateRuns runs = NoRuns.Instance;
             if (attack.Tuning.Enabled) { attack.Assign(view, idx); runs = attack; }
-            if (profile != null) carrier.Bias = profile.BiasFor(me, view.Match, t.ShootRange, (goal - me.Position).Magnitude);
+            carrier.Bias = profile != null ? profile.BiasFor(me, view.Match, t.ShootRange, (goal - me.Position).Magnitude) : null;
+            if (tactic != null) carrier.Bias = tactic.Wrap(carrier.Bias, view.Ball, me.Team);
             ActionCandidate best = carrier.Evaluate(view, idx, runs, canKick);
             if (profile != null && carrier.HasSecond) best = ChooseWithMistakes(view, me, best);
             bool pressed = obs.NearestOpponentDistance < t.PressureRadius;
@@ -735,8 +760,8 @@ namespace FS27.Core
         {
             Vec2 dir; string targetId = null;
             if (receiver >= 0) { dir = ActionModel.DirectionOr(view[receiver].Position - me.Position, me.Facing); targetId = view[receiver].PlayerId; }
-            else dir = AttackDirection(view, me.Team);
-            float d = receiver >= 0 ? (view[receiver].Position - me.Position).Magnitude : t.LongPassDistance;
+            else dir = keeperAi.Enabled && keeperAi.DistributionEnabled ? GoalkeeperDistribution.ClearDirection(view, me, keeperAi, AttackDirection(view, me.Team)) : AttackDirection(view, me.Team);
+            float d = receiver >= 0 ? (view[receiver].Position - me.Position).Magnitude : (keeperAi.Enabled && keeperAi.DistributionEnabled ? keeperAi.ClearLandingMeters / t.LandingShare : t.LongPassDistance);
             bool longKick = d >= t.LongPassDistance;
             float kickPower = t.KeeperDistributePower;
             if (t.PassPhysicsEnabled)
