@@ -78,12 +78,12 @@ namespace FS27.Core.Tests
         public void TheDriverKeepsAHumanSideSelectionUpToDate_AndTheFallbackCoversWhoLeavesThePitch()
         {
             MatchController c = Quiet();
-            c.SetControl(TeamSide.Home, ControlSource.Human); c.SelectPlayer(TeamSide.Home, "hs5");
+            c.SetControl(TeamSide.Home, ControlSource.Human); c.SelectPlayerAutomatically(TeamSide.Home, "hs5");
             PutBall(c, 0f, 0f); Put(c, TeamSide.Home, "hs3", 2f, 0f, East);
             var driver = new BasicDecisionDriver(c);
             for (int i = 0; i < driver.DecisionSteps + 1; i++) { driver.Step(c); c.Advance(Dt); }
             Assert.AreEqual("hs3", c.StoredSelection(TeamSide.Home), "the loose ball is nearest to hs3");
-            Carrier(c, TeamSide.Home, "hs4", 0f, 0f, East); c.SelectPlayer(TeamSide.Home, "hs4");
+            Carrier(c, TeamSide.Home, "hs4", 0f, 0f, East); c.SelectPlayerAutomatically(TeamSide.Home, "hs4");
             for (int i = 0; i < driver.DecisionSteps + 1; i++) { driver.Step(c); c.Advance(Dt); }
             Assert.AreEqual("hs4", c.StoredSelection(TeamSide.Home), "attacking: kept");
             c.IssueCard(TeamSide.Home, "hs4", CardKind.Red);

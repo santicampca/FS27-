@@ -28,3 +28,19 @@ button.big { margin-top: 10px; padding: 12px 28px; font-size: 20px; font-weight:
 #btnSw { right: calc(190px + var(--safe-r)); bottom: calc(24px + var(--safe-b)); }
 #btnPause { right: calc(10px + var(--safe-r)); top: calc(6px + var(--safe-t)); }
 #fps { position: absolute; left: 6px; top: 6px; font-size: 11px; opacity: .6; pointer-events: none; }
+
+.box.wide { width: min(560px, 94vw); }
+.how { text-align: left; margin-top: 10px; font-size: 14px; }
+.how summary { cursor: pointer; font-weight: 700; margin-bottom: 4px; }
+.how ul { margin: 4px 0; padding-left: 20px; } .how li { margin: 3px 0; }
+input[type=checkbox] { width: 22px; height: 22px; }
+#hintbar { position: absolute; left: 50%; bottom: calc(176px + var(--safe-b)); transform: translateX(-50%); z-index: 6; background: rgba(0, 0, 0, .62); padding: 6px 14px; border-radius: 10px; font-size: 14px; pointer-events: none; text-align: center; max-width: 80vw; position: fixed; }
+#rates { text-align: left; margin: 8px 0; }
+.rate { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 5px 0; font-size: 14px; }
+.rate .stars { display: flex; gap: 6px; flex: none; }
+.rate button { width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, .15); font-weight: 700; }
+.rate button.sel { background: #1fa34a; }
+textarea { width: 100%; font: inherit; font-size: 14px; border-radius: 8px; padding: 6px; background: #0b2b15; color: #fff; border: 1px solid #2f8f4d; user-select: text; -webkit-user-select: text; touch-action: auto; }
+.row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+button.alt { background: #34647a; font-size: 16px; padding: 10px 18px; }
+.screen .box, .screen .box * { touch-action: pan-y; }

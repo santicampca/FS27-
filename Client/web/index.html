@@ -20,8 +20,19 @@
     <label>Rival <select id="awaySel"></select></label>
     <label>Modo <select id="modeSel"><option>Classic</option><option>Arena</option></select></label>
     <label>Dificultad <select id="levelSel"><option>Novice</option><option>Amateur</option><option selected>Professional</option><option>Expert</option><option>Elite</option></select></label>
+    <label>Ayuda de puntería <input type="checkbox" id="assistChk" checked></label>
     <button id="startBtn" class="big">JUGAR</button>
-    <p class="hint">Stick a la izquierda. A: tap = presionar / escudo, desliza abajo = disparo, arriba = vaselina. B: tap = pase corto, arriba = pase en profundidad. C: habilidad.</p>
+    <details class="how" open>
+      <summary>Cómo se juega</summary>
+      <ul>
+        <li><b>Mover</b>: arrastra el círculo de la izquierda.</li>
+        <li><b>Pasar</b>: pulsa <b>B</b> hacia donde quieres pasar. Con el balón, desliza <b>B</b> hacia arriba para un pase largo al espacio.</li>
+        <li><b>Disparar</b>: desliza <b>A</b> hacia abajo (cuanto más largo, más fuerte). Hacia arriba: vaselina.</li>
+        <li><b>Sin balón</b>: <b>A</b> presiona al rival. <b>⇄</b> cambia de jugador. <b>C</b>: habilidad.</li>
+        <li>Con el ordenador: flechas o WASD, J/K/L = A/B/C, Tab = cambiar.</li>
+      </ul>
+      <p class="hint">«Ayuda de puntería» corrige un poco hacia dónde va tu pase o tu disparo. Prueba también sin ella y cuéntanos cuál prefieres.</p>
+    </details>
   </div>
 </div>
 
@@ -37,7 +48,18 @@
   <div id="fps"></div>
 </div>
 
-<div id="end" class="screen hidden"><div class="box"><h1 id="endTitle">Final</h1><p id="endScore"></p><button id="againBtn" class="big">OTRO PARTIDO</button></div></div>
+<div id="hintbar" class="hidden"></div>
+
+<div id="end" class="screen hidden"><div class="box wide">
+  <h1 id="endTitle">Final</h1><p id="endScore"></p>
+  <p class="hint">Dos minutos para ayudarnos: marca del 1 (mal) al 5 (muy bien) y copia el resultado para enviárnoslo.</p>
+  <div id="rates"></div>
+  <textarea id="notes" rows="3" placeholder="¿Qué fue lo más raro o molesto? ¿Qué te gustó? (opcional)"></textarea>
+  <div class="row"><button id="copyBtn" class="big">COPIAR RESULTADO</button><button id="saveBtn" class="big alt">GUARDAR COMO ARCHIVO</button></div>
+  <p id="copyMsg" class="hint"></p>
+  <textarea id="report" class="hidden" rows="6" readonly></textarea>
+  <button id="againBtn" class="big alt">OTRO PARTIDO</button>
+</div></div>
 <script type="module" src="game.js"></script>
 </body>
 </html>

@@ -11,6 +11,8 @@ let B = null, teams = [], roster = null, snap = null, paused = false, running = 
 let stick = { x: 0, y: 0 }, mirror = 1;
 const stats = { frames: 0, steps: 0, lastT: 0, fps: 0, sps: 0, advanceMs: 0, snapshotMs: 0, drawMs: 0, worstFrameMs: 0 };
 let banner = '', bannerUntil = 0, lastScore = [0, 0];
+let session = null;                         // what the tester played (for the feedback text)
+const VERSION = 'FS27 prueba humana 1 (Core fase 32)';
 
 function resize() { const r = window.devicePixelRatio || 1; canvas.width = Math.floor(innerWidth * r); canvas.height = Math.floor(innerHeight * r); }
 addEventListener('resize', resize); resize();
@@ -42,16 +44,55 @@ async function boot() {
   $('menu').classList.remove('hidden');
 }
 $('startBtn').onclick = () => { $('menu').classList.add('hidden'); startMatch(+$('homeSel').value, +$('awaySel').value, (Math.random() * 1e6) | 0, $('modeSel').value, $('levelSel').value); };
-$('againBtn').onclick = () => { $('end').classList.add('hidden'); $('hud').classList.add('hidden'); running = false; $('menu').classList.remove('hidden'); };
+$('againBtn').onclick = () => { $('end').classList.add('hidden'); $('hintbar').classList.add('hidden'); $('hud').classList.add('hidden'); running = false; $('menu').classList.remove('hidden'); };
 
 function startMatch(h, a, seed, mode, level) {
   const r = B.NewMatch(h, a, seed, mode, level);
   if (r.startsWith('error')) { alert(r); return; }
+  const assist = params.has('assist') ? params.get('assist') !== '0' : ($('assistChk') ? $('assistChk').checked : true);
+  B.SetAimAssist(assist);
   roster = JSON.parse(r);
+  session = { home: h, away: a, seed, mode, level, assist, startedAt: Date.now(), fpsSamples: [], worstMs: 0 };
+  showHint('Mueve el círculo · B pasa · desliza A hacia abajo para disparar · ⇄ cambia de jugador', 9000);
   $('hn').textContent = roster.home.slice(0, 12).toUpperCase(); $('an').textContent = roster.away.slice(0, 12).toUpperCase();
   $('hud').classList.remove('hidden'); lastScore = [0, 0]; paused = false; running = true; stats.lastT = performance.now();
   requestAnimationFrame(frame);
 }
+
+// ---------------------------------------------------------------- hints and feedback
+let hintTimer = null;
+function showHint(text, ms) { const el = $('hintbar'); el.textContent = text; el.classList.remove('hidden'); clearTimeout(hintTimer); hintTimer = setTimeout(() => el.classList.add('hidden'), ms); }
+const QUESTIONS = [['move', 'Mover y cambiar de jugador'], ['pass', 'Pases'], ['shot', 'Disparos'], ['defend', 'Defender y recuperar el balón'], ['ai', 'Compañeros y rivales (¿juegan con sentido?)'], ['fun', 'Diversión en general']];
+let ratings = {};
+function prepareFeedback() {
+  ratings = {}; $('notes').value = ''; $('copyMsg').textContent = ''; $('report').classList.add('hidden');
+  $('rates').innerHTML = QUESTIONS.map(([k, label]) => `<div class="rate"><span>${label}</span><span class="stars" data-k="${k}">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-n="${n}">${n}</button>`).join('')}</span></div>`).join('');
+  for (const st of $('rates').querySelectorAll('.stars')) st.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; ratings[st.dataset.k] = +b.dataset.n; for (const x of st.children) x.classList.toggle('sel', x === b); });
+}
+function reportText() {
+  const lines = [VERSION, 'Fecha: ' + new Date().toISOString().slice(0, 16).replace('T', ' ')];
+  if (session && roster) {
+    const mins = Math.round((Date.now() - session.startedAt) / 6000) / 10;
+    lines.push(`Partido: ${roster.home} ${snap ? snap[2] : '?'} - ${snap ? snap[3] : '?'} ${roster.away} (${session.mode}, ${session.level}, semilla ${session.seed})`, `Ayuda de puntería: ${session.assist ? 'sí' : 'no'} · duración real: ${mins} min`);
+    lines.push(`Aparato: ${/Mobi|Android|iPhone|iPad/.test(navigator.userAgent) ? 'móvil/tableta' : 'ordenador'} · pantalla ${innerWidth}x${innerHeight} · ${stats.fps} fps · peor fotograma ${Math.round(stats.worstFrameMs)} ms`);
+  }
+  lines.push('Valoraciones (1 mal – 5 muy bien):');
+  for (const [k, label] of QUESTIONS) lines.push(`- ${label}: ${ratings[k] || 'sin contestar'}`);
+  const notes = $('notes').value.trim(); if (notes) lines.push('Comentarios: ' + notes);
+  return lines.join('\n');
+}
+$('copyBtn').onclick = async () => {
+  const text = reportText(); const box = $('report'); box.value = text; box.classList.remove('hidden');
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { /* not allowed here: the fallback below */ }
+  if (!ok) { box.focus(); box.select(); try { ok = document.execCommand('copy'); } catch (e) { ok = false; } }
+  $('copyMsg').textContent = ok ? 'Copiado. Pégalo en un mensaje y envíalo a quien te pasó el juego.' : 'No he podido copiarlo solo: el texto de abajo está seleccionado; cópialo con «Copiar» de tu teclado o mantén pulsado y elige Copiar.';
+};
+$('saveBtn').onclick = () => {
+  const blob = new Blob([reportText()], { type: 'text/plain;charset=utf-8' }), a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'fs27-resultado.txt'; document.body.appendChild(a); a.click(); a.remove();
+  $('copyMsg').textContent = 'Archivo «fs27-resultado.txt» guardado (mira en Descargas). Envíalo a quien te pasó el juego.';
+};
 
 // ---------------------------------------------------------------- loop
 function frame(now) {
@@ -120,7 +161,7 @@ function draw(now) {
   if (now < bannerUntil) text = banner; else if (phase === PHASE.Break) text = 'DESCANSO'; else if (phase === PHASE.Paused) text = 'PAUSA';
   $('banner').textContent = paused ? 'PAUSA' : text;
   if (snap[11] && running) {
-    running = false; $('endTitle').textContent = snap[2] > snap[3] ? '¡Victoria!' : snap[2] < snap[3] ? 'Derrota' : 'Empate'; $('endScore').textContent = `${roster.home} ${snap[2]} – ${snap[3]} ${roster.away}`; $('end').classList.remove('hidden');
+    running = false; prepareFeedback(); $('endTitle').textContent = snap[2] > snap[3] ? '¡Victoria!' : snap[2] < snap[3] ? 'Derrota' : 'Empate'; $('endScore').textContent = `${roster.home} ${snap[2]} – ${snap[3]} ${roster.away}`; $('end').classList.remove('hidden');
   }
 }
 

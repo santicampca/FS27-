@@ -31,6 +31,9 @@ namespace FS27.Core
         private int step;
 
         public BasicDecisionEngine Engine => engine;
+        private readonly SelectionStability selection = new SelectionStability();
+        /// <summary>Phase 32: how stable the player a person controls is (hold after a manual switch, dwell, margin); <c>Enabled = false</c> gives the Phase 8 behaviour.</summary>
+        public SelectionStabilityTuning SelectionTuning => selection.Tuning;
         public int Decisions { get; private set; }
         public int ActionsAttempted { get; private set; }
         public int ActionsCompleted { get; private set; }
@@ -193,8 +196,8 @@ namespace FS27.Core
                 }
                 if (match.GetControl(s) == ControlSource.Human)
                 {
-                    string chosen = AutoSelection.Choose(view, s, match.StoredSelection(s), engine.DefenseTuning);
-                    if (chosen != null) match.SelectPlayer(s, chosen);
+                    string current = match.StoredSelection(s), chosen = AutoSelection.Choose(view, s, current, engine.DefenseTuning);
+                    if (chosen != null && selection.Allow(view, match, s, current, chosen)) { if (chosen != current) selection.Moved(s, match.State.MatchTimeSeconds); match.SelectPlayerAutomatically(s, chosen); }
                 }
             }
         }

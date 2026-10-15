@@ -38,6 +38,7 @@ namespace FS27.Core
         private readonly FormationDefinition[] formations = new FormationDefinition[2];
         private readonly ControlSource[] control = new ControlSource[2];
         private readonly string[] selected = new string[2];
+        private readonly float[] manualSelectionAt = { float.NegativeInfinity, float.NegativeInfinity };
         private readonly Vec2[] spaceBuffer = new Vec2[24];
         private readonly MatchPlayer[] spacePlayers = new MatchPlayer[24];
         private readonly List<PlacedPlayer> placement = new List<PlacedPlayer>(8);
@@ -309,8 +310,21 @@ namespace FS27.Core
             MatchPlayer p = State.Team(side).Find(playerId);
             if (p == null || !p.IsActive) return false;
             selected[(int)side] = playerId;
+            manualSelectionAt[(int)side] = State.MatchTimeSeconds;
             return true;
         }
+
+        /// <summary>Phase 32: the automatic choice of a person's player (see <see cref="SelectionStability"/>): it does not count as the person's own switch.</summary>
+        public bool SelectPlayerAutomatically(TeamSide side, string playerId)
+        {
+            MatchPlayer p = State.Team(side).Find(playerId);
+            if (p == null || !p.IsActive) return false;
+            selected[(int)side] = playerId;
+            return true;
+        }
+
+        /// <summary>Phase 32: the match time at which the person last switched player by hand on that side (negative infinity: never).</summary>
+        public float ManualSelectionAt(TeamSide side) { return manualSelectionAt[(int)side]; }
 
         public void ClearSelection(TeamSide side) { selected[(int)side] = null; }
 
@@ -352,7 +366,7 @@ namespace FS27.Core
             for (int k = 1; k <= n; k++)
             {
                 MatchPlayer c = team.Players[((index + dir * k) % n + n) % n];
-                if (c.IsActive) { selected[(int)side] = c.PlayerId; return c.PlayerId; }
+                if (c.IsActive) { selected[(int)side] = c.PlayerId; manualSelectionAt[(int)side] = State.MatchTimeSeconds; return c.PlayerId; }
             }
             return current;
         }
