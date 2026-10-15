@@ -226,6 +226,18 @@ namespace FS27.Core
             if (view.Match.SetPieceTakerId != null && view.Match.SetPieceTakerId == carrier.PlayerId) return SetPieceOffer(view, me);
 
             // a team-mate has the ball
+            if (CrossMechanics && crossPlay.Threat(view, carrier))
+            {
+                // Phase 36: he reads the cross that is coming and runs to his place in the box
+                crossPlay.AssignRunners(view, carrierIdx);
+                BoxRole box = crossPlay.RoleOf(idx);
+                if (box != BoxRole.None)
+                {
+                    Vec2 spot = bounds.ClampPlayer(crossPlay.TargetOf(idx));
+                    bool there = (spot - me.Position).Magnitude <= t.IdleRadius;
+                    return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.ForwardRun, Reason = DecisionReason.CrossRunRole, HasMovement = true, Movement = there ? MovementIntent.Stand : MovementIntent.TowardsTarget(me.Position, spot, Effort(crossPlay.Tuning.RunMagnitude, false), t.ArriveRadius) };
+                }
+            }
             if ((me.Position - home).Magnitude > t.FarFromHomeDistance) return MoveTo(me.PlayerId, me.Position, home, t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.FarFromHome);
             if (attack.Tuning.Enabled) return AttackWithoutBall(view, idx, me, carrierIdx, home);
             float toCarrier = (me.Position - carrier.Position).Magnitude;
@@ -304,6 +316,19 @@ namespace FS27.Core
             DefenseRoles.Rank(view, me.Team, carrier, d, out int primary, out int secondary);
             if (idx == primary) return Primary(view, me, carrier);
             if (idx == secondary) return Secondary(view, me, carrier, home);
+
+            // Phase 36: against a cross, each free defender marks a man in the box (goal side) and one covers the near post
+            if (CrossMechanics && crossPlay.DefenceThreat(view, me.Team, carrier))
+            {
+                crossPlay.AssignDefenders(view, me.Team, carrierIdx, primary, secondary);
+                int mark = crossPlay.MarkOf(idx);
+                if (mark != -1)
+                {
+                    Vec2 stand = bounds.ClampPlayer(crossPlay.StandPointOf(idx));
+                    bool there = (stand - me.Position).Magnitude <= t.IdleRadius;
+                    return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.MoveToPoint, Reason = mark == -2 ? DecisionReason.CoverNearPost : DecisionReason.MarkBoxRunner, HasMovement = true, Movement = there ? MovementIntent.Stand : MovementIntent.TowardsTarget(me.Position, stand, Effort(crossPlay.Tuning.MarkMagnitude, false), t.ArriveRadius) };
+                }
+            }
 
             // the others: back to their place, at full speed during the first moments after losing the ball
             if (view.Ball.SecondsSincePossessionChange < d.TransitionSeconds * PressFactor(view, me.Team) && (me.Position - home).Magnitude > t.IdleRadius)
@@ -591,6 +616,11 @@ namespace FS27.Core
         /// <summary>Phase 35: a decision to cross (reason <see cref="DecisionReason.CrossToBox"/>) is performed as the real <see cref="FootballActionKind.Cross"/>; off (the default) it is the long pass of Phase 28.</summary>
         public bool CrossActions { get; set; }
 
+        /// <summary>Phase 36: the cross as a team play: the team-mates of a carrier on a flank run to different places of the box (middle, near post, far post, edge), the defence marks the runners and covers the near post, and the AI chooses the style of its cross (high, driven, ground). Off (the default) = Phase 35.</summary>
+        public bool CrossMechanics { get; set; }
+        private readonly CrossPlay crossPlay = new CrossPlay();
+        public CrossPlayTuning CrossTuning => crossPlay.Tuning;
+
         private PlayerDecision PassTo(WorldView view, in WorldPlayer me, in WorldPlayer receiver, DecisionReason reason, bool lofted = false)
         {
             Vec2 dir = ActionModel.DirectionOr(receiver.Position - me.Position, me.Facing);
@@ -606,7 +636,15 @@ namespace FS27.Core
                 bool closeRival = WorldGeometry.OpponentsWithin(view, me.Team, receiver.Position, attack.Tuning.ReceiverPressureRadius) > 0;
                 power = kind == FootballActionKind.ShortPass ? PassPhysics.GroundPower(d, closeRival ? t.PressedArrivalSpeed : t.GroundArrivalSpeed, planned, 1f) : PassPhysics.LoftedPower(d * t.LandingShare, planned);
             }
-            var intent = new ActionIntent(me.Team, me.PlayerId, kind, dir, power) { Target = PassTarget.ToPlayer(receiver.PlayerId) };
+            CrossStyle style = CrossStyle.High;
+            if (kind == FootballActionKind.Cross && CrossMechanics)
+            {
+                style = crossPlay.StyleFor(view, me, receiver);
+                float planned = me.Profile.PassQuality * t.PlannedQualityShare;
+                if (style == CrossStyle.Driven) power = PassPhysics.DrivenCrossPower(d * t.LandingShare, planned);
+                else if (style == CrossStyle.Ground) power = PassPhysics.GroundPower(d, t.GroundArrivalSpeed, planned, ActionDefaults.CrossGroundSpeedBoost);
+            }
+            var intent = new ActionIntent(me.Team, me.PlayerId, kind, dir, power) { Target = PassTarget.ToPlayer(receiver.PlayerId), Style = style };
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = reason, HasAction = true, Action = intent, TargetPlayerId = receiver.PlayerId, HasMovement = true, Movement = MovementIntent.Stand };
         }
 
@@ -644,9 +682,27 @@ namespace FS27.Core
             if (attack.Tuning.Enabled) { attack.Assign(view, idx); runs = attack; }
             carrier.Bias = profile != null ? profile.BiasFor(me, view.Match, t.ShootRange, (goal - me.Position).Magnitude) : null;
             if (tactic != null) carrier.Bias = tactic.Wrap(carrier.Bias, view.Ball, me.Team);
+            carrier.MarkedCross = CrossMechanics;
             ActionCandidate best = carrier.Evaluate(view, idx, runs, canKick);
             if (profile != null && carrier.HasSecond) best = ChooseWithMistakes(view, me, best);
             bool pressed = obs.NearestOpponentDistance < t.PressureRadius;
+            // Phase 36: on the flank in the attacking third with the runners on their way, he carries the ball along the line to the cross point instead of passing it back or holding it
+            if (CrossMechanics && !pressed && (best.Type == CandidateType.Pass || best.Type == CandidateType.Hold || best.Type == CandidateType.Protect) && crossPlay.Threat(view, me))
+            {
+                crossPlay.AssignRunners(view, idx);
+                float toLine = Math.Abs(goal.X - me.Position.X);
+                if (crossPlay.RunnerCount >= crossPlay.Tuning.MinRunnersToWait)
+                {
+                    if (toLine > crossPlay.Tuning.DeliverDepth)
+                    {
+                        Vec2 attackDir = (goal - WorldGeometry.OwnGoal(view.Match, view.Field, me.Team)).Normalized;
+                        Vec2 spot = bounds.ClampPlayer(new Vec2(goal.X - attackDir.X * crossPlay.Tuning.DeliverDepth, me.Position.Y));
+                        return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Dribble, Reason = DecisionReason.CarryToCross, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, spot, crossPlay.Tuning.CarryMagnitude, 0f) };
+                    }
+                    if (crossPlay.ArrivedCount(view) < crossPlay.Tuning.MinRunnersToWait)
+                        return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Hold, Reason = DecisionReason.WaitForRunners, HasMovement = true, Movement = MovementIntent.Stand };
+                }
+            }
             PlayerDecision decision;
             switch (best.Type)
             {

@@ -33,6 +33,8 @@ namespace FS27.Core
         public BasicDecisionEngine Engine => engine;
         /// <summary>Phase 35: the crosses of the AI are the real cross action (see <see cref="BasicDecisionEngine.CrossActions"/>).</summary>
         public bool CrossActions { get { return engine.CrossActions; } set { engine.CrossActions = value; } }
+        /// <summary>Phase 36: the cross as a team play (see <see cref="BasicDecisionEngine.CrossMechanics"/>).</summary>
+        public bool CrossMechanics { get { return engine.CrossMechanics; } set { engine.CrossMechanics = value; } }
         private readonly SelectionStability selection = new SelectionStability();
         /// <summary>Phase 32: how stable the player a person controls is (hold after a manual switch, dwell, margin); <c>Enabled = false</c> gives the Phase 8 behaviour.</summary>
         public SelectionStabilityTuning SelectionTuning => selection.Tuning;

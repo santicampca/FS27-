@@ -31,6 +31,27 @@ check('a match starts with a tap on JUGAR', true);
 check('the HUD tells who has the ball and the stamina', (await page.textContent('#possTxt')).length > 0 && (await page.textContent('#stamTxt')).length > 0);
 check('a hint explains the controls', await page.evaluate(() => !document.getElementById('hintbar').classList.contains('hidden')));
 await page.screenshot({ path: path.join(shots, 'offline-play.png') });
+// the person crosses with the controls he already has: on the flank with the ball, the button A says CENTRO and a swipe up on it crosses (Phase 36)
+{
+  const cdp = await ctx.newCDPSession(page);
+  const touch = (type, x, y) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y, id: 7 }] });
+  const swipeUpOnA = async (px) => { const r = await page.evaluate(() => { const b = document.getElementById('btnA').getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; }); await touch('touchStart', r.x, r.y); await touch('touchMove', r.x, r.y - px / 2); await touch('touchMove', r.x, r.y - px); await touch('touchEnd', r.x, r.y - px); };
+  const results = [];
+  for (const [label, px, style] of [['short', 45, 'Ground'], ['medium', 95, 'Driven'], ['long', 150, 'High']]) {
+    const setup = await page.evaluate(() => window.__fs27.B.TestSetup('cross'));
+    await page.waitForTimeout(400);
+    const can = await page.evaluate(() => window.__fs27.B.CanCross()); const lbl = await page.textContent('#btnA');
+    if (label === 'short') check('on the flank with the ball the button A says CENTRO', setup === 'ok' && can === true && lbl === 'CENTRO', { setup, can, lbl });
+    await swipeUpOnA(px); await page.waitForTimeout(150);
+    const last = await page.evaluate(() => window.__fs27.B.LastAction());
+    let apex = 0; for (let i = 0; i < 12; i++) { apex = Math.max(apex, await page.evaluate(() => window.__fs27.state()[7])); await page.waitForTimeout(100); }
+    results.push({ label, last, apex: +apex.toFixed(2) });
+  }
+  check('a swipe up on A crosses (a real Cross action of the Core)', results.every(r => r.last.startsWith('Cross')), results);
+  const [g, d, h] = results.map(r => r.apex);
+  check('short, medium and long swipes give a ground, a driven and a high cross', g < 0.5 && d > g && h > d && h > 2.0, { ground: g, driven: d, high: h });
+  await page.evaluate(async () => { const B = window.__fs27.B; for (let i = 0; i < 200; i++) { B.Advance(8 / 60); } });
+}
 // losing focus (a call, a notification) releases the stick and pauses the match (FS27-REQ-0053)
 await page.evaluate(() => window.dispatchEvent(new Event('blur')));
 await page.waitForTimeout(300);

@@ -47,6 +47,9 @@ namespace FS27.Core.Tests
             string vs = Environment.GetEnvironmentVariable("GB_VS");
             var cfgs = vs == null ? new List<GbConfig> { GbReference, GbCurrent } : new List<GbConfig> { GbCurrent };
             // GB_ATTR=1: the reference plus ONE change at a time (tactics, keeper distribution, aim assist), then all of them; each is compared with the reference
+            // GB_ATTR=cross: the reference, the Phase-35 cross (real action only) and the Phase-36 cross play, to see what the team play adds
+            if (Environment.GetEnvironmentVariable("GB_ATTR") == "cross")
+                cfgs = new List<GbConfig> { GbReference, GbCurrent.With("cross35", x => x.CrossPlay = false), GbCurrent };
             if (Environment.GetEnvironmentVariable("GB_ATTR") == "1")
                 cfgs = new List<GbConfig> { GbReference, GbReference.With("tactics", x => x.Tactics = true), GbReference.With("keeper", x => x.Distribution = true), GbReference.With("assist", x => x.Assist = true), GbCurrent };
             List<GbRow> rows = GbMatrix(scenes, cfgs, Enumerable.Range(first, n));

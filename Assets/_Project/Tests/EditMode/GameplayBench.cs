@@ -21,14 +21,14 @@ namespace FS27.Core.Tests
 
         internal sealed class GbConfig
         {
-            public string Name; public bool Tactics, Distribution, Assist, Selection, Headers, Crosses;
+            public string Name; public bool Tactics, Distribution, Assist, Selection, Headers, Crosses, CrossPlay;
             public DifficultyLevel Home = DifficultyLevel.Professional, Away = DifficultyLevel.Professional;
             public int HomeTeam = 3, AwayTeam = 8;
             public GbConfig With(string name, Action<GbConfig> edit) { var c = (GbConfig)MemberwiseClone(); c.Name = name; edit(c); return c; }
         }
 
-        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false, Headers = false, Crosses = false };
-        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true, Headers = true, Crosses = true };
+        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false, Headers = false, Crosses = false, CrossPlay = false };
+        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true, Headers = true, Crosses = true, CrossPlay = true };
 
         // ------------------------------------------------------------------ scenes
 
@@ -94,7 +94,8 @@ namespace FS27.Core.Tests
                     : res.Kind == FootballActionKind.GoalkeeperDistribution ? "outKeeper" : res.Kind == FootballActionKind.GoalkeeperSave || res.Kind == FootballActionKind.GoalkeeperCatch ? "outSave" : "outOther";
                 lastActionAt = Now;
                 if (res.Kind == FootballActionKind.Cross) Add(pre + "crossKicks");
-                if (res.Kind == FootballActionKind.Header) Add(pre + "headers");
+                if (res.Kind == FootballActionKind.Header) { Add(pre + "headers"); if (res.Team == crossActionTeam && Now - crossActionAt <= 4f) Add(pre + "crossHeaders"); }
+                if ((res.Kind == FootballActionKind.GoalkeeperSave || res.Kind == FootballActionKind.GoalkeeperCatch) && !lastShotCounted && res.Team != lastShotTeam && Now - lastShotAt <= 2.5f) { Add(P(lastShotTeam) + "shotsOnTarget"); lastShotCounted = true; }
                 if (res.Kind == FootballActionKind.GoalkeeperSave) Add("keeperParries"); else if (res.Kind == FootballActionKind.GoalkeeperCatch) Add("keeperCatches");
                 switch (res.Kind)
                 {
@@ -105,7 +106,8 @@ namespace FS27.Core.Tests
                         Vec2 pos = p.Locomotion.Position; float depth = pos.X * Sign(res.Team) + half;
                         if (depth >= c.Pitch.Field.Length * 2f / 3f) Add(pre + "finalThirdPasses");
                         // a cross: from the flank in the final third, towards the middle
-                        if (!p.InGoal && Math.Abs(pos.Y) >= 6.5f && depth >= c.Pitch.Field.Length - 12f && Math.Abs(res.Direction.Y) > 0.25f && Math.Sign(res.Direction.Y) != Math.Sign(pos.Y)) { Add(pre + "crosses"); crossAt = Now; crossTeam = res.Team; crossPasser = res.PlayerId; }
+                        if (!p.InGoal && Math.Abs(pos.Y) >= 6.5f && depth >= c.Pitch.Field.Length - 12f && Math.Abs(res.Direction.Y) > 0.25f && Math.Sign(res.Direction.Y) != Math.Sign(pos.Y)) { Add(pre + "crosses"); crossAt = Now; crossTeam = res.Team; crossPasser = res.PlayerId; crossCounted = false; }
+                        if (res.Kind == FootballActionKind.Cross) { Add(pre + "cross" + res.CrossStyle); crossActionAt = Now; crossActionTeam = res.Team; if (!(Math.Abs(pos.Y) >= 6.5f && depth >= c.Pitch.Field.Length - 12f)) { crossAt = Now; crossTeam = res.Team; crossPasser = res.PlayerId; crossCounted = false; Add(pre + "crosses"); } }
                         pass = new Pending { Team = res.Team, Passer = res.PlayerId, Target = res.TargetPlayerId, At = Now, Band = LaneBand(res, p) };
                         break;
                     }
@@ -115,6 +117,7 @@ namespace FS27.Core.Tests
                 }
             }
 
+            private float crossActionAt = -100f, lastShotAt = -100f, goalWatchAt = -100f; private TeamSide crossActionTeam, lastShotTeam; private bool lastShotCounted = true;
             private float crossAt = -100f; private TeamSide crossTeam; private string crossPasser; private bool crossCounted;
 
             private void RegisterShot(ActionResult res, MatchPlayer p)
@@ -131,6 +134,7 @@ namespace FS27.Core.Tests
                     if (len > 1e-3f && WorldGeometry.DistanceToSegment(o.Locomotion.Position, ctx.Shooter, goal) <= shotT.LaneHalfWidth) ctx.DefendersInLane++;
                 }
                 ShotQuality q = ShotQualityEvaluator.Evaluate(ctx, shotT);
+                lastShotAt = Now; lastShotTeam = res.Team; lastShotCounted = false;
                 Add(pre + "shots"); Add(pre + "xg", q.ExpectedGoal); if (q.ExpectedGoal >= 0.25f) Add(pre + "bigChances");
                 if (!M.ContainsKey(pre + "firstShotAt")) M[pre + "firstShotAt"] = Now;
                 if (res.Team == crossTeam && Now - crossAt <= 3f && !crossCounted) { Add(pre + "crossShots"); crossCounted = true; }
@@ -142,7 +146,7 @@ namespace FS27.Core.Tests
             {
                 switch (ev.Kind)
                 {
-                    case GameplayEventKind.GoalScored: if (ev.HasTeam) { Add(P(ev.Team) + "goals"); Stop = true; } break;
+                    case GameplayEventKind.GoalScored: if (ev.HasTeam) { Add(P(ev.Team) + "goals"); if (!lastShotCounted && ev.Team == lastShotTeam && Now - lastShotAt <= 2.5f) { Add(P(ev.Team) + "shotsOnTarget"); lastShotCounted = true; } if (ev.Team == crossActionTeam && Now - crossActionAt <= 6f) Add(P(ev.Team) + "crossGoals"); Stop = true; } break;
                     case GameplayEventKind.InterceptionPerformed: if (ev.HasTeam) Add(P(ev.Team) + "interceptions"); break;
                     case GameplayEventKind.TacklePerformed: if (ev.HasTeam) Add(P(ev.Team) + "tackles"); break;
                     case GameplayEventKind.FoulCommitted: if (ev.HasTeam) Add(P(ev.Team) + "fouls"); break;
@@ -237,7 +241,7 @@ namespace FS27.Core.Tests
             "h_passes", "h_passOk", "h_passLost", "h_passNobody", "h_passToTarget", "h_forwardPasses", "h_finalThirdPasses", "h_crosses", "h_crossReach", "h_crossShots", "h_shots", "h_xg", "h_bigChances", "h_goals", "h_interceptions", "h_tackles", "h_fouls", "h_gains", "h_giveAndReturn",
             "a_passes", "a_passOk", "a_passLost", "a_passNobody", "a_forwardPasses", "a_finalThirdPasses", "a_crosses", "a_crossReach", "a_crossShots", "a_shots", "a_xg", "a_bigChances", "a_goals", "a_interceptions", "a_tackles", "a_fouls", "a_gains", "a_giveAndReturn",
             "throwIns", "throwInsLost", "corners", "cornersLost", "goalKicks", "goalKicksLost", "freeKicks", "freeKicksLost",
-            "outPass", "outShot", "outKeeper", "outSave", "outOther", "outDeflection", "h_crossKicks", "a_crossKicks", "keeperParries", "keeperCatches", "h_headers", "a_headers",
+            "outPass", "outShot", "outKeeper", "outSave", "outOther", "outDeflection", "h_crossKicks", "a_crossKicks", "keeperParries", "keeperCatches", "h_headers", "a_headers", "h_crossHigh", "h_crossDriven", "h_crossGround", "a_crossHigh", "a_crossDriven", "a_crossGround", "h_crossHeaders", "a_crossHeaders", "h_shotsOnTarget", "a_shotsOnTarget", "h_crossGoals", "a_crossGoals",
             "looseStillSeconds", "looseStillMax", "carrierIdleSeconds", "h_laneN0", "h_laneN1", "h_laneN2", "h_laneN3", "h_laneLost0", "h_laneLost1", "h_laneLost2", "h_laneLost3", "a_laneN0", "a_laneN1", "a_laneN2", "a_laneN3", "a_laneLost0", "a_laneLost1", "a_laneLost2", "a_laneLost3"
         };
 
@@ -257,7 +261,7 @@ namespace FS27.Core.Tests
             driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(cfg.Home), Db.Players, c, profileT);
             driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(cfg.Away), Db.Players, c, profileT);
             if (cfg.Tactics) { driver.SetTactic(TeamSide.Home, TeamTactic.Of(Db.Teams[cfg.HomeTeam], Db)); driver.SetTactic(TeamSide.Away, TeamTactic.Of(Db.Teams[cfg.AwayTeam], Db)); }
-            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection; c.HeadersEnabled = cfg.Headers; driver.CrossActions = cfg.Crosses;
+            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection; c.HeadersEnabled = cfg.Headers; driver.CrossActions = cfg.Crosses; driver.CrossMechanics = cfg.CrossPlay;
             return c;
         }
 

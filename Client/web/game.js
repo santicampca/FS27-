@@ -12,7 +12,7 @@ let stick = { x: 0, y: 0 }, mirror = 1;
 const stats = { frames: 0, steps: 0, lastT: 0, fps: 0, sps: 0, advanceMs: 0, snapshotMs: 0, drawMs: 0, worstFrameMs: 0 };
 let banner = '', bannerUntil = 0, lastScore = [0, 0];
 let session = null, sp = [0, 0, 0, 0, 1.2, 1], spHoldStart = 0, spZone = 1;                         // what the tester played (for the feedback text)
-const VERSION = 'FS27 prueba humana 4 (Core fase 35)';
+const VERSION = 'FS27 prueba humana 5 (Core fase 36)';
 
 // ---------------------------------------------------------------- settings and profile (kept on this device only; every access is guarded: a blocked storage must not break the game)
 const DEFAULTS = { vol: 0.7, mute: false, haptics: true, stickScale: 1, btnScale: 1, lefty: false, assist: true, cam: 'follow', zoom: 1.12, text: 1, color: false, reduce: false };
@@ -106,7 +106,7 @@ function startMatch(h, a, seed, mode, level, practice = false) {
   settings.assist = assist; saveSettings(); audioInit(); inputLog.length = 0; logSeed = seed; logStart = performance.now(); tutorialStart(practice);
   B.SetAimAssist(assist);
   roster = JSON.parse(r);
-  session = { home: h, away: a, seed, mode, level, assist, startedAt: Date.now(), fpsSamples: [], worstMs: 0 };
+  crossHinted = false; session = { home: h, away: a, seed, mode, level, assist, startedAt: Date.now(), fpsSamples: [], worstMs: 0 };
   showHint('Mueve el círculo · B pasa · desliza A hacia abajo para disparar · ⇄ cambia de jugador', 9000);
   $('hn').textContent = roster.home.slice(0, 12).toUpperCase(); $('an').textContent = roster.away.slice(0, 12).toUpperCase();
   $('hud').classList.remove('hidden'); lastScore = [0, 0]; paused = false; running = true; stats.lastT = performance.now();
@@ -160,7 +160,7 @@ $('saveBtn').onclick = () => {
 };
 
 // ---------------------------------------------------------------- what the Core reports: sound, vibration, notices (REQ 0009, 0646)
-let suggested = -1;
+let suggested = -1, canCross = false, crossHinted = false;
 const NOTICE = { ThrowInAwarded: 'SAQUE DE BANDA', CornerAwarded: 'CÓRNER', GoalKickAwarded: 'SAQUE DE PUERTA', FreeKickAwarded: 'FALTA', PenaltyAwarded: 'PENALTI', HalfTimeStarted: 'DESCANSO', YellowCardIssued: 'TARJETA AMARILLA', RedCardIssued: 'TARJETA ROJA' };
 function handleEvents() {
   const q = B.DrainEvents(); if (!q) return;
@@ -241,7 +241,7 @@ function frame(now) {
     stats.steps += B.Advance(dt);
     stats.advanceMs += performance.now() - t0;
   }
-  sp = B.SetPieceInfo(); updateSetPieceUI(now); handleEvents(); if ((stats.frames & 7) === 0) suggested = B.SuggestedIndex(); tutorialTick();
+  sp = B.SetPieceInfo(); updateSetPieceUI(now); handleEvents(); if ((stats.frames & 7) === 0) { suggested = B.SuggestedIndex(); const cc = B.CanCross(); if (cc !== canCross) { canCross = cc; $('btnA').textContent = cc ? 'CENTRO' : 'A'; $('btnA').classList.toggle('cross', cc); if (cc && !crossHinted) { crossHinted = true; showHint('Estás en banda: desliza A hacia arriba para centrar. Corto = raso, medio = tenso, largo = alto. Con el círculo eliges primer palo, centro o segundo palo.', 8000); } } } tutorialTick();
   const t1 = performance.now(); snap = B.Snapshot(); stats.snapshotMs += performance.now() - t1;
   const t2 = performance.now(); draw(now); stats.drawMs += performance.now() - t2;
   stats.frames++;
@@ -332,7 +332,7 @@ function action(btn, button) {
     if (e.pointerId !== id) return; id = null; btn.classList.remove('on');
     if (sp[0] !== 0 && button === 2) { const hold = spHoldStart ? (performance.now() - spHoldStart) / 1000 : 0; spHoldStart = 0; logInput('sp', +hold.toFixed(2), spZone, +(mirror * stick.x).toFixed(2), +(mirror * stick.y).toFixed(2)); B.TakeSetPiece(mirror * stick.x, mirror * stick.y, hold, sp[0] >= 2 ? spZone : -1); return; }
     const dy = e.clientY - y0; let gesture = 0, power = 0.7;
-    if (dy < -28) { gesture = 1; power = Math.min(1, 0.55 + (-dy - 28) / 120); } else if (dy > 28) { gesture = 2; power = Math.min(1, 0.55 + (dy - 28) / 120); }
+    if (dy < -28) { gesture = 1; power = Math.min(1, 0.55 + (-dy - 28) / 120); if (button === 1 && canCross) power = Math.min(1, 0.3 + (-dy - 28) / 150); }   // on the flank the swipe up on A is a cross: up to 82 px ground, to 112 px driven, beyond high else if (dy > 28) { gesture = 2; power = Math.min(1, 0.55 + (dy - 28) / 120); }
     logInput('press', button, gesture, +power.toFixed(2), +(mirror * stick.x).toFixed(2)); B && B.Press(button, gesture, mirror * stick.x, mirror * stick.y, power);
   };
   btn.addEventListener('pointerup', end); btn.addEventListener('pointercancel', e => { if (e.pointerId === id) { id = null; btn.classList.remove('on'); } });

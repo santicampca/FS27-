@@ -107,6 +107,14 @@ namespace FS27.Core
         public const float CrossMaxSpeed = 20.5f;
         public const float CrossLoft = 0.8f;
         public const float CrossMaxError = 14.0f;
+        // ---- Phase 36: the driven cross (fast, flat, chest height) and the ground cross (along the grass, a cut-back)
+        public const float CrossDrivenMinSpeed = 11.0f;
+        public const float CrossDrivenMaxSpeed = 22.0f;
+        public const float CrossDrivenLoft = 0.28f;
+        public const float CrossDrivenMaxError = 12.0f;
+        public const float CrossGroundLoft = 0.02f;
+        public const float CrossGroundSpeedBoost = 1.15f;
+        public const float CrossGroundMaxError = 9.0f;
         /// <summary>Shot at power 0.</summary>
         public const float ShotMinSpeed = 12.0f;
         /// <summary>Shot at power 1 (with perfect shooting).</summary>
@@ -333,6 +341,13 @@ namespace FS27.Core
         public float CrossMaxSpeed = ActionDefaults.CrossMaxSpeed;
         public float CrossLoft = ActionDefaults.CrossLoft;
         public float CrossMaxError = ActionDefaults.CrossMaxError;
+        public float CrossDrivenMinSpeed = ActionDefaults.CrossDrivenMinSpeed;
+        public float CrossDrivenMaxSpeed = ActionDefaults.CrossDrivenMaxSpeed;
+        public float CrossDrivenLoft = ActionDefaults.CrossDrivenLoft;
+        public float CrossDrivenMaxError = ActionDefaults.CrossDrivenMaxError;
+        public float CrossGroundLoft = ActionDefaults.CrossGroundLoft;
+        public float CrossGroundSpeedBoost = ActionDefaults.CrossGroundSpeedBoost;
+        public float CrossGroundMaxError = ActionDefaults.CrossGroundMaxError;
         public float ShotMinSpeed = ActionDefaults.ShotMinSpeed;
         public float ShotMaxSpeed = ActionDefaults.ShotMaxSpeed;
         public float ChipMinSpeed = ActionDefaults.ChipMinSpeed;

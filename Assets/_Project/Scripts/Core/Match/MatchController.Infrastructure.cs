@@ -435,7 +435,7 @@ namespace FS27.Core
         {
             switch (kind)
             {
-                case FootballActionKind.ShortPass: case FootballActionKind.WallPass: case FootballActionKind.ThroughPass: case FootballActionKind.LongPass:
+                case FootballActionKind.ShortPass: case FootballActionKind.WallPass: case FootballActionKind.ThroughPass: case FootballActionKind.LongPass: case FootballActionKind.Cross:
                 case FootballActionKind.Chip: case FootballActionKind.Shot: case FootballActionKind.CurvedShot: case FootballActionKind.SkillLobPass:
                 case FootballActionKind.Clearance: case FootballActionKind.GoalkeeperDistribution:
                     return true;

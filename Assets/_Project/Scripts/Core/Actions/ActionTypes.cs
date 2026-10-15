@@ -105,6 +105,14 @@ namespace FS27.Core
     }
 
     /// <summary>A request to perform an action. Plain data; <see cref="MatchController.Perform"/> answers with an <see cref="ActionResult"/>.</summary>
+    /// <summary>Phase 36: the three crosses. High (the default): a lofted ball over the defenders to the far post or the middle. Driven: fast and flat at about chest height, to the near post or the penalty spot. Ground: along the grass, a cut-back to the edge of the box or the six-yard line.</summary>
+    public enum CrossStyle
+    {
+        High = 0,
+        Driven = 1,
+        Ground = 2
+    }
+
     public struct ActionRequest
     {
         public TeamSide Team;
@@ -127,6 +135,8 @@ namespace FS27.Core
         public bool Long;
         /// <summary>Phase 7: where a kick is meant to go (a team-mate, a point, or nobody). When it resolves, it decides the direction; otherwise <see cref="Direction"/> does.</summary>
         public PassTarget Target;
+        /// <summary>Phase 36: the style of a <see cref="FootballActionKind.Cross"/> (ignored by every other action).</summary>
+        public CrossStyle Style;
         /// <summary>Phase 7: who produced the request (context only; the resolution is identical).</summary>
         public ControlSource Source;
 
@@ -142,6 +152,7 @@ namespace FS27.Core
             SkillId = null;
             Long = false;
             Target = default(PassTarget);
+            Style = CrossStyle.High;
             Source = ControlSource.Ai;
         }
     }
@@ -239,6 +250,8 @@ namespace FS27.Core
     /// </summary>
     public struct ActionResult
     {
+        /// <summary>Phase 36: the style a cross was played with.</summary>
+        public CrossStyle CrossStyle;
         public ActionOutcome Outcome;
         public ActionRejection Rejection;
         public FootballActionKind Kind;
