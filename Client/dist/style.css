@@ -74,3 +74,5 @@ button.alt { background: #34647a; font-size: 16px; padding: 10px 18px; }
 .reduce #banner { text-shadow: none; }
 
 #btnA.cross { background: rgba(241, 196, 15, .65); font-size: 13px; letter-spacing: 1px; box-shadow: 0 0 12px rgba(241, 196, 15, .8); }
+
+button.futureBtn { opacity: .5; border: 1px dashed #889; }
