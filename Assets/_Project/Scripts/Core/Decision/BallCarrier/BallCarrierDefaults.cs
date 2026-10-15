@@ -113,6 +113,10 @@ namespace FS27.Core
         public const float CrossBoxHalfWidth = 6.0f;
         /// <summary>The receiver needs this much room around him (m); a cross is lofted only between these distances (m), nearer it is a ground pass.</summary>
         public const float CrossMinSpace = 2.0f;
+        /// <summary>Phase 36: the room a receiver in the box needs when the defence marks (a marked man is close to his marker: the cross is played to the place, and the ball arrives a moment later).</summary>
+        public const float CrossMinSpaceMarked = 0.9f;
+        /// <summary>Phase 36: from the byline (this close to the goal line, metres) a cut-back to the edge of the box is a cross too: the receiver may stand this far from the goal line.</summary>
+        public const float CrossBylineDistance = 5.0f, CrossCutbackDepth = 13.0f;
         public const float CrossMinDistance = 6.0f;
         public const float CrossMaxDistance = 16.0f;
 
@@ -211,6 +215,8 @@ namespace FS27.Core
         public float CrossBoxDepth = BallCarrierDefaults.CrossBoxDepth;
         public float CrossBoxHalfWidth = BallCarrierDefaults.CrossBoxHalfWidth;
         public float CrossMinSpace = BallCarrierDefaults.CrossMinSpace;
+        public float CrossMinSpaceMarked = BallCarrierDefaults.CrossMinSpaceMarked;
+        public float CrossBylineDistance = BallCarrierDefaults.CrossBylineDistance, CrossCutbackDepth = BallCarrierDefaults.CrossCutbackDepth;
         public float CrossMinDistance = BallCarrierDefaults.CrossMinDistance;
         public float CrossMaxDistance = BallCarrierDefaults.CrossMaxDistance;
         public float ProtectBase = BallCarrierDefaults.ProtectBase;

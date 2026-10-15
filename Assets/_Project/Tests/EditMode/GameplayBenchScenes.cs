@@ -33,6 +33,12 @@ namespace FS27.Core.Tests
                 new GbScenario { Id = "A5_FinalThird", Family = "chances", Story = "the carrier at the edge of the box with options: does he create and take a good chance", Seconds = 15f, CarrierSide = 0, CarrierIndex = 0,
                     Home = GbV(10, 3, 12, -4, 8, -1, 2, 5, 2, -5), Away = GbV(14, 1, 13, -2, 11, 6, 6, 0, 5, -4),
                     Judge = J("h_shots", 1, "h_xg", 1, "h_bigChances", 1, "h_firstShotAt", -1, "h_passLostRate", -1) },
+                new GbScenario { Id = "A6_CrossBox", Family = "crosses", Story = "a winger in the corner of the final third with three team-mates behind the play and four defenders in the box: do they attack the box at different places, does the cross arrive, is it headed, does it become a shot on target", Seconds = 14f, CarrierSide = 0, CarrierIndex = 0,
+                    Home = GbV(9, -9.5f, 1, -2, 5, 5, -3, 0, -8, 3), Away = GbV(15, -4, 16, 3, 14, 7, 11, -1, 8, 2),
+                    Judge = J("h_crossKicks", 1, "h_crossHeaders", 1, "h_shotsOnTarget", 1, "h_xg", 1, "h_goals", 1, "h_passLostRate", -1) },
+                new GbScenario { Id = "D1_BoxDefence", Family = "crosses", Story = "a rival winger on the flank near the home goal with three runners: do the defenders mark, cover the post and clear", Seconds = 14f, CarrierSide = 1, CarrierIndex = 0,
+                    Home = GbV(-15, 5, -14, -2, -12, 2, -8, 0, -5, -5), Away = GbV(-10, 9.5f, -4, 0, -6, -3, -2, 4, 2, -2),
+                    Judge = J("a_xg", -1, "a_shotsOnTarget", -1, "a_goals", -1, "a_shots", -1, "h_interceptions", 1, "a_crossHeaders", -1) },
                 // ---------------- pressure and transitions
                 new GbScenario { Id = "B1_UnderPressure", Family = "pressure", Story = "the carrier is closed down at 1.5 m and 3.8 m with outlets behind and beside him", Seconds = 12f, CarrierSide = 0, CarrierIndex = 0,
                     Home = GbV(-6, 0, -10, -5, -10, 5, -2, -7, -2, 7), Away = GbV(-4.2f, 0.8f, -3, -2.5f, 0, 0, 2, -5, 2, 5),

@@ -264,15 +264,19 @@ namespace FS27.Core
         }
 
         /// <summary>A cross: the carrier is wide, in the attacking third, and the receiver stands in the box with room around him, at a distance a lofted ball can cover.</summary>
+        /// <summary>Phase 36: the defence marks the box, so a receiver in it needs less room (see <see cref="BallCarrierTuning.CrossMinSpaceMarked"/>).</summary>
+        public bool MarkedCross { get; set; }
+
         private bool IsCross(WorldView view, in WorldPlayer me, in WorldPlayer r)
         {
             if (b.CrossBonus <= 0f) return false;
             Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
             if (Math.Abs(me.Position.Y) < view.Field.Width / 2f - b.CrossWideZone || (goal - me.Position).Magnitude > b.CrossMaxGoalDistance) return false;
-            if (Math.Abs(goal.X - r.Position.X) > b.CrossBoxDepth || Math.Abs(r.Position.Y - goal.Y) > b.CrossBoxHalfWidth) return false;
+            float depthLimit = MarkedCross && Math.Abs(goal.X - me.Position.X) <= b.CrossBylineDistance ? b.CrossCutbackDepth : b.CrossBoxDepth;
+            if (Math.Abs(goal.X - r.Position.X) > depthLimit || Math.Abs(r.Position.Y - goal.Y) > b.CrossBoxHalfWidth) return false;
             float d = (r.Position - me.Position).Magnitude;
             if (d < b.CrossMinDistance || d > b.CrossMaxDistance) return false;
-            return WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position) >= b.CrossMinSpace;
+            return WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position) >= (MarkedCross ? b.CrossMinSpaceMarked : b.CrossMinSpace);
         }
 
         /// <summary>

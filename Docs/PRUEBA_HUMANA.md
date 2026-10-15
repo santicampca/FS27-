@@ -23,7 +23,8 @@ Un único archivo: **`FS27-jugable.html`** (unos 12 MB). Te lo pasa quien organi
 | Pasar | Pulsa **B** (el pase va hacia donde empujas el círculo) |
 | Pase largo al espacio | Desliza **B** hacia arriba |
 | Disparar | Desliza **A** hacia abajo (cuanto más largo el deslizamiento, más fuerte) |
-| Vaselina | Desliza **A** hacia arriba |
+| Vaselina (en el centro del campo) | Desliza **A** hacia arriba |
+| **Centrar** (cuando llevas el balón por una banda cerca de la portería rival, el botón A pasa a decir **CENTRO**) | Desliza **A** hacia arriba. **Corto** = centro raso, al suelo (para el borde del área o un pase atrás); **medio** = tenso, rápido y a media altura (primer palo); **largo** = alto, por encima de los defensas (segundo palo). Con el círculo eliges a dónde: hacia la portería = centro del área, hacia los lados = primer o segundo palo, hacia atrás = borde del área |
 | Presionar al rival (sin balón) | Pulsa **A** |
 | Cambiar de jugador | Pulsa **⇄**: va al jugador más cercano al balón (otra vez: el siguiente) y tu elección se respeta unos segundos |
 | **Saque de banda o córner de tu equipo** | Aparece un panel. Apunta con el círculo, **mantén B** (la barra se llena: más tiempo = saque más largo) y **suelta** para sacar. En el córner elige antes Izquierda / Centro / Derecha. Si no haces nada, saca la IA a los 12 s |
@@ -42,6 +43,12 @@ Al terminar el partido (unos 15 minutos) o cuando quieras parar, la pantalla fin
 - **Pausa** con botones (continuar, ajustes, copiar registro de entradas, salir). Si algo no responde bien, «Copiar registro de entradas» y pégalo en el mensaje.
 - **Estadísticas** al terminar (posesión, tiros, pases, faltas, córners, cabezazos).
 - En el campo: aro discontinuo en el jugador que elegiría la IA, aviso de quién tiene el balón, resistencia con aviso de SPRINT/CANSADO.
+
+## Novedad de esta versión (fase 36): los centros
+
+Tus compañeros **leen el centro**: cuando llevas el balón por la banda, uno corre al centro del área, otro al primer palo, otro al segundo y otro se queda en el borde para el rechace; el que va más atrás se queda cubriendo. Los rivales **marcan** a los que entran al área y uno cubre el primer palo. La IA también centra así (raso, tenso o alto según a quién y desde dónde).
+
+Pruébalo: lleva el balón por la banda hasta cerca de la línea de fondo (el botón A cambiará a **CENTRO**), espera un momento a que tus compañeros lleguen (si te presionan, decide rápido) y desliza A hacia arriba. Cuéntanos: ¿llegan a tiempo los compañeros? ¿se distingue el centro raso del alto? ¿el rival defiende con sentido?
 
 ## Qué nos interesa que pruebes
 

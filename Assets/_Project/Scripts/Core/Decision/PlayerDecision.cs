@@ -111,7 +111,17 @@ namespace FS27.Core
         /// <summary>A cross from the flank to a team-mate in the box.</summary>
         CrossToBox,
         /// <summary>Phase 29: the keeper holds the ball and waits for a lane to open.</summary>
-        KeeperWaitForLane
+        KeeperWaitForLane,
+        /// <summary>Phase 36: a team-mate with the ball on a flank: he runs to his place in the box (middle, near post, far post or the edge).</summary>
+        CrossRunRole,
+        /// <summary>Phase 36: against a cross, he marks an attacker in the box, goal side.</summary>
+        MarkBoxRunner,
+        /// <summary>Phase 36: against a cross, he covers the near post.</summary>
+        CoverNearPost,
+        /// <summary>Phase 36: on the flank with the runners on their way to the box, he carries the ball along the line instead of passing it back.</summary>
+        CarryToCross,
+        /// <summary>Phase 36: at the cross point with the runners not yet in the box, he shields the ball and waits for them (until a rival presses him).</summary>
+        WaitForRunners
     }
 
     /// <summary>

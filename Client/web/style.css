@@ -72,3 +72,5 @@ button.alt { background: #34647a; font-size: 16px; padding: 10px 18px; }
 #settings input[type=range] { width: 50%; touch-action: pan-x; }
 #endStats { width: 100%; font-size: 14px; border-collapse: collapse; margin: 6px 0; } #endStats td { padding: 2px 6px; border-bottom: 1px solid rgba(255, 255, 255, .12); } #endStats td:nth-child(2) { text-align: center; opacity: .8; }
 .reduce #banner { text-shadow: none; }
+
+#btnA.cross { background: rgba(241, 196, 15, .65); font-size: 13px; letter-spacing: 1px; box-shadow: 0 0 12px rgba(241, 196, 15, .8); }

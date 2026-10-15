@@ -52,6 +52,7 @@ namespace FS27.Core
                 request.Long = context.IsGoalkeeper && context.HasBall && input.Gesture == ActionGesture.SwipeUp;
                 request.Curve = input.Curve;
                 if (request.Kind == FootballActionKind.CurvedShot && request.Curve == 0f) request.Curve = (p.ActionProfile.PreferredFoot == PreferredFoot.Right ? 1f : -1f) * skillTuning.DefaultCurve;
+                request = AssistCross(p, request, input);
                 if (AimAssist.Enabled) request = AssistAim(p, request, input);
             }
             return Perform(request);
@@ -117,7 +118,7 @@ namespace FS27.Core
 
         private ActionResult Resolve(ActionRequest r)
         {
-            var res = new ActionResult { Kind = r.Kind, Team = r.Team, PlayerId = r.PlayerId, Outcome = ActionOutcome.Rejected, Source = r.Source };
+            var res = new ActionResult { Kind = r.Kind, Team = r.Team, PlayerId = r.PlayerId, Outcome = ActionOutcome.Rejected, Source = r.Source, CrossStyle = r.Style };
 
             if (r.Kind == FootballActionKind.None) return Reject(res, ActionRejection.InvalidInput);
             if (!ActionsLive) return Reject(res, ActionRejection.MatchNotLive);
@@ -301,8 +302,13 @@ namespace FS27.Core
                     detail = ActionDetail.Lofted;
                     break;
                 case FootballActionKind.Cross:
-                    baseQuality = prof.PassQuality; minSpeed = actions.CrossMinSpeed; maxSpeed = actions.CrossMaxSpeed; loft = actions.CrossLoft; maxError = actions.CrossMaxError; cost = actions.PassStaminaCost;
-                    detail = ActionDetail.Lofted;
+                    baseQuality = prof.PassQuality; cost = actions.PassStaminaCost;
+                    switch (r.Style)
+                    {
+                        case CrossStyle.Driven: minSpeed = actions.CrossDrivenMinSpeed; maxSpeed = actions.CrossDrivenMaxSpeed; loft = actions.CrossDrivenLoft; maxError = actions.CrossDrivenMaxError; detail = ActionDetail.Kicked; break;
+                        case CrossStyle.Ground: minSpeed = actions.PassMinSpeed * actions.CrossGroundSpeedBoost; maxSpeed = actions.PassMaxSpeed * actions.CrossGroundSpeedBoost; loft = actions.CrossGroundLoft; maxError = actions.CrossGroundMaxError; detail = ActionDetail.Kicked; break;
+                        default: minSpeed = actions.CrossMinSpeed; maxSpeed = actions.CrossMaxSpeed; loft = actions.CrossLoft; maxError = actions.CrossMaxError; detail = ActionDetail.Lofted; break;
+                    }
                     break;
                 case FootballActionKind.Chip:
                     baseQuality = ShotQualityAt(prof, p); minSpeed = actions.ChipMinSpeed; maxSpeed = actions.ChipMaxSpeed; loft = actions.ChipVerticalSpeed / Math.Max(1f, ActionModel.Lerp(actions.ChipMinSpeed, actions.ChipMaxSpeed, power));

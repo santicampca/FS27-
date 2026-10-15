@@ -112,7 +112,7 @@ namespace FS27.Client
             eventQueue.Clear(); Array.Clear(shots, 0, 2); Array.Clear(passes, 0, 2); Array.Clear(fouls, 0, 2); Array.Clear(corners, 0, 2); Array.Clear(throwIns, 0, 2); Array.Clear(headers, 0, 2); Array.Clear(tackles, 0, 2); possession[0] = possession[1] = 0;
             match.Events.Published += OnEvent;
             match.ActionPerformed += OnAction;
-            match.HeadersEnabled = true; driver.CrossActions = true;   // Phase 35: crosses are real crosses   // Phase 33: a ball in the air is played in the air
+            match.HeadersEnabled = true; driver.CrossActions = true; driver.CrossMechanics = true; match.HumanCrossEnabled = true;   // Phase 35: crosses are real crosses   // Phase 33: a ball in the air is played in the air
             match.SetControl(TeamSide.Home, ControlSource.Human);
             clock = new SimulationClock(settings.SimulationStepSeconds);
             stick = Vec2.Zero; hasPress = false; restartWait = 0f; lastAction = ""; lastActionAt = -100f;
@@ -245,6 +245,25 @@ namespace FS27.Client
         private static void OnAction(ActionResult r)
         {
             if (r.Kind == FootballActionKind.Header) { int t = r.Team == TeamSide.Home ? 0 : 1; headers[t]++; if (eventQueue.Length < 2000) eventQueue.Append("Header:").Append(t).Append(','); }
+        }
+
+        /// <summary>Phase 36: true while the person's carrier is on a flank in the attacking third: the swipe up on A is a cross (the page shows it on the button).</summary>
+        [JSExport] public static bool CanCross() { return match != null && match.CanHumanCross(TeamSide.Home); }
+
+        /// <summary>For the automatic test of the page ONLY (Client/test/offline.mjs): puts the person's player with the ball on a flank in the attacking third, a team-mate in the middle of the pitch and the rivals far away. Returns "ok" or an error.</summary>
+        [JSExport]
+        public static string TestSetup(string scene)
+        {
+            if (match == null || scene != "cross") return "error";
+            float sign = match.State.HomeAttacksPositiveX ? 1f : -1f; string me = null, mate = null;
+            foreach (MatchPlayer p in match.State.Home.Players) { if (!p.IsActive || p.InGoal) continue; if (me == null) me = p.PlayerId; else if (mate == null) mate = p.PlayerId; }
+            if (me == null) return "error";
+            match.PlacePlayer(TeamSide.Home, me, new Vec2(sign * 10f, -10f), (sign > 0 ? new Vec2(1, 0) : new Vec2(-1, 0)).ToHeading());
+            if (mate != null) match.PlacePlayer(TeamSide.Home, mate, new Vec2(sign * 15f, 0f), (sign > 0 ? new Vec2(1, 0) : new Vec2(-1, 0)).ToHeading());
+            int k = 0; foreach (MatchPlayer p in match.State.Away.Players) { if (!p.IsActive || p.InGoal) continue; match.PlacePlayer(TeamSide.Away, p.PlayerId, new Vec2(-sign * 9f, -8f + 4f * k++), (sign > 0 ? new Vec2(-1, 0) : new Vec2(1, 0)).ToHeading()); }   // the rivals out of the way: the test is about the cross, not about the defence
+            match.State.Ball.Physics = new BallState(new Vec3(sign * 10.8f, match.BallParameters.Radius, -10f), Vec3.Zero) { IsGrounded = true };
+            match.SelectPlayer(TeamSide.Home, me); match.GiveBallTo(TeamSide.Home, me);
+            return "ok";
         }
 
         /// <summary>Phase 35: the events since the last call, as "Kind:team,Kind:team" (team 0 = the person's, 1 = the rival's, -1 = none). For sound, vibration and notices.</summary>

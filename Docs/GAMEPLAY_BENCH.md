@@ -23,7 +23,7 @@ dotnet test Tests/Core.Tests --no-build --filter "Name=GameplayBench_WriteBaseli
 ## Configuraciones y pareo
 
 - **ref**: sin táctica de equipo, el portero juega al instante, sin ayuda de puntería, selección de jugador de la Fase 8 (el comportamiento de las fases 28-30).
-- **cur**: todo lo de las fases 31, 32 y 33 (cabezazos incluidos).
+- **cur**: todo lo de las fases 31 a 36 (cabezazos, centro real y juego de equipo del centro incluidos). `GB_ATTR=cross` compara la referencia, la fase 35 y la 36.
 - Misma semilla = mismo arranque (la semilla desplaza lateralmente las posiciones de forma fija y siembra el ruido del controlador). La comparación es **pareada** (Δ por semilla, error estándar, veredicto con suelo `max(10 % de la referencia, 0,05)`).
 - Las ejecuciones son deterministas: **las semillas no son muestras independientes** de una población, y solo hay 12 equipos distintos. Un veredicto «mejor / peor» es evidencia de que el cambio mueve esa métrica en esas escenas, no una estimación de la liga.
 
@@ -36,6 +36,8 @@ dotnet test Tests/Core.Tests --no-build --filter "Name=GameplayBench_WriteBaseli
 | A3_Combination | ataque | portador con compañero cerca y defensor encima: pared/pérdida |
 | A4_RunsOffTheBall | ataque | portador con dos desmarques posibles a la espalda de una línea de cinco |
 | A5_FinalThird | ocasiones | portador al borde del área: ¿crea y toma una buena ocasión? |
+| A6_CrossBox | centros | extremo en la esquina del último tercio con tres compañeros y cuatro defensas en el área: ¿atacan el área en sitios distintos, llega el centro, se cabecea, hay remate a puerta? (fase 36) |
+| D1_BoxDefence | centros | extremo rival cerca de la portería local con tres corredores: ¿marcan, cubren el palo y despejan? (fase 36) |
 | B1_UnderPressure | presión | portador cerrado a 1,5 m y 3,8 m con salidas atrás y al lado |
 | B2_TransitionDefence | transición | el rival acaba de robar con el equipo local adelantado: recuperación y ocasiones concedidas |
 | B3_TransitionAttack | transición | se recupera con el rival adelantado y dos corredores ya por detrás de su línea |

@@ -111,6 +111,14 @@ namespace FS27.Core
             return PowerFor(GroundLaunchSpeed(distance, arrivalSpeed), ActionDefaults.PassMinSpeed * speedBoost, ActionDefaults.PassMaxSpeed * speedBoost, quality);
         }
 
+        /// <summary>Phase 36: the power of a DRIVEN cross (fast and flat) that lands <paramref name="landing"/> metres away: the range of a kick with the driven loft (no drag: the ball arrives a little short, which is what a driven ball to the near post wants).</summary>
+        public static float DrivenCrossPower(float landing, float quality)
+        {
+            float theta = (float)Math.Atan(ActionDefaults.CrossDrivenLoft);
+            float v = (float)Math.Sqrt(Math.Max(0f, landing) * 9.81f / Math.Max(Epsilon, (float)Math.Sin(2f * theta)));
+            return PowerFor(v, ActionDefaults.CrossDrivenMinSpeed, ActionDefaults.CrossDrivenMaxSpeed, quality);
+        }
+
         /// <summary>Power of a lofted pass (or a long goalkeeper kick) that bounces <paramref name="landing"/> metres away.</summary>
         public static float LoftedPower(float landing, float quality)
         {
