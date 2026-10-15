@@ -129,7 +129,9 @@ namespace FS27.Core
         /// <summary>Phase 37: the ball is in the air at his feet within reach of the goal: he strikes it first time (a volley) instead of waiting for it to drop.</summary>
         AerialVolley,
         /// <summary>Phase 39: the winger carries the ball inside and the full-back of his flank runs past him on the outside (the overlap) to offer a pass out wide.</summary>
-        OutsideSupport
+        OutsideSupport,
+        /// <summary>Phase 40: a team-mate's pass or cross reaches him in front of goal and he strikes it first time instead of controlling it first.</summary>
+        FirstTimeFinish
     }
 
     /// <summary>
@@ -144,6 +146,8 @@ namespace FS27.Core
         public MovementIntent Movement;
         public bool HasAction;
         public ActionIntent Action;
+        /// <summary>Phase 40: do not perform the action now: arm it, the Core performs it with the touch that is about to reach him (see <c>MatchController.ArmKick</c>).</summary>
+        public bool Armed;
         /// <summary>The team-mate a pass is aimed at (also in <see cref="Action"/>'s target), or null.</summary>
         public string TargetPlayerId;
         public DecisionReason Reason;

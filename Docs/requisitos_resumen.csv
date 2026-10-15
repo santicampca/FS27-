@@ -1,6 +1,6 @@
 seccion,confirmado,parcial,pendiente,requiere-humano,sin auditar
 Identidad y estructura del partido,2,16,0,2,0
-Movimiento y locomoción,0,20,0,0,0
+Movimiento y locomoción,10,5,5,0,0
 "Joystick, sprint y controles táctiles",3,17,0,0,0
 Selección y cambio de jugador,10,10,0,0,0
 Balón y física,0,19,0,1,0

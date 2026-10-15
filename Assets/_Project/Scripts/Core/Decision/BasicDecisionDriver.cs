@@ -180,6 +180,7 @@ namespace FS27.Core
                         if (engine.Attack.Tuning.Enabled && target.Team == p.Team) { engine.Attack.Assign(view, start + i); passesToJob[(int)engine.Attack.JobOf(view.IndexOf(target.PlayerId))]++; }
                     }
                     if (d.HasMovement) match.ApplyMovementIntent(s, p.PlayerId, d.Movement);
+                    if (d.HasAction && d.Armed) { match.ArmKick(d.Action.ToRequest(), engine.AerialTuning.ArmSeconds); continue; }
                     if (d.HasAction)
                     {
                         ActionsAttempted++;

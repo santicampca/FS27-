@@ -113,6 +113,35 @@ ver([923], 'parcial', 'jugadores, equipos y árbitros son datos ficticios bloque
 ver([938], 'requiere-humano', 'registrar origen y licencia de cada recurso es decisión y trabajo humano; hoy no hay recursos de terceros en el repositorio')
 
 
+
+# ---- phase 40: movement and locomotion (21-40) audited one by one against the existing tests
+ver([21], 'confirmado', 'LocomotionStaminaTests.Acceleration_SetsTheAcceleration_WithTheSpecifiedFormula, HighAcceleration_ReachesTheTargetSooner y ThereIsNoTeleportation_SpeedAndPositionChangeBoundedPerStep')
+ver([22], 'confirmado', 'LocomotionStaminaTests.Braking_UsesAgility_WithTheSpecifiedFormula_AndIsNotTheAcceleration: la deceleración es una tasa, la distancia de frenada crece con la velocidad')
+ver([23], 'confirmado', 'LocomotionStaminaTests.TurningGetsHarder_AsSpeedRises y ASprinterCannotReverseInstantly')
+ver([24], 'confirmado', 'LocomotionStaminaTests.TargetSpeed_IsTopSpeedTimesTheJoystickIntensity y JoystickCurve_IsSmoothStep_WithTheSpecifiedReferencePoints')
+ver([25, 43], 'confirmado', 'JoystickCurve_IsSmoothStep (puntos de referencia), TheSpeedIsContinuousAcrossTheJoystickRange y el cliente envía la inclinación del círculo (sin botón de sprint: Docs/PRUEBA_HUMANA.md)')
+ver([26], 'confirmado', 'LocomotionStaminaTests.Drain_FollowsEffortSquared_WithTheSprintMultiplier, SprintConsumesMoreThanRunAndWalk_InTheSimulation y Recovery_IdleRecovers...')
+ver([27], 'confirmado', 'LocomotionStaminaTests.TiredPlayers_AccelerateLess_ButNotToZero y ZeroStamina_CannotReachTheMaximumSprint_ButStillMovesAndRecovers')
+ver([28, 29], 'pendiente', 'sin desplazamiento lateral ni marcha atrás mirando al balón: la orientación sigue a la velocidad (Locomotion.Heading); no hay punto de mirada independiente. Bloque propuesto: MovementIntent.FaceTarget con factores de velocidad de marcha atrás y lateral')
+ver([30], 'parcial', 'el receptor ajusta esfuerzo y espera bajo el balón (DecisionReason.ReceiveBall, AerialClaim); sin ajuste de zancada')
+ver([31], 'confirmado', 'no hay impulsos entre jugadores: PlayerSeparation solo aparta lo mínimo (AiInfrastructureSpaceTests.Separation_TwoOverlappingPoints_AreSeparatedToTheMinimum_Symmetrically)')
+ver([32], 'pendiente', 'el contacto entre rivales solo separa posiciones; no hay respuesta proporcional a velocidad, masa y equilibrio (la entrada y el choque físico sí usan fuerza y resistencia, pero no mueven al rival)')
+ver([33], 'parcial', 'límites y cuerpos: AiInfrastructureSpaceTests.PlayersAreKeptInsidePitchPlusMargin y Separation_...; sin prueba de que un jugador no atraviese los postes')
+ver([34], 'pendiente', 'sin mezcla de animaciones: el cliente es 2D y no hay clips (Docs/GRAPHICS_CLIENT_SPEC.md §4)')
+ver([35], 'confirmado', 'LocomotionStaminaTests.TurnRate_FollowsTheSpecifiedFormula y HighAgility_TurnsBetter_ThanLowAgility')
+ver([36], 'confirmado', 'LocomotionStaminaTests.ALowSpeedPlayer_IsSlowerAtFullInput_ThanAHighSpeedOne y AFastWellConditionedPlayer_BeatsAnAverageOne_InEveryRespect')
+ver([37], 'pendiente', 'no hay caídas ni recuperación de postura en el Core (la entrada deslizante solo bloquea un tiempo)')
+ver([38], 'parcial', 'el jugador nunca está en el aire (no hay salto modelado); el balón sí, y el cabezazo no corrige trayectorias')
+ver([39], 'parcial', 'PlayerSeparation evita solapes; no hay anticipación de colisiones con compañeros')
+ver([40], 'parcial', 'sin prueba de microvibraciones; ThereIsNoTeleportation y la parada al llegar (MovementIntent_TowardsATarget_FadesInsideTheArriveRadius) lo limitan')
+
+
+# ---- phase 40: crosses funnel, render contract
+ver([175], 'confirmado', 'Docs/CROSS_FUNNEL_PHASE40.md (36 partidos): el primer toque de un compañero tras un centro es control 54 %, cabeza 19 %, y con el rematador al primer toque disparo 13 % y volea 6 %; el rival intercepta o despeja el resto')
+ver([165], 'parcial', 'el embudo mide que el 73 % de los centros llega a un compañero (frente al 66 % antes); sin medir el tiempo de vuelo respecto a la llegada de los rematadores')
+ver([172], 'parcial', 'el embudo no separa por lugar del área; sin medir remates de segundo palo')
+ver([34], 'pendiente', 'RenderFrame.Pose y LastAction dan al cliente 3D lo necesario para mezclar animaciones (Docs/CORE_RENDER_INTERFACE.md), pero no hay cliente 3D ni clips')
+
 # ---- phase 39: wing support, set-piece reports, menu
 ver([177], 'confirmado', 'Phase38Tests.TheWidePlayerBehind_OffersTheOutside_WhenTheWingerCarriesTheBallInside_AndOnlyThen (WingSupport; en 6v6 lo hace el jugador ancho que va detrás)')
 ver([169], 'confirmado', 'Phase38Tests.ACross_WithTheWeakFoot_IsLessPreciseThanWithTheGoodFoot')
