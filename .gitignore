@@ -77,7 +77,7 @@ Web/menu/node_modules/
 
 # Browser client (Client/): the two project files are kept; build output is not
 !/Client/**/*.csproj
-/Client/dist/
+# Client/dist is committed on purpose (the static site Vercel serves); rebuild with Client/build.sh
 /Client/.pub/
 /Client/**/bin/
 /Client/**/obj/

@@ -1,0 +1,4616 @@
+{
+  "coaches": [
+    {
+      "coachId": "coach-pep-guardiola",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 55
+        },
+        "attributes": {
+          "Agility": 1,
+          "BallControl": 3,
+          "Dribbling": 1.5,
+          "Passing": 3,
+          "Stamina": 1,
+          "Technique": 3
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 70,
+          "target": 85
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 40,
+          "target": 60
+        },
+        "roles": [
+          {
+            "role": "Architect",
+            "weight": 100
+          },
+          {
+            "role": "Creator",
+            "weight": 85
+          },
+          {
+            "role": "Builder",
+            "weight": 85
+          },
+          {
+            "role": "Guardian",
+            "weight": 50
+          },
+          {
+            "role": "Winger",
+            "weight": 45
+          },
+          {
+            "role": "Engine",
+            "weight": 45
+          },
+          {
+            "role": "Finisher",
+            "weight": 35
+          },
+          {
+            "role": "Anchor",
+            "weight": 30
+          }
+        ],
+        "zones": [
+          {
+            "weight": 100,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Wing"
+          },
+          {
+            "weight": 50,
+            "zone": "Defense"
+          },
+          {
+            "weight": 50,
+            "zone": "Attack"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Positional",
+          "coachId": "coach-pep-guardiola",
+          "defensiveLine": 80,
+          "displayName": "Control Posicional",
+          "evidence": "Inference",
+          "formationId": "coach-pep-guardiola-control-posicional",
+          "instructions": [
+            "Los centrales inician la jugada",
+            "El pivote ofrece siempre la línea de pase",
+            "Presión inmediata tras pérdida"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 55,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Dominar el balón desde atrás con un pivote organizador y un extremo creador.",
+          "tempo": 45,
+          "transition": "PossessionRecovery",
+          "width": 70
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Positional",
+          "coachId": "coach-pep-guardiola",
+          "defensiveLine": 85,
+          "displayName": "Superioridad Interior",
+          "evidence": "Inference",
+          "formationId": "coach-pep-guardiola-superioridad-interior",
+          "instructions": [
+            "Los interiores ocupan el pasillo central",
+            "El extremo fija al lateral rival",
+            "El defensa único cubre y reinicia"
+          ],
+          "mentality": "VeryAttacking",
+          "pressing": "HighPress",
+          "risk": 62,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un solo defensor y dos interiores para ganar la zona central y liberar al extremo.",
+          "tempo": 50,
+          "transition": "PossessionRecovery",
+          "width": 55
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Positional",
+          "coachId": "coach-pep-guardiola",
+          "defensiveLine": 75,
+          "displayName": "Falso Nueve y Pivote",
+          "evidence": "Inference",
+          "formationId": "coach-pep-guardiola-falso-nueve-y-pivote",
+          "instructions": [
+            "El delantero baja a asociarse",
+            "El doble pivote protege la salida",
+            "Ritmo pausado, cambios de orientación"
+          ],
+          "mentality": "Attacking",
+          "pressing": "Selective",
+          "risk": 50,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un delantero que baja a jugar y un doble pivote que sostiene el control.",
+          "tempo": 40,
+          "transition": "Controlled",
+          "width": 45
+        }
+      ],
+      "fullName": "Josep Guardiola Sala",
+      "grade": "A+",
+      "name": "Pep Guardiola",
+      "nationality": "ESP",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Juego de posición y presión inmediata tras pérdida como señas de identidad en Barcelona, Bayern y Manchester City."
+        },
+        {
+          "kind": "Fact",
+          "text": "Usó delanteros que bajan a asociarse (falso nueve) en Barcelona y laterales que interiorizan en el City."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 traduce la superioridad por posición en roles Architect / Creator / Builder y en el atributo de pase y control; es una interpretación, no un dato histórico."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A+ y valoraciones de apoyo: juicio de autoría por trayectoria como entrenador."
+        }
+      ],
+      "philosophy": "Juego de posición: control del balón, superioridades por posición y presión inmediata tras pérdida.",
+      "ratings": {
+        "adaptability": 90,
+        "attack": 96,
+        "defense": 86,
+        "identity": 99,
+        "management": 88,
+        "playerDevelopment": 90,
+        "tacticalIQ": 98,
+        "transitions": 88
+      },
+      "shortName": "Guardiola",
+      "tacticalIdentity": "Posesión y control territorial; el equipo se organiza para que el balón llegue limpio a los espacios entre líneas."
+    },
+    {
+      "coachId": "coach-hansi-flick",
+      "compatibility": {
+        "aggression": {
+          "importance": 70,
+          "target": 75
+        },
+        "attributes": {
+          "Acceleration": 2,
+          "Defense": 1,
+          "Finishing": 1,
+          "Passing": 1.5,
+          "Speed": 2,
+          "Stamina": 3
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 20,
+          "target": 60
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 50,
+          "target": 70
+        },
+        "roles": [
+          {
+            "role": "Engine",
+            "weight": 100
+          },
+          {
+            "role": "Explosive",
+            "weight": 90
+          },
+          {
+            "role": "Winger",
+            "weight": 85
+          },
+          {
+            "role": "Finisher",
+            "weight": 75
+          },
+          {
+            "role": "Guardian",
+            "weight": 70
+          },
+          {
+            "role": "Creator",
+            "weight": 65
+          },
+          {
+            "role": "Builder",
+            "weight": 55
+          }
+        ],
+        "zones": [
+          {
+            "weight": 85,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 80,
+            "zone": "Wing"
+          },
+          {
+            "weight": 75,
+            "zone": "Attack"
+          },
+          {
+            "weight": 65,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "FastVertical",
+          "coachId": "coach-hansi-flick",
+          "defensiveLine": 90,
+          "displayName": "Línea Alta y Presión",
+          "evidence": "Inference",
+          "formationId": "coach-hansi-flick-linea-alta-y-presion",
+          "instructions": [
+            "Línea defensiva alta y fuera de juego",
+            "Presión agresiva a la salida rival",
+            "Primer pase vertical al extremo"
+          ],
+          "mentality": "Attacking",
+          "pressing": "AggressivePress",
+          "risk": 68,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Defensas rápidos con línea adelantada, un motor en el medio y un extremo explosivo.",
+          "tempo": 80,
+          "transition": "Fast",
+          "width": 65
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "FastVertical",
+          "coachId": "coach-hansi-flick",
+          "defensiveLine": 85,
+          "displayName": "Doble Pivote Vertical",
+          "evidence": "Inference",
+          "formationId": "coach-hansi-flick-doble-pivote-vertical",
+          "instructions": [
+            "Recuperar y salir en pocos pases",
+            "El doble pivote sostiene la presión",
+            "Un delantero fijo en el área"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 62,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Dos interiores que presionan y progresan rápido hacia un solo punta.",
+          "tempo": 75,
+          "transition": "Fast",
+          "width": 55
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "FastVertical",
+          "coachId": "coach-hansi-flick",
+          "defensiveLine": 92,
+          "displayName": "Presión Total",
+          "evidence": "Inference",
+          "formationId": "coach-hansi-flick-presion-total",
+          "instructions": [
+            "Todos presionan en bloque alto",
+            "Los interiores saltan a por el balón",
+            "Riesgo asumido con la línea muy alta"
+          ],
+          "mentality": "VeryAttacking",
+          "pressing": "AggressivePress",
+          "risk": 72,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un solo defensor, interiores agresivos y un extremo: todo el equipo presiona arriba.",
+          "tempo": 85,
+          "transition": "Fast",
+          "width": 60
+        }
+      ],
+      "fullName": "Hans-Dieter Flick",
+      "grade": "A",
+      "name": "Hansi Flick",
+      "nationality": "GER",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Presión alta y línea defensiva adelantada en el Bayern del triplete 2020 y en el Barcelona 2024-25."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en preferencia por Engine / Explosive / Winger y en velocidad, aceleración y resistencia."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A: juicio de autoría."
+        }
+      ],
+      "philosophy": "Presión alta y línea defensiva adelantada: recuperar rápido y atacar en vertical con intensidad.",
+      "ratings": {
+        "adaptability": 86,
+        "attack": 93,
+        "defense": 84,
+        "identity": 90,
+        "management": 88,
+        "playerDevelopment": 86,
+        "tacticalIQ": 92,
+        "transitions": 92
+      },
+      "shortName": "Flick",
+      "tacticalIdentity": "Intensidad, verticalidad y riesgo controlado con la línea alta."
+    },
+    {
+      "coachId": "coach-mikel-arteta",
+      "compatibility": {
+        "aggression": {
+          "importance": 40,
+          "target": 65
+        },
+        "attributes": {
+          "BallControl": 2,
+          "Defense": 2,
+          "Passing": 2.5,
+          "Stamina": 1,
+          "Strength": 1.5,
+          "Technique": 1.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 20,
+          "target": 65
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 50,
+          "target": 45
+        },
+        "roles": [
+          {
+            "role": "Anchor",
+            "weight": 90
+          },
+          {
+            "role": "Architect",
+            "weight": 90
+          },
+          {
+            "role": "Guardian",
+            "weight": 85
+          },
+          {
+            "role": "Builder",
+            "weight": 85
+          },
+          {
+            "role": "Engine",
+            "weight": 70
+          },
+          {
+            "role": "Wall",
+            "weight": 70
+          },
+          {
+            "role": "Winger",
+            "weight": 70
+          },
+          {
+            "role": "Target",
+            "weight": 60
+          }
+        ],
+        "zones": [
+          {
+            "weight": 80,
+            "zone": "Defense"
+          },
+          {
+            "weight": 90,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Wing"
+          },
+          {
+            "weight": 50,
+            "zone": "Attack"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Positional",
+          "coachId": "coach-mikel-arteta",
+          "defensiveLine": 70,
+          "displayName": "Estructura de Posesión",
+          "evidence": "Inference",
+          "formationId": "coach-mikel-arteta-estructura-de-posesion",
+          "instructions": [
+            "Orden en la salida de balón",
+            "El pivote reparte el juego",
+            "Atención a las jugadas de estrategia"
+          ],
+          "mentality": "Balanced",
+          "pressing": "Selective",
+          "risk": 40,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Dos centrales sólidos, un pivote que ordena y un extremo para estirar.",
+          "tempo": 45,
+          "transition": "Controlled",
+          "width": 60
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Positional",
+          "coachId": "coach-mikel-arteta",
+          "defensiveLine": 80,
+          "displayName": "Lateral Interior",
+          "evidence": "Inference",
+          "formationId": "coach-mikel-arteta-lateral-interior",
+          "instructions": [
+            "Un defensor interioriza con el balón",
+            "Los interiores ocupan el carril central",
+            "Presión organizada tras pérdida"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 50,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un defensor que se suma al medio y dos interiores para sostener la posesión.",
+          "tempo": 50,
+          "transition": "PossessionRecovery",
+          "width": 50
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-mikel-arteta",
+          "defensiveLine": 60,
+          "displayName": "Bloque Medio Compacto",
+          "evidence": "Inference",
+          "formationId": "coach-mikel-arteta-bloque-medio-compacto",
+          "instructions": [
+            "Bloque medio ordenado",
+            "Referencia arriba para ganar segundas jugadas",
+            "Prioridad a las pelotas paradas"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 35,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Bloque equilibrado con doble pivote y un delantero referencia para el juego directo y el balón parado.",
+          "tempo": 45,
+          "transition": "Controlled",
+          "width": 45
+        }
+      ],
+      "fullName": "Mikel Arteta Amatriain",
+      "grade": "A",
+      "name": "Mikel Arteta",
+      "nationality": "ESP",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Arsenal con juego de posición, laterales que interiorizan y fuerte trabajo a balón parado; subcampeón de la Premier League en 2022-23, 2023-24 y 2024-25."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en Anchor / Architect / Guardian / Builder y en defensa y pase."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A: juicio de autoría."
+        }
+      ],
+      "philosophy": "Estructura de posesión con laterales interiores, presión organizada y cuidado de las acciones a balón parado.",
+      "ratings": {
+        "adaptability": 84,
+        "attack": 86,
+        "defense": 92,
+        "identity": 88,
+        "management": 86,
+        "playerDevelopment": 86,
+        "tacticalIQ": 90,
+        "transitions": 84
+      },
+      "shortName": "Arteta",
+      "tacticalIdentity": "Orden posicional y solidez: control con balón y defensa muy estructurada."
+    },
+    {
+      "coachId": "coach-carlo-ancelotti",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 55
+        },
+        "attributes": {
+          "BallControl": 1.5,
+          "Defense": 1,
+          "Passing": 1.5,
+          "Shooting": 1,
+          "Stamina": 1,
+          "Strength": 1,
+          "Technique": 1.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 40,
+          "target": 65
+        },
+        "importance": {
+          "attributes": 35,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 10
+        },
+        "risk": {
+          "importance": 30,
+          "target": 50
+        },
+        "roles": [
+          {
+            "role": "Creator",
+            "weight": 95
+          },
+          {
+            "role": "Builder",
+            "weight": 85
+          },
+          {
+            "role": "Anchor",
+            "weight": 85
+          },
+          {
+            "role": "Engine",
+            "weight": 80
+          },
+          {
+            "role": "Architect",
+            "weight": 80
+          },
+          {
+            "role": "Finisher",
+            "weight": 80
+          },
+          {
+            "role": "Guardian",
+            "weight": 80
+          },
+          {
+            "role": "Winger",
+            "weight": 75
+          },
+          {
+            "role": "Explosive",
+            "weight": 75
+          },
+          {
+            "role": "GoalHunter",
+            "weight": 70
+          },
+          {
+            "role": "Target",
+            "weight": 65
+          },
+          {
+            "role": "Wall",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 90,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 80,
+            "zone": "Wing"
+          },
+          {
+            "weight": 80,
+            "zone": "Attack"
+          },
+          {
+            "weight": 75,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-carlo-ancelotti",
+          "defensiveLine": 55,
+          "displayName": "Equilibrio Fluido",
+          "evidence": "Inference",
+          "formationId": "coach-carlo-ancelotti-equilibrio-fluido",
+          "instructions": [
+            "Equilibrio entre líneas",
+            "Libertad al creador del medio",
+            "Gestionar el ritmo del partido"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 48,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Estructura equilibrada que deja libertad a los creadores del medio.",
+          "tempo": 50,
+          "transition": "Controlled",
+          "width": 55
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-carlo-ancelotti",
+          "defensiveLine": 60,
+          "displayName": "Libertad Controlada",
+          "evidence": "Inference",
+          "formationId": "coach-carlo-ancelotti-libertad-controlada",
+          "instructions": [
+            "Los interiores se mueven con libertad",
+            "El extremo ataca el espacio",
+            "Un solo defensor mantiene el equilibrio"
+          ],
+          "mentality": "Attacking",
+          "pressing": "Selective",
+          "risk": 55,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Interiores libres y extremo explosivo con un defensa que garantiza el equilibrio.",
+          "tempo": 55,
+          "transition": "Fast",
+          "width": 60
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Direct",
+          "coachId": "coach-carlo-ancelotti",
+          "defensiveLine": 40,
+          "displayName": "Contraataque Adaptado",
+          "evidence": "Inference",
+          "formationId": "coach-carlo-ancelotti-contraataque-adaptado",
+          "instructions": [
+            "Esperar el error y salir rápido",
+            "Defensa ordenada en bloque bajo",
+            "El extremo es la salida principal"
+          ],
+          "mentality": "Balanced",
+          "pressing": "LowBlock",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Bloque que cede el balón cuando conviene y sale rápido con extremo y delantero.",
+          "tempo": 60,
+          "transition": "Counter",
+          "width": 60
+        }
+      ],
+      "fullName": "Carlo Ancelotti",
+      "grade": "A+",
+      "name": "Carlo Ancelotti",
+      "nationality": "ITA",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Cinco Champions League como entrenador (Milan 2003 y 2007, Real Madrid 2014, 2022 y 2024); es entrenador de la selección de Brasil."
+        },
+        {
+          "kind": "Fact",
+          "text": "Cambia de estructura según la plantilla (rombo, 4-3-3, 4-2-3-1) y destaca en la gestión de vestuario."
+        },
+        {
+          "kind": "Inference",
+          "text": "Su perfil de compatibilidad es AMPLIO a propósito (acepta muchos roles); el boost lo recibirán los jugadores más completos."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A+: juicio de autoría."
+        }
+      ],
+      "philosophy": "Adaptación a los jugadores: equilibrio, libertad controlada para los de más calidad y gestión excelente del grupo.",
+      "ratings": {
+        "adaptability": 98,
+        "attack": 88,
+        "defense": 86,
+        "identity": 84,
+        "management": 98,
+        "playerDevelopment": 86,
+        "tacticalIQ": 92,
+        "transitions": 86
+      },
+      "shortName": "Ancelotti",
+      "tacticalIdentity": "No impone un sistema fijo: ajusta la estructura al talento que tiene. Equilibrio entre ataque y defensa."
+    },
+    {
+      "coachId": "coach-lionel-scaloni",
+      "compatibility": {
+        "aggression": {
+          "importance": 50,
+          "target": 70
+        },
+        "attributes": {
+          "BallControl": 1,
+          "Defense": 1.5,
+          "Passing": 1.5,
+          "Stamina": 3,
+          "Strength": 1
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 15,
+          "target": 55
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 40,
+          "target": 45
+        },
+        "roles": [
+          {
+            "role": "Engine",
+            "weight": 95
+          },
+          {
+            "role": "Creator",
+            "weight": 85
+          },
+          {
+            "role": "Anchor",
+            "weight": 85
+          },
+          {
+            "role": "Guardian",
+            "weight": 85
+          },
+          {
+            "role": "Builder",
+            "weight": 80
+          },
+          {
+            "role": "Winger",
+            "weight": 70
+          },
+          {
+            "role": "Finisher",
+            "weight": 70
+          },
+          {
+            "role": "Wall",
+            "weight": 60
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 75,
+            "zone": "Defense"
+          },
+          {
+            "weight": 65,
+            "zone": "Wing"
+          },
+          {
+            "weight": 65,
+            "zone": "Attack"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-lionel-scaloni",
+          "defensiveLine": 55,
+          "displayName": "Bloque Colectivo",
+          "evidence": "Inference",
+          "formationId": "coach-lionel-scaloni-bloque-colectivo",
+          "instructions": [
+            "Dos líneas muy juntas",
+            "El jugador libre arriba recibe entre líneas",
+            "Todos trabajan sin balón"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 42,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Dos líneas juntas y un creador libre arriba.",
+          "tempo": 50,
+          "transition": "Controlled",
+          "width": 50
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-lionel-scaloni",
+          "defensiveLine": 60,
+          "displayName": "Medio Campo Intenso",
+          "evidence": "Inference",
+          "formationId": "coach-lionel-scaloni-medio-campo-intenso",
+          "instructions": [
+            "Los interiores ganan el centro",
+            "El extremo da amplitud",
+            "Intensidad sin balón"
+          ],
+          "mentality": "Attacking",
+          "pressing": "Selective",
+          "risk": 52,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un defensa y dos interiores incansables para ganar el centro.",
+          "tempo": 60,
+          "transition": "Fast",
+          "width": 60
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-lionel-scaloni",
+          "defensiveLine": 45,
+          "displayName": "Campeón Compacto",
+          "evidence": "Inference",
+          "formationId": "coach-lionel-scaloni-campeon-compacto",
+          "instructions": [
+            "Solidez ante todo",
+            "Salida rápida por el extremo",
+            "El pivote protege a los centrales"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Defensa sólida, pivote que ordena y salida rápida por el extremo.",
+          "tempo": 60,
+          "transition": "Counter",
+          "width": 55
+        }
+      ],
+      "fullName": "Lionel Sebastián Scaloni",
+      "grade": "A",
+      "name": "Lionel Scaloni",
+      "nationality": "ARG",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Campeón del Mundo 2022, de la Copa América 2021 y 2024 y de la Finalissima 2022 con Argentina."
+        },
+        {
+          "kind": "Fact",
+          "text": "Destaca por el equilibrio colectivo y la cohesión del grupo."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en preferencia por Engine / Anchor / Guardian y resistencia."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A: juicio de autoría."
+        }
+      ],
+      "philosophy": "Equipo colectivo, intenso y equilibrado que confía en un grupo cohesionado y se adapta al rival.",
+      "ratings": {
+        "adaptability": 92,
+        "attack": 84,
+        "defense": 86,
+        "identity": 88,
+        "management": 94,
+        "playerDevelopment": 86,
+        "tacticalIQ": 86,
+        "transitions": 84
+      },
+      "shortName": "Scaloni",
+      "tacticalIdentity": "Compacidad, intensidad en el medio y un jugador libre entre líneas."
+    },
+    {
+      "coachId": "coach-diego-simeone",
+      "compatibility": {
+        "aggression": {
+          "importance": 70,
+          "target": 85
+        },
+        "attributes": {
+          "Defense": 3,
+          "Speed": 0.5,
+          "Stamina": 2.5,
+          "Strength": 2.5
+        },
+        "bodyTypes": [
+          "Strong",
+          "Tall"
+        ],
+        "creativity": {
+          "importance": 20,
+          "target": 35
+        },
+        "importance": {
+          "attributes": 25,
+          "behaviour": 15,
+          "body": 5,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 50,
+          "target": 30
+        },
+        "roles": [
+          {
+            "role": "Wall",
+            "weight": 100
+          },
+          {
+            "role": "Guardian",
+            "weight": 95
+          },
+          {
+            "role": "Anchor",
+            "weight": 95
+          },
+          {
+            "role": "Engine",
+            "weight": 80
+          },
+          {
+            "role": "Target",
+            "weight": 70
+          },
+          {
+            "role": "GoalHunter",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 100,
+            "zone": "Defense"
+          },
+          {
+            "weight": 80,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 55,
+            "zone": "Attack"
+          },
+          {
+            "weight": 55,
+            "zone": "Wing"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Three",
+          "baseFormation": "3-1-1",
+          "buildUp": "Direct",
+          "coachId": "coach-diego-simeone",
+          "defensiveLine": 25,
+          "displayName": "Bloque Bajo de Tres",
+          "evidence": "Inference",
+          "formationId": "coach-diego-simeone-bloque-bajo-de-tres",
+          "instructions": [
+            "Tres defensas cierran el área",
+            "El medio protege la entrada",
+            "Un solo delantero busca la contra"
+          ],
+          "mentality": "Defensive",
+          "pressing": "LowBlock",
+          "risk": 25,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Línea de tres defensas con un mediocentro de contención y un delantero para golpear en la transición.",
+          "tempo": 60,
+          "transition": "Counter",
+          "width": 40
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Direct",
+          "coachId": "coach-diego-simeone",
+          "defensiveLine": 35,
+          "displayName": "Bloque Compacto 4-4-2",
+          "evidence": "Inference",
+          "formationId": "coach-diego-simeone-bloque-compacto-4-4-2",
+          "instructions": [
+            "Dos líneas pegadas",
+            "Competir cada balón dividido",
+            "El delantero fija a los centrales rivales"
+          ],
+          "mentality": "Defensive",
+          "pressing": "MidBlock",
+          "risk": 30,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Dos líneas muy juntas con doble pivote y un delantero referencia.",
+          "tempo": 60,
+          "transition": "Counter",
+          "width": 45
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Direct",
+          "coachId": "coach-diego-simeone",
+          "defensiveLine": 40,
+          "displayName": "Contra Intenso",
+          "evidence": "Inference",
+          "formationId": "coach-diego-simeone-contra-intenso",
+          "instructions": [
+            "Robar y salir en dos pases",
+            "Extremo explosivo y delantero profundo",
+            "Presión intensa en bloque medio"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 40,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Defensa firme y salida explosiva por un extremo y un goleador.",
+          "tempo": 70,
+          "transition": "Counter",
+          "width": 55
+        }
+      ],
+      "fullName": "Diego Pablo Simeone",
+      "grade": "A+",
+      "name": "Diego Simeone",
+      "nationality": "ARG",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Entrenador del Atlético de Madrid desde diciembre de 2011; campeón de La Liga 2013-14 y 2020-21."
+        },
+        {
+          "kind": "Fact",
+          "text": "Análisis tácticos recientes describen un sistema híbrido: 5-3-2 sin balón y 4-4-2 con balón, con variantes de tres centrales (3-5-2)."
+        },
+        {
+          "kind": "Inference",
+          "text": "La línea de 3 se justifica por esa evidencia; FS27 la traduce en 3-1-1 con roles defensivos y Engine delante de ellos."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A+: juicio de autoría. La preferencia por cuerpos Strong/Tall es una inferencia."
+        }
+      ],
+      "philosophy": "Bloque compacto, intensidad competitiva, disciplina defensiva y transiciones rápidas.",
+      "ratings": {
+        "adaptability": 84,
+        "attack": 72,
+        "defense": 98,
+        "identity": 99,
+        "management": 92,
+        "playerDevelopment": 84,
+        "tacticalIQ": 90,
+        "transitions": 92
+      },
+      "shortName": "Simeone",
+      "tacticalIdentity": "Solidez y agresividad: el equipo defiende en bloque y golpea en la transición."
+    },
+    {
+      "coachId": "coach-thomas-tuchel",
+      "compatibility": {
+        "aggression": {
+          "importance": 40,
+          "target": 70
+        },
+        "attributes": {
+          "BallControl": 1,
+          "Defense": 1.5,
+          "Passing": 1.5,
+          "Speed": 1,
+          "Stamina": 2,
+          "Strength": 1
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 20,
+          "target": 55
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 30,
+          "target": 55
+        },
+        "roles": [
+          {
+            "role": "Guardian",
+            "weight": 85
+          },
+          {
+            "role": "Anchor",
+            "weight": 85
+          },
+          {
+            "role": "Engine",
+            "weight": 85
+          },
+          {
+            "role": "Builder",
+            "weight": 80
+          },
+          {
+            "role": "Creator",
+            "weight": 75
+          },
+          {
+            "role": "Finisher",
+            "weight": 75
+          },
+          {
+            "role": "Winger",
+            "weight": 70
+          },
+          {
+            "role": "Architect",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 80,
+            "zone": "Defense"
+          },
+          {
+            "weight": 90,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Wing"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Three",
+          "baseFormation": "3-1-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-thomas-tuchel",
+          "defensiveLine": 60,
+          "displayName": "Tres Atrás Flexible",
+          "evidence": "Inference",
+          "formationId": "coach-thomas-tuchel-tres-atras-flexible",
+          "instructions": [
+            "Tres defensas con salida limpia",
+            "El motor del medio presiona y sostiene",
+            "Cambios de estructura según el rival"
+          ],
+          "mentality": "Balanced",
+          "pressing": "HighPress",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Tres defensas que construyen, un motor en el medio y un delantero.",
+          "tempo": 60,
+          "transition": "Controlled",
+          "width": 50
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-thomas-tuchel",
+          "defensiveLine": 55,
+          "displayName": "Doble Pivote Vertical",
+          "evidence": "Inference",
+          "formationId": "coach-thomas-tuchel-doble-pivote-vertical",
+          "instructions": [
+            "Doble pivote ordena",
+            "Creador entre líneas",
+            "Verticalidad cuando se puede"
+          ],
+          "mentality": "Balanced",
+          "pressing": "Selective",
+          "risk": 50,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote que equilibra y un creador entre líneas con un delantero solo.",
+          "tempo": 60,
+          "transition": "Fast",
+          "width": 55
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Direct",
+          "coachId": "coach-thomas-tuchel",
+          "defensiveLine": 65,
+          "displayName": "Salida Adaptable",
+          "evidence": "Inference",
+          "formationId": "coach-thomas-tuchel-salida-adaptable",
+          "instructions": [
+            "Los interiores se adelantan al construir",
+            "Juego directo si hace falta",
+            "Cuidar las jugadas a balón parado"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 58,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Estructura de salida cambiante: un defensa, dos interiores y un extremo.",
+          "tempo": 60,
+          "transition": "Direct",
+          "width": 60
+        }
+      ],
+      "fullName": "Thomas Tuchel",
+      "grade": "A-",
+      "name": "Thomas Tuchel",
+      "nationality": "GER",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Con el Chelsea usó línea de tres en 55 de sus 63 partidos de Premier League y ganó la Champions League 2021."
+        },
+        {
+          "kind": "Fact",
+          "text": "Con Inglaterra ha mezclado un 4-2-3-1 con salidas en 3-2-5, según análisis de 2026."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 le da una variante de tres atrás justificada por el Chelsea y deja dos variantes de cuatro por su flexibilidad."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A-: juicio de autoría."
+        }
+      ],
+      "philosophy": "Flexibilidad táctica: cambia de estructura según el rival, con intensidad y detalle en cada fase.",
+      "ratings": {
+        "adaptability": 92,
+        "attack": 84,
+        "defense": 88,
+        "identity": 88,
+        "management": 78,
+        "playerDevelopment": 80,
+        "tacticalIQ": 94,
+        "transitions": 86
+      },
+      "shortName": "Tuchel",
+      "tacticalIdentity": "Estructuras que se transforman (tres atrás con balón, 4-2-3-1) y presión intensa con mucho trabajo táctico."
+    },
+    {
+      "coachId": "coach-jose-mourinho",
+      "compatibility": {
+        "aggression": {
+          "importance": 50,
+          "target": 70
+        },
+        "attributes": {
+          "Defense": 3,
+          "Finishing": 1,
+          "Speed": 1,
+          "Stamina": 2,
+          "Strength": 2
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 20,
+          "target": 40
+        },
+        "importance": {
+          "attributes": 25,
+          "behaviour": 20,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 60,
+          "target": 25
+        },
+        "roles": [
+          {
+            "role": "Wall",
+            "weight": 100
+          },
+          {
+            "role": "Anchor",
+            "weight": 95
+          },
+          {
+            "role": "Guardian",
+            "weight": 90
+          },
+          {
+            "role": "Engine",
+            "weight": 80
+          },
+          {
+            "role": "Target",
+            "weight": 70
+          },
+          {
+            "role": "Explosive",
+            "weight": 70
+          },
+          {
+            "role": "GoalHunter",
+            "weight": 70
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Defense"
+          },
+          {
+            "weight": 80,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          },
+          {
+            "weight": 60,
+            "zone": "Wing"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Three",
+          "baseFormation": "3-1-1",
+          "buildUp": "Direct",
+          "coachId": "coach-jose-mourinho",
+          "defensiveLine": 25,
+          "displayName": "Muro de Tres",
+          "evidence": "Inference",
+          "formationId": "coach-jose-mourinho-muro-de-tres",
+          "instructions": [
+            "Primero no encajar",
+            "Delantero referencia para sostener",
+            "Salida al contraataque con pocos pases"
+          ],
+          "mentality": "Defensive",
+          "pressing": "LowBlock",
+          "risk": 22,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Tres defensas contundentes, un medio de equilibrio y un delantero referencia.",
+          "tempo": 55,
+          "transition": "Counter",
+          "width": 40
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Direct",
+          "coachId": "coach-jose-mourinho",
+          "defensiveLine": 35,
+          "displayName": "Bloque Medio de Transición",
+          "evidence": "Inference",
+          "formationId": "coach-jose-mourinho-bloque-medio-de-transicion",
+          "instructions": [
+            "Doble pivote protege el área",
+            "Transición en pocos segundos",
+            "Controlar el riesgo en campo propio"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 30,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote duro y un punta que recibe en profundidad.",
+          "tempo": 60,
+          "transition": "Counter",
+          "width": 45
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Direct",
+          "coachId": "coach-jose-mourinho",
+          "defensiveLine": 30,
+          "displayName": "Contragolpe Eficiente",
+          "evidence": "Inference",
+          "formationId": "coach-jose-mourinho-contragolpe-eficiente",
+          "instructions": [
+            "Ceder el balón y esperar",
+            "El extremo explosivo castiga",
+            "Eficacia por encima de la posesión"
+          ],
+          "mentality": "Balanced",
+          "pressing": "LowBlock",
+          "risk": 35,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Defensa firme y un extremo y un delantero para golpear con precisión.",
+          "tempo": 65,
+          "transition": "Counter",
+          "width": 50
+        }
+      ],
+      "fullName": "José Mário dos Santos Mourinho Félix",
+      "grade": "A",
+      "name": "José Mourinho",
+      "nationality": "POR",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Campeón de la Champions League con Porto (2004) e Inter (2010); entrenador del Real Madrid desde julio de 2026."
+        },
+        {
+          "kind": "Inference",
+          "text": "La línea de tres se apoya en estructuras de tres centrales de sus etapas italianas; no se ha reverificado en esta pasada y se marca como INFERENCIA."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A: juicio de autoría."
+        }
+      ],
+      "philosophy": "Estructura disciplinada, control del riesgo, eficacia en las transiciones y mentalidad competitiva.",
+      "ratings": {
+        "adaptability": 88,
+        "attack": 76,
+        "defense": 96,
+        "identity": 92,
+        "management": 92,
+        "playerDevelopment": 76,
+        "tacticalIQ": 92,
+        "transitions": 92
+      },
+      "shortName": "Mourinho",
+      "tacticalIdentity": "Orden, bloque y golpe eficiente: lo importante es no fallar y aprovechar el error del rival."
+    },
+    {
+      "coachId": "coach-luis-de-la-fuente",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 50
+        },
+        "attributes": {
+          "BallControl": 1.5,
+          "Dribbling": 2,
+          "Passing": 1.5,
+          "Speed": 1.5,
+          "Stamina": 1,
+          "Technique": 1.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 40,
+          "target": 70
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 30,
+          "target": 60
+        },
+        "roles": [
+          {
+            "role": "Winger",
+            "weight": 95
+          },
+          {
+            "role": "Explosive",
+            "weight": 85
+          },
+          {
+            "role": "Builder",
+            "weight": 75
+          },
+          {
+            "role": "Creator",
+            "weight": 75
+          },
+          {
+            "role": "Anchor",
+            "weight": 65
+          },
+          {
+            "role": "Architect",
+            "weight": 65
+          },
+          {
+            "role": "Finisher",
+            "weight": 60
+          }
+        ],
+        "zones": [
+          {
+            "weight": 100,
+            "zone": "Wing"
+          },
+          {
+            "weight": 75,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          },
+          {
+            "weight": 50,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-luis-de-la-fuente",
+          "defensiveLine": 60,
+          "displayName": "Extremos Abiertos",
+          "evidence": "Inference",
+          "formationId": "coach-luis-de-la-fuente-extremos-abiertos",
+          "instructions": [
+            "Amplitud máxima en las bandas",
+            "Extremo busca el uno contra uno",
+            "El pivote distribuye"
+          ],
+          "mentality": "Attacking",
+          "pressing": "Selective",
+          "risk": 58,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un pivote que reparte y un extremo muy abierto para el uno contra uno.",
+          "tempo": 55,
+          "transition": "Controlled",
+          "width": 85
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Short",
+          "coachId": "coach-luis-de-la-fuente",
+          "defensiveLine": 65,
+          "displayName": "Interiores y Extremos",
+          "evidence": "Inference",
+          "formationId": "coach-luis-de-la-fuente-interiores-y-extremos",
+          "instructions": [
+            "Los interiores combinan en corto",
+            "Extremo explosivo para el desborde",
+            "Presión media-alta"
+          ],
+          "mentality": "Attacking",
+          "pressing": "Selective",
+          "risk": 60,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Interiores que combinan y un extremo explosivo.",
+          "tempo": 60,
+          "transition": "Controlled",
+          "width": 80
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Positional",
+          "coachId": "coach-luis-de-la-fuente",
+          "defensiveLine": 55,
+          "displayName": "Control Equilibrado",
+          "evidence": "Inference",
+          "formationId": "coach-luis-de-la-fuente-control-equilibrado",
+          "instructions": [
+            "Posesión para encontrar el espacio",
+            "Doble pivote técnico",
+            "Equilibrio cuando se pierde"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote técnico con un delantero que termina.",
+          "tempo": 45,
+          "transition": "Controlled",
+          "width": 60
+        }
+      ],
+      "fullName": "Luis de la Fuente Castillo",
+      "grade": "A-",
+      "name": "Luis de la Fuente",
+      "nationality": "ESP",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Campeón de Europa 2024 con España, con dos extremos muy abiertos y centrocampistas de control."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en preferencia por Winger / Explosive y en regate y velocidad."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A-: juicio de autoría."
+        }
+      ],
+      "philosophy": "Extremos abiertos con mucho desborde, equilibrio colectivo y un medio de control.",
+      "ratings": {
+        "adaptability": 86,
+        "attack": 84,
+        "defense": 82,
+        "identity": 84,
+        "management": 88,
+        "playerDevelopment": 88,
+        "tacticalIQ": 84,
+        "transitions": 84
+      },
+      "shortName": "De la Fuente",
+      "tacticalIdentity": "Amplitud y desborde por las bandas apoyados en un mediocampo que ordena."
+    },
+    {
+      "coachId": "coach-zinedine-zidane",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 45
+        },
+        "attributes": {
+          "BallControl": 2.5,
+          "Dribbling": 1.5,
+          "Passing": 2,
+          "Shooting": 1,
+          "Technique": 2.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 50,
+          "target": 80
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 30,
+          "target": 55
+        },
+        "roles": [
+          {
+            "role": "Creator",
+            "weight": 95
+          },
+          {
+            "role": "Architect",
+            "weight": 90
+          },
+          {
+            "role": "Builder",
+            "weight": 80
+          },
+          {
+            "role": "Finisher",
+            "weight": 70
+          },
+          {
+            "role": "Winger",
+            "weight": 65
+          },
+          {
+            "role": "Anchor",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 65,
+            "zone": "Attack"
+          },
+          {
+            "weight": 60,
+            "zone": "Wing"
+          },
+          {
+            "weight": 50,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Short",
+          "coachId": "coach-zinedine-zidane",
+          "defensiveLine": 50,
+          "displayName": "Mediocampo de Calidad",
+          "evidence": "Inference",
+          "formationId": "coach-zinedine-zidane-mediocampo-de-calidad",
+          "instructions": [
+            "Mediocampo de calidad en el centro",
+            "El creador libre entre líneas",
+            "Defensa sin sobresaltos"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Dos centrales sólidos y un doble pivote técnico que alimenta al delantero.",
+          "tempo": 45,
+          "transition": "Controlled",
+          "width": 55
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-zinedine-zidane",
+          "defensiveLine": 55,
+          "displayName": "Libertad para las Estrellas",
+          "evidence": "Inference",
+          "formationId": "coach-zinedine-zidane-libertad-para-las-estrellas",
+          "instructions": [
+            "Libertad para el jugador de calidad",
+            "El motor cubre a los creativos",
+            "Atacar rápido tras recuperar"
+          ],
+          "mentality": "Attacking",
+          "pressing": "Selective",
+          "risk": 58,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Interiores y extremo con libertad de movimientos.",
+          "tempo": 55,
+          "transition": "Fast",
+          "width": 65
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-zinedine-zidane",
+          "defensiveLine": 45,
+          "displayName": "Equilibrio de Plantilla",
+          "evidence": "Inference",
+          "formationId": "coach-zinedine-zidane-equilibrio-de-plantilla",
+          "instructions": [
+            "Equilibrio defensivo",
+            "Gestión del ritmo",
+            "Aprovechar al jugador en forma"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 42,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Estructura segura que aprovecha a quien está en forma.",
+          "tempo": 50,
+          "transition": "Controlled",
+          "width": 55
+        }
+      ],
+      "fullName": "Zinedine Yazid Zidane",
+      "grade": "A",
+      "name": "Zinedine Zidane",
+      "nationality": "FRA",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Tres Champions League seguidas (2016-2018) con el Real Madrid; seleccionador de Francia desde el 1 de septiembre de 2026."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en preferencia por Creator / Architect / Builder y en control y técnica, con libertad para los más técnicos."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A: juicio de autoría."
+        }
+      ],
+      "philosophy": "Gestión de plantilla y de estrellas, flexibilidad y libertad para los jugadores de más calidad.",
+      "ratings": {
+        "adaptability": 92,
+        "attack": 84,
+        "defense": 80,
+        "identity": 82,
+        "management": 98,
+        "playerDevelopment": 84,
+        "tacticalIQ": 84,
+        "transitions": 82
+      },
+      "shortName": "Zidane",
+      "tacticalIdentity": "Equipo adaptable que protege el equilibrio y deja decidir a los técnicos."
+    },
+    {
+      "coachId": "coach-cesc-fabregas",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 40
+        },
+        "attributes": {
+          "Agility": 0.5,
+          "BallControl": 2.5,
+          "Dribbling": 1,
+          "Passing": 3,
+          "Technique": 2.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 60,
+          "target": 85
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 40,
+          "target": 65
+        },
+        "roles": [
+          {
+            "role": "Architect",
+            "weight": 100
+          },
+          {
+            "role": "Creator",
+            "weight": 90
+          },
+          {
+            "role": "Builder",
+            "weight": 85
+          },
+          {
+            "role": "Winger",
+            "weight": 60
+          },
+          {
+            "role": "Anchor",
+            "weight": 45
+          }
+        ],
+        "zones": [
+          {
+            "weight": 100,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Wing"
+          },
+          {
+            "weight": 50,
+            "zone": "Attack"
+          },
+          {
+            "weight": 40,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Positional",
+          "coachId": "coach-cesc-fabregas",
+          "defensiveLine": 75,
+          "displayName": "Juego de Posición Joven",
+          "evidence": "Inference",
+          "formationId": "coach-cesc-fabregas-juego-de-posicion-joven",
+          "instructions": [
+            "Pases cortos y triángulos",
+            "Interiores técnicos",
+            "Presión alta tras pérdida"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 62,
+          "slots": [
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un defensor que construye y dos interiores técnicos para sostener la posesión.",
+          "tempo": 50,
+          "transition": "PossessionRecovery",
+          "width": 60
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Short",
+          "coachId": "coach-cesc-fabregas",
+          "defensiveLine": 65,
+          "displayName": "Salida Corta",
+          "evidence": "Inference",
+          "formationId": "coach-cesc-fabregas-salida-corta",
+          "instructions": [
+            "Salida corta desde el portero",
+            "El pivote dirige",
+            "El extremo recibe entre líneas"
+          ],
+          "mentality": "Balanced",
+          "pressing": "Selective",
+          "risk": 52,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Salida limpia desde atrás con un pivote creador.",
+          "tempo": 45,
+          "transition": "Controlled",
+          "width": 55
+        }
+      ],
+      "fullName": "Francesc Fàbregas Soler",
+      "grade": "B",
+      "name": "Cesc Fàbregas",
+      "nationality": "ESP",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Entrenador del Como en la Serie A, con un estilo de posesión y juego de posición."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en Architect / Creator / Builder y pase y técnica."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado B: trayectoria corta como entrenador; juicio de autoría."
+        }
+      ],
+      "philosophy": "Posesión y juego de posición con jugadores jóvenes y técnicos.",
+      "ratings": {
+        "adaptability": 76,
+        "attack": 82,
+        "defense": 70,
+        "identity": 82,
+        "management": 76,
+        "playerDevelopment": 84,
+        "tacticalIQ": 82,
+        "transitions": 74
+      },
+      "shortName": "Fàbregas",
+      "tacticalIdentity": "Control por pases cortos y ataque posicional."
+    },
+    {
+      "coachId": "coach-luis-enrique",
+      "compatibility": {
+        "aggression": {
+          "importance": 50,
+          "target": 70
+        },
+        "attributes": {
+          "Agility": 1,
+          "BallControl": 2,
+          "Passing": 2,
+          "Speed": 1.5,
+          "Stamina": 2.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 30,
+          "target": 70
+        },
+        "importance": {
+          "attributes": 40,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 35,
+          "zones": 10
+        },
+        "risk": {
+          "importance": 40,
+          "target": 65
+        },
+        "roles": [
+          {
+            "role": "Engine",
+            "weight": 95
+          },
+          {
+            "role": "Architect",
+            "weight": 90
+          },
+          {
+            "role": "Builder",
+            "weight": 80
+          },
+          {
+            "role": "Creator",
+            "weight": 75
+          },
+          {
+            "role": "Explosive",
+            "weight": 80
+          },
+          {
+            "role": "Winger",
+            "weight": 70
+          },
+          {
+            "role": "Guardian",
+            "weight": 60
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 70,
+            "zone": "Wing"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          },
+          {
+            "weight": 50,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "FastVertical",
+          "coachId": "coach-luis-enrique",
+          "defensiveLine": 75,
+          "displayName": "Presión Tras Pérdida",
+          "evidence": "Inference",
+          "formationId": "coach-luis-enrique-presion-tras-perdida",
+          "instructions": [
+            "Presión inmediata tras pérdida",
+            "El extremo ataca la espalda",
+            "El motor del medio sostiene"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 62,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Pivote motor y un extremo explosivo para presionar y salir.",
+          "tempo": 65,
+          "transition": "Fast",
+          "width": 70
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Positional",
+          "coachId": "coach-luis-enrique",
+          "defensiveLine": 80,
+          "displayName": "Rotación en el Medio",
+          "evidence": "Inference",
+          "formationId": "coach-luis-enrique-rotacion-en-el-medio",
+          "instructions": [
+            "Rotaciones constantes de los interiores",
+            "Un solo defensa con línea alta",
+            "Muchos hombres en ataque"
+          ],
+          "mentality": "VeryAttacking",
+          "pressing": "HighPress",
+          "risk": 65,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Interiores que rotan, un extremo y un delantero que remata.",
+          "tempo": 55,
+          "transition": "PossessionRecovery",
+          "width": 60
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Short",
+          "coachId": "coach-luis-enrique",
+          "defensiveLine": 75,
+          "displayName": "Presión y Posesión",
+          "evidence": "Inference",
+          "formationId": "coach-luis-enrique-presion-y-posesion",
+          "instructions": [
+            "Doble pivote presiona y distribuye",
+            "Delantero que baja a asociarse",
+            "Intensidad sostenida"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 58,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote que presiona y construye, con un delantero que baja a jugar.",
+          "tempo": 55,
+          "transition": "PossessionRecovery",
+          "width": 55
+        }
+      ],
+      "fullName": "Luis Enrique Martínez García",
+      "grade": "A+",
+      "name": "Luis Enrique",
+      "nationality": "ESP",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Triplete con el Barcelona (2015) y Champions League 2025 con el PSG."
+        },
+        {
+          "kind": "Fact",
+          "text": "Estilo de presión intensa y posesión con rotaciones; no se le documenta línea de tres habitual."
+        },
+        {
+          "kind": "Inference",
+          "text": "Sin variante de tres defensas porque no hay evidencia en esta pasada; FS27 lo traduce en Engine / Architect y resistencia."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A+: juicio de autoría."
+        }
+      ],
+      "philosophy": "Presión intensa tras pérdida, posesión con rotaciones y un sistema muy trabajado que se adapta a las piezas.",
+      "ratings": {
+        "adaptability": 90,
+        "attack": 92,
+        "defense": 86,
+        "identity": 92,
+        "management": 88,
+        "playerDevelopment": 88,
+        "tacticalIQ": 94,
+        "transitions": 88
+      },
+      "shortName": "Luis Enrique",
+      "tacticalIdentity": "Intensidad y orden: presionar arriba, rotar en el medio y atacar con muchos hombres."
+    },
+    {
+      "coachId": "coach-vincent-kompany",
+      "compatibility": {
+        "aggression": {
+          "importance": 60,
+          "target": 80
+        },
+        "attributes": {
+          "Acceleration": 1,
+          "Defense": 2,
+          "Speed": 1.5,
+          "Stamina": 2.5,
+          "Strength": 1.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 15,
+          "target": 50
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 50,
+          "target": 70
+        },
+        "roles": [
+          {
+            "role": "Guardian",
+            "weight": 90
+          },
+          {
+            "role": "Engine",
+            "weight": 90
+          },
+          {
+            "role": "Explosive",
+            "weight": 80
+          },
+          {
+            "role": "Anchor",
+            "weight": 80
+          },
+          {
+            "role": "Builder",
+            "weight": 75
+          },
+          {
+            "role": "Finisher",
+            "weight": 75
+          },
+          {
+            "role": "Target",
+            "weight": 70
+          }
+        ],
+        "zones": [
+          {
+            "weight": 80,
+            "zone": "Defense"
+          },
+          {
+            "weight": 85,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Wing"
+          },
+          {
+            "weight": 70,
+            "zone": "Attack"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "FastVertical",
+          "coachId": "coach-vincent-kompany",
+          "defensiveLine": 90,
+          "displayName": "Línea Alta Agresiva",
+          "evidence": "Inference",
+          "formationId": "coach-vincent-kompany-linea-alta-agresiva",
+          "instructions": [
+            "Línea muy alta",
+            "Presión agresiva a la salida rival",
+            "Duelos ganados arriba"
+          ],
+          "mentality": "Attacking",
+          "pressing": "AggressivePress",
+          "risk": 70,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Defensas rápidos con línea adelantada, un motor y un extremo explosivo.",
+          "tempo": 70,
+          "transition": "Fast",
+          "width": 60
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Direct",
+          "coachId": "coach-vincent-kompany",
+          "defensiveLine": 85,
+          "displayName": "Presión Hombre a Hombre",
+          "evidence": "Inference",
+          "formationId": "coach-vincent-kompany-presion-hombre-a-hombre",
+          "instructions": [
+            "Marca al hombre en campo rival",
+            "El delantero referencia fija a los centrales",
+            "Riesgo asumido con la línea alta"
+          ],
+          "mentality": "Attacking",
+          "pressing": "AggressivePress",
+          "risk": 65,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Marcas individuales por todo el campo con un delantero referencia.",
+          "tempo": 65,
+          "transition": "Direct",
+          "width": 50
+        }
+      ],
+      "fullName": "Vincent Jean Mpoy Kompany",
+      "grade": "B+",
+      "name": "Vincent Kompany",
+      "nationality": "BEL",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Ascenso con el Burnley en 2023 y entrenador del Bayern desde 2024, con presión alta y línea adelantada."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en Guardian / Engine / Explosive y en defensa, resistencia y agresividad."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado B+: juicio de autoría."
+        }
+      ],
+      "philosophy": "Presión muy alta, línea defensiva adelantada y duelos individuales para dominar al rival.",
+      "ratings": {
+        "adaptability": 78,
+        "attack": 84,
+        "defense": 76,
+        "identity": 84,
+        "management": 84,
+        "playerDevelopment": 84,
+        "tacticalIQ": 82,
+        "transitions": 78
+      },
+      "shortName": "Kompany",
+      "tacticalIdentity": "Valentía y agresividad: línea alta, marca al hombre y presión constante."
+    },
+    {
+      "coachId": "coach-yaya-toure",
+      "compatibility": {
+        "aggression": {
+          "importance": 30,
+          "target": 60
+        },
+        "attributes": {
+          "BallControl": 1.5,
+          "Dribbling": 1,
+          "Passing": 1.5,
+          "Shooting": 1,
+          "Stamina": 2,
+          "Strength": 2
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 15,
+          "target": 55
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 30,
+          "target": 50
+        },
+        "roles": [
+          {
+            "role": "Engine",
+            "weight": 90
+          },
+          {
+            "role": "Anchor",
+            "weight": 85
+          },
+          {
+            "role": "Builder",
+            "weight": 80
+          },
+          {
+            "role": "Explosive",
+            "weight": 75
+          },
+          {
+            "role": "Finisher",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 70,
+            "zone": "Defense"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          },
+          {
+            "weight": 55,
+            "zone": "Wing"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-yaya-toure",
+          "defensiveLine": 50,
+          "displayName": "Mediocampo Sólido",
+          "evidence": "Inference",
+          "formationId": "coach-yaya-toure-mediocampo-solido",
+          "instructions": [
+            "Doble pivote fuerte físicamente",
+            "Llegada desde segunda línea",
+            "Orden defensivo"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote potente y un delantero que remata, con dos centrales firmes.",
+          "tempo": 50,
+          "transition": "Controlled",
+          "width": 50
+        }
+      ],
+      "fullName": "Gnégnéri Yaya Touré",
+      "grade": "C+",
+      "name": "Yaya Touré",
+      "nationality": "CIV",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Fue ayudante en varios clubes y en la selección de Arabia Saudí y en junio de 2026 asumió su primer puesto de primer entrenador, en el Slovan Bratislava, al que clasificó para la Champions League."
+        },
+        {
+          "kind": "Authoring",
+          "text": "La valoración corresponde a su trayectoria como ENTRENADOR, no a su carrera como jugador. La formación y el perfil de compatibilidad son un modelo de AUTORÍA (hay poca evidencia táctica propia); grado C+."
+        }
+      ],
+      "philosophy": "Estructura sólida con mediocentros potentes y mucha carga física (modelo de autoría: la trayectoria como entrenador es corta).",
+      "ratings": {
+        "adaptability": 66,
+        "attack": 68,
+        "defense": 66,
+        "identity": 60,
+        "management": 72,
+        "playerDevelopment": 64,
+        "tacticalIQ": 66,
+        "transitions": 64
+      },
+      "shortName": "Yaya Touré",
+      "tacticalIdentity": "Equipo ordenado con mediocampo fuerte y llegada desde segunda línea."
+    },
+    {
+      "coachId": "coach-hajime-moriyasu",
+      "compatibility": {
+        "aggression": {
+          "importance": 40,
+          "target": 65
+        },
+        "attributes": {
+          "Acceleration": 1.5,
+          "Agility": 1.5,
+          "Passing": 1,
+          "Speed": 1.5,
+          "Stamina": 3
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 20,
+          "target": 60
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 30,
+          "target": 50
+        },
+        "roles": [
+          {
+            "role": "Engine",
+            "weight": 95
+          },
+          {
+            "role": "Winger",
+            "weight": 85
+          },
+          {
+            "role": "Explosive",
+            "weight": 80
+          },
+          {
+            "role": "Creator",
+            "weight": 70
+          },
+          {
+            "role": "Guardian",
+            "weight": 70
+          },
+          {
+            "role": "Builder",
+            "weight": 70
+          }
+        ],
+        "zones": [
+          {
+            "weight": 90,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 85,
+            "zone": "Wing"
+          },
+          {
+            "weight": 65,
+            "zone": "Attack"
+          },
+          {
+            "weight": 65,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Three",
+          "baseFormation": "3-1-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-hajime-moriyasu",
+          "defensiveLine": 60,
+          "displayName": "Tres Atrás con Alas",
+          "evidence": "Inference",
+          "formationId": "coach-hajime-moriyasu-tres-atras-con-alas",
+          "instructions": [
+            "Un mediocentro baja a la línea",
+            "Los extremos altos y abiertos",
+            "Transición rápida tras recuperar"
+          ],
+          "mentality": "Balanced",
+          "pressing": "Selective",
+          "risk": 48,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Tres defensas con un medio que se suma a la línea y un creador arriba, inspirado en el 3-4-2-1.",
+          "tempo": 65,
+          "transition": "Fast",
+          "width": 65
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "FastVertical",
+          "coachId": "coach-hajime-moriyasu",
+          "defensiveLine": 70,
+          "displayName": "4-2-3-1 Intenso",
+          "evidence": "Inference",
+          "formationId": "coach-hajime-moriyasu-4-2-3-1-intenso",
+          "instructions": [
+            "Presión alta organizada",
+            "El extremo busca la espalda",
+            "Los cambios desde el banquillo deciden"
+          ],
+          "mentality": "Balanced",
+          "pressing": "HighPress",
+          "risk": 52,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble línea de cuatro adaptada: pivote, extremo veloz y un delantero.",
+          "tempo": 70,
+          "transition": "Fast",
+          "width": 65
+        }
+      ],
+      "fullName": "Hajime Moriyasu",
+      "grade": "B+",
+      "name": "Hajime Moriyasu",
+      "nationality": "JPN",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Seleccionador de Japón desde 2018; análisis de 2026 describen un 4-2-3-1 base con cambio a 3-4-2-1 según el rival, presión intensa y la estrategia del \"súper suplente\"."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en una variante de tres defensas (justificada por el 3-4-2-1) y en Engine / Winger / Explosive con mucha resistencia."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado B+: juicio de autoría."
+        }
+      ],
+      "philosophy": "Intensidad y energía con un sistema flexible: estructura de tres atrás o 4-2-3-1 según el rival, muchos cambios desde el banquillo.",
+      "ratings": {
+        "adaptability": 84,
+        "attack": 80,
+        "defense": 82,
+        "identity": 86,
+        "management": 84,
+        "playerDevelopment": 80,
+        "tacticalIQ": 82,
+        "transitions": 86
+      },
+      "shortName": "Moriyasu",
+      "tacticalIdentity": "Camaleón táctico: presión intensa, transiciones rápidas y extremos altos y abiertos."
+    },
+    {
+      "coachId": "coach-massimiliano-allegri",
+      "compatibility": {
+        "aggression": {
+          "importance": 30,
+          "target": 55
+        },
+        "attributes": {
+          "BallControl": 1,
+          "Defense": 2.5,
+          "Passing": 1.5,
+          "Strength": 1.5,
+          "Technique": 1
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 20,
+          "target": 50
+        },
+        "importance": {
+          "attributes": 25,
+          "behaviour": 20,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 60,
+          "target": 25
+        },
+        "roles": [
+          {
+            "role": "Anchor",
+            "weight": 95
+          },
+          {
+            "role": "Wall",
+            "weight": 90
+          },
+          {
+            "role": "Guardian",
+            "weight": 90
+          },
+          {
+            "role": "Builder",
+            "weight": 80
+          },
+          {
+            "role": "Finisher",
+            "weight": 75
+          },
+          {
+            "role": "Target",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Defense"
+          },
+          {
+            "weight": 80,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          },
+          {
+            "weight": 50,
+            "zone": "Wing"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Three",
+          "baseFormation": "3-1-1",
+          "buildUp": "Balanced",
+          "coachId": "coach-massimiliano-allegri",
+          "defensiveLine": 30,
+          "displayName": "3-5-2 Pragmático",
+          "evidence": "Inference",
+          "formationId": "coach-massimiliano-allegri-3-5-2-pragmatico",
+          "instructions": [
+            "Tres defensas y un medio que ordena",
+            "Bloque bajo ante el balón rival",
+            "Solo se arriesga cuando hace falta"
+          ],
+          "mentality": "Defensive",
+          "pressing": "LowBlock",
+          "risk": 28,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Tres defensas, un mediocentro constructor y un delantero.",
+          "tempo": 45,
+          "transition": "Counter",
+          "width": 45
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Direct",
+          "coachId": "coach-massimiliano-allegri",
+          "defensiveLine": 25,
+          "displayName": "Bloque Bajo Italiano",
+          "evidence": "Inference",
+          "formationId": "coach-massimiliano-allegri-bloque-bajo-italiano",
+          "instructions": [
+            "Dos líneas muy cerradas",
+            "Referencia arriba",
+            "Ritmo bajo y control"
+          ],
+          "mentality": "Defensive",
+          "pressing": "LowBlock",
+          "risk": 25,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Cuatro jugadores muy juntos delante de los centrales y un punta de referencia.",
+          "tempo": 45,
+          "transition": "Counter",
+          "width": 40
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-massimiliano-allegri",
+          "defensiveLine": 35,
+          "displayName": "Contraataque Medido",
+          "evidence": "Inference",
+          "formationId": "coach-massimiliano-allegri-contraataque-medido",
+          "instructions": [
+            "Cambiar de sistema si el partido lo pide",
+            "Salida medida",
+            "Solidez ante todo"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 35,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Equilibrio y salida medida con extremo y goleador.",
+          "tempo": 50,
+          "transition": "Counter",
+          "width": 50
+        }
+      ],
+      "fullName": "Massimiliano Allegri",
+      "grade": "A-",
+      "name": "Massimiliano Allegri",
+      "nationality": "ITA",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Cinco Scudetti seguidos con la Juventus; con el Milan usó el 3-5-2 como sistema base y, según 2026, pasó al Nápoles en julio de ese año."
+        },
+        {
+          "kind": "Fact",
+          "text": "Con el Milan el 3-5-2 funcionaba como un 5-4-1 en bloque bajo sin balón y un 3-2-4-1 con balón."
+        },
+        {
+          "kind": "Inference",
+          "text": "Línea de tres justificada por esa evidencia; FS27 lo traduce en Anchor / Wall / Guardian y defensa."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A-: juicio de autoría."
+        }
+      ],
+      "philosophy": "Pragmatismo: solidez defensiva, control del riesgo y adaptación durante el partido.",
+      "ratings": {
+        "adaptability": 90,
+        "attack": 76,
+        "defense": 94,
+        "identity": 88,
+        "management": 88,
+        "playerDevelopment": 80,
+        "tacticalIQ": 88,
+        "transitions": 84
+      },
+      "shortName": "Allegri",
+      "tacticalIdentity": "Equipo ordenado que se protege bien y decide los partidos con eficacia."
+    },
+    {
+      "coachId": "coach-roberto-mancini",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 50
+        },
+        "attributes": {
+          "BallControl": 2,
+          "Dribbling": 1,
+          "Passing": 2,
+          "Stamina": 1,
+          "Technique": 2
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 40,
+          "target": 70
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 30,
+          "target": 55
+        },
+        "roles": [
+          {
+            "role": "Builder",
+            "weight": 90
+          },
+          {
+            "role": "Creator",
+            "weight": 80
+          },
+          {
+            "role": "Architect",
+            "weight": 80
+          },
+          {
+            "role": "Anchor",
+            "weight": 70
+          },
+          {
+            "role": "Winger",
+            "weight": 70
+          },
+          {
+            "role": "Finisher",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 65,
+            "zone": "Wing"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          },
+          {
+            "weight": 50,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Short",
+          "coachId": "coach-roberto-mancini",
+          "defensiveLine": 70,
+          "displayName": "Interiores Técnicos",
+          "evidence": "Inference",
+          "formationId": "coach-roberto-mancini-interiores-tecnicos",
+          "instructions": [
+            "Los interiores asocian",
+            "Presión alta organizada",
+            "El extremo desequilibra"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 55,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Interiores que combinan y un extremo que desequilibra.",
+          "tempo": 55,
+          "transition": "PossessionRecovery",
+          "width": 60
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Positional",
+          "coachId": "coach-roberto-mancini",
+          "defensiveLine": 55,
+          "displayName": "Juego Asociativo Equilibrado",
+          "evidence": "Inference",
+          "formationId": "coach-roberto-mancini-juego-asociativo-equilibrado",
+          "instructions": [
+            "Posesión con paciencia",
+            "Un creador entre líneas",
+            "Equilibrio defensivo"
+          ],
+          "mentality": "Balanced",
+          "pressing": "Selective",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote técnico y un creador cerca del delantero.",
+          "tempo": 50,
+          "transition": "Controlled",
+          "width": 50
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Balanced",
+          "coachId": "coach-roberto-mancini",
+          "defensiveLine": 70,
+          "displayName": "Presión y Verticalidad",
+          "evidence": "Inference",
+          "formationId": "coach-roberto-mancini-presion-y-verticalidad",
+          "instructions": [
+            "Presión alta y salida vertical",
+            "El extremo ataca la espalda",
+            "El pivote cubre"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 58,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Pivote motor y un extremo que ataca el espacio.",
+          "tempo": 65,
+          "transition": "Fast",
+          "width": 65
+        }
+      ],
+      "fullName": "Roberto Mancini",
+      "grade": "A-",
+      "name": "Roberto Mancini",
+      "nationality": "ITA",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Campeón de Europa 2021 con Italia, Premier League 2012 con el Manchester City; vuelve como seleccionador de Italia en julio de 2026."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en Builder / Creator / Architect y técnica."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A-: juicio de autoría."
+        }
+      ],
+      "philosophy": "Fútbol técnico y equilibrado con presión alta, interiores que asocian y extremos de calidad.",
+      "ratings": {
+        "adaptability": 86,
+        "attack": 84,
+        "defense": 80,
+        "identity": 82,
+        "management": 84,
+        "playerDevelopment": 82,
+        "tacticalIQ": 86,
+        "transitions": 80
+      },
+      "shortName": "Mancini",
+      "tacticalIdentity": "Equilibrio con posesión y verticalidad, muy apoyado en la técnica de los interiores."
+    },
+    {
+      "coachId": "coach-louis-van-gaal",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 55
+        },
+        "attributes": {
+          "BallControl": 2,
+          "Passing": 2.5,
+          "Strength": 1,
+          "Technique": 2
+        },
+        "bodyTypes": [
+          "Tall"
+        ],
+        "creativity": {
+          "importance": 30,
+          "target": 60
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 10,
+          "body": 5,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 50,
+          "target": 40
+        },
+        "roles": [
+          {
+            "role": "Architect",
+            "weight": 95
+          },
+          {
+            "role": "Builder",
+            "weight": 90
+          },
+          {
+            "role": "Anchor",
+            "weight": 85
+          },
+          {
+            "role": "Guardian",
+            "weight": 80
+          },
+          {
+            "role": "Target",
+            "weight": 70
+          },
+          {
+            "role": "Winger",
+            "weight": 70
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 75,
+            "zone": "Defense"
+          },
+          {
+            "weight": 65,
+            "zone": "Wing"
+          },
+          {
+            "weight": 60,
+            "zone": "Attack"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Three",
+          "baseFormation": "3-1-1",
+          "buildUp": "Positional",
+          "coachId": "coach-louis-van-gaal",
+          "defensiveLine": 50,
+          "displayName": "Sistema de Tres",
+          "evidence": "Inference",
+          "formationId": "coach-louis-van-gaal-sistema-de-tres",
+          "instructions": [
+            "Tres defensas con salida controlada",
+            "El medio reparte",
+            "El delantero referencia fija"
+          ],
+          "mentality": "Balanced",
+          "pressing": "Selective",
+          "risk": 38,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Tres defensas que construyen, un medio que ordena y un punta de referencia.",
+          "tempo": 45,
+          "transition": "Controlled",
+          "width": 50
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "Positional",
+          "coachId": "coach-louis-van-gaal",
+          "defensiveLine": 55,
+          "displayName": "Posesión Estructurada",
+          "evidence": "Inference",
+          "formationId": "coach-louis-van-gaal-posesion-estructurada",
+          "instructions": [
+            "Estructura clara de posesión",
+            "El extremo da amplitud",
+            "Disciplina táctica"
+          ],
+          "mentality": "Balanced",
+          "pressing": "MidBlock",
+          "risk": 38,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "Target",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Posesión con pivote organizador y extremo abierto.",
+          "tempo": 40,
+          "transition": "PossessionRecovery",
+          "width": 60
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Positional",
+          "coachId": "coach-louis-van-gaal",
+          "defensiveLine": 65,
+          "displayName": "Triángulos de Ajax",
+          "evidence": "Inference",
+          "formationId": "coach-louis-van-gaal-triangulos-de-ajax",
+          "instructions": [
+            "Triángulos entre interiores y extremo",
+            "Posesión con paciencia",
+            "Un solo defensa apoya"
+          ],
+          "mentality": "Attacking",
+          "pressing": "Selective",
+          "risk": 45,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Interiores y extremo en triángulos de posesión.",
+          "tempo": 45,
+          "transition": "PossessionRecovery",
+          "width": 55
+        }
+      ],
+      "fullName": "Aloysius Paulus Maria van Gaal",
+      "grade": "A",
+      "name": "Louis van Gaal",
+      "nationality": "NED",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Champions League 1995 con el Ajax; también Barcelona y Bayern; con Países Bajos fue tercero en el Mundial 2014 usando una línea de tres."
+        },
+        {
+          "kind": "Inference",
+          "text": "Línea de tres justificada por esa evidencia; FS27 lo traduce en Architect / Builder / Anchor."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado A: juicio de autoría. La preferencia por cuerpos Tall es una inferencia."
+        }
+      ],
+      "philosophy": "Sistema estricto de posesión con triángulos, estructura clara y disciplina táctica.",
+      "ratings": {
+        "adaptability": 76,
+        "attack": 80,
+        "defense": 86,
+        "identity": 96,
+        "management": 86,
+        "playerDevelopment": 92,
+        "tacticalIQ": 94,
+        "transitions": 80
+      },
+      "shortName": "Van Gaal",
+      "tacticalIdentity": "Posesión controlada y roles muy definidos; el sistema por encima de las individualidades."
+    },
+    {
+      "coachId": "coach-manuel-pellegrini",
+      "compatibility": {
+        "aggression": {
+          "importance": 20,
+          "target": 40
+        },
+        "attributes": {
+          "BallControl": 2,
+          "Dribbling": 1.5,
+          "Passing": 2,
+          "Shooting": 1,
+          "Technique": 2
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 50,
+          "target": 75
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 40,
+          "target": 65
+        },
+        "roles": [
+          {
+            "role": "Creator",
+            "weight": 90
+          },
+          {
+            "role": "Architect",
+            "weight": 80
+          },
+          {
+            "role": "Builder",
+            "weight": 80
+          },
+          {
+            "role": "Winger",
+            "weight": 70
+          },
+          {
+            "role": "Finisher",
+            "weight": 65
+          }
+        ],
+        "zones": [
+          {
+            "weight": 95,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 65,
+            "zone": "Wing"
+          },
+          {
+            "weight": 65,
+            "zone": "Attack"
+          },
+          {
+            "weight": 45,
+            "zone": "Defense"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Short",
+          "coachId": "coach-manuel-pellegrini",
+          "defensiveLine": 60,
+          "displayName": "Fútbol Ofensivo Técnico",
+          "evidence": "Inference",
+          "formationId": "coach-manuel-pellegrini-futbol-ofensivo-tecnico",
+          "instructions": [
+            "Posesión técnica",
+            "Creador entre líneas",
+            "Defensa con balón"
+          ],
+          "mentality": "Attacking",
+          "pressing": "MidBlock",
+          "risk": 62,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Defense"
+            },
+            {
+              "role": "Architect",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote técnico, creador y delantero.",
+          "tempo": 55,
+          "transition": "Controlled",
+          "width": 55
+        },
+        {
+          "backLine": "One",
+          "baseFormation": "1-2-2",
+          "buildUp": "Short",
+          "coachId": "coach-manuel-pellegrini",
+          "defensiveLine": 65,
+          "displayName": "Interiores Ofensivos",
+          "evidence": "Inference",
+          "formationId": "coach-manuel-pellegrini-interiores-ofensivos",
+          "instructions": [
+            "Ataque con muchos hombres",
+            "Interiores creativos",
+            "El extremo estira"
+          ],
+          "mentality": "VeryAttacking",
+          "pressing": "Selective",
+          "risk": 68,
+          "slots": [
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Builder",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Creator",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Winger",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Un defensa, interiores creativos y un extremo.",
+          "tempo": 55,
+          "transition": "Controlled",
+          "width": 65
+        }
+      ],
+      "fullName": "Manuel Luis Pellegrini Ripamonti",
+      "grade": "B+",
+      "name": "Manuel Pellegrini",
+      "nationality": "CHI",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Premier League 2014 con el Manchester City; también Villarreal, Real Madrid y Betis."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en Creator / Architect / Builder y técnica."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado B+: juicio de autoría."
+        }
+      ],
+      "philosophy": "Fútbol ofensivo y técnico con posesión y mucha creación.",
+      "ratings": {
+        "adaptability": 82,
+        "attack": 88,
+        "defense": 74,
+        "identity": 84,
+        "management": 84,
+        "playerDevelopment": 84,
+        "tacticalIQ": 86,
+        "transitions": 80
+      },
+      "shortName": "Pellegrini",
+      "tacticalIdentity": "Ataque asociativo y generoso con interiores creativos."
+    },
+    {
+      "coachId": "coach-mauricio-pochettino",
+      "compatibility": {
+        "aggression": {
+          "importance": 60,
+          "target": 80
+        },
+        "attributes": {
+          "Acceleration": 1.5,
+          "Defense": 1,
+          "Speed": 1.5,
+          "Stamina": 3,
+          "Strength": 1.5
+        },
+        "bodyTypes": [],
+        "creativity": {
+          "importance": 15,
+          "target": 50
+        },
+        "importance": {
+          "attributes": 30,
+          "behaviour": 15,
+          "body": 0,
+          "roles": 40,
+          "zones": 15
+        },
+        "risk": {
+          "importance": 30,
+          "target": 60
+        },
+        "roles": [
+          {
+            "role": "Engine",
+            "weight": 95
+          },
+          {
+            "role": "Explosive",
+            "weight": 85
+          },
+          {
+            "role": "Anchor",
+            "weight": 80
+          },
+          {
+            "role": "Guardian",
+            "weight": 80
+          },
+          {
+            "role": "Winger",
+            "weight": 75
+          },
+          {
+            "role": "Finisher",
+            "weight": 70
+          }
+        ],
+        "zones": [
+          {
+            "weight": 90,
+            "zone": "Midfield"
+          },
+          {
+            "weight": 75,
+            "zone": "Wing"
+          },
+          {
+            "weight": 75,
+            "zone": "Defense"
+          },
+          {
+            "weight": 65,
+            "zone": "Attack"
+          }
+        ]
+      },
+      "formations": [
+        {
+          "backLine": "Two",
+          "baseFormation": "2-1-2",
+          "buildUp": "FastVertical",
+          "coachId": "coach-mauricio-pochettino",
+          "defensiveLine": 75,
+          "displayName": "Presión Física",
+          "evidence": "Inference",
+          "formationId": "coach-mauricio-pochettino-presion-fisica",
+          "instructions": [
+            "Presión alta y física",
+            "Verticalidad rápida",
+            "Desarrollo del joven"
+          ],
+          "mentality": "Attacking",
+          "pressing": "HighPress",
+          "risk": 60,
+          "slots": [
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Explosive",
+              "zone": "Wing"
+            },
+            {
+              "role": "GoalHunter",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Defensas atléticos, un motor y un extremo explosivo.",
+          "tempo": 70,
+          "transition": "Fast",
+          "width": 60
+        },
+        {
+          "backLine": "Two",
+          "baseFormation": "2-2-1",
+          "buildUp": "Direct",
+          "coachId": "coach-mauricio-pochettino",
+          "defensiveLine": 60,
+          "displayName": "Doble Pivote Atlético",
+          "evidence": "Inference",
+          "formationId": "coach-mauricio-pochettino-doble-pivote-atletico",
+          "instructions": [
+            "Doble pivote con mucho recorrido",
+            "Salida vertical",
+            "Solidez física"
+          ],
+          "mentality": "Balanced",
+          "pressing": "Selective",
+          "risk": 50,
+          "slots": [
+            {
+              "role": "Guardian",
+              "zone": "Defense"
+            },
+            {
+              "role": "Wall",
+              "zone": "Defense"
+            },
+            {
+              "role": "Engine",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Anchor",
+              "zone": "Midfield"
+            },
+            {
+              "role": "Finisher",
+              "zone": "Attack"
+            }
+          ],
+          "tacticalPurpose": "Doble pivote potente y un delantero que remata.",
+          "tempo": 65,
+          "transition": "Fast",
+          "width": 50
+        }
+      ],
+      "fullName": "Mauricio Roberto Pochettino Trossero",
+      "grade": "B+",
+      "name": "Mauricio Pochettino",
+      "nationality": "ARG",
+      "notes": [
+        {
+          "kind": "Fact",
+          "text": "Final de la Champions League 2019 con el Tottenham; también PSG y Chelsea; seleccionador de Estados Unidos."
+        },
+        {
+          "kind": "Inference",
+          "text": "FS27 lo traduce en Engine / Explosive y resistencia, fuerza y velocidad."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Grado B+: juicio de autoría."
+        }
+      ],
+      "philosophy": "Presión alta física, intensidad atlética y desarrollo de jóvenes.",
+      "ratings": {
+        "adaptability": 86,
+        "attack": 82,
+        "defense": 80,
+        "identity": 86,
+        "management": 82,
+        "playerDevelopment": 88,
+        "tacticalIQ": 84,
+        "transitions": 80
+      },
+      "shortName": "Pochettino",
+      "tacticalIdentity": "Equipo atlético, vertical y muy intenso sin balón."
+    }
+  ],
+  "schemaVersion": "FS27.Coaches.v1"
+}

@@ -8,7 +8,7 @@ dotnet publish "$HERE/Fs27.Wasm/Fs27.Wasm.csproj" -c Release -o "$HERE/.pub" -no
 cp -r "$HERE/.pub/wwwroot/_framework" "$OUT/_framework"
 # the host compresses on the fly (the runtime asks for the plain names); the three ICU files stay: which one loads depends on the phone's language
 rm -f "$OUT"/_framework/*.br "$OUT"/_framework/*.gz
-cp "$HERE/web/index.html" "$HERE/web/style.css" "$HERE/web/game.js" "$OUT/"
+cp "$HERE/web/index.html" "$HERE/web/style.css" "$HERE/web/game.js" "$HERE/web/vercel.json" "$OUT/"
 # the authoring files the database loads (the bridge says which ones: Fs27.Wasm/DataFiles.cs)
 for f in $(grep -o '"FS27_[A-Z0-9_]*\.\(md\|json\)"' "$HERE/Fs27.Wasm/DataFiles.cs" | tr -d '"' | sort -u); do cp "$ROOT/Docs/authoring/$f" "$OUT/data/$f"; done
 rm -rf "$HERE/.pub"
