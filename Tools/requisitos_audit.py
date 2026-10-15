@@ -102,6 +102,19 @@ ver([999], 'confirmado', 'sin push, despliegue ni cambio de permisos sin autoriz
 ver([1000], 'parcial', 'criterio rector; no es comprobable automáticamente')
 
 
+
+# ---- phase 38: readiness for a future multiplayer (no network code)
+ver([881, 884, 889, 897], 'confirmado', 'Docs/SYNC_READINESS_PHASE38.md: MatchController.State es la única fuente de verdad (reloj, marcador, balón, jugadores); el cliente solo envía entradas')
+ver([882], 'confirmado', 'Phase38Tests.TheSameCommands_ReproduceTheMatchBitForBit: 1.500 pasos, mismo checksum en cada control, también tras escribir y leer el registro')
+ver([883], 'confirmado', 'Phase38Tests.PlayerIds_AreStable: los ids vienen de los datos del equipo, no de contadores ni de la semilla')
+ver([888], 'confirmado', 'NormalizedInput + InputCommandLog: cada acción táctil es un comando discreto por paso de simulación')
+ver([890], 'confirmado', 'MatchChecksum.Of y Phase38Tests.ADifferentCommand_ChangesTheChecksum')
+ver([896], 'pendiente', 'sin red no se puede probar latencia ni entradas retrasadas; solo existe la base de comandos con paso')
+ver([885, 886, 891, 899], 'confirmado', 'menú: botón «ONLINE · próximamente» atenuado que explica que necesita conexión y no existe; Client/test/offline.mjs sin peticiones de red')
+ver([887, 892, 893], 'confirmado', 'sin código de red; el HTML funciona sin conexión ni cuentas (0 peticiones) y los jugadores son datos locales ficticios')
+ver([900], 'confirmado', 'Docs/SYNC_READINESS_PHASE38.md documenta el alcance futuro sin tocar el gameplay básico')
+ver([894, 895], 'requiere-humano', 'privacidad, consentimiento y compras online son decisiones de producto futuras; hoy nada online existe')
+
 # ---- phase 37: the high ball
 ver([68, 192], 'confirmado', 'Phase37Tests.ThePersonsAutomaticPlayer_IsTheOneWhoGetsUnderTheBall: AutoSelection con AerialPlay elige al que llega primero al punto de caída')
 ver([181], 'confirmado', 'Phase37Tests.AHighBall_HasAPlaceAndATime...: el punto previsto coincide con el vuelo real (+-0,6 m)')

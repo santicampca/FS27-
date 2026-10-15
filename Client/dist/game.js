@@ -96,6 +96,7 @@ async function boot() {
   $('menu').classList.remove('hidden');
 }
 $('practiceBtn').onclick = () => { $('menu').classList.add('hidden'); startMatch(+$('homeSel').value, +$('awaySel').value, (Math.random() * 1e6) | 0, 'Classic', 'Novice', true); };
+$('onlineBtn').onclick = () => { $('profileLine').textContent = 'El modo online todavía no existe: necesitaría conexión. El juego completo funciona sin conexión y sin cuenta.'; };
 $('startBtn').onclick = () => { $('menu').classList.add('hidden'); startMatch(+$('homeSel').value, +$('awaySel').value, (Math.random() * 1e6) | 0, $('modeSel').value, $('levelSel').value); };
 $('againBtn').onclick = () => { $('end').classList.add('hidden'); $('hintbar').classList.add('hidden'); $('hud').classList.add('hidden'); running = false; $('menu').classList.remove('hidden'); };
 

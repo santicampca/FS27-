@@ -4,18 +4,18 @@ Fuente: `FS27_lista_maestra_1000_requisitos.md` (1.000 identificadores `FS27-REQ
 
 ## Estado de los 1.000 (generado por `Tools/requisitos_audit.py`)
 Cada fila de `Docs/requisitos_estado.csv` dice **cuánta confianza** tiene su estado:
-- **requisito** (123 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
-- **seccion** (877 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
+- **requisito** (142 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
+- **seccion** (858 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
 
-Totales: **confirmado 44**, parcial 869, pendiente 49, requiere humano 38. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
+Totales: **confirmado 60**, parcial 869, pendiente 31, requiere humano 40. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
 
 Pendientes por sección (los más numerosos):
 - Dirección visual y modelos: 20
-- Multijugador futuro y límites de alcance: 19
 - Balones aéreos y juego de cabeza: 3
 - Córners, bandas y balón parado: control avanzado: 3
 - Centros y juego por las bandas: 2
 - Interfaz y HUD: 2
+- Multijugador futuro y límites de alcance: 1
 
 Lo que **no se puede construir sin decisión, arte o red** y por eso sigue pendiente: arte 3D y modelos (no hay assets), música y archivos de audio, multijugador, cuenta/nube, volea, viento, y todo lo que solo una persona puede juzgar (sensación, diversión, legibilidad).
 
@@ -67,7 +67,7 @@ Resumen por sección:
 | Seguridad, privacidad y entrega | 0 | 20 | 0 | 0 |
 | Escenarios de partido y casos límite | 0 | 20 | 0 | 0 |
 | Gestión del partido y estados | 0 | 20 | 0 | 0 |
-| Multijugador futuro y límites de alcance | 0 | 1 | 19 | 0 |
+| Multijugador futuro y límites de alcance | 16 | 1 | 1 | 2 |
 | Balance y sensación futbolística | 0 | 0 | 0 | 20 |
 | Dirección visual y modelos | 0 | 0 | 20 | 0 |
 | Prueba humana y lanzamiento de prototipo | 0 | 20 | 0 | 0 |
