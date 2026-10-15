@@ -21,14 +21,14 @@ namespace FS27.Core.Tests
 
         internal sealed class GbConfig
         {
-            public string Name; public bool Tactics, Distribution, Assist, Selection;
+            public string Name; public bool Tactics, Distribution, Assist, Selection, Headers;
             public DifficultyLevel Home = DifficultyLevel.Professional, Away = DifficultyLevel.Professional;
             public int HomeTeam = 3, AwayTeam = 8;
             public GbConfig With(string name, Action<GbConfig> edit) { var c = (GbConfig)MemberwiseClone(); c.Name = name; edit(c); return c; }
         }
 
-        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false };
-        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true };
+        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false, Headers = false };
+        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true, Headers = true };
 
         // ------------------------------------------------------------------ scenes
 
@@ -94,6 +94,7 @@ namespace FS27.Core.Tests
                     : res.Kind == FootballActionKind.GoalkeeperDistribution ? "outKeeper" : res.Kind == FootballActionKind.GoalkeeperSave || res.Kind == FootballActionKind.GoalkeeperCatch ? "outSave" : "outOther";
                 lastActionAt = Now;
                 if (res.Kind == FootballActionKind.Cross) Add(pre + "crossKicks");
+                if (res.Kind == FootballActionKind.Header) Add(pre + "headers");
                 if (res.Kind == FootballActionKind.GoalkeeperSave) Add("keeperParries"); else if (res.Kind == FootballActionKind.GoalkeeperCatch) Add("keeperCatches");
                 switch (res.Kind)
                 {
@@ -236,7 +237,7 @@ namespace FS27.Core.Tests
             "h_passes", "h_passOk", "h_passLost", "h_passNobody", "h_passToTarget", "h_forwardPasses", "h_finalThirdPasses", "h_crosses", "h_crossReach", "h_crossShots", "h_shots", "h_xg", "h_bigChances", "h_goals", "h_interceptions", "h_tackles", "h_fouls", "h_gains", "h_giveAndReturn",
             "a_passes", "a_passOk", "a_passLost", "a_passNobody", "a_forwardPasses", "a_finalThirdPasses", "a_crosses", "a_crossReach", "a_crossShots", "a_shots", "a_xg", "a_bigChances", "a_goals", "a_interceptions", "a_tackles", "a_fouls", "a_gains", "a_giveAndReturn",
             "throwIns", "throwInsLost", "corners", "cornersLost", "goalKicks", "goalKicksLost", "freeKicks", "freeKicksLost",
-            "outPass", "outShot", "outKeeper", "outSave", "outOther", "outDeflection", "h_crossKicks", "a_crossKicks", "keeperParries", "keeperCatches",
+            "outPass", "outShot", "outKeeper", "outSave", "outOther", "outDeflection", "h_crossKicks", "a_crossKicks", "keeperParries", "keeperCatches", "h_headers", "a_headers",
             "looseStillSeconds", "looseStillMax", "carrierIdleSeconds", "h_laneN0", "h_laneN1", "h_laneN2", "h_laneN3", "h_laneLost0", "h_laneLost1", "h_laneLost2", "h_laneLost3", "a_laneN0", "a_laneN1", "a_laneN2", "a_laneN3", "a_laneLost0", "a_laneLost1", "a_laneLost2", "a_laneLost3"
         };
 
@@ -256,7 +257,7 @@ namespace FS27.Core.Tests
             driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(cfg.Home), Db.Players, c, profileT);
             driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(cfg.Away), Db.Players, c, profileT);
             if (cfg.Tactics) { driver.SetTactic(TeamSide.Home, TeamTactic.Of(Db.Teams[cfg.HomeTeam], Db)); driver.SetTactic(TeamSide.Away, TeamTactic.Of(Db.Teams[cfg.AwayTeam], Db)); }
-            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection;
+            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection; c.HeadersEnabled = cfg.Headers;
             return c;
         }
 

@@ -44,3 +44,12 @@ textarea { width: 100%; font: inherit; font-size: 14px; border-radius: 8px; padd
 .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 button.alt { background: #34647a; font-size: 16px; padding: 10px 18px; }
 .screen .box, .screen .box * { touch-action: pan-y; }
+
+#spbox { position: fixed; left: 50%; top: 56px; transform: translateX(-50%); z-index: 7; background: rgba(0, 0, 0, .66); padding: 8px 14px; border-radius: 12px; text-align: center; max-width: 86vw; pointer-events: auto; }
+#sptitle { font-weight: 800; letter-spacing: 1px; }
+#sptext { font-size: 13px; opacity: .85; margin-top: 4px; }
+#spcharge { width: min(280px, 70vw); height: 14px; margin: 6px auto 0; background: rgba(255, 255, 255, .2); border-radius: 7px; overflow: hidden; }
+#spfill { height: 100%; width: 0; background: #7CFC00; }
+#spzones { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+#spzones button { padding: 6px 10px; border-radius: 8px; background: rgba(255, 255, 255, .18); font-size: 14px; }
+#spzones button.sel { background: #1fa34a; }

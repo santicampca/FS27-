@@ -105,6 +105,7 @@ namespace FS27.Client
             // the teams play the way their coaches' data says (Phase 31) and the person's passes and shots are helped to go where he meant
             driver.SetTactic(TeamSide.Home, TeamTactic.Of(h, db)); driver.SetTactic(TeamSide.Away, TeamTactic.Of(a, db));
             match.AimAssist.Enabled = aimAssist;
+            match.HeadersEnabled = true;   // Phase 33: a ball in the air is played in the air
             match.SetControl(TeamSide.Home, ControlSource.Human);
             clock = new SimulationClock(settings.SimulationStepSeconds);
             stick = Vec2.Zero; hasPress = false; restartWait = 0f; lastAction = ""; lastActionAt = -100f;
@@ -169,7 +170,9 @@ namespace FS27.Client
             if (phase == MatchPhase.WaitingForKickoff || phase == MatchPhase.WaitingForRestart)
             {
                 restartWait += clock.StepSeconds;
-                if (restartWait >= RestartPauseSeconds) { match.ConfirmRestart(); restartWait = 0f; }
+                // Phase 33: a throw-in or a corner of the person's team waits for him (aim, charge, release) before the AI takes it
+                float limit = match.AwaitingHumanSetPiece(TeamSide.Home) ? match.SetPiece.HumanWaitSeconds : RestartPauseSeconds;
+                if (restartWait >= limit) { match.ConfirmRestart(); restartWait = 0f; }
             }
             else restartWait = 0f;
         }
@@ -208,6 +211,27 @@ namespace FS27.Client
         }
 
         [JSExport] public static string LastAction() { return lastAction; }
+
+        /// <summary>Phase 33: the throw-in or corner the person is asked to take: [kind (0 none, 1 throw-in, 2 corner), spot x, spot z, seconds left to take it, seconds of a full charge, attack direction x (+1/-1)].</summary>
+        [JSExport]
+        public static double[] SetPieceInfo()
+        {
+            if (match == null || !match.AwaitingHumanSetPiece(TeamSide.Home)) return new double[] { 0, 0, 0, 0, 0, 1 };
+            RestartRequest r = match.State.PendingRestart;
+            return new double[] { r.Kind == RestartKind.Corner ? 2 : 1, r.Position.X, r.Position.Y, Math.Max(0.0, match.SetPiece.HumanWaitSeconds - restartWait), match.FreeKick.FullChargeSeconds, match.State.HomeAttacksPositiveX ? 1 : -1 };
+        }
+
+        /// <summary>Phase 33: takes it with the aim of the person (field frame, like <see cref="Press"/>): the direction he pushed, how long he held the button and, for a corner, a zone of the goal (-1 none, 0 left, 1 centre, 2 right). Returns the Core's answer.</summary>
+        [JSExport]
+        public static string TakeSetPiece(double aimX, double aimY, double holdSeconds, int zone)
+        {
+            if (match == null) return "NoMatch";
+            var aim = new FreeKickAim { Intent = FreeKickIntent.Pass, Direction = new Vec2((float)aimX, (float)aimY), HoldSeconds = (float)holdSeconds };
+            if (match.State.PendingRestart.Kind == RestartKind.Corner && zone >= 0) { aim.Intent = FreeKickIntent.Shot; aim.HasZone = true; aim.Zone = zone == 0 ? GoalZone.Left : zone == 2 ? GoalZone.Right : GoalZone.Centre; }
+            SetPieceExecuteResult r = match.ExecuteSetPiece(aim);
+            if (r == SetPieceExecuteResult.Executed) restartWait = 0f;
+            return r.ToString();
+        }
 
         /// <summary>What the match is doing, as text (for diagnosing a stuck restart).</summary>
         [JSExport]

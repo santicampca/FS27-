@@ -484,12 +484,7 @@ namespace FS27.Core
             float power = aim.Power > 0f ? ActionModel.Clamp01(aim.Power) : FreeKickAiming.PowerFromHold(aim.HoldSeconds, freeKick);
 
             // the destination: a goal zone, the dragged point (inside the lines), or the drag direction; with nothing, the middle of the goal
-            Vec2 destination;
-            bool hasDestination = true;
-            if (aim.HasZone) destination = FreeKickAiming.GoalZonePoint(aim.Zone, goal, AttackDirectionOf(fk.Beneficiary), field.GoalWidth, freeKick);
-            else if (aim.HasDestination) destination = InsideLines(aim.Destination);
-            else if (aim.Direction.Magnitude > 1e-4f) { destination = spot + aim.Direction.Normalized; hasDestination = false; }
-            else destination = goal;
+            Vec2 destination = FreeKickAiming.ResolveDestination(aim, spot, goal, AttackDirectionOf(fk.Beneficiary), field.GoalWidth, freeKick, InsideLines, goal, out bool hasDestination);
             Vec2 dir = ActionModel.DirectionOr(destination - spot, ActionModel.DirectionOr(goal - spot, AttackDirectionOf(fk.Beneficiary)));
 
             var request = new ActionRequest(fk.Beneficiary, taker.PlayerId, FootballActionKind.Shot, dir, power) { Source = ControlSource.Human };

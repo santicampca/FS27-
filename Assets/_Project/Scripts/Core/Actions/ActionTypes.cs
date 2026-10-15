@@ -192,6 +192,8 @@ namespace FS27.Core
         // control and first touch
         CleanControl,
         HeavyTouch,
+        /// <summary>Phase 33: played in the air with the head (a cushioned header, a header away, a header at goal).</summary>
+        Headed,
         Deflected,
         // kicks
         Kicked,

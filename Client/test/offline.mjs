@@ -23,6 +23,21 @@ await page.waitForFunction(() => window.__fs27 && window.__fs27.snap && window._
 check('a match starts with a tap on JUGAR', true);
 check('a hint explains the controls', await page.evaluate(() => !document.getElementById('hintbar').classList.contains('hidden')));
 await page.screenshot({ path: path.join(shots, 'offline-play.png') });
+// a throw-in or corner of the person's team waits for him: aim, charge with the button, release (Phase 33)
+const found = await page.evaluate(async () => { const B = window.__fs27.B; for (let i = 0; i < 20000; i++) { B.Advance(8 / 60); if (B.SetPieceInfo()[0] !== 0) return B.SetPieceInfo(); if (i % 400 === 0) await new Promise(r => setTimeout(r, 0)); } return null; });
+check('the game waits for the person at his own throw-in or corner', found !== null, found);
+if (found) {
+  await page.waitForTimeout(300);
+  check('the aim panel is shown', await page.evaluate(() => !document.getElementById('spbox').classList.contains('hidden')));
+  await page.screenshot({ path: path.join(shots, 'offline-setpiece.png') });
+  await page.keyboard.down('k'); await page.waitForTimeout(700);
+  const mid = await page.evaluate(() => parseInt(document.getElementById('spfill').style.width));
+  check('holding the button fills the charge bar', mid > 20 && mid < 100, { percent: mid });
+  const before = await page.evaluate(() => window.__fs27.state()[1]);
+  await page.keyboard.up('k'); await page.waitForTimeout(500);
+  const after = await page.evaluate(() => ({ phase: window.__fs27.state()[1], info: Array.from(window.__fs27.B.SetPieceInfo()) }));
+  check('releasing takes the throw-in/corner once and play resumes', after.info[0] === 0 && after.phase === 2, { before, after });
+}
 // play the whole match fast (the page's own loop keeps running; this only adds Core time), then the end form must come up
 await page.evaluate(async () => { const B = window.__fs27.B; for (let i = 0; i < 14000 && B.Snapshot()[11] === 0; i++) { B.Advance(8 / 60); if (i % 400 === 0) await new Promise(r => setTimeout(r, 0)); } });
 await page.waitForSelector('#end:not(.hidden)', { timeout: 60000 });

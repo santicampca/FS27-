@@ -11,8 +11,8 @@ let B = null, teams = [], roster = null, snap = null, paused = false, running = 
 let stick = { x: 0, y: 0 }, mirror = 1;
 const stats = { frames: 0, steps: 0, lastT: 0, fps: 0, sps: 0, advanceMs: 0, snapshotMs: 0, drawMs: 0, worstFrameMs: 0 };
 let banner = '', bannerUntil = 0, lastScore = [0, 0];
-let session = null;                         // what the tester played (for the feedback text)
-const VERSION = 'FS27 prueba humana 1 (Core fase 32)';
+let session = null, sp = [0, 0, 0, 0, 1.2, 1], spHoldStart = 0, spZone = 1;                         // what the tester played (for the feedback text)
+const VERSION = 'FS27 prueba humana 2 (Core fase 33)';
 
 function resize() { const r = window.devicePixelRatio || 1; canvas.width = Math.floor(innerWidth * r); canvas.height = Math.floor(innerHeight * r); }
 addEventListener('resize', resize); resize();
@@ -94,6 +94,18 @@ $('saveBtn').onclick = () => {
   $('copyMsg').textContent = 'Archivo «fs27-resultado.txt» guardado (mira en Descargas). Envíalo a quien te pasó el juego.';
 };
 
+// ---------------------------------------------------------------- throw-ins and corners taken by the person (Phase 33)
+function updateSetPieceUI(now) {
+  const on = sp[0] !== 0;
+  $('spbox').classList.toggle('hidden', !on); $('spzones').classList.toggle('hidden', sp[0] !== 2);
+  if (!on) { spHoldStart = 0; return; }
+  $('sptitle').textContent = sp[0] === 2 ? 'TU CÓRNER' : 'TU SAQUE DE BANDA';
+  const held = spHoldStart ? Math.min(1, (performance.now() - spHoldStart) / 1000 / Math.max(0.1, sp[4])) : 0;
+  $('spfill').style.width = Math.round(held * 100) + '%';
+  $('sptext').textContent = (sp[0] === 2 ? 'Elige zona. ' : '') + 'Apunta con el círculo, mantén B para cargar la fuerza y suelta para sacar. Sin hacer nada, saca la IA en ' + Math.ceil(sp[3]) + ' s.';
+}
+for (const b of document.querySelectorAll('#spzones button')) b.addEventListener('pointerdown', () => { spZone = +b.dataset.z; for (const x of document.querySelectorAll('#spzones button')) x.classList.toggle('sel', x === b); });
+
 // ---------------------------------------------------------------- loop
 function frame(now) {
   if (!running) return;
@@ -105,6 +117,7 @@ function frame(now) {
     stats.steps += B.Advance(dt);
     stats.advanceMs += performance.now() - t0;
   }
+  sp = B.SetPieceInfo(); updateSetPieceUI(now);
   const t1 = performance.now(); snap = B.Snapshot(); stats.snapshotMs += performance.now() - t1;
   const t2 = performance.now(); draw(now); stats.drawMs += performance.now() - t2;
   stats.frames++;
@@ -184,9 +197,10 @@ setInterval(() => { if (B && stickId !== null) B.SetStick(mirror * stick.x, mirr
 
 function action(btn, button) {
   let y0 = 0, id = null;
-  btn.addEventListener('pointerdown', e => { id = e.pointerId; y0 = e.clientY; btn.setPointerCapture(id); btn.classList.add('on'); });
+  btn.addEventListener('pointerdown', e => { id = e.pointerId; y0 = e.clientY; btn.setPointerCapture(id); btn.classList.add('on'); if (sp[0] !== 0 && button === 2) spHoldStart = performance.now(); });
   const end = e => {
     if (e.pointerId !== id) return; id = null; btn.classList.remove('on');
+    if (sp[0] !== 0 && button === 2) { const hold = spHoldStart ? (performance.now() - spHoldStart) / 1000 : 0; spHoldStart = 0; B.TakeSetPiece(mirror * stick.x, mirror * stick.y, hold, sp[0] === 2 ? spZone : -1); return; }
     const dy = e.clientY - y0; let gesture = 0, power = 0.7;
     if (dy < -28) { gesture = 1; power = Math.min(1, 0.55 + (-dy - 28) / 120); } else if (dy > 28) { gesture = 2; power = Math.min(1, 0.55 + (dy - 28) / 120); }
     B && B.Press(button, gesture, mirror * stick.x, mirror * stick.y, power);
@@ -199,8 +213,8 @@ $('btnPause').addEventListener('pointerdown', () => { paused = !paused; });
 // keyboard (testing on a computer): arrows/WASD, J/K/L = A/B/C (hold Shift = swipe down), Tab = switch
 const keys = new Set();
 function kbStick() { const x = (keys.has('ArrowRight') || keys.has('d') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('a') ? 1 : 0), y = (keys.has('ArrowDown') || keys.has('s') ? 1 : 0) - (keys.has('ArrowUp') || keys.has('w') ? 1 : 0); const m = Math.hypot(x, y) || 1; stick = { x: x / m * (x || y ? 1 : 0), y: y / m * (x || y ? 1 : 0) }; B && B.SetStick(mirror * stick.x, mirror * stick.y); }
-addEventListener('keydown', e => { if (e.repeat) return; keys.add(e.key); kbStick(); const bt = { j: 1, k: 2, l: 3 }[e.key.toLowerCase()]; if (bt && B) B.Press(bt, e.shiftKey ? 2 : (e.ctrlKey ? 1 : 0), mirror * stick.x, mirror * stick.y, 0.8); if (e.key === 'Tab') { e.preventDefault(); B && B.SwitchPlayer(); } });
-addEventListener('keyup', e => { keys.delete(e.key); kbStick(); });
+addEventListener('keydown', e => { if (e.repeat) return; keys.add(e.key); kbStick(); if (sp[0] !== 0 && e.key.toLowerCase() === 'k') { spHoldStart = performance.now(); return; } const bt = { j: 1, k: 2, l: 3 }[e.key.toLowerCase()]; if (bt && B) B.Press(bt, e.shiftKey ? 2 : (e.ctrlKey ? 1 : 0), mirror * stick.x, mirror * stick.y, 0.8); if (e.key === 'Tab') { e.preventDefault(); B && B.SwitchPlayer(); } });
+addEventListener('keyup', e => { keys.delete(e.key); kbStick(); if (sp[0] !== 0 && e.key.toLowerCase() === 'k' && spHoldStart) { const hold = (performance.now() - spHoldStart) / 1000; spHoldStart = 0; B.TakeSetPiece(mirror * stick.x, mirror * stick.y, hold, sp[0] === 2 ? spZone : -1); } });
 document.addEventListener('contextmenu', e => e.preventDefault());
 
 boot().catch(e => { $('loadmsg').textContent = 'Error: ' + e.message; console.error(e); });

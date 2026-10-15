@@ -55,6 +55,13 @@ namespace FS27.Core
         public const float OptionSeparation = 2.5f;
         /// <summary>An option stays this far inside the lines.</summary>
         public const float OptionLineMargin = 1.0f;
+        // ---- Phase 33: a person takes the throw-in or the corner (the aim is the free kick's: same drag, same zones, same charge)
+        /// <summary>How long the game waits for a person to take a throw-in or a corner before the AI takes it (seconds).</summary>
+        public const float HumanWaitSeconds = 12.0f;
+        /// <summary>The power of a throw-in is the free kick's charge (a tap = its minimum, a full charge = 1) times this: the hands never throw as far as a boot kicks.</summary>
+        public const float ThrowMaxPower = 0.62f;
+        /// <summary>From this power (after the scaling above) a throw is a lofted long throw (a different flight from a ground pass); below it, a short throw along the ground.</summary>
+        public const float ThrowLoftedPower = 0.42f;
     }
 
     /// <summary>The editable copy of <see cref="SetPieceDefaults"/>.</summary>
@@ -82,6 +89,9 @@ namespace FS27.Core
         public float OptionMoveCost = SetPieceDefaults.OptionMoveCost;
         public float OptionSeparation = SetPieceDefaults.OptionSeparation;
         public float OptionLineMargin = SetPieceDefaults.OptionLineMargin;
+        public float HumanWaitSeconds = SetPieceDefaults.HumanWaitSeconds;
+        public float ThrowMaxPower = SetPieceDefaults.ThrowMaxPower;
+        public float ThrowLoftedPower = SetPieceDefaults.ThrowLoftedPower;
 
         /// <summary>The distance the opponents keep from the ball of that restart: the common clearance, or more for the set pieces that have a procedure of their own.</summary>
         public float OpponentRadius(RestartKind kind, float common)
