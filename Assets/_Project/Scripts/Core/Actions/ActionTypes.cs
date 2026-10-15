@@ -232,7 +232,12 @@ namespace FS27.Core
         /// <summary>The skill move only partly worked: less ground gained, less protection.</summary>
         PartlyEvaded,
         /// <summary>The skill move failed: the ball ran away from the player.</summary>
-        Fumbled
+        Fumbled,
+        // aerial play (Phase 37, appended)
+        /// <summary>A kick of a ball that was in the air (a volley or a half-volley): harder to time than the same kick on the ground.</summary>
+        Volley,
+        /// <summary>The goalkeeper did not risk the catch of a high ball and punched it away.</summary>
+        Punched
     }
 
     /// <summary>Which foot (or the body) played the ball.</summary>

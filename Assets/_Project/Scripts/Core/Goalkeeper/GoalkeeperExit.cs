@@ -24,6 +24,32 @@ namespace FS27.Core
     {
         private const int Samples = 3;
 
+        /// <summary>
+        /// Phase 37 (REQ-0174): a HIGH ball coming down in his area. The same judgement as <see cref="Choose"/> but with the point where the ball comes down to head height and the seconds it takes (not the first fraction of a second):
+        /// he goes only if he is under it before the ball, the rivals' best header and his own team-mates' best header (with the same deterministic misjudgement of the rivals' time), otherwise he stays on his line.
+        /// </summary>
+        public static GoalkeeperExitChoice ChooseHigh(WorldView view, in WorldPlayer me, GoalkeeperAiTuning t, in GoalkeeperSkill skill, float command01, Vec2 point, float ballSeconds, float opponent, float mate)
+        {
+            var c = new GoalkeeperExitChoice();
+            if (me.MaxSpeed <= 0f) return c;
+            Vec2 goal = WorldGeometry.OwnGoal(view.Match, view.Field, me.Team);
+            float inward = goal.X > 0f ? -1f : 1f;
+            float along = (point.X - goal.X) * inward;
+            if (along > t.ExitMaxDepth || along < 0f) return c;
+            c.Considered = true;
+            float keeperTime = (point - me.Position).Magnitude / (me.MaxSpeed * t.ExitSpeedShare);
+            int period = (int)(view.Match.MatchTime / Math.Max(t.ExitJudgementPeriod, 1e-3f));
+            float error = t.ExitJudgementError * (1f - MathUtil.Clamp01(skill.DecisionMaking * (1f - t.CommandExitInfluence) + command01 * t.CommandExitInfluence)) * (2f * DecisionDice.Roll(DecisionDice.Choice, period, me.Slot) - 1f);
+            float believed = opponent * (1f + error);
+            c.TrueMargin = Math.Min(opponent, mate) - keeperTime;
+            c.Target = point;
+            bool inTime = keeperTime <= ballSeconds + t.ExitMarginSeconds;
+            bool goes = inTime && keeperTime + t.ExitMarginSeconds <= believed && keeperTime + t.ExitMarginSeconds <= mate;
+            bool should = inTime && c.TrueMargin >= t.ExitMarginSeconds;
+            c.Go = goes; c.Mistake = goes != should && (goes || c.TrueMargin >= t.ExitMarginSeconds * 2f);
+            return c;
+        }
+
         public static GoalkeeperExitChoice Choose(WorldView view, in WorldPlayer me, GoalkeeperAiTuning t, in GoalkeeperSkill skill, float command01, float reboundWait)
         {
             var c = new GoalkeeperExitChoice();

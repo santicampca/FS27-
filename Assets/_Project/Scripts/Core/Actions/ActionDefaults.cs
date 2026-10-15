@@ -42,6 +42,21 @@ namespace FS27.Core
         public const float HeaderLockSeconds = 0.4f;
         /// <summary>The aerial duel: how much the distance to the ball costs a player's score (share of his quality at full reach) and how much luck (seeded noise) can move it.</summary>
         public const float HeaderDuelDistanceWeight = 0.35f, HeaderDuelLuck = 0.1f;
+        // ---- Phase 37: the high ball (REQ-0184, 0189, 0190, 0194, 0196, 0108, 0146, 0849)
+        /// <summary>The jump: a player's aerial ability (strength, agility, speed, control) moves the highest ball he can head by up to this share of HeadMaxHeight either way (0.06 = +-6 % at the extremes).</summary>
+        public const float JumpHeightRange = 0.06f;
+        /// <summary>The header duel and the header's quality use this share of the aerial ability and the rest of the control quality.</summary>
+        public const float AerialShare = 0.5f;
+        /// <summary>A header that is not at goal goes to a free team-mate within this distance (m) and this angle (degrees) of where he faces; free = no rival closer than the radius (m) to him.</summary>
+        public const float HeaderPassRange = 14.0f, HeaderPassArcDegrees = 55.0f, HeaderPassOpenRadius = 2.5f, HeaderPassMinDistance = 1.5f;
+        /// <summary>A kick of a ball that is in the air (higher than VolleyMinHeight, m): its quality is multiplied by VolleyQualityFloor at control 0 up to 1 at control 1, and it has this much extra error (degrees).</summary>
+        public const float VolleyMinHeight = 0.4f, VolleyQualityFloor = 0.6f, VolleyExtraError = 8.0f;
+        /// <summary>The goalkeeper and a high ball: a crowd (rivals within this radius of the ball, m) and the height above the feet's reach cost him safety; below the minimum safety he punches instead of catching.</summary>
+        public const float KeeperCrowdRadius = 2.2f, KeeperCrowdPenalty = 0.22f, KeeperHeightPenalty = 0.12f, KeeperClaimMinSafety = 0.40f;
+        /// <summary>The safety of a catch is this share his handling and the rest his command; a crowd that he still decides to catch in costs the catch this share of the crowd penalty.</summary>
+        public const float KeeperSafetyHandlingShare = 0.6f, KeeperCrowdCatchShare = 0.5f;
+        /// <summary>The punch: speed (m/s), lift (m/s), the side the ball is turned to (degrees) and how far a poor keeper's punch can be off (degrees, times 1 - handling).</summary>
+        public const float KeeperPunchSpeed = 10.0f, KeeperPunchLift = 4.5f, KeeperPunchWideDegrees = 25.0f, KeeperPunchErrorDegrees = 30.0f;
         /// <summary>The last player to touch the ball cannot take it automatically again for this long (seconds): a kicker does not re-collect his own pass.</summary>
         public const float ReTouchCooldown = 0.3f;
         /// <summary>Phase 14: a player who has just kicked the ball does not touch it again while his kick recovers, even if somebody else touched it in between (before, one touch by anyone let him take his own pass back at once). 1 = on, 0 = off (the Phase 13 behaviour).</summary>
@@ -306,6 +321,12 @@ namespace FS27.Core
         public float HeaderShotRange = ActionDefaults.HeaderShotRange, HeaderShotSpeed = ActionDefaults.HeaderShotSpeed;
         public float HeaderLockSeconds = ActionDefaults.HeaderLockSeconds;
         public float HeaderDuelDistanceWeight = ActionDefaults.HeaderDuelDistanceWeight, HeaderDuelLuck = ActionDefaults.HeaderDuelLuck;
+        public float JumpHeightRange = ActionDefaults.JumpHeightRange, AerialShare = ActionDefaults.AerialShare;
+        public float HeaderPassRange = ActionDefaults.HeaderPassRange, HeaderPassArcDegrees = ActionDefaults.HeaderPassArcDegrees, HeaderPassOpenRadius = ActionDefaults.HeaderPassOpenRadius, HeaderPassMinDistance = ActionDefaults.HeaderPassMinDistance;
+        public float KeeperSafetyHandlingShare = ActionDefaults.KeeperSafetyHandlingShare, KeeperCrowdCatchShare = ActionDefaults.KeeperCrowdCatchShare;
+        public float VolleyMinHeight = ActionDefaults.VolleyMinHeight, VolleyQualityFloor = ActionDefaults.VolleyQualityFloor, VolleyExtraError = ActionDefaults.VolleyExtraError;
+        public float KeeperCrowdRadius = ActionDefaults.KeeperCrowdRadius, KeeperCrowdPenalty = ActionDefaults.KeeperCrowdPenalty, KeeperHeightPenalty = ActionDefaults.KeeperHeightPenalty, KeeperClaimMinSafety = ActionDefaults.KeeperClaimMinSafety;
+        public float KeeperPunchSpeed = ActionDefaults.KeeperPunchSpeed, KeeperPunchLift = ActionDefaults.KeeperPunchLift, KeeperPunchWideDegrees = ActionDefaults.KeeperPunchWideDegrees, KeeperPunchErrorDegrees = ActionDefaults.KeeperPunchErrorDegrees;
         public float ReTouchCooldown = ActionDefaults.ReTouchCooldown;
         public float KickerKeepsOffHisKick = ActionDefaults.KickerKeepsOffHisKick;
         public float KeeperHoldsBallOnThePitch = ActionDefaults.KeeperHoldsBallOnThePitch;

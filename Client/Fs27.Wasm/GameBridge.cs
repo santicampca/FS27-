@@ -112,7 +112,7 @@ namespace FS27.Client
             eventQueue.Clear(); Array.Clear(shots, 0, 2); Array.Clear(passes, 0, 2); Array.Clear(fouls, 0, 2); Array.Clear(corners, 0, 2); Array.Clear(throwIns, 0, 2); Array.Clear(headers, 0, 2); Array.Clear(tackles, 0, 2); possession[0] = possession[1] = 0;
             match.Events.Published += OnEvent;
             match.ActionPerformed += OnAction;
-            match.HeadersEnabled = true; driver.CrossActions = true; driver.CrossMechanics = true; match.HumanCrossEnabled = true;   // Phase 35: crosses are real crosses   // Phase 33: a ball in the air is played in the air
+            match.HeadersEnabled = true; driver.CrossActions = true; driver.CrossMechanics = true; match.HumanCrossEnabled = true; driver.AerialPlay = true; match.AerialRulesEnabled = true;   // Phase 35: crosses are real crosses   // Phase 33: a ball in the air is played in the air
             match.SetControl(TeamSide.Home, ControlSource.Human);
             clock = new SimulationClock(settings.SimulationStepSeconds);
             stick = Vec2.Zero; hasPress = false; restartWait = 0f; lastAction = ""; lastActionAt = -100f;
@@ -283,7 +283,7 @@ namespace FS27.Client
         public static int SuggestedIndex()
         {
             if (match == null || driver == null) return -1;
-            string id = AutoSelection.Choose(WorldState.Capture(match).View, TeamSide.Home, match.StoredSelection(TeamSide.Home), driver.Engine.DefenseTuning);
+            string id = AutoSelection.Choose(WorldState.Capture(match).View, TeamSide.Home, match.StoredSelection(TeamSide.Home), driver.Engine.DefenseTuning, driver.Engine.AerialForSelection);
             return id == null ? -1 : order.IndexOf(id);
         }
 

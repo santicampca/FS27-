@@ -101,6 +101,25 @@ ver([998], 'parcial', 'Docs/AI_OPPORTUNITIES_PHASE31.md y Docs/AI_PHASE32.md con
 ver([999], 'confirmado', 'sin push, despliegue ni cambio de permisos sin autorización explícita en las fases 28-34')
 ver([1000], 'parcial', 'criterio rector; no es comprobable automáticamente')
 
+
+# ---- phase 37: the high ball
+ver([68, 192], 'confirmado', 'Phase37Tests.ThePersonsAutomaticPlayer_IsTheOneWhoGetsUnderTheBall: AutoSelection con AerialPlay elige al que llega primero al punto de caída')
+ver([181], 'confirmado', 'Phase37Tests.AHighBall_HasAPlaceAndATime...: el punto previsto coincide con el vuelo real (+-0,6 m)')
+ver([184], 'parcial', 'AerialQuality (fuerza, agilidad, velocidad, control) mueve +-6 % la altura máxima de cabeceo y pesa en el duelo (Phase37Tests.TheJump_...); sin estado de salto ni equilibrio propio')
+ver([185], 'parcial', 'el reclamante espera debajo del balón (TheClaimant_GoesUnderTheBall_StandsThere); el contacto es automático en la ventana de cabeza, sin salto anticipado modelado')
+ver([186, 198], 'pendiente', 'sin colisión física entre cuerpos en el aire: gana un solo jugador por duelo')
+ver([188], 'parcial', 'el duelo combina capacidad aérea, resistencia, cercanía y azar sembrado; sin momento del salto')
+ver([189, 190], 'confirmado', 'Phase37Tests.TheGoalkeeper_PunchesAHighBallInACrowd_AndCatchesACleanOne')
+ver([174], 'confirmado', 'Phase37Tests.TheGoalkeeper_ComesForAHighBallOnlyWhenHeIsUnderItFirst_AndStaysOtherwise y los puños/atrapadas del Core')
+ver([191], 'pendiente', 'depende de la cámara 3D y de la sombra del balón')
+ver([193, 197], 'parcial', 'dos jugadores de segunda jugada por equipo se colocan donde caerá el cabezazo (AerialSecondBall); sin medir la disputa posterior')
+ver([194], 'parcial', 'el cabezazo sale hacia delante, hacia portería a <=8 m o a un compañero libre, con error por calidad; la potencia no la elige la persona')
+ver([195], 'parcial', 'el contacto es una acción del Core con calidad y duelo, no una animación; la persona no controla el momento del cabezazo')
+ver([196], 'confirmado', 'Phase37Tests.AHeader_LooksForAFreeTeamMateInFront_AndWithNobodyFreeGoesAsBefore')
+ver([200], 'parcial', 'el mismo duelo y cabezazo sirven a centros, saques largos y despejes; sin prueba por origen')
+ver([175], 'parcial', 'los centros acaban en cabezazos (A6, A7), voleas (driven), controles o despejes; mezcla no medida por tipo')
+ver([108, 146, 849], 'parcial', 'Phase37Tests.ABallStruckInTheAir_IsAVolley y ABallInTheAirAtTheFeet...: la volea existe y la IA la intenta cerca de portería; la persona la hace con el tiro normal, sin botón propio')
+
 # ---- batch checked one by one in phase 34: selection of the controlled player (61-80)
 ver([187], 'parcial', 'Phase35Tests.AnAerialBall_WithTwoPlayersInReach...: gana un solo jugador, según calidad de control, resistencia y cercanía; sin salto ni atributo de juego aéreo')
 ver([161], 'confirmado', 'Phase35Tests.ACross_IsARealAction_WithAHigherArc... y TheAI_CrossesWithTheRealAction: la acción existe en el Core y la IA la usa')
@@ -127,7 +146,6 @@ ver([67], 'confirmado', 'AutoSelection.Choose excluye al portero (AiDecisionSimu
 ver([78], 'confirmado', 'SelectionStability: retención tras cambio manual, tiempo mínimo entre cambios y margen de distancia (Phase32SelectionTests)')
 ver([64, 69], 'parcial', 'sin balón elige al defensor primario de DefenseRoles contra el portador; no usa la trayectoria del balón ni al receptor rival (REQ-0069 pendiente en la parte del receptor)')
 ver([66], 'confirmado', 'MatchController.SelectNearestToBall y Phase32SelectionTests.TheSwitchButton_GoesToTheNearestToTheBall (el botón ⇄ del cliente lo usa)')
-ver([68], 'pendiente', 'sin cálculo del punto de caída en la selección (REQ-0181 tampoco)')
 ver([70], 'parcial', 'con el balón en el aire la selección automática va al más cercano al balón, no al receptor previsto (IntendedReceiverId existe pero no se usa)')
 ver([71, 76], 'parcial', 'CycleSelection incluye al portero y no depende de la fase, sin prueba específica')
 ver([73, 72], 'parcial', 'el cliente web mueve el aro con el jugador seleccionado; sin prueba durante giros')

@@ -50,6 +50,9 @@ namespace FS27.Core.Tests
             // GB_ATTR=cross: the reference, the Phase-35 cross (real action only) and the Phase-36 cross play, to see what the team play adds
             if (Environment.GetEnvironmentVariable("GB_ATTR") == "cross")
                 cfgs = new List<GbConfig> { GbReference, GbCurrent.With("cross35", x => x.CrossPlay = false), GbCurrent };
+            // GB_ATTR=aerial: the Phase-36 game (aerial rules and high-ball play off) against the Phase-37 one, and the reference
+            if (Environment.GetEnvironmentVariable("GB_ATTR") == "aerial")
+                cfgs = new List<GbConfig> { GbReference, GbCurrent.With("noaerial", x => x.Aerial = false), GbCurrent };
             if (Environment.GetEnvironmentVariable("GB_ATTR") == "1")
                 cfgs = new List<GbConfig> { GbReference, GbReference.With("tactics", x => x.Tactics = true), GbReference.With("keeper", x => x.Distribution = true), GbReference.With("assist", x => x.Assist = true), GbCurrent };
             List<GbRow> rows = GbMatrix(scenes, cfgs, Enumerable.Range(first, n));

@@ -4,22 +4,18 @@ Fuente: `FS27_lista_maestra_1000_requisitos.md` (1.000 identificadores `FS27-REQ
 
 ## Estado de los 1.000 (generado por `Tools/requisitos_audit.py`)
 Cada fila de `Docs/requisitos_estado.csv` dice **cuánta confianza** tiene su estado:
-- **requisito** (108 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
-- **seccion** (892 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
+- **requisito** (123 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
+- **seccion** (877 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
 
-Totales: **confirmado 37**, parcial 857, pendiente 68, requiere humano 38. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
+Totales: **confirmado 44**, parcial 869, pendiente 49, requiere humano 38. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
 
 Pendientes por sección (los más numerosos):
 - Dirección visual y modelos: 20
 - Multijugador futuro y límites de alcance: 19
-- Balones aéreos y juego de cabeza: 16
-- Centros y juego por las bandas: 4
+- Balones aéreos y juego de cabeza: 3
 - Córners, bandas y balón parado: control avanzado: 3
+- Centros y juego por las bandas: 2
 - Interfaz y HUD: 2
-- Selección y cambio de jugador: 1
-- Primer toque y recepción: 1
-- Tiros y finalización: 1
-- Escenarios de partido y casos límite: 1
 
 Lo que **no se puede construir sin decisión, arte o red** y por eso sigue pendiente: arte 3D y modelos (no hay assets), música y archivos de audio, multijugador, cuenta/nube, volea, viento, y todo lo que solo una persona puede juzgar (sensación, diversión, legibilidad).
 
@@ -30,13 +26,13 @@ Resumen por sección:
 | Identidad y estructura del partido | 2 | 16 | 0 | 2 |
 | Movimiento y locomoción | 0 | 20 | 0 | 0 |
 | Joystick, sprint y controles táctiles | 3 | 17 | 0 | 0 |
-| Selección y cambio de jugador | 9 | 10 | 1 | 0 |
+| Selección y cambio de jugador | 10 | 10 | 0 | 0 |
 | Balón y física | 0 | 19 | 0 | 1 |
-| Primer toque y recepción | 0 | 19 | 1 | 0 |
+| Primer toque y recepción | 0 | 20 | 0 | 0 |
 | Pases y combinaciones | 0 | 18 | 0 | 2 |
-| Tiros y finalización | 0 | 19 | 1 | 0 |
-| Centros y juego por las bandas | 5 | 11 | 4 | 0 |
-| Balones aéreos y juego de cabeza | 0 | 4 | 16 | 0 |
+| Tiros y finalización | 0 | 20 | 0 | 0 |
+| Centros y juego por las bandas | 6 | 12 | 2 | 0 |
+| Balones aéreos y juego de cabeza | 5 | 12 | 3 | 0 |
 | Regates y protección | 0 | 19 | 0 | 1 |
 | Presión alta y defensa agresiva | 0 | 20 | 0 | 0 |
 | Defensa posicional y coberturas | 0 | 20 | 0 | 0 |
@@ -69,7 +65,7 @@ Resumen por sección:
 | Calidad de IA y evaluación | 1 | 19 | 0 | 0 |
 | Depuración y arquitectura | 0 | 20 | 0 | 0 |
 | Seguridad, privacidad y entrega | 0 | 20 | 0 | 0 |
-| Escenarios de partido y casos límite | 0 | 19 | 1 | 0 |
+| Escenarios de partido y casos límite | 0 | 20 | 0 | 0 |
 | Gestión del partido y estados | 0 | 20 | 0 | 0 |
 | Multijugador futuro y límites de alcance | 0 | 1 | 19 | 0 |
 | Balance y sensación futbolística | 0 | 0 | 0 | 20 |

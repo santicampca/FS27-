@@ -213,6 +213,24 @@ namespace FS27.Core
 
             if (!ball.HasPossessor)
             {
+                if (AerialPlayEnabled && !me.IsGoalkeeper && TryVolley(view, me, out PlayerDecision volley)) return volley;
+                if (AerialPlayEnabled && !me.IsGoalkeeper && aerial.Plan(view))
+                {
+                    AerialRole role = aerial.RoleOf(idx);
+                    if (role == AerialRole.Claim)
+                    {
+                        // Phase 37: he runs to where the ball comes down to head height and waits under it (he does not run on past it)
+                        Vec2 under = bounds.ClampPlayer(aerial.Point(out Vec2 spot, out _) ? spot : ball.Ground);
+                        bool there = (under - me.Position).Magnitude <= aerial.Tuning.StandRadius;
+                        return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.MoveToBall, Reason = DecisionReason.AerialClaim, HasMovement = true, Movement = there ? MovementIntent.Stand : MovementIntent.TowardsTarget(me.Position, under, Effort(aerial.Tuning.ClaimMagnitude, false), 0f) };
+                    }
+                    if (role == AerialRole.Second)
+                    {
+                        Vec2 stand = bounds.ClampPlayer(aerial.SecondPoint(AttackDirection(view, me.Team)));
+                        bool there = (stand - me.Position).Magnitude <= t.IdleRadius;
+                        return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.MoveToPoint, Reason = DecisionReason.AerialSecondBall, HasMovement = true, Movement = there ? MovementIntent.Stand : MovementIntent.TowardsTarget(me.Position, stand, Effort(aerial.Tuning.SecondMagnitude, false), t.ArriveRadius) };
+                    }
+                }
                 if (TryIntercept(view, idx, me, out PlayerDecision intercept)) return intercept;
                 if (ball.IntendedReceiverId == me.PlayerId) return MoveTo(me.PlayerId, me.Position, ball.Ground, t.ChaseMagnitude, DecisionKind.MoveToBall, DecisionReason.ReceiveBall);
                 if (t.PasserStaysOffHisPass && JustPassed(ball, me)) return Position(view, me, home, t.PositionBallPull, DecisionReason.AfterPass);
@@ -562,6 +580,25 @@ namespace FS27.Core
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.FreeKickClear, HasAction = true, Action = clear, HasMovement = true, Movement = MovementIntent.Stand };
         }
 
+        /// <summary>
+        /// Phase 37: a ball that is in the air at the height of his hip or lower (a driven cross, a ball that has dropped) within reach of his feet and the goal within the volley range, with a clear lane: he strikes it first time. The Core
+        /// rates the kick as a volley (harder to time than the same shot on the ground).
+        /// </summary>
+        private bool TryVolley(WorldView view, in WorldPlayer me, out PlayerDecision decision)
+        {
+            decision = default(PlayerDecision);
+            WorldBall ball = view.Ball;
+            if (me.KickCooldown || !me.CanAct || ball.HasPossessor || ball.IsGrounded || ball.Mode == BallMode.InShot) return false;
+            if (ball.Height < ActionDefaults.VolleyMinHeight || ball.Height > ActionDefaults.MaxTouchHeight || ball.Velocity.Y >= 0f) return false;
+            if ((ball.Ground - me.Position).Magnitude > aerial.Tuning.VolleyReach) return false;
+            Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
+            float distance = (goal - me.Position).Magnitude;
+            if (distance > aerial.Tuning.VolleyShootRange || !WorldGeometry.IsLaneClear(view, me.Team, me.Position, goal, t.ShootLaneClearance, true)) return false;
+            decision = BuildShot(view, me, goal, distance);
+            decision.Reason = DecisionReason.AerialVolley;
+            return true;
+        }
+
         private bool TryShoot(WorldView view, in WorldPlayer me, Vec2 goal, float nearestOpponent, out PlayerDecision decision)
         {
             decision = default(PlayerDecision);
@@ -618,6 +655,12 @@ namespace FS27.Core
 
         /// <summary>Phase 36: the cross as a team play: the team-mates of a carrier on a flank run to different places of the box (middle, near post, far post, edge), the defence marks the runners and covers the near post, and the AI chooses the style of its cross (high, driven, ground). Off (the default) = Phase 35.</summary>
         public bool CrossMechanics { get; set; }
+        /// <summary>Phase 37: with it ON the players read a high ball (see <see cref="AerialPlay"/>): the best placed of each team goes under it, the next ones stand for the second ball. OFF (Phase 36): they chase the ball as it flies.</summary>
+        public bool AerialPlayEnabled { get; set; }
+        private readonly AerialPlay aerial = new AerialPlay();
+        public AerialPlayTuning AerialTuning => aerial.Tuning;
+        /// <summary>The high-ball reader the automatic choice of the person's player uses (REQ-0192): null with <see cref="AerialPlayEnabled"/> off.</summary>
+        public AerialPlay AerialForSelection => AerialPlayEnabled ? aerial : null;
         private readonly CrossPlay crossPlay = new CrossPlay();
         public CrossPlayTuning CrossTuning => crossPlay.Tuning;
 
@@ -930,7 +973,9 @@ namespace FS27.Core
             if (!read.IsShot)
             {
                 float reboundWait = skill.ReactionSeconds * keeperAi.ReactionScale * (1f + keeperAi.ReboundPenalty * (1f - MathUtil.Clamp01(skill.ReboundResponse)));
-                GoalkeeperExitChoice exit = GoalkeeperExit.Choose(view, me, keeperAi, skill, me.Profile.KeeperCommand, reboundWait);
+                GoalkeeperExitChoice exit = AerialPlayEnabled && aerial.Plan(view) && aerial.Point(out Vec2 highPoint, out float highSeconds)
+                    ? GoalkeeperExit.ChooseHigh(view, me, keeperAi, skill, me.Profile.KeeperCommand, highPoint, highSeconds, aerial.BestArrival(me.Team.Opponent()), aerial.BestArrival(me.Team))
+                    : GoalkeeperExit.Choose(view, me, keeperAi, skill, me.Profile.KeeperCommand, reboundWait);
                 if (exit.Considered && exit.Mistake) LastError = new DecisionError { Kind = DecisionErrorKind.KeeperBadExit, Gap = exit.TrueMargin };
                 if (exit.Go)
                     return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.MoveToBall, Reason = DecisionReason.KeeperExit, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, bounds.ClampPlayer(exit.Target), keeperAi.ExitMagnitude, 0f) };

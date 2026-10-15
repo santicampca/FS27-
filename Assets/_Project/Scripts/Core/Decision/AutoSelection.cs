@@ -7,8 +7,14 @@ namespace FS27.Core
     /// </summary>
     public static class AutoSelection
     {
-        public static string Choose(WorldView view, TeamSide side, string current, DefenseTuning defense = null)
+        public static string Choose(WorldView view, TeamSide side, string current, DefenseTuning defense = null, AerialPlay aerial = null)
         {
+            // Phase 37 (REQ-0192): a high ball is coming down and nobody has it: the player who gets under it first, not the one nearest to where the ball is in the air now
+            if (aerial != null && !view.Ball.HasPossessor && aerial.Plan(view))
+            {
+                int claimant = aerial.ClaimantOf(side);
+                if (claimant >= 0) return view[claimant].PlayerId;
+            }
             // defending against a carrier: the primary defender (the one the defence would send to him)
             if (view.Ball.HasPossessor && view.Ball.PossessingTeam != side && view.TryGetBallCarrier(out WorldPlayer carrier))
             {
