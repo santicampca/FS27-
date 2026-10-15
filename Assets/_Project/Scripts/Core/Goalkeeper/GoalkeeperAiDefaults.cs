@@ -105,6 +105,14 @@ namespace FS27.Core
         public const float DistributionSpaceCap = 8.0f;
         /// <summary>How much of the chance of a pass survives a keeper with no kicking quality (1 = none lost).</summary>
         public const float DistributionQualityFloor = 0.6f;
+        /// <summary>A rival who needs less than this many seconds to reach the keeper hurries him, whatever the distance (he cannot wait for a lane with a runner coming): his time is (distance minus reach) over his top speed.</summary>
+        public const float DistributionHurrySeconds = 1.1f;
+        public const float DistributionRivalReach = 1.0f;
+        /// <summary>A clearance (no team-mate to play to) is a real one: it lands this far from him (m), on the side of the two channels either side of the middle where the nearest rival is further from its line.</summary>
+        public const float ClearLandingMeters = 20.0f;
+        public const float ClearSideAngleDegrees = 24.0f;
+        /// <summary>Rivals are looked for this far along each channel (m).</summary>
+        public const float ClearProbeMeters = 24.0f;
     }
 
     /// <summary>The editable copy of <see cref="GoalkeeperAiDefaults"/>. Arena and Classic differ in numbers only: <see cref="ArenaGoalkeeperDefaults"/>, <see cref="ClassicGoalkeeperDefaults"/>.</summary>
@@ -165,6 +173,11 @@ namespace FS27.Core
         public float DistributionSpaceWeight = GoalkeeperAiDefaults.DistributionSpaceWeight;
         public float DistributionSpaceCap = GoalkeeperAiDefaults.DistributionSpaceCap;
         public float DistributionQualityFloor = GoalkeeperAiDefaults.DistributionQualityFloor;
+        public float DistributionHurrySeconds = GoalkeeperAiDefaults.DistributionHurrySeconds;
+        public float DistributionRivalReach = GoalkeeperAiDefaults.DistributionRivalReach;
+        public float ClearLandingMeters = GoalkeeperAiDefaults.ClearLandingMeters;
+        public float ClearSideAngleDegrees = GoalkeeperAiDefaults.ClearSideAngleDegrees;
+        public float ClearProbeMeters = GoalkeeperAiDefaults.ClearProbeMeters;
         /// <summary>Multipliers that only the modes use (1 = the common number): how late he starts, how wrong he reads, how far off his place he stands.</summary>
         public float ReactionScale = 1f;
         public float ReadErrorScale = 1f;

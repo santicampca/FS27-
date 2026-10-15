@@ -107,6 +107,9 @@ namespace FS27.Core
             }
         }
 
+        /// <summary>Phase 31: the plan of a team (see <see cref="TeamTactic"/>), or null for none.</summary>
+        public void SetTactic(TeamSide side, TeamTactic plan) { engine.SetTactic(side, plan); }
+
         public DecisionProfile ProfileOf(TeamSide side) { return sideProfiles[(int)side]; }
         public int DecisionStepsOf(TeamSide side) { return sideSteps[(int)side]; }
 
