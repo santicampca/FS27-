@@ -25,12 +25,23 @@ Un único archivo: **`FS27-jugable.html`** (unos 12 MB). Te lo pasa quien organi
 | Disparar | Desliza **A** hacia abajo (cuanto más largo el deslizamiento, más fuerte) |
 | Vaselina | Desliza **A** hacia arriba |
 | Presionar al rival (sin balón) | Pulsa **A** |
-| Cambiar de jugador | Pulsa **⇄** |
+| Cambiar de jugador | Pulsa **⇄**: va al jugador más cercano al balón (otra vez: el siguiente) y tu elección se respeta unos segundos |
+| **Saque de banda o córner de tu equipo** | Aparece un panel. Apunta con el círculo, **mantén B** (la barra se llena: más tiempo = saque más largo) y **suelta** para sacar. En el córner elige antes Izquierda / Centro / Derecha. Si no haces nada, saca la IA a los 12 s |
 | Pausa | Botón **❚❚** arriba a la derecha |
 
 Tu jugador lleva un **aro amarillo**. Si prefieres ordenador: flechas o WASD para moverte, **J / K / L** son A / B / C, **Tab** cambia de jugador.
 
 Al terminar el partido (unos 15 minutos) o cuando quieras parar, la pantalla final te pide **valorar** de 1 a 5 seis cosas y escribir lo que quieras.
+
+## Novedades de esta versión (fase 35)
+
+- **PRÁCTICA** (menú): cinco pasos guiados (moverte, pasar, disparar, cambiar de jugador). Empieza por ahí si es tu primera vez.
+- **AJUSTES** (menú y pausa): tamaño del stick y de los botones, modo zurdo, cámara (sigue al balón o campo entero), zoom, volumen, silencio, vibración, tamaño del texto, colores para daltonismo, reducir movimiento. Se guardan solos en tu aparato.
+- **Sonido** (silbato, patada, gol…) y **vibración** en el móvil. Si molesta, «Silencio» en Ajustes.
+- **Tiros libres y penaltis tuyos**: eliges Pase / Izquierda / Centro / Derecha, apuntas con el círculo, mantienes B y sueltas.
+- **Pausa** con botones (continuar, ajustes, copiar registro de entradas, salir). Si algo no responde bien, «Copiar registro de entradas» y pégalo en el mensaje.
+- **Estadísticas** al terminar (posesión, tiros, pases, faltas, córners, cabezazos).
+- En el campo: aro discontinuo en el jugador que elegiría la IA, aviso de quién tiene el balón, resistencia con aviso de SPRINT/CANSADO.
 
 ## Qué nos interesa que pruebes
 
@@ -42,6 +53,8 @@ Cosas concretas que nos ayudan mucho:
 
 - ¿Pasas a quien quieres pasar, o el balón va a otro sitio?
 - ¿El botón **⇄** te da el jugador que esperas, o salta solo?
+- ¿Los saques de banda y córners se sienten bien? ¿Se entiende la barra de fuerza?
+- ¿Los balones altos se juegan de cabeza con sentido, o los jugadores los dejan caer?
 - ¿Los compañeros se desmarcan y se ofrecen, o te dejan solo?
 - ¿Los rivales presionan y roban de forma creíble?
 - ¿Te ha parecido injusto o raro algo (goles, faltas, el portero)?

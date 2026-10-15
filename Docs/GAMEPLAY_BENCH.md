@@ -23,7 +23,7 @@ dotnet test Tests/Core.Tests --no-build --filter "Name=GameplayBench_WriteBaseli
 ## Configuraciones y pareo
 
 - **ref**: sin táctica de equipo, el portero juega al instante, sin ayuda de puntería, selección de jugador de la Fase 8 (el comportamiento de las fases 28-30).
-- **cur**: todo lo de las fases 31 y 32.
+- **cur**: todo lo de las fases 31, 32 y 33 (cabezazos incluidos).
 - Misma semilla = mismo arranque (la semilla desplaza lateralmente las posiciones de forma fija y siembra el ruido del controlador). La comparación es **pareada** (Δ por semilla, error estándar, veredicto con suelo `max(10 % de la referencia, 0,05)`).
 - Las ejecuciones son deterministas: **las semillas no son muestras independientes** de una población, y solo hay 12 equipos distintos. Un veredicto «mejor / peor» es evidencia de que el cambio mueve esa métrica en esas escenas, no una estimación de la liga.
 

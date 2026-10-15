@@ -18,6 +18,9 @@ namespace FS27.Core
         public event Action<ActionResult> ActionPerformed;
         public ActionTuning ActionTuning => actions;
 
+        /// <summary>Phase 33: off (the default) = Phase-32 behaviour, a field player cannot touch a ball above <see cref="ActionTuning.MaxTouchHeight"/>; on = he plays a ball in the air with his head (see <c>HeadTouch</c>). The games turn it on.</summary>
+        public bool HeadersEnabled { get; set; }
+
         // ------------------------------------------------------------------ public API
 
         /// <summary>The player who controls the ball, or null when it is free (the single source: <see cref="MatchBall"/>).</summary>
@@ -137,6 +140,7 @@ namespace FS27.Core
                 case FootballActionKind.WallPass:
                 case FootballActionKind.ThroughPass:
                 case FootballActionKind.LongPass:
+                case FootballActionKind.Cross:
                 case FootballActionKind.Chip:
                 case FootballActionKind.Shot:
                 case FootballActionKind.Clearance:
@@ -165,7 +169,7 @@ namespace FS27.Core
                 case FootballActionKind.GoalkeeperRush: return ResolveRush(res, p);
 
                 default:
-                    // Header, Cross, PlacedShot, GoalkeeperSave and GoalkeeperCatch (the last two happen on their own when the keeper touches the ball)
+                    // PlacedShot, GoalkeeperSave and GoalkeeperCatch (the last two happen on their own when the keeper touches the ball)
                     return Reject(res, ActionRejection.NotSupported);
             }
         }
@@ -236,6 +240,7 @@ namespace FS27.Core
         private void TouchBall(MatchPlayer p, FootballActionKind kind, bool record = true)
         {
             if (record) State.Ball.RecordTouch(p.Team, p.PlayerId);
+            lastTouchWasHeader = kind == FootballActionKind.Header;
             MarkBall(p, kind);
             Emit(GameplayEventKind.BallTouched, p.Team, p.PlayerId, State.Ball.Physics.Position, kind.ToString());
         }
@@ -293,6 +298,10 @@ namespace FS27.Core
                 case FootballActionKind.LongPass:
                 case FootballActionKind.SkillLobPass:
                     baseQuality = prof.PassQuality; minSpeed = actions.LongPassMinSpeed; maxSpeed = actions.LongPassMaxSpeed; loft = actions.LongPassLoft; maxError = actions.LongPassMaxError; cost = actions.PassStaminaCost;
+                    detail = ActionDetail.Lofted;
+                    break;
+                case FootballActionKind.Cross:
+                    baseQuality = prof.PassQuality; minSpeed = actions.CrossMinSpeed; maxSpeed = actions.CrossMaxSpeed; loft = actions.CrossLoft; maxError = actions.CrossMaxError; cost = actions.PassStaminaCost;
                     detail = ActionDetail.Lofted;
                     break;
                 case FootballActionKind.Chip:
@@ -358,7 +367,7 @@ namespace FS27.Core
 
         private static bool IsPassKick(FootballActionKind kind)
         {
-            return kind == FootballActionKind.ShortPass || kind == FootballActionKind.WallPass || kind == FootballActionKind.ThroughPass || kind == FootballActionKind.LongPass || kind == FootballActionKind.SkillLobPass;
+            return kind == FootballActionKind.ShortPass || kind == FootballActionKind.WallPass || kind == FootballActionKind.ThroughPass || kind == FootballActionKind.LongPass || kind == FootballActionKind.Cross || kind == FootballActionKind.SkillLobPass;
         }
 
         /// <summary>
@@ -830,7 +839,7 @@ namespace FS27.Core
             if (actions.KeeperHoldsBallOnThePitch > 0f && MatchRules.HasCrossedGoalLine(field, new BallObservation(b.Physics.Position, ballParameters.Radius))) return;
 
             MatchPlayer best = null;
-            float bestDistance = float.MaxValue;
+            float bestDistance = float.MaxValue, bestAerialScore = float.NegativeInfinity;
             Vec2 ballXY = Flat(b.Physics.Position);
             float height = BallHeight();
             for (int side = 0; side < 2; side++)
@@ -848,15 +857,62 @@ namespace FS27.Core
                     float reach = keeper ? actions.TouchReach * (actions.KeeperReachBase + actions.KeeperReachRange * p.ActionProfile.KeeperDiving) : actions.TouchReach;
                     reach = PenaltyKeeperReach(p, reach);
                     float maxHeight = keeper ? field.GoalHeight : actions.MaxTouchHeight;
+                    // Phase 33: a field player can head a ball that is still above his feet's reach (not a shot: that is a block, and the balance of the goals is not touched)
+                    bool aerial = !keeper && HeadersEnabled && height > maxHeight && height <= actions.HeadMaxHeight && b.Mode != BallMode.InShot && !(b.HasLastTouch && b.SecondsSinceTouch < actions.HeaderLockSeconds && lastTouchWasHeader);
+                    if (aerial) { maxHeight = actions.HeadMaxHeight; reach = actions.HeaderReach; }
                     if (height > maxHeight) continue;
                     float d = (ballXY - p.Locomotion.Position).Magnitude;
+                    if (aerial)
+                    {
+                        // Phase 35 (REQ-0187): an aerial duel is won by the better header, not by who is a few centimetres nearer: his control quality and stamina, how near he is to the ball, and a little luck from the seeded noise
+                        if (d > reach) continue;
+                        float duel = p.ActionProfile.ControlQuality * StaminaFactorOf(p) * (1f - actions.HeaderDuelDistanceWeight * d / reach) + actions.HeaderDuelLuck * Noise();
+                        if (best == null || duel > bestAerialScore) { best = p; bestAerialScore = duel; bestDistance = d; }
+                        continue;
+                    }
                     if (d > reach || d >= bestDistance) continue;
                     best = p;
                     bestDistance = d;
                 }
             }
             if (best == null || PenaltyBlocksTouch(best)) return;
+            if (!best.InGoal && HeadersEnabled && height > actions.MaxTouchHeight) { HeadTouch(best); return; }
             FirstTouch(best, 0f, false);
+        }
+
+        /// <summary>
+        /// Phase 33: the ball is played in the air. The quality is the first-touch score of his control (minus the header penalty): a good one cushions it forward, a poor one sends it away with an error that grows as the quality falls;
+        /// within <see cref="ActionTuning.HeaderShotRange"/> of the opponents' goal the header is at goal. Always a real touch of the ball (last touch, event), never a bounce the ball makes by itself.
+        /// </summary>
+        private bool lastTouchWasHeader;
+
+        private void HeadTouch(MatchPlayer p)
+        {
+            lastTouchWasHeader = true;
+            MatchBall b = State.Ball;
+            Vec2 relative = Flat(b.Physics.Velocity) - p.Locomotion.Velocity;
+            float relSpeed = (float)Math.Sqrt(relative.X * relative.X + b.Physics.Velocity.Y * b.Physics.Velocity.Y + relative.Y * relative.Y);
+            float score = ActionModel.FirstTouchScore(p.ActionProfile.ControlQuality, 1f, StaminaFactorOf(p), relSpeed, 0f, -actions.HeaderPenalty, Noise(), actions);
+            float quality = ActionModel.Clamp01(score);
+            Vec2 attack = AttackDirectionOf(p.Team), goal = GoalCentreOf(p.Team), here = p.Locomotion.Position;
+            bool atGoal = (goal - here).Magnitude <= actions.HeaderShotRange;
+            Vec2 want = atGoal ? ActionModel.DirectionOr(goal - here, attack) : ActionModel.DirectionOr(p.Locomotion.FacingDirection, attack);
+            var res = new ActionResult { Kind = FootballActionKind.Header, Team = p.Team, PlayerId = p.PlayerId, Foot = ActionFoot.Body, Quality = quality, Detail = ActionDetail.Headed, Outcome = ActionOutcome.Completed };
+            if (!atGoal && score >= actions.CleanControlThreshold)
+            {
+                SetBallVelocity(new Vec3(want.X * actions.HeaderCushionSpeed, 0f, want.Y * actions.HeaderCushionSpeed));
+                res.Direction = want; res.BallVelocity = b.Physics.Velocity;
+                ReleaseTouchedBall(p, FootballActionKind.Header, false);
+                Finish(res);
+                return;
+            }
+            float error = (Noise() >= 0f ? 1f : -1f) * actions.HeaderErrorDegrees * (1f - quality) * Math.Abs(Noise());
+            Vec2 dir = ActionModel.Rotate(want, error);
+            float speed = atGoal ? actions.HeaderShotSpeed : actions.HeaderAwaySpeed;
+            SetBallVelocity(new Vec3(dir.X * speed, actions.HeaderLift, dir.Y * speed));
+            res.Direction = dir; res.BallVelocity = b.Physics.Velocity; 
+            ReleaseTouchedBall(p, FootballActionKind.Header, false);
+            Finish(res);
         }
 
         /// <summary>

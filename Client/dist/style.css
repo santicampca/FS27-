@@ -44,3 +44,31 @@ textarea { width: 100%; font: inherit; font-size: 14px; border-radius: 8px; padd
 .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 button.alt { background: #34647a; font-size: 16px; padding: 10px 18px; }
 .screen .box, .screen .box * { touch-action: pan-y; }
+
+#spbox { position: fixed; left: 50%; top: 56px; transform: translateX(-50%); z-index: 7; background: rgba(0, 0, 0, .66); padding: 8px 14px; border-radius: 12px; text-align: center; max-width: 86vw; pointer-events: auto; }
+#sptitle { font-weight: 800; letter-spacing: 1px; }
+#sptext { font-size: 13px; opacity: .85; margin-top: 4px; }
+#spcharge { width: min(280px, 70vw); height: 14px; margin: 6px auto 0; background: rgba(255, 255, 255, .2); border-radius: 7px; overflow: hidden; }
+#spfill { height: 100%; width: 0; background: #7CFC00; }
+#spzones { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+#spzones button { padding: 6px 10px; border-radius: 8px; background: rgba(255, 255, 255, .18); font-size: 14px; }
+#spzones button.sel { background: #1fa34a; }
+
+:root { --stick-scale: 1; --btn-scale: 1; --text-scale: 1; }
+#hud, .screen .box, #spbox, #hintbar, #tutorial, #pausebox { font-size: calc(16px * var(--text-scale)); }
+#stick { transform: scale(var(--stick-scale)); transform-origin: left bottom; }
+.act { transform: scale(var(--btn-scale)); transform-origin: right bottom; }
+.lefty #stick { left: auto; right: calc(26px + var(--safe-r)); transform-origin: right bottom; }
+.lefty #btnA { right: auto; left: calc(24px + var(--safe-l)); transform-origin: left bottom; } .lefty #btnB { right: auto; left: calc(112px + var(--safe-l)); transform-origin: left bottom; } .lefty #btnC { right: auto; left: calc(24px + var(--safe-l)); transform-origin: left bottom; }
+.lefty #btnSw { right: auto; left: calc(190px + var(--safe-l)); }
+#poss { position: absolute; top: calc(44px + var(--safe-t)); left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, .45); padding: 2px 10px; border-radius: 8px; font-size: 13px; pointer-events: none; white-space: nowrap; }
+#stam { position: absolute; left: calc(10px + var(--safe-l)); top: calc(26px + var(--safe-t)); width: 120px; height: 14px; background: rgba(0, 0, 0, .5); border-radius: 7px; overflow: hidden; pointer-events: none; }
+#stamFill { height: 100%; width: 100%; background: #7CFC00; } #stamTxt { position: absolute; inset: 0; font-size: 10px; text-align: center; line-height: 14px; }
+#tutorial { position: fixed; left: 50%; top: 84px; transform: translateX(-50%); z-index: 7; background: rgba(15, 59, 29, .92); border: 2px solid #2f8f4d; padding: 8px 14px; border-radius: 12px; max-width: 86vw; text-align: center; pointer-events: auto; }
+.small2 { margin-left: 8px; padding: 3px 8px; border-radius: 6px; background: rgba(255, 255, 255, .18); font-size: 12px; }
+#pausebox { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 8; background: rgba(0, 0, 0, .78); padding: 12px 16px; border-radius: 14px; text-align: center; pointer-events: auto; }
+#pausebox button { padding: 8px 12px; margin: 4px; border-radius: 8px; background: #1fa34a; font-size: 14px; }
+#settings h3 { margin: 10px 0 2px; text-align: left; font-size: 15px; opacity: .85; }
+#settings input[type=range] { width: 50%; touch-action: pan-x; }
+#endStats { width: 100%; font-size: 14px; border-collapse: collapse; margin: 6px 0; } #endStats td { padding: 2px 6px; border-bottom: 1px solid rgba(255, 255, 255, .12); } #endStats td:nth-child(2) { text-align: center; opacity: .8; }
+.reduce #banner { text-shadow: none; }

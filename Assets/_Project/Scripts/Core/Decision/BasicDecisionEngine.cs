@@ -588,12 +588,16 @@ namespace FS27.Core
             return best;
         }
 
+        /// <summary>Phase 35: a decision to cross (reason <see cref="DecisionReason.CrossToBox"/>) is performed as the real <see cref="FootballActionKind.Cross"/>; off (the default) it is the long pass of Phase 28.</summary>
+        public bool CrossActions { get; set; }
+
         private PlayerDecision PassTo(WorldView view, in WorldPlayer me, in WorldPlayer receiver, DecisionReason reason, bool lofted = false)
         {
             Vec2 dir = ActionModel.DirectionOr(receiver.Position - me.Position, me.Facing);
             float d = (receiver.Position - me.Position).Magnitude;
             FootballActionKind kind = FootballActionKind.ShortPass;
             if (d >= t.LobPassDistance && view.CanUse(me.PlayerId, FootballActionKind.SkillLobPass).Allowed) { kind = FootballActionKind.SkillLobPass; reason = DecisionReason.LobPassAvailable; }
+            else if (lofted && CrossActions) kind = FootballActionKind.Cross;   // Phase 35: a cross from the flank is a cross, not a long pass
             else if (lofted || d >= t.LongPassDistance) kind = FootballActionKind.LongPass;
             float power = Math.Min(1f, t.PassPowerBase + (1f - t.PassPowerBase) * d / t.PassPowerRefDistance);
             if (t.PassPhysicsEnabled)

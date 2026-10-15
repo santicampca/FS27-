@@ -1,0 +1,51 @@
+seccion,confirmado,parcial,pendiente,requiere-humano,sin auditar
+Identidad y estructura del partido,2,16,0,2,0
+Movimiento y locomoción,0,20,0,0,0
+"Joystick, sprint y controles táctiles",3,17,0,0,0
+Selección y cambio de jugador,9,10,1,0,0
+Balón y física,0,19,0,1,0
+Primer toque y recepción,0,19,1,0,0
+Pases y combinaciones,0,18,0,2,0
+Tiros y finalización,0,19,1,0,0
+Centros y juego por las bandas,1,13,5,1,0
+Balones aéreos y juego de cabeza,0,4,16,0,0
+Regates y protección,0,19,0,1,0
+Presión alta y defensa agresiva,0,20,0,0,0
+Defensa posicional y coberturas,0,20,0,0,0
+"Entradas, presión individual y duelos",0,20,0,0,0
+Porteros: colocación y reflejos,0,20,0,0,0
+Porteros: salidas y distribución,0,20,0,0,0
+Saques de banda,0,19,0,1,0
+Córners,0,20,0,0,0
+Tiros libres y puntos direccionales,0,19,0,1,0
+Penaltis,0,20,0,0,0
+Reanudaciones y flujo de partido,1,19,0,0,0
+Reglas de Classic,0,20,0,0,0
+Reglas de Arena,0,18,0,2,0
+VAR y decisiones arbitrales,0,18,0,2,0
+IA ofensiva sin balón,0,20,0,0,0
+IA defensiva sin balón,0,20,0,0,0
+Transiciones y contraataques,0,20,0,0,0
+Personalidad táctica y entrenadores,0,19,0,1,0
+Dificultad y adaptación,0,20,0,0,0
+"Atributos, roles y polivalencia",0,20,0,0,0
+Equipos y plantillas,0,19,0,1,0
+Cámara y legibilidad,0,19,0,1,0
+Interfaz y HUD,6,11,2,1,0
+Animaciones y presentación,0,19,0,1,0
+Audio y respuesta sensorial,0,20,0,0,0
+Rendimiento y estabilidad móvil,1,19,0,0,0
+"Guardado, perfiles y personalización",0,20,0,0,0
+"Economía, Zenit Points y progresión",0,19,0,1,0
+"Tutorial, práctica y accesibilidad",0,20,0,0,0
+Calidad de IA y evaluación,1,19,0,0,0
+Depuración y arquitectura,0,20,0,0,0
+"Seguridad, privacidad y entrega",0,20,0,0,0
+Escenarios de partido y casos límite,0,19,1,0,0
+Gestión del partido y estados,0,20,0,0,0
+Multijugador futuro y límites de alcance,0,1,19,0,0
+Balance y sensación futbolística,0,0,0,20,0
+Dirección visual y modelos,0,0,20,0,0
+Prueba humana y lanzamiento de prototipo,0,20,0,0,0
+"Córners, bandas y balón parado: control avanzado",4,13,3,0,0
+Reglas de diseño y prioridades de implementación,5,15,0,0,0
