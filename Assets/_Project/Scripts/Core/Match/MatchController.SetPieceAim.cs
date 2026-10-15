@@ -3,6 +3,25 @@ using System.Collections.Generic;
 
 namespace FS27.Core
 {
+    /// <summary>Phase 39 (REQ-0980): the record of one restart taken by a person.</summary>
+    public struct SetPieceReport
+    {
+        public RestartKind Kind;
+        public TeamSide Team;
+        public string TakerId;
+        public float MatchTime;
+        public FreeKickIntent Intent;
+        /// <summary>The team-mate chosen (named or pointed at), or null when the ball was aimed at a point or a zone.</summary>
+        public string TargetPlayerId;
+        public bool HasDestination;
+        public Vec2 Destination;
+        /// <summary>The power applied to the kick, 0..1.</summary>
+        public float Power;
+        public FootballActionKind ActionKind;
+        public ActionOutcome Outcome;
+        public float Quality;
+    }
+
     /// <summary>Why <see cref="MatchController.ExecuteSetPiece"/> did not (or did) take the throw-in or the corner.</summary>
     public enum SetPieceExecuteResult
     {
@@ -34,6 +53,21 @@ namespace FS27.Core
 
         /// <summary>The power a charge of <paramref name="holdSeconds"/> gives a throw-in (the free kick's charge, scaled).</summary>
         public float ThrowPowerFromHold(float holdSeconds) { return FreeKickAiming.PowerFromHold(holdSeconds, freeKick) * setPiece.ThrowMaxPower; }
+
+        private readonly List<SetPieceReport> setPieceReports = new List<SetPieceReport>();
+
+        /// <summary>Phase 39 (REQ-0980): one entry for every throw-in, corner and free kick a PERSON took: what was chosen (target team-mate or point), the power applied and what the action did. In order; read-only.</summary>
+        public IReadOnlyList<SetPieceReport> SetPieceReports => setPieceReports;
+
+        private void ReportSetPiece(RestartKind kind, TeamSide team, string takerId, ActionRequest request, FreeKickAim aim, Vec2 destination, bool hasDestination, ActionResult result)
+        {
+            setPieceReports.Add(new SetPieceReport
+            {
+                Kind = kind, Team = team, TakerId = takerId, MatchTime = State.MatchTimeSeconds, Intent = aim.Intent,
+                TargetPlayerId = request.Target.Kind == PassTargetKind.Player ? request.Target.PlayerId : null,
+                HasDestination = hasDestination, Destination = destination, Power = request.Power, ActionKind = request.Kind, Outcome = result.Outcome, Quality = result.Quality
+            });
+        }
 
         public SetPieceExecuteResult ExecuteSetPiece(FreeKickAim aim)
         {
@@ -70,6 +104,7 @@ namespace FS27.Core
             bool lofted = kind == RestartKind.Corner || power >= setPiece.ThrowLoftedPower || (request.Target.Kind == PassTargetKind.Player && target != null && (target.Locomotion.Position - spot).Magnitude >= freeKick.PassLongDistance);
             request.Kind = lofted ? FootballActionKind.LongPass : FootballActionKind.ShortPass;
             ActionResult result = Perform(request);
+            ReportSetPiece(kind, team, taker.PlayerId, request, aim, destination, hasDestination, result);
             return result.Outcome == ActionOutcome.Rejected ? SetPieceExecuteResult.ActionRefused : SetPieceExecuteResult.Executed;
         }
 

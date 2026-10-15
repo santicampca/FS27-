@@ -256,6 +256,12 @@ namespace FS27.Core
                     return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.ForwardRun, Reason = DecisionReason.CrossRunRole, HasMovement = true, Movement = there ? MovementIntent.Stand : MovementIntent.TowardsTarget(me.Position, spot, Effort(crossPlay.Tuning.RunMagnitude, false), t.ArriveRadius) };
                 }
             }
+            if (OutsideSupportEnabled && wingSupport.TryTarget(view, idx, me, carrier, AttackDirection(view, me.Team), out Vec2 outside))
+            {
+                Vec2 spot = bounds.ClampPlayer(outside);
+                bool there = (spot - me.Position).Magnitude <= t.IdleRadius;
+                return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Support, Reason = DecisionReason.OutsideSupport, HasMovement = true, Movement = there ? MovementIntent.Stand : MovementIntent.TowardsTarget(me.Position, spot, Effort(wingSupport.Tuning.RunMagnitude, false), t.ArriveRadius) };
+            }
             if ((me.Position - home).Magnitude > t.FarFromHomeDistance) return MoveTo(me.PlayerId, me.Position, home, t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.FarFromHome);
             if (attack.Tuning.Enabled) return AttackWithoutBall(view, idx, me, carrierIdx, home);
             float toCarrier = (me.Position - carrier.Position).Magnitude;
@@ -657,6 +663,10 @@ namespace FS27.Core
         public bool CrossMechanics { get; set; }
         /// <summary>Phase 37: with it ON the players read a high ball (see <see cref="AerialPlay"/>): the best placed of each team goes under it, the next ones stand for the second ball. OFF (Phase 36): they chase the ball as it flies.</summary>
         public bool AerialPlayEnabled { get; set; }
+        /// <summary>Phase 39 (REQ-0177): with it ON the full-back of a flank runs past a winger who carries the ball inside (see <see cref="WingSupport"/>). OFF (default): he keeps his place.</summary>
+        public bool OutsideSupportEnabled { get; set; }
+        private readonly WingSupport wingSupport = new WingSupport();
+        public WingSupportTuning WingSupportTuning => wingSupport.Tuning;
         private readonly AerialPlay aerial = new AerialPlay();
         public AerialPlayTuning AerialTuning => aerial.Tuning;
         /// <summary>The high-ball reader the automatic choice of the person's player uses (REQ-0192): null with <see cref="AerialPlayEnabled"/> off.</summary>

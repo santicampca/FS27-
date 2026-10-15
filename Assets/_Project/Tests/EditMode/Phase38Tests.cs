@@ -91,3 +91,64 @@ namespace FS27.Core.Tests
         }
     }
 }
+namespace FS27.Core.Tests
+{
+    public partial class AiInfrastructureTests
+    {
+        [Test]
+        public void ACross_WithTheWeakFoot_IsLessPreciseThanWithTheGoodFoot()
+        {
+            ActionResult Cross(Vec2 dir)
+            {
+                MatchController c = Quiet();
+                Carrier(c, TeamSide.Home, "hs3", 10f, -10f, East);
+                MatchPlayer p = c.State.Home.Find("hs3");
+                ActionProfile ap = p.ActionProfile; ap.PreferredFoot = PreferredFoot.Right; ap.WeakFootQuality = 0.1f; p.ActionProfile = ap;
+                return c.Perform(new ActionRequest(TeamSide.Home, "hs3", FootballActionKind.Cross, dir, 0.6f) { Source = ControlSource.Ai });
+            }
+            ActionResult toTheRight = Cross(new Vec2(0.3f, 1f).Normalized), toTheLeft = Cross(new Vec2(0.3f, -1f).Normalized);
+            Assert.AreNotEqual(toTheRight.Foot, toTheLeft.Foot, "the two directions are played with different feet");
+            ActionResult good = toTheRight.WeakFoot ? toTheLeft : toTheRight, weak = toTheRight.WeakFoot ? toTheRight : toTheLeft;
+            Assert.IsTrue(weak.WeakFoot); Assert.IsFalse(good.WeakFoot);
+            Assert.Less(weak.Quality, good.Quality, "the weak foot crosses worse");
+        }
+
+        [Test]
+        public void EveryRestartATakenByAPerson_LeavesAReport_WithTheTargetThePowerAndTheResult()
+        {
+            SetPieceBallSpeed(1.0f, RestartKind.ThrowIn, new FreeKickAim { Intent = FreeKickIntent.PassToPoint, HasDestination = true, Destination = new Vec2(8f, 2f) }, out MatchController c);
+            Assert.AreEqual(1, c.SetPieceReports.Count);
+            SetPieceReport r = c.SetPieceReports[0];
+            Assert.AreEqual(RestartKind.ThrowIn, r.Kind);
+            Assert.IsTrue(r.HasDestination); Assert.AreEqual(8f, r.Destination.X, 1e-4f);
+            Assert.Greater(r.Power, 0f); Assert.AreNotEqual(ActionOutcome.Rejected, r.Outcome);
+            Assert.IsNotNull(r.TakerId);
+        }
+
+        [Test]
+        public void TheWidePlayerBehind_OffersTheOutside_WhenTheWingerCarriesTheBallInside_AndOnlyThen()
+        {
+            MatchController c = GbBuild(GbCurrent, 1, out _);
+            WorldView v0 = WorldState.Capture(c).View;
+            string wide = null; float side = 0f;
+            for (int i = v0.TeamStart(TeamSide.Home); i < v0.TeamStart(TeamSide.Home) + v0.TeamCount(TeamSide.Home); i++)
+                if (v0[i].IsOnPitch && !v0[i].IsGoalkeeper && v0[i].Role != PlayerRole.Forward && v0[i].HasHome && Math.Abs(v0[i].Home.Y) >= WingSupportDefaults.WideHome) { wide = v0[i].PlayerId; side = v0[i].Home.Y > 0f ? 1f : -1f; break; }
+            Assert.IsNotNull(wide, "the 6v6 formation has a wide player behind the attack");
+            string winger = c.State.Home.Players.First(p => p.IsActive && !p.InGoal && p.PlayerId != wide).PlayerId;
+            int n = 0;
+            foreach (MatchPlayer p in c.State.Home.Players.Concat(c.State.Away.Players)) if (p.IsActive && p.PlayerId != wide && p.PlayerId != winger) c.PlacePlayer(p.Team, p.PlayerId, new Vec2(p.Team == TeamSide.Home ? -15f : 15f, p.InGoal ? 0f : -4f + 2f * n++), 0f);
+            c.PlacePlayer(TeamSide.Home, wide, new Vec2(-2f, 7f * side), 0f);
+            Carrier(c, TeamSide.Home, winger, 8f, 8f * side, East);
+            c.State.Home.Find(winger).Locomotion.Velocity = new Vec2(3f, -3f * side);
+            var on = new BasicDecisionEngine(c.Pitch) { OutsideSupportEnabled = true };
+            PlayerDecision d = on.Decide(WorldState.Capture(c).View, wide);
+            Assert.AreEqual(DecisionReason.OutsideSupport, d.Reason);
+            Assert.IsTrue(d.Movement.HasTarget);
+            Assert.Greater(d.Movement.Target.Y * side, 8f, "he goes outside the winger (towards the touchline)");
+            Assert.Greater(d.Movement.Target.X, 8f, "and a little ahead of him");
+            Assert.AreNotEqual(DecisionReason.OutsideSupport, new BasicDecisionEngine(c.Pitch).Decide(WorldState.Capture(c).View, wide).Reason, "off: he keeps his place");
+            c.State.Home.Find(winger).Locomotion.Velocity = new Vec2(3f, 3f * side);
+            Assert.AreNotEqual(DecisionReason.OutsideSupport, on.Decide(WorldState.Capture(c).View, wide).Reason, "he only offers the outside when the winger cuts in");
+        }
+    }
+}

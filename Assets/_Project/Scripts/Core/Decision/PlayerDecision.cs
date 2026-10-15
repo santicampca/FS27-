@@ -127,7 +127,9 @@ namespace FS27.Core
         /// <summary>Phase 37: a high ball is coming down and a team-mate (or a rival) is under it: he stands where the header will land, for the second ball.</summary>
         AerialSecondBall,
         /// <summary>Phase 37: the ball is in the air at his feet within reach of the goal: he strikes it first time (a volley) instead of waiting for it to drop.</summary>
-        AerialVolley
+        AerialVolley,
+        /// <summary>Phase 39: the winger carries the ball inside and the full-back of his flank runs past him on the outside (the overlap) to offer a pass out wide.</summary>
+        OutsideSupport
     }
 
     /// <summary>

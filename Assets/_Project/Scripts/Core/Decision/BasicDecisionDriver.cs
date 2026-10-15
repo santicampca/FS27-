@@ -37,6 +37,8 @@ namespace FS27.Core
         public bool CrossMechanics { get { return engine.CrossMechanics; } set { engine.CrossMechanics = value; } }
         /// <summary>Phase 37: the high ball as a team play (see <see cref="BasicDecisionEngine.AerialPlayEnabled"/>).</summary>
         public bool AerialPlay { get { return engine.AerialPlayEnabled; } set { engine.AerialPlayEnabled = value; } }
+        /// <summary>Phase 39: the full-back offers the outside when the winger cuts in (see <see cref="BasicDecisionEngine.OutsideSupportEnabled"/>).</summary>
+        public bool OutsideSupport { get { return engine.OutsideSupportEnabled; } set { engine.OutsideSupportEnabled = value; } }
         private readonly SelectionStability selection = new SelectionStability();
         /// <summary>Phase 32: how stable the player a person controls is (hold after a manual switch, dwell, margin); <c>Enabled = false</c> gives the Phase 8 behaviour.</summary>
         public SelectionStabilityTuning SelectionTuning => selection.Tuning;

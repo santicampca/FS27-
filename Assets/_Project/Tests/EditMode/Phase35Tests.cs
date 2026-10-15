@@ -36,9 +36,10 @@ namespace FS27.Core.Tests
         [Test]
         public void TheAI_CrossesWithTheRealAction_OnlyWhenAsked_AndStillDecidesTheSameCross()
         {
-            GbScenario wing = GbScenes().First(s => s.Id == "A2_WingPlay");
+            GbScenario[] wings = GbScenes().Where(s => s.Id == "A2_WingPlay" || s.Id == "A6_CrossBox").ToArray();
             double on = 0, off = 0, onAny = 0, offAny = 0;
-            foreach (int seed in Enumerable.Range(1, 12))
+            foreach (GbScenario wing in wings)
+            foreach (int seed in Enumerable.Range(1, 24))
             {
                 var a = GbRun(wing, GbCurrent, seed); var b = GbRun(wing, GbCurrent.With("nocross", x => x.Crosses = false), seed);
                 on += a["h_crossKicks"]; off += b["h_crossKicks"]; onAny += a["h_crosses"]; offAny += b["h_crosses"];
