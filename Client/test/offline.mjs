@@ -23,6 +23,12 @@ await page.waitForFunction(() => window.__fs27 && window.__fs27.snap && window._
 check('a match starts with a tap on JUGAR', true);
 check('a hint explains the controls', await page.evaluate(() => !document.getElementById('hintbar').classList.contains('hidden')));
 await page.screenshot({ path: path.join(shots, 'offline-play.png') });
+// losing focus (a call, a notification) releases the stick and pauses the match (FS27-REQ-0053)
+await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+await page.waitForTimeout(300);
+check('losing focus pauses the match and leaves nothing pressed', (await page.textContent('#banner')) === 'PAUSA');
+await page.tap('#btnPause'); await page.waitForTimeout(200);
+check('the pause button resumes it', (await page.textContent('#banner')) !== 'PAUSA');
 // a throw-in or corner of the person's team waits for him: aim, charge with the button, release (Phase 33)
 const found = await page.evaluate(async () => { const B = window.__fs27.B; for (let i = 0; i < 20000; i++) { B.Advance(8 / 60); if (B.SetPieceInfo()[0] !== 0) return B.SetPieceInfo(); if (i % 400 === 0) await new Promise(r => setTimeout(r, 0)); } return null; });
 check('the game waits for the person at his own throw-in or corner', found !== null, found);

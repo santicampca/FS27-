@@ -102,5 +102,19 @@ namespace FS27.Core.Tests
             Assert.IsTrue(new SelectionStabilityTuning().Enabled);
             Assert.Greater(SelectionStabilityDefaults.ManualHoldSeconds, 0f); Assert.Greater(SelectionStabilityDefaults.DwellSeconds, 0f); Assert.Greater(SelectionStabilityDefaults.SwitchMarginMeters, 0f);
         }
+    
+        [Test]
+        public void TheSwitchButton_GoesToTheNearestToTheBall_ThenTheNextNearest_AndNeverToTheKeeper()
+        {
+            MatchController c = Quiet(); c.SetControl(TeamSide.Home, ControlSource.Human);
+            PutBall(c, 0f, 0f);
+            Put(c, TeamSide.Home, "hs2", 12f, 6f, East); Put(c, TeamSide.Home, "hs3", 4f, 0f, East); Put(c, TeamSide.Home, "hs4", 2f, 1f, East); Put(c, TeamSide.Home, "hs5", -9f, -3f, East);
+            c.SelectPlayer(TeamSide.Home, "hs2");
+            Assert.AreEqual("hs4", c.SelectNearestToBall(TeamSide.Home), "the nearest to the ball");
+            Assert.AreEqual("hs3", c.SelectNearestToBall(TeamSide.Home), "pressed again: the next nearest (not himself)");
+            Assert.AreEqual("hs4", c.SelectNearestToBall(TeamSide.Home), "and so on");
+            Assert.AreEqual(c.State.MatchTimeSeconds, c.ManualSelectionAt(TeamSide.Home), 1e-4f, "it is a manual selection: held against the automatic one");
+            foreach (string id in new[] { "hs2", "hs3", "hs4", "hs5" }) { c.SelectNearestToBall(TeamSide.Home); Assert.IsFalse(c.State.Home.Find(c.ControlledPlayerId(TeamSide.Home)).InGoal, "never the keeper"); }
+        }
     }
 }

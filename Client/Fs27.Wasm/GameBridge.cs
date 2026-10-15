@@ -144,7 +144,7 @@ namespace FS27.Client
             hasPress = true;
         }
 
-        [JSExport] public static void SwitchPlayer() { if (match != null) match.CycleSelection(TeamSide.Home); }
+        [JSExport] public static void SwitchPlayer() { if (match != null) match.SelectNearestToBall(TeamSide.Home); }
 
         // ------------------------------------------------------------------ time
 

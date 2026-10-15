@@ -12,7 +12,7 @@ let stick = { x: 0, y: 0 }, mirror = 1;
 const stats = { frames: 0, steps: 0, lastT: 0, fps: 0, sps: 0, advanceMs: 0, snapshotMs: 0, drawMs: 0, worstFrameMs: 0 };
 let banner = '', bannerUntil = 0, lastScore = [0, 0];
 let session = null, sp = [0, 0, 0, 0, 1.2, 1], spHoldStart = 0, spZone = 1;                         // what the tester played (for the feedback text)
-const VERSION = 'FS27 prueba humana 2 (Core fase 33)';
+const VERSION = 'FS27 prueba humana 3 (Core fase 34)';
 
 function resize() { const r = window.devicePixelRatio || 1; canvas.width = Math.floor(innerWidth * r); canvas.height = Math.floor(innerHeight * r); }
 addEventListener('resize', resize); resize();
@@ -216,5 +216,13 @@ function kbStick() { const x = (keys.has('ArrowRight') || keys.has('d') ? 1 : 0)
 addEventListener('keydown', e => { if (e.repeat) return; keys.add(e.key); kbStick(); if (sp[0] !== 0 && e.key.toLowerCase() === 'k') { spHoldStart = performance.now(); return; } const bt = { j: 1, k: 2, l: 3 }[e.key.toLowerCase()]; if (bt && B) B.Press(bt, e.shiftKey ? 2 : (e.ctrlKey ? 1 : 0), mirror * stick.x, mirror * stick.y, 0.8); if (e.key === 'Tab') { e.preventDefault(); B && B.SwitchPlayer(); } });
 addEventListener('keyup', e => { keys.delete(e.key); kbStick(); if (sp[0] !== 0 && e.key.toLowerCase() === 'k' && spHoldStart) { const hold = (performance.now() - spHoldStart) / 1000; spHoldStart = 0; B.TakeSetPiece(mirror * stick.x, mirror * stick.y, hold, sp[0] === 2 ? spZone : -1); } });
 document.addEventListener('contextmenu', e => e.preventDefault());
+// a call, a notification or a change of tab must not leave a button or the stick stuck (FS27-REQ-0053): everything is released and the match pauses
+function releaseAll() {
+  stickId = null; knob.style.transform = ''; stick = { x: 0, y: 0 }; keys.clear(); spHoldStart = 0;
+  if (B) B.SetStick(0, 0);
+  if (running) paused = true;
+}
+addEventListener('blur', releaseAll);
+document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); });
 
 boot().catch(e => { $('loadmsg').textContent = 'Error: ' + e.message; console.error(e); });

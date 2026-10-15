@@ -353,6 +353,27 @@ namespace FS27.Core
             return selected[(int)side];
         }
 
+        /// <summary>
+        /// Phase 34 (FS27-REQ-0066): the person's switch button without the ball: the field player nearest to the ball who is NOT the one he controls now (so a second press goes to the next nearest, and the one who already is the nearest is never
+        /// "switched" to himself). A manual selection: the automatic choice leaves it alone for the hold. With the ball in his team's hands, or with nobody else, the next player in squad order (<see cref="CycleSelection"/>).
+        /// </summary>
+        public string SelectNearestToBall(TeamSide side)
+        {
+            string current = ControlledPlayerId(side);
+            if (State.Ball.HasPossession && State.Ball.PossessingTeam == side) return CycleSelection(side);
+            Vec2 ball = new Vec2(State.Ball.Physics.Position.X, State.Ball.Physics.Position.Z);
+            MatchPlayer best = null; float bestD = float.PositiveInfinity;
+            foreach (MatchPlayer p in State.Team(side).Players)
+            {
+                if (!p.IsActive || p.InGoal || p.PlayerId == current) continue;
+                float d = (p.Locomotion.Position - ball).Magnitude;
+                if (d < bestD) { bestD = d; best = p; }
+            }
+            if (best == null) return CycleSelection(side);
+            SelectPlayer(side, best.PlayerId);
+            return best.PlayerId;
+        }
+
         /// <summary>Moves the selection to the next (+1) or previous (-1) active player of the side, in squad order, goalkeeper included. Returns the new player or null.</summary>
         public string CycleSelection(TeamSide side, int step = 1)
         {

@@ -2,8 +2,74 @@
 
 Fuente: `FS27_lista_maestra_1000_requisitos.md` (1.000 identificadores `FS27-REQ-0001…1000` en 50 secciones). Estado por requisito: `Docs/requisitos_estado.csv` (id, sección, estado, evidencia, texto).
 
+## Fase 34: clasificación de los 967 restantes
+`Tools/requisitos_audit.py` (reproducible) clasifica los 1.000 con lo que el repositorio contiene de verdad y marca **cuánta confianza** tiene cada fila (columna `confianza` de `Docs/requisitos_estado.csv`):
+- **requisito** (89 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente. Lotes revisados uno a uno: los de la fase 33, **61-80** (selección del jugador), **41-60** (controles táctiles) y **641-660** (HUD).
+- **seccion** (911 filas): el subsistema al que pertenece existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho». Las palabras clave de funciones que no existen (audio, háptica, tutorial, multijugador, volea, viento, arte 3D, guardado) bajan el requisito a «pendiente»; las que dependen de cómo lo percibe una persona («divertido», «natural», «legible»…) pasan a «requiere humano».
+
+Totales: **confirmado 28**, parcial 765, pendiente 170, requiere humano 37. Ninguno queda «sin auditar», pero **solo 89 están comprobados uno a uno**.
+
+Lo que revisar uno a uno ha encontrado (frente a lo que la clasificación por sección habría dado por bueno): el botón ⇄ no iba al jugador más cercano al balón (REQ-0066, **corregido**: `SelectNearestToBall`); un cambio de foco dejaba el stick y los botones sin soltar (REQ-0053, **corregido**: `releaseAll` + pausa); no hay selección por punto de caída (0068) ni por receptor previsto (0070), ni indicador de qué jugador movería la IA (0080); ni ajustes, tutorial ni registro de entradas en el cliente (0044, 0054, 0057, 0060, 0654…).
+
+Resumen por sección (de `Docs/requisitos_resumen.csv`):
+
+| Sección | confirmado | parcial | pendiente | requiere humano |
+|---|---|---|---|---|
+| Identidad y estructura del partido | 1 | 15 | 2 | 2 |
+| Movimiento y locomoción | 0 | 19 | 1 | 0 |
+| Joystick, sprint y controles táctiles | 2 | 14 | 4 | 0 |
+| Selección y cambio de jugador | 9 | 9 | 2 | 0 |
+| Balón y física | 0 | 19 | 0 | 1 |
+| Primer toque y recepción | 0 | 19 | 1 | 0 |
+| Pases y combinaciones | 0 | 18 | 0 | 2 |
+| Tiros y finalización | 0 | 19 | 1 | 0 |
+| Centros y juego por las bandas | 0 | 0 | 20 | 0 |
+| Balones aéreos y juego de cabeza | 0 | 3 | 17 | 0 |
+| Regates y protección | 0 | 19 | 0 | 1 |
+| Presión alta y defensa agresiva | 0 | 20 | 0 | 0 |
+| Defensa posicional y coberturas | 0 | 20 | 0 | 0 |
+| Entradas, presión individual y duelos | 0 | 20 | 0 | 0 |
+| Porteros: colocación y reflejos | 0 | 20 | 0 | 0 |
+| Porteros: salidas y distribución | 0 | 20 | 0 | 0 |
+| Saques de banda | 0 | 19 | 0 | 1 |
+| Córners | 0 | 20 | 0 | 0 |
+| Tiros libres y puntos direccionales | 0 | 17 | 2 | 1 |
+| Penaltis | 0 | 20 | 0 | 0 |
+| Reanudaciones y flujo de partido | 1 | 19 | 0 | 0 |
+| Reglas de Classic | 0 | 20 | 0 | 0 |
+| Reglas de Arena | 0 | 17 | 1 | 2 |
+| VAR y decisiones arbitrales | 0 | 18 | 0 | 2 |
+| IA ofensiva sin balón | 0 | 20 | 0 | 0 |
+| IA defensiva sin balón | 0 | 20 | 0 | 0 |
+| Transiciones y contraataques | 0 | 20 | 0 | 0 |
+| Personalidad táctica y entrenadores | 0 | 19 | 0 | 1 |
+| Dificultad y adaptación | 0 | 20 | 0 | 0 |
+| Atributos, roles y polivalencia | 0 | 17 | 3 | 0 |
+| Equipos y plantillas | 0 | 18 | 1 | 1 |
+| Cámara y legibilidad | 0 | 19 | 0 | 1 |
+| Interfaz y HUD | 4 | 11 | 4 | 1 |
+| Animaciones y presentación | 0 | 19 | 0 | 1 |
+| Audio y respuesta sensorial | 0 | 0 | 20 | 0 |
+| Rendimiento y estabilidad móvil | 1 | 19 | 0 | 0 |
+| Guardado, perfiles y personalización | 0 | 0 | 20 | 0 |
+| Economía, Zenit Points y progresión | 0 | 19 | 0 | 1 |
+| Tutorial, práctica y accesibilidad | 0 | 0 | 20 | 0 |
+| Calidad de IA y evaluación | 1 | 18 | 1 | 0 |
+| Depuración y arquitectura | 0 | 19 | 1 | 0 |
+| Seguridad, privacidad y entrega | 0 | 20 | 0 | 0 |
+| Escenarios de partido y casos límite | 0 | 19 | 1 | 0 |
+| Gestión del partido y estados | 0 | 18 | 2 | 0 |
+| Multijugador futuro y límites de alcance | 0 | 0 | 20 | 0 |
+| Balance y sensación futbolística | 0 | 0 | 1 | 19 |
+| Dirección visual y modelos | 0 | 0 | 20 | 0 |
+| Prueba humana y lanzamiento de prototipo | 0 | 18 | 2 | 0 |
+| Córners, bandas y balón parado: control avanzado | 4 | 13 | 3 | 0 |
+| Reglas de diseño y prioridades de implementación | 5 | 15 | 0 | 0 |
+
+Huecos grandes reales y verificables en el repositorio: sin audio, sin arte, sin tutorial ni accesibilidad, sin guardado de perfil, sin multijugador, sin acción de centro, sin interfaz de tiros libres, penaltis y VAR en el cliente jugable. **Siguiente paso recomendado**: repetir el lote uno a uno (como 61-80) por secciones, empezando por Pases (121-140), Tiros (141-160), Saques de banda (321-340), Córners (341-360) y Tiros libres (361-380), que son las que más afectan a lo que una persona nota.
+
 ## Honestidad sobre el alcance
-Mil requisitos no se implementan en un bloque. En esta fase se hizo lo siguiente: (1) se incorporaron las **cuatro ideas originales del usuario** hasta donde el Core lo permite; (2) se creó el registro de estado de los 1.000; (3) solo se han auditado con evidencia los requisitos que este bloque toca: **33 de 1.000** (4 confirmados, 20 parciales, 9 pendientes). **967 siguen «sin auditar»**: no se afirma nada de ellos.
+Mil requisitos no se implementan en un bloque. En la fase 33 se hizo lo siguiente: (1) se incorporaron las **cuatro ideas originales del usuario** hasta donde el Core lo permite; (2) se creó el registro de estado de los 1.000; (3) solo se han auditado con evidencia los requisitos que este bloque toca: **33 de 1.000** (4 confirmados, 20 parciales, 9 pendientes). **967 siguen «sin auditar»**: no se afirma nada de ellos.
 
 ## Las cuatro ideas originales
 | Idea | Estado | Qué hay |
