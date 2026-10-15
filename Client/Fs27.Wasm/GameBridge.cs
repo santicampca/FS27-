@@ -112,7 +112,7 @@ namespace FS27.Client
             eventQueue.Clear(); Array.Clear(shots, 0, 2); Array.Clear(passes, 0, 2); Array.Clear(fouls, 0, 2); Array.Clear(corners, 0, 2); Array.Clear(throwIns, 0, 2); Array.Clear(headers, 0, 2); Array.Clear(tackles, 0, 2); possession[0] = possession[1] = 0;
             match.Events.Published += OnEvent;
             match.ActionPerformed += OnAction;
-            match.HeadersEnabled = true;   // Phase 33: a ball in the air is played in the air
+            match.HeadersEnabled = true; driver.CrossActions = true;   // Phase 35: crosses are real crosses   // Phase 33: a ball in the air is played in the air
             match.SetControl(TeamSide.Home, ControlSource.Human);
             clock = new SimulationClock(settings.SimulationStepSeconds);
             stick = Vec2.Zero; hasPress = false; restartWait = 0f; lastAction = ""; lastActionAt = -100f;

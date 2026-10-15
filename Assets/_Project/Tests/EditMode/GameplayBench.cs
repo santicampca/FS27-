@@ -21,14 +21,14 @@ namespace FS27.Core.Tests
 
         internal sealed class GbConfig
         {
-            public string Name; public bool Tactics, Distribution, Assist, Selection, Headers;
+            public string Name; public bool Tactics, Distribution, Assist, Selection, Headers, Crosses;
             public DifficultyLevel Home = DifficultyLevel.Professional, Away = DifficultyLevel.Professional;
             public int HomeTeam = 3, AwayTeam = 8;
             public GbConfig With(string name, Action<GbConfig> edit) { var c = (GbConfig)MemberwiseClone(); c.Name = name; edit(c); return c; }
         }
 
-        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false, Headers = false };
-        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true, Headers = true };
+        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false, Headers = false, Crosses = false };
+        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true, Headers = true, Crosses = true };
 
         // ------------------------------------------------------------------ scenes
 
@@ -257,7 +257,7 @@ namespace FS27.Core.Tests
             driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(cfg.Home), Db.Players, c, profileT);
             driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(cfg.Away), Db.Players, c, profileT);
             if (cfg.Tactics) { driver.SetTactic(TeamSide.Home, TeamTactic.Of(Db.Teams[cfg.HomeTeam], Db)); driver.SetTactic(TeamSide.Away, TeamTactic.Of(Db.Teams[cfg.AwayTeam], Db)); }
-            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection; c.HeadersEnabled = cfg.Headers;
+            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection; c.HeadersEnabled = cfg.Headers; driver.CrossActions = cfg.Crosses;
             return c;
         }
 

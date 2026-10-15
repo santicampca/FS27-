@@ -259,7 +259,8 @@ namespace FS27.Core.Tests
         {
             var c = Live();
             Carrier(c, TeamSide.Home, "hs1", 0f, 0f, East);
-            foreach (FootballActionKind k in new[] { FootballActionKind.Header, FootballActionKind.Cross, FootballActionKind.PlacedShot, FootballActionKind.GoalkeeperSave, FootballActionKind.GoalkeeperCatch })
+            // Phase 35: the cross is a real action now (Phase35Tests.ACross_IsARealAction_...); it left this list of contract-only actions
+            foreach (FootballActionKind k in new[] { FootballActionKind.Header, FootballActionKind.PlacedShot, FootballActionKind.GoalkeeperSave, FootballActionKind.GoalkeeperCatch })
                 Assert.AreEqual(ActionRejection.NotSupported, Do(c, TeamSide.Home, "hs1", k, East).Rejection, k.ToString());
             foreach (FootballActionKind k in new[] { FootballActionKind.SkillMove, FootballActionKind.SkillLobPass, FootballActionKind.CurvedShot })
                 Assert.AreEqual(ActionRejection.SkillNotGranted, Do(c, TeamSide.Home, "hs1", k, East).Rejection, k.ToString());

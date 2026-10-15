@@ -1,9 +1,9 @@
 scene,metric,mean
-A1_BuildUp,a_xg,0
-A1_BuildUp,h_passLostRate,0.5365
-A1_BuildUp,h_passOkRate,0.4635
-A1_BuildUp,h_xg,0.0671
-A1_BuildUp,progress,28.6144
+A1_BuildUp,a_xg,0.1074
+A1_BuildUp,h_passLostRate,0.5307
+A1_BuildUp,h_passOkRate,0.4693
+A1_BuildUp,h_xg,0.0581
+A1_BuildUp,progress,22.6136
 A2_WingPlay,a_xg,0.0577
 A2_WingPlay,h_crosses,1
 A2_WingPlay,h_crossReach,0.1667
@@ -17,8 +17,8 @@ A5_FinalThird,h_shots,0
 A5_FinalThird,h_xg,0
 B1_UnderPressure,a_xg,0.0298
 B1_UnderPressure,firstLossAt,1.6556
-B1_UnderPressure,h_passLostRate,0.5212
-B1_UnderPressure,h_passOkRate,0.4603
+B1_UnderPressure,h_passLostRate,0.4553
+B1_UnderPressure,h_passOkRate,0.472
 B2_TransitionDefence,a_firstShotAt,7.6
 B2_TransitionDefence,a_shots,0.5
 B2_TransitionDefence,a_xg,0.0746
@@ -31,7 +31,7 @@ C2_CompactDefence,h_interceptions,3.6667
 C2_CompactDefence,progressAway,10.1328
 C4_CoverSecond,a_shots,0
 C4_CoverSecond,a_xg,0
-C4_CoverSecond,h_interceptions,4.1667
+C4_CoverSecond,h_interceptions,4.5
 C4_CoverSecond,progressAway,0.3686
 H2_AssistShots,h_goals,0.1667
 H2_AssistShots,h_shots,1
