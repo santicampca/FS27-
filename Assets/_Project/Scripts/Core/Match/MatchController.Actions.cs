@@ -21,6 +21,12 @@ namespace FS27.Core
         /// <summary>Phase 33: off (the default) = Phase-32 behaviour, a field player cannot touch a ball above <see cref="ActionTuning.MaxTouchHeight"/>; on = he plays a ball in the air with his head (see <c>HeadTouch</c>). The games turn it on.</summary>
         public bool HeadersEnabled { get; set; }
 
+        /// <summary>
+        /// Phase 37: off (the default) = Phase-36 behaviour. On = the high ball has its rules: each player's own jump (his aerial ability moves the highest ball he can head and his chance in the duel), the volley (a kick of a ball in the
+        /// air is harder to time), the goalkeeper who catches or punches a high ball by how safe it is, and the header that looks for a free team-mate. The games turn it on.
+        /// </summary>
+        public bool AerialRulesEnabled { get; set; }
+
         // ------------------------------------------------------------------ public API
 
         /// <summary>The player who controls the ball, or null when it is free (the single source: <see cref="MatchBall"/>).</summary>
@@ -342,6 +348,13 @@ namespace FS27.Core
 
             float quality = SkillQuality(ActionModel.Clamp01(baseQuality * footFactor * stamina), (baseQuality + skill.QualityBonus) * footFactor * stamina);
             if (IsPassKick(r.Kind) && actions.PassPressureEffect > 0f) quality *= 1f - ActionModel.Clamp01(actions.PassPressureEffect * PassPressureOf(p) * SkillPressureLeft(p));
+            if (AerialRulesEnabled && !carrier && !b.Physics.IsGrounded && BallHeight() > actions.VolleyMinHeight)
+            {
+                // Phase 37 (REQ-0108, 0146, 0849): a ball struck in the air (volley, half-volley) is harder to time: the quality falls with a poor control and the kick has more error
+                quality *= ActionModel.Lerp(actions.VolleyQualityFloor, 1f, ActionModel.Clamp01(prof.ControlQuality));
+                extraError += actions.VolleyExtraError;
+                detail = ActionDetail.Volley;
+            }
             float noise = Noise();
             float errorDegrees = ActionModel.KickError(maxError, quality, power, extraError, noise, actions) + noise * skill.ResidualErrorDegrees;
             Vec2 aimed = ActionModel.Rotate(dir, errorDegrees + skill.AimDegrees);
@@ -461,6 +474,14 @@ namespace FS27.Core
 
             var res = new ActionResult { Team = p.Team, PlayerId = p.PlayerId, Foot = foot, Direction = toBallDir };
             float score;
+            if (keeper && AerialRulesEnabled && b.Mode != BallMode.InShot && BallHeight() > actions.MaxTouchHeight)
+            {
+                // Phase 37 (REQ-0189, 0190): a high ball is caught only when it is safe: his hands and command, less the rivals around the ball and the height; otherwise he punches it away
+                int crowd = RivalsNear(p.Team, ballXY, actions.KeeperCrowdRadius);
+                float safety = actions.KeeperSafetyHandlingShare * prof.KeeperHandling + (1f - actions.KeeperSafetyHandlingShare) * prof.KeeperCommand - crowd * actions.KeeperCrowdPenalty - (BallHeight() - actions.MaxTouchHeight) * actions.KeeperHeightPenalty;
+                if (safety < actions.KeeperClaimMinSafety) return KeeperPunch(p, res, ballXY);
+                bonus -= crowd * actions.KeeperCrowdPenalty * actions.KeeperCrowdCatchShare;
+            }
             if (keeper)
             {
                 float quality = actions.KeeperHandlingShare * prof.KeeperHandling + (1f - actions.KeeperHandlingShare) * prof.KeeperReflexes;
@@ -529,6 +550,38 @@ namespace FS27.Core
             res.Detail = ActionDetail.Deflected;
             res.Direction = off;
             res.BallVelocity = b.Physics.Velocity;
+            ReleaseTouchedBall(p, res.Kind, true);
+            return Finish(res);
+        }
+
+        private int RivalsNear(TeamSide team, Vec2 spot, float radius)
+        {
+            int n = 0;
+            TeamMatchState others = State.Team(team.Opponent());
+            for (int i = 0; i < others.Players.Count; i++)
+            {
+                MatchPlayer o = others.Players[i];
+                if (o.IsActive && (o.Locomotion.Position - spot).Magnitude <= radius) n++;
+            }
+            return n;
+        }
+
+        /// <summary>Phase 37: the goalkeeper punches a high ball away: forward and to the touchline nearer to the ball, off by up to KeeperPunchErrorDegrees times (1 - handling). Always a real touch.</summary>
+        private ActionResult KeeperPunch(MatchPlayer p, ActionResult res, Vec2 ballXY)
+        {
+            MatchBall b = State.Ball;
+            Vec2 attack = AttackDirectionOf(p.Team);
+            float side = ballXY.Y >= 0f ? 1f : -1f;
+            float wide = actions.KeeperPunchWideDegrees * MathUtil.Deg2Rad;
+            Vec2 want = ActionModel.DirectionOr(new Vec2(attack.X * (float)Math.Cos(wide), side * (float)Math.Sin(wide)), attack);
+            Vec2 dir = ActionModel.Rotate(want, (Noise() >= 0f ? 1f : -1f) * actions.KeeperPunchErrorDegrees * (1f - p.ActionProfile.KeeperHandling) * Math.Abs(Noise()));
+            SetBallVelocity(new Vec3(dir.X * actions.KeeperPunchSpeed, actions.KeeperPunchLift, dir.Y * actions.KeeperPunchSpeed));
+            res.Kind = FootballActionKind.GoalkeeperSave;
+            res.Outcome = ActionOutcome.Completed;
+            res.Detail = ActionDetail.Punched;
+            res.Direction = dir;
+            res.BallVelocity = b.Physics.Velocity;
+            res.Quality = ActionModel.Clamp01(p.ActionProfile.KeeperHandling);
             ReleaseTouchedBall(p, res.Kind, true);
             return Finish(res);
         }
@@ -864,15 +917,17 @@ namespace FS27.Core
                     reach = PenaltyKeeperReach(p, reach);
                     float maxHeight = keeper ? field.GoalHeight : actions.MaxTouchHeight;
                     // Phase 33: a field player can head a ball that is still above his feet's reach (not a shot: that is a block, and the balance of the goals is not touched)
-                    bool aerial = !keeper && HeadersEnabled && height > maxHeight && height <= actions.HeadMaxHeight && b.Mode != BallMode.InShot && !(b.HasLastTouch && b.SecondsSinceTouch < actions.HeaderLockSeconds && lastTouchWasHeader);
-                    if (aerial) { maxHeight = actions.HeadMaxHeight; reach = actions.HeaderReach; }
+                    // Phase 37 (REQ-0184): his own jump: the highest ball he can head depends on his aerial ability
+                    float headMax = AerialRulesEnabled ? actions.HeadMaxHeight * (1f + actions.JumpHeightRange * (2f * p.ActionProfile.AerialQuality - 1f)) : actions.HeadMaxHeight;
+                    bool aerial = !keeper && HeadersEnabled && height > maxHeight && height <= headMax && b.Mode != BallMode.InShot && !(b.HasLastTouch && b.SecondsSinceTouch < actions.HeaderLockSeconds && lastTouchWasHeader);
+                    if (aerial) { maxHeight = headMax; reach = actions.HeaderReach; }
                     if (height > maxHeight) continue;
                     float d = (ballXY - p.Locomotion.Position).Magnitude;
                     if (aerial)
                     {
                         // Phase 35 (REQ-0187): an aerial duel is won by the better header, not by who is a few centimetres nearer: his control quality and stamina, how near he is to the ball, and a little luck from the seeded noise
                         if (d > reach) continue;
-                        float duel = p.ActionProfile.ControlQuality * StaminaFactorOf(p) * (1f - actions.HeaderDuelDistanceWeight * d / reach) + actions.HeaderDuelLuck * Noise();
+                        float duel = HeaderAbility(p) * StaminaFactorOf(p) * (1f - actions.HeaderDuelDistanceWeight * d / reach) + actions.HeaderDuelLuck * Noise();
                         if (best == null || duel > bestAerialScore) { best = p; bestAerialScore = duel; bestDistance = d; }
                         continue;
                     }
@@ -892,17 +947,57 @@ namespace FS27.Core
         /// </summary>
         private bool lastTouchWasHeader;
 
+        /// <summary>How well a player plays a ball in the air: his control quality (Phase 33) or, with the aerial rules, a blend of it and his aerial ability (jump, strength, balance).</summary>
+        private float HeaderAbility(MatchPlayer p)
+        {
+            return AerialRulesEnabled ? actions.AerialShare * p.ActionProfile.AerialQuality + (1f - actions.AerialShare) * p.ActionProfile.ControlQuality : p.ActionProfile.ControlQuality;
+        }
+
+        /// <summary>
+        /// Phase 37 (REQ-0196): a header that is not at goal looks for a team-mate before it just clears: the nearest free one (no rival within <see cref="ActionTuning.HeaderPassOpenRadius"/>) inside the arc in front of him, within the range.
+        /// With nobody free, the direction he already had.
+        /// </summary>
+        private Vec2 HeaderTarget(MatchPlayer p, Vec2 want)
+        {
+            Vec2 here = p.Locomotion.Position;
+            float cosArc = (float)Math.Cos(actions.HeaderPassArcDegrees * MathUtil.Deg2Rad);
+            TeamMatchState mates = State.Team(p.Team), others = State.Team(p.Team.Opponent());
+            Vec2 best = want; float bestD = float.MaxValue;
+            for (int i = 0; i < mates.Players.Count; i++)
+            {
+                MatchPlayer m = mates.Players[i];
+                if (!m.IsActive || m.PlayerId == p.PlayerId || m.InGoal) continue;
+                Vec2 off = m.Locomotion.Position - here;
+                float d = off.Magnitude;
+                if (d < actions.HeaderPassMinDistance || d > actions.HeaderPassRange || d >= bestD) continue;
+                Vec2 dir = off * (1f / d);
+                if (dir.X * want.X + dir.Y * want.Y < cosArc) continue;
+                bool free = true;
+                for (int j = 0; j < others.Players.Count && free; j++)
+                    if (others.Players[j].IsActive && (others.Players[j].Locomotion.Position - m.Locomotion.Position).Magnitude < actions.HeaderPassOpenRadius) free = false;
+                if (!free) continue;
+                best = dir; bestD = d;
+            }
+            return best;
+        }
+
         private void HeadTouch(MatchPlayer p)
         {
             lastTouchWasHeader = true;
             MatchBall b = State.Ball;
             Vec2 relative = Flat(b.Physics.Velocity) - p.Locomotion.Velocity;
             float relSpeed = (float)Math.Sqrt(relative.X * relative.X + b.Physics.Velocity.Y * b.Physics.Velocity.Y + relative.Y * relative.Y);
-            float score = ActionModel.FirstTouchScore(p.ActionProfile.ControlQuality, 1f, StaminaFactorOf(p), relSpeed, 0f, -actions.HeaderPenalty, Noise(), actions);
+            float score = ActionModel.FirstTouchScore(HeaderAbility(p), 1f, StaminaFactorOf(p), relSpeed, 0f, -actions.HeaderPenalty, Noise(), actions);
             float quality = ActionModel.Clamp01(score);
             Vec2 attack = AttackDirectionOf(p.Team), goal = GoalCentreOf(p.Team), here = p.Locomotion.Position;
             bool atGoal = (goal - here).Magnitude <= actions.HeaderShotRange;
             Vec2 want = atGoal ? ActionModel.DirectionOr(goal - here, attack) : ActionModel.DirectionOr(p.Locomotion.FacingDirection, attack);
+            // Phase 37: a header goes forward: a player who runs back to the ball and faces his own goal does not cushion or head it backwards, and he looks for a free team-mate first
+            if (AerialRulesEnabled && !atGoal)
+            {
+                if (want.X * attack.X + want.Y * attack.Y < 0f) want = attack;
+                want = HeaderTarget(p, want);
+            }
             var res = new ActionResult { Kind = FootballActionKind.Header, Team = p.Team, PlayerId = p.PlayerId, Foot = ActionFoot.Body, Quality = quality, Detail = ActionDetail.Headed, Outcome = ActionOutcome.Completed };
             if (!atGoal && score >= actions.CleanControlThreshold)
             {

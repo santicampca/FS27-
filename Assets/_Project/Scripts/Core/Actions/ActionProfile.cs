@@ -28,6 +28,8 @@ namespace FS27.Core
         public float ChallengeStrength;
         public float ResistStrength;
         public float InterceptQuality;
+        /// <summary>Phase 37: the aerial ability (jump, strength in the duel, balance): Strength 40 %, Agility 30 %, Speed 20 %, Control 10 %.</summary>
+        public float AerialQuality;
 
         public PreferredFoot PreferredFoot;
         /// <summary>0..1 (the weak-foot quality attribute / 100).</summary>
@@ -59,6 +61,7 @@ namespace FS27.Core
                 ChallengeStrength = 0.50f * strength + 0.20f * defense + 0.10f * agility + 0.20f * speed,
                 ResistStrength = 0.50f * strength + 0.20f * control + 0.10f * agility + 0.20f * dribbling,
                 InterceptQuality = 0.35f * defense + 0.25f * agility + 0.20f * control + 0.20f * speed,
+                AerialQuality = 0.40f * strength + 0.30f * agility + 0.20f * speed + 0.10f * control,
                 PreferredFoot = foot,
                 WeakFootQuality = Math.Max(0, Math.Min(100, weakFootQuality)) / 100f
             };

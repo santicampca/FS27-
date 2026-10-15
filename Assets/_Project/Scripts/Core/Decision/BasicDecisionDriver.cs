@@ -35,6 +35,8 @@ namespace FS27.Core
         public bool CrossActions { get { return engine.CrossActions; } set { engine.CrossActions = value; } }
         /// <summary>Phase 36: the cross as a team play (see <see cref="BasicDecisionEngine.CrossMechanics"/>).</summary>
         public bool CrossMechanics { get { return engine.CrossMechanics; } set { engine.CrossMechanics = value; } }
+        /// <summary>Phase 37: the high ball as a team play (see <see cref="BasicDecisionEngine.AerialPlayEnabled"/>).</summary>
+        public bool AerialPlay { get { return engine.AerialPlayEnabled; } set { engine.AerialPlayEnabled = value; } }
         private readonly SelectionStability selection = new SelectionStability();
         /// <summary>Phase 32: how stable the player a person controls is (hold after a manual switch, dwell, margin); <c>Enabled = false</c> gives the Phase 8 behaviour.</summary>
         public SelectionStabilityTuning SelectionTuning => selection.Tuning;
@@ -200,7 +202,7 @@ namespace FS27.Core
                 }
                 if (match.GetControl(s) == ControlSource.Human)
                 {
-                    string current = match.StoredSelection(s), chosen = AutoSelection.Choose(view, s, current, engine.DefenseTuning);
+                    string current = match.StoredSelection(s), chosen = AutoSelection.Choose(view, s, current, engine.DefenseTuning, engine.AerialForSelection);
                     if (chosen != null && selection.Allow(view, match, s, current, chosen)) { if (chosen != current) selection.Moved(s, match.State.MatchTimeSeconds); match.SelectPlayerAutomatically(s, chosen); }
                 }
             }

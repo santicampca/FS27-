@@ -39,6 +39,15 @@ namespace FS27.Core.Tests
                 new GbScenario { Id = "D1_BoxDefence", Family = "crosses", Story = "a rival winger on the flank near the home goal with three runners: do the defenders mark, cover the post and clear", Seconds = 14f, CarrierSide = 1, CarrierIndex = 0,
                     Home = GbV(-15, 5, -14, -2, -12, 2, -8, 0, -5, -5), Away = GbV(-10, 9.5f, -4, 0, -6, -3, -2, 4, 2, -2),
                     Judge = J("a_xg", -1, "a_shotsOnTarget", -1, "a_goals", -1, "a_shots", -1, "h_interceptions", 1, "a_crossHeaders", -1) },
+                // ---------------- Phase 37: the high ball
+                new GbScenario { Id = "A7_HighBallBox", Family = "aerial", Story = "a lofted ball from midfield comes down in the box with three attackers and three defenders under it: who is under it first, is it headed, does it become a shot", Seconds = 10f, CarrierSide = 0, CarrierIndex = 0,
+                    Home = GbV(-4, -9, 10, -1, 12.5f, 4, 7, -4, -8, 3), Away = GbV(11, 0, 13, -3, 9, 3, 6, 6, 4, -2),
+                    Extra = (c, seed) => GbLaunch(c, new Vec3(-4f, 0.6f, -9f), new Vec3(10.5f, 8f, 5f)),
+                    Judge = J("h_headers", 1, "h_shotsOnTarget", 1, "h_xg", 1, "a_xg", -1, "h_volleys", 1) },
+                new GbScenario { Id = "D2_HighBallDefence", Family = "aerial", Story = "a rival lofted ball comes down in the home box with three home defenders and three rival attackers under it: do the defenders win it, does the keeper claim or punch", Seconds = 10f, CarrierSide = 1, CarrierIndex = 0,
+                    Home = GbV(-11, 0, -13, -3, -9, 3, -6, 6, -4, -2), Away = GbV(4, 9, -10, -1, -12.5f, 4, -7, -4, 8, 3),
+                    Extra = (c, seed) => GbLaunch(c, new Vec3(4f, 0.6f, 9f), new Vec3(-10.5f, 8f, -5f)),
+                    Judge = J("a_xg", -1, "a_shotsOnTarget", -1, "a_goals", -1, "h_headers", 1) },
                 // ---------------- pressure and transitions
                 new GbScenario { Id = "B1_UnderPressure", Family = "pressure", Story = "the carrier is closed down at 1.5 m and 3.8 m with outlets behind and beside him", Seconds = 12f, CarrierSide = 0, CarrierIndex = 0,
                     Home = GbV(-6, 0, -10, -5, -10, 5, -2, -7, -2, 7), Away = GbV(-4.2f, 0.8f, -3, -2.5f, 0, 0, 2, -5, 2, 5),

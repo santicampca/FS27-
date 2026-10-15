@@ -121,7 +121,13 @@ namespace FS27.Core
         /// <summary>Phase 36: on the flank with the runners on their way to the box, he carries the ball along the line instead of passing it back.</summary>
         CarryToCross,
         /// <summary>Phase 36: at the cross point with the runners not yet in the box, he shields the ball and waits for them (until a rival presses him).</summary>
-        WaitForRunners
+        WaitForRunners,
+        /// <summary>Phase 37: a high ball is coming down and he is the best placed of his team: he goes to where it comes down to head height and waits for it there.</summary>
+        AerialClaim,
+        /// <summary>Phase 37: a high ball is coming down and a team-mate (or a rival) is under it: he stands where the header will land, for the second ball.</summary>
+        AerialSecondBall,
+        /// <summary>Phase 37: the ball is in the air at his feet within reach of the goal: he strikes it first time (a volley) instead of waiting for it to drop.</summary>
+        AerialVolley
     }
 
     /// <summary>

@@ -2,13 +2,13 @@ seccion,confirmado,parcial,pendiente,requiere-humano,sin auditar
 Identidad y estructura del partido,2,16,0,2,0
 Movimiento y locomoción,0,20,0,0,0
 "Joystick, sprint y controles táctiles",3,17,0,0,0
-Selección y cambio de jugador,9,10,1,0,0
+Selección y cambio de jugador,10,10,0,0,0
 Balón y física,0,19,0,1,0
-Primer toque y recepción,0,19,1,0,0
+Primer toque y recepción,0,20,0,0,0
 Pases y combinaciones,0,18,0,2,0
-Tiros y finalización,0,19,1,0,0
-Centros y juego por las bandas,5,11,4,0,0
-Balones aéreos y juego de cabeza,0,4,16,0,0
+Tiros y finalización,0,20,0,0,0
+Centros y juego por las bandas,6,12,2,0,0
+Balones aéreos y juego de cabeza,5,12,3,0,0
 Regates y protección,0,19,0,1,0
 Presión alta y defensa agresiva,0,20,0,0,0
 Defensa posicional y coberturas,0,20,0,0,0
@@ -41,7 +41,7 @@ Rendimiento y estabilidad móvil,1,19,0,0,0
 Calidad de IA y evaluación,1,19,0,0,0
 Depuración y arquitectura,0,20,0,0,0
 "Seguridad, privacidad y entrega",0,20,0,0,0
-Escenarios de partido y casos límite,0,19,1,0,0
+Escenarios de partido y casos límite,0,20,0,0,0
 Gestión del partido y estados,0,20,0,0,0
 Multijugador futuro y límites de alcance,0,1,19,0,0
 Balance y sensación futbolística,0,0,0,20,0

@@ -21,14 +21,14 @@ namespace FS27.Core.Tests
 
         internal sealed class GbConfig
         {
-            public string Name; public bool Tactics, Distribution, Assist, Selection, Headers, Crosses, CrossPlay;
+            public string Name; public bool Tactics, Distribution, Assist, Selection, Headers, Crosses, CrossPlay, Aerial;
             public DifficultyLevel Home = DifficultyLevel.Professional, Away = DifficultyLevel.Professional;
             public int HomeTeam = 3, AwayTeam = 8;
             public GbConfig With(string name, Action<GbConfig> edit) { var c = (GbConfig)MemberwiseClone(); c.Name = name; edit(c); return c; }
         }
 
-        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false, Headers = false, Crosses = false, CrossPlay = false };
-        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true, Headers = true, Crosses = true, CrossPlay = true };
+        internal static readonly GbConfig GbReference = new GbConfig { Name = "ref", Tactics = false, Distribution = false, Assist = false, Selection = false, Headers = false, Crosses = false, CrossPlay = false, Aerial = false };
+        internal static readonly GbConfig GbCurrent = new GbConfig { Name = "cur", Tactics = true, Distribution = true, Assist = true, Selection = true, Headers = true, Crosses = true, CrossPlay = true, Aerial = true };
 
         // ------------------------------------------------------------------ scenes
 
@@ -48,6 +48,16 @@ namespace FS27.Core.Tests
             public Func<GbConfig, int, Dictionary<string, double>> Custom;
             /// <summary>Optional: a scripted PERSON for the Home team (the Home side is then human-controlled); called every step with the seed.</summary>
             public Action<MatchController, int, int> Human;
+        }
+
+        /// <summary>Phase 37: the ball is in the air already, as if a player had just lofted it (nobody holds it; the carrier of the scene is only the one who "kicked" it).</summary>
+        internal static bool GbLaunch(MatchController c, Vec3 position, Vec3 velocity)
+        {
+            MatchBall b = c.State.Ball;
+            b.HasPossession = false; b.PossessingPlayerId = null;
+            b.Physics = new BallState(position, velocity) { IsGrounded = false };
+            b.Mode = BallMode.InPass;
+            return true;
         }
 
         private static float GbJitter(int seed) { return ((seed % 5) - 2) * 0.4f; }
@@ -94,6 +104,8 @@ namespace FS27.Core.Tests
                     : res.Kind == FootballActionKind.GoalkeeperDistribution ? "outKeeper" : res.Kind == FootballActionKind.GoalkeeperSave || res.Kind == FootballActionKind.GoalkeeperCatch ? "outSave" : "outOther";
                 lastActionAt = Now;
                 if (res.Kind == FootballActionKind.Cross) Add(pre + "crossKicks");
+                if (res.Detail == ActionDetail.Volley) Add(pre + "volleys");
+                if (res.Detail == ActionDetail.Punched) Add("keeperPunches");
                 if (res.Kind == FootballActionKind.Header) { Add(pre + "headers"); if (res.Team == crossActionTeam && Now - crossActionAt <= 4f) Add(pre + "crossHeaders"); }
                 if ((res.Kind == FootballActionKind.GoalkeeperSave || res.Kind == FootballActionKind.GoalkeeperCatch) && !lastShotCounted && res.Team != lastShotTeam && Now - lastShotAt <= 2.5f) { Add(P(lastShotTeam) + "shotsOnTarget"); lastShotCounted = true; }
                 if (res.Kind == FootballActionKind.GoalkeeperSave) Add("keeperParries"); else if (res.Kind == FootballActionKind.GoalkeeperCatch) Add("keeperCatches");
@@ -241,7 +253,7 @@ namespace FS27.Core.Tests
             "h_passes", "h_passOk", "h_passLost", "h_passNobody", "h_passToTarget", "h_forwardPasses", "h_finalThirdPasses", "h_crosses", "h_crossReach", "h_crossShots", "h_shots", "h_xg", "h_bigChances", "h_goals", "h_interceptions", "h_tackles", "h_fouls", "h_gains", "h_giveAndReturn",
             "a_passes", "a_passOk", "a_passLost", "a_passNobody", "a_forwardPasses", "a_finalThirdPasses", "a_crosses", "a_crossReach", "a_crossShots", "a_shots", "a_xg", "a_bigChances", "a_goals", "a_interceptions", "a_tackles", "a_fouls", "a_gains", "a_giveAndReturn",
             "throwIns", "throwInsLost", "corners", "cornersLost", "goalKicks", "goalKicksLost", "freeKicks", "freeKicksLost",
-            "outPass", "outShot", "outKeeper", "outSave", "outOther", "outDeflection", "h_crossKicks", "a_crossKicks", "keeperParries", "keeperCatches", "h_headers", "a_headers", "h_crossHigh", "h_crossDriven", "h_crossGround", "a_crossHigh", "a_crossDriven", "a_crossGround", "h_crossHeaders", "a_crossHeaders", "h_shotsOnTarget", "a_shotsOnTarget", "h_crossGoals", "a_crossGoals",
+            "outPass", "outShot", "outKeeper", "outSave", "outOther", "outDeflection", "h_crossKicks", "a_crossKicks", "keeperParries", "keeperCatches", "h_headers", "a_headers", "h_crossHigh", "h_crossDriven", "h_crossGround", "a_crossHigh", "a_crossDriven", "a_crossGround", "h_crossHeaders", "a_crossHeaders", "h_shotsOnTarget", "a_shotsOnTarget", "h_crossGoals", "a_crossGoals", "h_volleys", "a_volleys", "keeperPunches",
             "looseStillSeconds", "looseStillMax", "carrierIdleSeconds", "h_laneN0", "h_laneN1", "h_laneN2", "h_laneN3", "h_laneLost0", "h_laneLost1", "h_laneLost2", "h_laneLost3", "a_laneN0", "a_laneN1", "a_laneN2", "a_laneN3", "a_laneLost0", "a_laneLost1", "a_laneLost2", "a_laneLost3"
         };
 
@@ -261,7 +273,7 @@ namespace FS27.Core.Tests
             driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(cfg.Home), Db.Players, c, profileT);
             driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(cfg.Away), Db.Players, c, profileT);
             if (cfg.Tactics) { driver.SetTactic(TeamSide.Home, TeamTactic.Of(Db.Teams[cfg.HomeTeam], Db)); driver.SetTactic(TeamSide.Away, TeamTactic.Of(Db.Teams[cfg.AwayTeam], Db)); }
-            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection; c.HeadersEnabled = cfg.Headers; driver.CrossActions = cfg.Crosses; driver.CrossMechanics = cfg.CrossPlay;
+            c.AimAssist.Enabled = cfg.Assist; driver.SelectionTuning.Enabled = cfg.Selection; c.HeadersEnabled = cfg.Headers; driver.CrossActions = cfg.Crosses; driver.CrossMechanics = cfg.CrossPlay; driver.AerialPlay = cfg.Aerial; c.AerialRulesEnabled = cfg.Aerial;
             return c;
         }
 

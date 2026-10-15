@@ -64,6 +64,23 @@ namespace FS27.Core
             return BallPredictor.Predict(s, state.BallParameters, seconds).Position;
         }
 
+        /// <summary>
+        /// Phase 37: the ball's positions every <paramref name="step"/> seconds ahead (index 0 = one step ahead), if nothing touches it: one simulation on a copy, so a whole path costs what its longest point costs.
+        /// Returns how many were written.
+        /// </summary>
+        public int PredictBallPath(float step, Vec3[] positions, int count)
+        {
+            if (positions == null || step <= 0f) return 0;
+            var s = new BallState(state.Ball.Position, state.Ball.Velocity) { IsGrounded = state.Ball.IsGrounded };
+            int n = Math.Min(count, positions.Length);
+            for (int i = 0; i < n; i++)
+            {
+                BallSimulator.Step(ref s, state.BallParameters, step, null);
+                positions[i] = s.Position;
+            }
+            return n;
+        }
+
         // ---- skills of a player
 
         /// <summary>The skills of a player (requirements met = active; the rest listed as ignored). Null for an unknown id.</summary>
