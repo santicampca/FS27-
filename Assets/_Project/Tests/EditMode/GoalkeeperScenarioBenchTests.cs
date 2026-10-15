@@ -35,7 +35,7 @@ namespace FS27.Core.Tests
         private static readonly string[] BenchHeader =
         {
             "scenario", "variant", "seed", "distributionEnabled", "homeLevel", "levelDecisionMaking", "keeperId", "keeperCommand", "keeperKicking", "keeperDistribution", "skillDecisionMaking",
-            "nearestRivalToKeeper", "nearestRivalToReceiver", "released", "releaseSeconds", "action", "isLong", "targetId", "reason", "waitDecisions", "ballOwnerAt3s", "retainedAt3s", "ballOwnerAfterRelease3s", "retainedAfterRelease3s", "finalPhase"
+            "nearestRivalToKeeper", "nearestRivalToReceiver", "released", "releaseSeconds", "action", "isLong", "targetId", "reason", "waitSecondsBeforeRelease", "ballOwnerAt3s", "retainedAt3s", "ballOwnerAfterRelease3s", "retainedAfterRelease3s", "finalPhase", "goalBy", "firstAwayTouchSeconds"
         };
 
         private static float BenchJitter(int seed) { return ((seed % 5) - 2) * 0.5f; }
@@ -114,11 +114,16 @@ namespace FS27.Core.Tests
             float nearestToReceiver = WorldGeometry.NearestOpponentDistanceTo(view, TeamSide.Home, hf[0]);
 
             bool released = false; float releaseAt = 0f; string action = "", targetId = "", reason = "", ownerAfterRelease = "NA", retainedAfterRelease = "NA"; bool isLong = false;
-            float t0 = c.State.MatchTimeSeconds; int waits = 0; string at3 = null, retained3 = null;
+            float t0 = c.State.MatchTimeSeconds; int waits = 0; string goalBy = "none"; float awayTouch = -1f; string at3 = null, retained3 = null;
             c.ActionPerformed += res =>
             {
                 if (released || res.PlayerId != keeper.PlayerId || res.Outcome == ActionOutcome.Rejected) return;
                 released = true; releaseAt = c.State.MatchTimeSeconds - t0; action = res.Kind.ToString(); targetId = res.TargetPlayerId ?? "";
+            };
+            c.Events.Published += ev =>
+            {
+                if (ev.Kind == GameplayEventKind.GoalScored && ev.HasTeam && goalBy == "none") goalBy = ev.Team == TeamSide.Home ? "home" : "away";
+                if (released && ev.Kind == GameplayEventKind.BallTouched && ev.HasTeam && ev.Team == TeamSide.Away && awayTouch < 0f) awayTouch = c.State.MatchTimeSeconds - t0 - releaseAt;
             };
             int maxSteps = (int)(BenchMaxSeconds / Dt);
             for (int step = 0; step < maxSteps; step++)
@@ -126,7 +131,7 @@ namespace FS27.Core.Tests
                 driver.Step(c);
                 if (driver.TryGetLast(keeper.PlayerId, out PlayerDecision d))
                 {
-                    if (d.Reason == DecisionReason.KeeperWaitForLane) waits++;
+                    if (!released && d.Reason == DecisionReason.KeeperWaitForLane) waits++;   // only the first possession: before he plays the ball
                     if (released && reason == "") { reason = d.Reason.ToString(); isLong = d.HasAction && d.Action.Long; }
                 }
                 c.Advance(Dt);
@@ -143,7 +148,7 @@ namespace FS27.Core.Tests
                 v.Scenario, v.Variant, seed.ToString(CultureInfo.InvariantCulture), distribution ? "on" : "off", v.Level.ToString(), BenchF(home.Goalkeeper.DecisionMaking), keeper.PlayerId,
                 BenchF(me.Profile.KeeperCommand), BenchF(me.Profile.KeeperKicking), BenchF(me.Profile.KeeperDistribution), BenchF(skill.DecisionMaking), BenchF(nearestToKeeper), BenchF(nearestToReceiver),
                 released ? "yes" : "no", released ? BenchF(releaseAt) : "NA", action == "" ? "none" : action, released ? (isLong ? "yes" : "no") : "NA", targetId == "" ? "none" : targetId, reason == "" ? "none" : reason,
-                waits.ToString(CultureInfo.InvariantCulture), at3, retained3, ownerAfterRelease, retainedAfterRelease, c.State.Phase.ToString()
+                BenchF(waits * Dt), at3, retained3, ownerAfterRelease, retainedAfterRelease, c.State.Phase.ToString(), goalBy, awayTouch < 0f ? "NA" : BenchF(awayTouch)
             };
             return string.Join(",", f);
         }
@@ -174,7 +179,7 @@ namespace FS27.Core.Tests
             {
                 var rel = g.Where(r => BenchCell(r, "released") == "yes").Select(r => float.Parse(BenchCell(r, "releaseSeconds"), CultureInfo.InvariantCulture)).ToList();
                 sb.Append(g.Key).Append(": ").Append(g.Count()).Append(", ").Append(rel.Count).Append(", ").Append(rel.Count == 0 ? "NA" : BenchF(rel.Average())).Append(", retained ")
-                  .Append(g.Count(r => BenchCell(r, "retainedAt3s") == "yes")).Append(" lost ").Append(g.Count(r => BenchCell(r, "retainedAt3s") == "no")).Append(" dead ").Append(g.Count(r => BenchCell(r, "retainedAt3s") == "stopped")).Append('\n');
+                  .Append(g.Count(r => BenchCell(r, "retainedAt3s") == "yes")).Append(" lost ").Append(g.Count(r => BenchCell(r, "retainedAt3s") == "no")).Append(" dead ").Append(g.Count(r => BenchCell(r, "retainedAt3s") == "stopped")).Append(", goals against ").Append(g.Count(r => BenchCell(r, "goalBy") == "away")).Append(", goals for ").Append(g.Count(r => BenchCell(r, "goalBy") == "home")).Append('\n');
             }
             Console.WriteLine(sb.ToString());
             Assert.Pass(sb.ToString());
@@ -197,6 +202,7 @@ namespace FS27.Core.Tests
                         Assert.AreEqual(1, data.Count(r => BenchCell(r, "scenario") + "/" + BenchCell(r, "variant") == vr && BenchCell(r, "distributionEnabled") == cfg && BenchCell(r, "seed") == seed.ToString(CultureInfo.InvariantCulture)), "missing or duplicated: " + vr + " " + cfg + " seed " + seed);
             Assert.AreEqual(variants.Length * 2 * seeds, data.Length);
             foreach (string[] r in data) foreach (string cell in r) Assert.IsFalse(string.IsNullOrEmpty(cell), "empty cell in " + string.Join(",", r));
+            foreach (string[] r in data) Assert.Contains(BenchCell(r, "goalBy"), new[] { "none", "home", "away" });
         }
 
         [Test]
@@ -217,10 +223,10 @@ namespace FS27.Core.Tests
             foreach (string[] r in data)
             {
                 string line = string.Join(",", r);
-                if (BenchCell(r, "distributionEnabled") == "off") Assert.AreEqual("0", BenchCell(r, "waitDecisions"), "switched off he never waits: " + line);
+                if (BenchCell(r, "distributionEnabled") == "off") Assert.AreEqual(BenchF(0f), BenchCell(r, "waitSecondsBeforeRelease"), "switched off he never waits: " + line);
                 if (BenchCell(r, "released") == "yes") { Assert.AreEqual("KeeperDistribute", BenchCell(r, "reason"), "a release by the keeper is a KeeperDistribute decision: " + line); Assert.AreEqual("GoalkeeperDistribution", BenchCell(r, "action"), line); }
             }
-            Assert.IsTrue(data.Any(r => BenchCell(r, "distributionEnabled") == "on" && BenchCell(r, "waitDecisions") != "0"), "with the distribution on, some real wait decisions show up in the covered scenes");
+            Assert.IsTrue(data.Any(r => BenchCell(r, "distributionEnabled") == "on" && BenchCell(r, "waitSecondsBeforeRelease") != BenchF(0f)), "with the distribution on, some real wait decisions show up in the covered scenes");
             // 3) the instants are the controller's own clock: with the distribution off he releases at the first decision; on, never later than patience plus a decision
             foreach (string[] r in data.Where(r => BenchCell(r, "released") == "yes"))
             {

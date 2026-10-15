@@ -6,7 +6,7 @@ Run: `SCEN_OUT=/tmp/bench.csv SCEN_SEEDS=8 dotnet test Tests/Core.Tests --no-bui
 
 Configurations: `DistributionEnabled` on / off (off = Phase 28 behaviour: play at once to the best receiver, else clear). Same seeds, same starting positions in both (the seed moves the receiver sideways by a fixed amount, -1..+1 m, and seeds the controller's noise). Difficulty of the Away team is always Professional.
 
-CSV columns: scenario, variant, seed, distributionEnabled, homeLevel, levelDecisionMaking (difficulty parameter), keeperId, keeperCommand/Kicking/Distribution (his attributes), skillDecisionMaking (`GoalkeeperSkillModel`, the Core function the engine uses), nearestRivalToKeeper / ToReceiver (m, at the start), released, releaseSeconds, action, isLong, targetId, reason (`DecisionReason` of the real decision that released the ball), waitDecisions (driver decisions that were `KeeperWaitForLane`), ballOwnerAt3s and retainedAt3s (3 s after the start), ballOwnerAfterRelease3s and retainedAfterRelease3s (3 s after the release), finalPhase.
+CSV columns: scenario, variant, seed, distributionEnabled, homeLevel, levelDecisionMaking (difficulty parameter), keeperId, keeperCommand/Kicking/Distribution (his attributes), skillDecisionMaking (`GoalkeeperSkillModel`, the Core function the engine uses), nearestRivalToKeeper / ToReceiver (m, at the start), released, releaseSeconds, action, isLong, targetId, reason (`DecisionReason` of the real decision that released the ball), waitSecondsBeforeRelease (seconds in which his current decision was `KeeperWaitForLane`, counted only until he first plays the ball), ballOwnerAt3s and retainedAt3s (3 s after the start), ballOwnerAfterRelease3s and retainedAfterRelease3s (3 s after the release), finalPhase, goalBy (home / away / none: who scored during the run) and firstAwayTouchSeconds (seconds from the release to the first Away touch of the ball).
 `retained` is derived from Core state: Home owns the ball, or nobody does and the last touch was Home's (it is on its way to a team-mate); `no` = Away owns it or Away touched it last; `stopped` = dead ball (goal, out of play). `NA` = the horizon was not reached or the ball was not released.
 
 ## Scenarios: expected and suspect results (nothing is forced; the logic does not guarantee these)
@@ -20,23 +20,9 @@ CSV columns: scenario, variant, seed, distributionEnabled, homeLevel, levelDecis
 | S5 DecisionMaking | S2 with difficulty goalkeeper decision making 0.9 vs 0.2 | on: the high one waits longer (more wait decisions, later release) than the low one; off: no difference | high waits less than low (inverted); off differs between them |
 | S6 Difficulty | S2 with Novice vs Elite | on: Elite waits at least as long as Novice (decision making 0.9 vs 0.3); off: release at the first decision of each level (a Novice decides less often) | Novice waits longer than Elite in the same scene |
 
-## What the first run showed (8 seeds, Classic, commit with this file; compare with the CSV, not with these words)
+## What the runs showed
 
-| Group | mean release s | mean wait decisions | retained / lost / dead ball at 3 s |
-|---|---|---|---|
-| S1 on / off | 0.283 / 0.283 | 15.8 / 0 | 8-0-0 / 8-0-0 |
-| S2 on / off | 1.577 / 0.283 | 77.6 / 0 | 8-0-0 / 3-5-0 |
-| S3 on / off | 0.283 / 0.283 | 0 / 0 | 3-0-5 / 3-0-5 |
-| S4 on / off | 0.883 / 0.283 | 36.0 / 0 | 1-2-5 / 4-0-4 |
-| S5 high on / low on | 1.577 / 1.333 | 77.6 / 63.0 | 8-0-0 / 5-3-0 |
-| S6 Novice on / Elite on | 1.617 / 1.558 | 56.0 / 82.5 | 6-2-0 / 8-0-0 |
-| S6 Novice off / Elite off | 0.683 / 0.183 | 0 / 0 | 5-3-0 / 2-5-1 |
-
-Findings to review (not fixed here, the task forbids changing the rule):
-- S1: with the distribution on he still lets 15.8 decisions pass (0.28 s) before releasing a pass to a free team-mate; the release instant is the same as off.
-- S2/S5: waiting for a lane kept the ball at 3 s in 8/8 against 3/8 playing at once; high decision making waits longer than low, as expected. Eight seeds of a deterministic AI give little independent variation: this is a direction, not a proof.
-- S4: with the distribution on, 4/8 runs end in a goal within 3 s (1/8 off): the blind clearance (receiver -1, straight along the pitch) reaches the far goal. Possible defect of the clearance (direction/power), outside Stage 1.
-- S6: Novice is NOT more impatient than Elite (release 1.617 s vs 1.558 s): the release instant is dominated by the level's decision interval and by the rival's approach, not only by patience. Possible defect or intended; to review in Stage 2.
+See `Docs/GOALKEEPER_S1_S4_S6_INVESTIGATION.md` (traces, 40 matched seeds, causes confirmed and pending). Two statements of the first report were wrong and are corrected there: the "16 wait decisions" of S1 were a measurement artefact of the bench (frames of a second possession, now fixed by `waitSecondsBeforeRelease`), and the goals of S4 are goals AGAINST the keeper's team, not a clearance reaching the far goal.
 
 ## Limitations
 - One pair of teams, one keeper (`gk-emiliano-martinez`, Command 0.867, Kicking 0.796, Distribution 0.786) and Classic only; Arena is not measured.
