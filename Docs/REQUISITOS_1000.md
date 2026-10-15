@@ -4,12 +4,13 @@ Fuente: `FS27_lista_maestra_1000_requisitos.md` (1.000 identificadores `FS27-REQ
 
 ## Estado de los 1.000 (generado por `Tools/requisitos_audit.py`)
 Cada fila de `Docs/requisitos_estado.csv` dice **cuánta confianza** tiene su estado:
-- **requisito** (163 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
-- **seccion** (837 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
+- **requisito** (183 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
+- **seccion** (817 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
 
-Totales: **confirmado 63**, parcial 873, pendiente 8, requiere humano 56. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
+Totales: **confirmado 73**, parcial 858, pendiente 13, requiere humano 56. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
 
 Pendientes por sección (los más numerosos):
+- Movimiento y locomoción: 5
 - Balones aéreos y juego de cabeza: 3
 - Centros y juego por las bandas: 2
 - Interfaz y HUD: 2
@@ -22,7 +23,7 @@ Resumen por sección:
 | Sección | confirmado | parcial | pendiente | requiere humano |
 |---|---|---|---|---|
 | Identidad y estructura del partido | 2 | 16 | 0 | 2 |
-| Movimiento y locomoción | 0 | 20 | 0 | 0 |
+| Movimiento y locomoción | 10 | 5 | 5 | 0 |
 | Joystick, sprint y controles táctiles | 3 | 17 | 0 | 0 |
 | Selección y cambio de jugador | 10 | 10 | 0 | 0 |
 | Balón y física | 0 | 19 | 0 | 1 |

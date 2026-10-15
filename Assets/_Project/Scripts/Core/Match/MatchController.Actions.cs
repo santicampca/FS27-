@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace FS27.Core
 {
@@ -938,7 +939,26 @@ namespace FS27.Core
             }
             if (best == null || PenaltyBlocksTouch(best)) return;
             if (!best.InGoal && HeadersEnabled && height > actions.MaxTouchHeight) { HeadTouch(best); return; }
+            // Phase 40: a player who has decided to strike the ball first time (see ArmKick) does it with the touch the Core was about to make as a reception
+            if (armedKicks.TryGetValue(best.PlayerId, out ArmedKick armed))
+            {
+                armedKicks.Remove(best.PlayerId);
+                if (State.MatchTimeSeconds <= armed.ExpiresAt && height <= actions.MaxTouchHeight && Perform(armed.Request).Outcome != ActionOutcome.Rejected) return;
+            }
             FirstTouch(best, 0f, false);
+        }
+
+        private struct ArmedKick { public ActionRequest Request; public float ExpiresAt; }
+        private readonly Dictionary<string, ArmedKick> armedKicks = new Dictionary<string, ArmedKick>();
+
+        /// <summary>
+        /// Phase 40: a player who sees a team-mate's pass coming decides (on his turn, up to <paramref name="seconds"/> before it arrives) to strike it first time. The kick happens on the touch the Core would otherwise
+        /// make as a reception, so the decision does not have to fall on the exact step the ball is in reach. If somebody else gets the ball, or it does not arrive in time, nothing happens.
+        /// </summary>
+        public void ArmKick(ActionRequest request, float seconds)
+        {
+            if (request.PlayerId == null) return;
+            armedKicks[request.PlayerId] = new ArmedKick { Request = request, ExpiresAt = State.MatchTimeSeconds + seconds };
         }
 
         /// <summary>

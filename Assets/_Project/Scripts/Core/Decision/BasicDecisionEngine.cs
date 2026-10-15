@@ -594,14 +594,25 @@ namespace FS27.Core
         {
             decision = default(PlayerDecision);
             WorldBall ball = view.Ball;
-            if (me.KickCooldown || !me.CanAct || ball.HasPossessor || ball.IsGrounded || ball.Mode == BallMode.InShot) return false;
-            if (ball.Height < ActionDefaults.VolleyMinHeight || ball.Height > ActionDefaults.MaxTouchHeight || ball.Velocity.Y >= 0f) return false;
-            if ((ball.Ground - me.Position).Magnitude > aerial.Tuning.VolleyReach) return false;
+            if (me.KickCooldown || !me.CanAct || ball.HasPossessor || ball.Mode == BallMode.InShot) return false;
             Vec2 goal = WorldGeometry.AttackGoal(view.Match, view.Field, me.Team);
             float distance = (goal - me.Position).Magnitude;
-            if (distance > aerial.Tuning.VolleyShootRange || !WorldGeometry.IsLaneClear(view, me.Team, me.Position, goal, t.ShootLaneClearance, true)) return false;
+            bool inReach = (ball.Ground - me.Position).Magnitude <= aerial.Tuning.VolleyReach && ball.Height <= ActionDefaults.MaxTouchHeight;
+            bool volley = inReach && ball.Height >= ActionDefaults.VolleyMinHeight && ball.Velocity.Y < 0f && distance <= aerial.Tuning.VolleyShootRange;
+            // Phase 40: a pass or cross a team-mate has played comes at him in front of goal: he decides to strike it first time, without controlling it first (armed: the Core kicks it with the touch it was about to make)
+            bool firstTime = false;
+            if (!volley && aerial.Tuning.FirstTimeRange > 0f && distance <= aerial.Tuning.FirstTimeRange && ball.Speed >= aerial.Tuning.FirstTimeMinSpeed
+                && ball.HasLastTouch && ball.LastTouchTeam == me.Team && ball.LastTouchPlayerId != me.PlayerId && ball.Height <= ActionDefaults.MaxTouchHeight)
+            {
+                Vec2 toMe = me.Position - ball.Ground; float away = toMe.Magnitude;
+                firstTime = away > aerial.Tuning.ArmMinDistance && away <= aerial.Tuning.ArmDistance && (ball.Direction.X * toMe.X + ball.Direction.Y * toMe.Y) / away >= aerial.Tuning.ArmAlignment;
+            }
+            if (!volley && !firstTime) return false;
+            if (!WorldGeometry.IsLaneClear(view, me.Team, me.Position, goal, t.ShootLaneClearance, true)) return false;
             decision = BuildShot(view, me, goal, distance);
-            decision.Reason = DecisionReason.AerialVolley;
+            decision.Reason = volley ? DecisionReason.AerialVolley : DecisionReason.FirstTimeFinish;
+            decision.Armed = firstTime;
+            if (firstTime) { decision.HasMovement = true; decision.Movement = MovementIntent.Stand; }
             return true;
         }
 

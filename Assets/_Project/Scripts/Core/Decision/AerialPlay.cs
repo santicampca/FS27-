@@ -30,6 +30,10 @@ namespace FS27.Core
         public const int SecondBallPlayers = 2;
         /// <summary>The volley at goal (REQ-0108, 0146, 0849): the ball is in the air within this distance of his feet (m) and the goal is this close or closer (m).</summary>
         public const float VolleyReach = 1.0f, VolleyShootRange = 14.0f;
+        /// <summary>The first-time finish: a pass or cross a team-mate has played arrives within reach of his feet at this speed (m/s) or more, and the goal is this close (m) or closer: he strikes it without controlling it first. 0 range = off.</summary>
+        public const float FirstTimeMinSpeed = 4.0f, FirstTimeRange = 0f;
+        /// <summary>The ball must be this close (m) and heading at him (cosine of the angle) to arm the first-time kick; the armed kick lasts this long (s).</summary>
+        public const float ArmDistance = 6.0f, ArmAlignment = 0.92f, ArmSeconds = 0.5f, ArmMinDistance = 0.3f;
     }
 
     [Serializable]
@@ -47,6 +51,8 @@ namespace FS27.Core
         public float SecondBallRadius = AerialPlayDefaults.SecondBallRadius, SecondBallOffset = AerialPlayDefaults.SecondBallOffset;
         public int SecondBallPlayers = AerialPlayDefaults.SecondBallPlayers;
         public float VolleyReach = AerialPlayDefaults.VolleyReach, VolleyShootRange = AerialPlayDefaults.VolleyShootRange;
+        public float FirstTimeMinSpeed = AerialPlayDefaults.FirstTimeMinSpeed, FirstTimeRange = AerialPlayDefaults.FirstTimeRange;
+        public float ArmDistance = AerialPlayDefaults.ArmDistance, ArmAlignment = AerialPlayDefaults.ArmAlignment, ArmSeconds = AerialPlayDefaults.ArmSeconds, ArmMinDistance = AerialPlayDefaults.ArmMinDistance;
     }
 
     public enum AerialRole { None = 0, Claim = 1, Second = 2 }
