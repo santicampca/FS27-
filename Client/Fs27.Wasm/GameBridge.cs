@@ -25,6 +25,10 @@ namespace FS27.Client
         private static float lastActionAt = -100f;
         private static int homeTeam, awayTeam;
         private static readonly List<string> order = new List<string>();
+        // Phase 35: what the page needs to make sound, vibrate, show notices and the final statistics (read from the Core's own events and actions; nothing here decides anything)
+        private static readonly StringBuilder eventQueue = new StringBuilder();
+        private static readonly int[] shots = new int[2], passes = new int[2], fouls = new int[2], corners = new int[2], throwIns = new int[2], headers = new int[2], tackles = new int[2];
+        private static readonly double[] possession = new double[2];
 
         public const float RestartPauseSeconds = 1.2f;
 
@@ -105,6 +109,9 @@ namespace FS27.Client
             // the teams play the way their coaches' data says (Phase 31) and the person's passes and shots are helped to go where he meant
             driver.SetTactic(TeamSide.Home, TeamTactic.Of(h, db)); driver.SetTactic(TeamSide.Away, TeamTactic.Of(a, db));
             match.AimAssist.Enabled = aimAssist;
+            eventQueue.Clear(); Array.Clear(shots, 0, 2); Array.Clear(passes, 0, 2); Array.Clear(fouls, 0, 2); Array.Clear(corners, 0, 2); Array.Clear(throwIns, 0, 2); Array.Clear(headers, 0, 2); Array.Clear(tackles, 0, 2); possession[0] = possession[1] = 0;
+            match.Events.Published += OnEvent;
+            match.ActionPerformed += OnAction;
             match.HeadersEnabled = true;   // Phase 33: a ball in the air is played in the air
             match.SetControl(TeamSide.Home, ControlSource.Human);
             clock = new SimulationClock(settings.SimulationStepSeconds);
@@ -165,13 +172,14 @@ namespace FS27.Client
             input.Move = stick;
             HumanInputResult r = match.SubmitHumanInput(TeamSide.Home, input);
             if (hasPress) { hasPress = false; if (r.ActionAttempted) { lastAction = r.Action.Kind + ":" + r.Action.Outcome; lastActionAt = match.State.MatchTimeSeconds; } }
+            if (match.State.Phase == MatchPhase.Playing && match.State.Ball.HasPossession) possession[match.State.Ball.PossessingTeam == TeamSide.Home ? 0 : 1] += clock.StepSeconds;
             match.Advance(clock.StepSeconds);
             MatchPhase phase = match.State.Phase;
             if (phase == MatchPhase.WaitingForKickoff || phase == MatchPhase.WaitingForRestart)
             {
                 restartWait += clock.StepSeconds;
                 // Phase 33: a throw-in or a corner of the person's team waits for him (aim, charge, release) before the AI takes it
-                float limit = match.AwaitingHumanSetPiece(TeamSide.Home) ? match.SetPiece.HumanWaitSeconds : RestartPauseSeconds;
+                int dead = HumanDeadBall(); float limit = dead == 0 ? RestartPauseSeconds : (dead <= 2 ? match.SetPiece.HumanWaitSeconds : match.FreeKick.HumanMaxWaitSeconds);
                 if (restartWait >= limit) { match.ConfirmRestart(); restartWait = 0f; }
             }
             else restartWait = 0f;
@@ -212,26 +220,96 @@ namespace FS27.Client
 
         [JSExport] public static string LastAction() { return lastAction; }
 
-        /// <summary>Phase 33: the throw-in or corner the person is asked to take: [kind (0 none, 1 throw-in, 2 corner), spot x, spot z, seconds left to take it, seconds of a full charge, attack direction x (+1/-1)].</summary>
+        private static void OnEvent(GameplayEvent ev)
+        {
+            int t = ev.HasTeam ? (ev.Team == TeamSide.Home ? 0 : 1) : -1;
+            switch (ev.Kind)
+            {
+                case GameplayEventKind.ShotPerformed: if (t >= 0) shots[t]++; break;
+                case GameplayEventKind.PassPerformed: if (t >= 0) passes[t]++; break;
+                case GameplayEventKind.FoulCommitted: if (t >= 0) fouls[t]++; break;
+                case GameplayEventKind.CornerAwarded: if (t >= 0) corners[t]++; break;
+                case GameplayEventKind.ThrowInAwarded: if (t >= 0) throwIns[t]++; break;
+                case GameplayEventKind.TacklePerformed: if (t >= 0) tackles[t]++; break;
+            }
+            switch (ev.Kind)
+            {
+                case GameplayEventKind.GoalScored: case GameplayEventKind.ShotPerformed: case GameplayEventKind.PassPerformed: case GameplayEventKind.FoulCommitted: case GameplayEventKind.CornerAwarded:
+                case GameplayEventKind.ThrowInAwarded: case GameplayEventKind.GoalKickAwarded: case GameplayEventKind.FreeKickAwarded: case GameplayEventKind.PenaltyAwarded: case GameplayEventKind.TacklePerformed:
+                case GameplayEventKind.YellowCardIssued: case GameplayEventKind.RedCardIssued: case GameplayEventKind.HalfTimeStarted: case GameplayEventKind.MatchEnded: case GameplayEventKind.BallDeflected: case GameplayEventKind.BallOutOfBounds:
+                    if (eventQueue.Length < 2000) eventQueue.Append(ev.Kind).Append(':').Append(t).Append(',');
+                    break;
+            }
+        }
+
+        private static void OnAction(ActionResult r)
+        {
+            if (r.Kind == FootballActionKind.Header) { int t = r.Team == TeamSide.Home ? 0 : 1; headers[t]++; if (eventQueue.Length < 2000) eventQueue.Append("Header:").Append(t).Append(','); }
+        }
+
+        /// <summary>Phase 35: the events since the last call, as "Kind:team,Kind:team" (team 0 = the person's, 1 = the rival's, -1 = none). For sound, vibration and notices.</summary>
+        [JSExport] public static string DrainEvents() { string s = eventQueue.ToString(); eventQueue.Clear(); return s; }
+
+        /// <summary>Phase 35: the statistics of the match so far, as JSON (home, away): shots, passes, fouls, corners, throw-ins, headers, tackles and the share of possession.</summary>
+        [JSExport]
+        public static string Stats()
+        {
+            double total = possession[0] + possession[1];
+            string One(int i) { return "{\"shots\":" + shots[i] + ",\"passes\":" + passes[i] + ",\"fouls\":" + fouls[i] + ",\"corners\":" + corners[i] + ",\"throwIns\":" + throwIns[i] + ",\"headers\":" + headers[i] + ",\"tackles\":" + tackles[i] + ",\"possession\":" + (total > 0 ? Math.Round(100.0 * possession[i] / total) : 50).ToString(System.Globalization.CultureInfo.InvariantCulture) + "}"; }
+            return "{\"home\":" + One(0) + ",\"away\":" + One(1) + "}";
+        }
+
+        /// <summary>Phase 35 (FS27-REQ-0080): the index (as in the snapshot) of the player the automatic choice would pick now, or -1.</summary>
+        [JSExport]
+        public static int SuggestedIndex()
+        {
+            if (match == null || driver == null) return -1;
+            string id = AutoSelection.Choose(WorldState.Capture(match).View, TeamSide.Home, match.StoredSelection(TeamSide.Home), driver.Engine.DefenseTuning);
+            return id == null ? -1 : order.IndexOf(id);
+        }
+
+        /// <summary>The dead ball the person is asked to take, if any: 1 throw-in, 2 corner, 3 free kick, 4 penalty (0 none).</summary>
+        private static int HumanDeadBall()
+        {
+            if (match == null || match.GetControl(TeamSide.Home) != ControlSource.Human) return 0;
+            if (match.AwaitingHumanSetPiece(TeamSide.Home)) return match.State.PendingRestart.Kind == RestartKind.Corner ? 2 : 1;
+            MatchState s = match.State;
+            if (s.Phase == MatchPhase.WaitingForRestart && s.PendingRestart.Kind == RestartKind.FreeKick && s.FreeKick != null && s.FreeKick.Active && s.FreeKick.Beneficiary == TeamSide.Home) return 3;
+            if (s.Penalty != null && s.Penalty.Waiting && s.Penalty.Team == TeamSide.Home && s.Phase != MatchPhase.Shootout) return 4;
+            return 0;
+        }
+
+        /// <summary>Phase 33/35: the dead ball the person is asked to take: [kind (0 none, 1 throw-in, 2 corner, 3 free kick, 4 penalty), spot x, spot z, seconds left, seconds of a full charge, attack direction x (+1/-1)].</summary>
         [JSExport]
         public static double[] SetPieceInfo()
         {
-            if (match == null || !match.AwaitingHumanSetPiece(TeamSide.Home)) return new double[] { 0, 0, 0, 0, 0, 1 };
-            RestartRequest r = match.State.PendingRestart;
-            return new double[] { r.Kind == RestartKind.Corner ? 2 : 1, r.Position.X, r.Position.Y, Math.Max(0.0, match.SetPiece.HumanWaitSeconds - restartWait), match.FreeKick.FullChargeSeconds, match.State.HomeAttacksPositiveX ? 1 : -1 };
+            int kind = HumanDeadBall();
+            if (kind == 0) return new double[] { 0, 0, 0, 0, 0, 1 };
+            MatchState s = match.State; Vec2 spot = kind == 3 ? s.FreeKick.Spot : kind == 4 ? s.Penalty.Spot : s.PendingRestart.Position;
+            float wait = kind <= 2 ? match.SetPiece.HumanWaitSeconds : match.FreeKick.HumanMaxWaitSeconds;
+            return new double[] { kind, spot.X, spot.Y, Math.Max(0.0, wait - restartWait), kind == 4 ? match.Penalties.FullChargeSeconds : match.FreeKick.FullChargeSeconds, s.HomeAttacksPositiveX ? 1 : -1 };
         }
 
-        /// <summary>Phase 33: takes it with the aim of the person (field frame, like <see cref="Press"/>): the direction he pushed, how long he held the button and, for a corner, a zone of the goal (-1 none, 0 left, 1 centre, 2 right). Returns the Core's answer.</summary>
+        /// <summary>Phase 33/35: takes it with the aim of the person (field frame, like <see cref="Press"/>): the direction he pushed, how long he held the button and a zone of the goal (-1 none, 0 left, 1 centre, 2 right; a free kick without a zone is a pass along the drag; a penalty without one goes to the middle). Returns the Core's answer.</summary>
         [JSExport]
         public static string TakeSetPiece(double aimX, double aimY, double holdSeconds, int zone)
         {
             if (match == null) return "NoMatch";
-            var aim = new FreeKickAim { Intent = FreeKickIntent.Pass, Direction = new Vec2((float)aimX, (float)aimY), HoldSeconds = (float)holdSeconds };
-            if (match.State.PendingRestart.Kind == RestartKind.Corner && zone >= 0) { aim.Intent = FreeKickIntent.Shot; aim.HasZone = true; aim.Zone = zone == 0 ? GoalZone.Left : zone == 2 ? GoalZone.Right : GoalZone.Centre; }
-            SetPieceExecuteResult r = match.ExecuteSetPiece(aim);
-            if (r == SetPieceExecuteResult.Executed) restartWait = 0f;
-            return r.ToString();
+            int kind = HumanDeadBall();
+            GoalZone gz = zone == 0 ? GoalZone.Left : zone == 2 ? GoalZone.Right : GoalZone.Centre;
+            string result;
+            if (kind == 4) result = match.ExecutePenalty(PenaltyShotAim.At(gz, 0.7f, 0f, match.Penalties) is PenaltyShotAim a ? WithHold(a, (float)holdSeconds) : default(PenaltyShotAim)).ToString();
+            else
+            {
+                var aim = new FreeKickAim { Intent = FreeKickIntent.Pass, Direction = new Vec2((float)aimX, (float)aimY), HoldSeconds = (float)holdSeconds };
+                if ((kind == 2 || kind == 3) && zone >= 0) { aim.Intent = FreeKickIntent.Shot; aim.HasZone = true; aim.Zone = gz; }
+                result = kind == 3 ? match.ExecuteFreeKick(aim).ToString() : match.ExecuteSetPiece(aim).ToString();
+            }
+            if (result == "Executed") restartWait = 0f;
+            return result;
         }
+
+        private static PenaltyShotAim WithHold(PenaltyShotAim a, float hold) { a.HoldSeconds = hold; return a; }
 
         /// <summary>What the match is doing, as text (for diagnosing a stuck restart).</summary>
         [JSExport]

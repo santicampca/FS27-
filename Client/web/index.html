@@ -22,6 +22,8 @@
     <label>Dificultad <select id="levelSel"><option>Novice</option><option>Amateur</option><option selected>Professional</option><option>Expert</option><option>Elite</option></select></label>
     <label>Ayuda de puntería <input type="checkbox" id="assistChk" checked></label>
     <button id="startBtn" class="big">JUGAR</button>
+    <div class="row"><button id="practiceBtn" class="big alt">PRÁCTICA</button><button id="settingsBtn" class="big alt">AJUSTES</button></div>
+    <p id="profileLine" class="hint"></p>
     <details class="how" open>
       <summary>Cómo se juega</summary>
       <ul>
@@ -37,6 +39,8 @@
 </div>
 
 <div id="hud" class="hidden">
+  <div id="poss"><span id="possDot">●</span> <span id="possTxt"></span> · atacas →</div>
+  <div id="stam"><div id="stamFill"></div><span id="stamTxt"></span></div>
   <div id="score"><span id="hn">LOC</span> <b id="hs">0</b> – <b id="as">0</b> <span id="an">VIS</span> <span id="clock">00:00</span></div>
   <div id="banner"></div>
   <div id="stick"><div id="knob"></div></div>
@@ -49,6 +53,31 @@
 </div>
 
 <div id="hintbar" class="hidden"></div>
+<div id="tutorial" class="hidden"><b id="tuTitle"></b> <span id="tuText"></span> <button id="tuSkip" class="small2">Saltar</button></div>
+<div id="pausebox" class="hidden"><b>PAUSA</b>
+  <div class="row"><button id="resumeBtn">Continuar</button><button id="pauseSettingsBtn">Ajustes</button><button id="logBtn">Copiar registro de entradas</button><button id="quitBtn">Salir al menú</button></div>
+  <p id="logMsg" class="hint"></p></div>
+<div id="settings" class="screen hidden"><div class="box wide">
+  <h1>AJUSTES</h1>
+  <h3>Controles</h3>
+  <label>Tamaño del stick <input type="range" id="setStick" min="0.7" max="1.5" step="0.05"></label>
+  <label>Tamaño de los botones <input type="range" id="setBtn" min="0.7" max="1.5" step="0.05"></label>
+  <label>Modo zurdo (stick a la derecha) <input type="checkbox" id="setLefty"></label>
+  <label>Ayuda de puntería <input type="checkbox" id="setAssist"></label>
+  <h3>Cámara</h3>
+  <label>Cámara <select id="setCam"><option value="follow">Sigue al balón</option><option value="wide">Campo entero</option></select></label>
+  <label>Zoom <input type="range" id="setZoom" min="0.8" max="1.6" step="0.05"></label>
+  <h3>Audio</h3>
+  <label>Volumen <input type="range" id="setVol" min="0" max="1" step="0.05"></label>
+  <label>Silencio <input type="checkbox" id="setMute"></label>
+  <label>Vibración (móvil) <input type="checkbox" id="setHaptics"></label>
+  <h3>Accesibilidad</h3>
+  <label>Tamaño del texto <input type="range" id="setText" min="0.9" max="1.5" step="0.05"></label>
+  <label>Colores para daltonismo <input type="checkbox" id="setColor"></label>
+  <label>Reducir movimiento (sin sacudidas ni destellos) <input type="checkbox" id="setReduce"></label>
+  <p class="hint">Se guardan solos en este aparato. No se envía nada.</p>
+  <button id="settingsClose" class="big">LISTO</button>
+</div></div>
 <div id="spbox" class="hidden">
   <div id="sptitle"></div>
   <div id="spzones" class="hidden"><button data-z="0">Izquierda</button><button data-z="1" class="sel">Centro</button><button data-z="2">Derecha</button></div>
@@ -58,6 +87,7 @@
 
 <div id="end" class="screen hidden"><div class="box wide">
   <h1 id="endTitle">Final</h1><p id="endScore"></p>
+  <table id="endStats"></table>
   <p class="hint">Dos minutos para ayudarnos: marca del 1 (mal) al 5 (muy bien) y copia el resultado para enviárnoslo.</p>
   <div id="rates"></div>
   <textarea id="notes" rows="3" placeholder="¿Qué fue lo más raro o molesto? ¿Qué te gustó? (opcional)"></textarea>

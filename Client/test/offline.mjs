@@ -18,15 +18,25 @@ check('the menu appears from disk, without a server', true, { seconds: +((Date.n
 check('12 teams to choose from', (await page.evaluate(() => document.querySelectorAll('#homeSel option').length)) === 12);
 check('the instructions are on the menu', (await page.evaluate(() => document.querySelector('.how').innerText)).includes('Disparar'));
 await page.screenshot({ path: path.join(shots, 'offline-menu.png') });
+// settings: opened from the menu, applied at once, kept on the device
+await page.tap('#settingsBtn'); await page.waitForSelector('#settings:not(.hidden)');
+await page.check('#setLefty'); await page.fill('#setZoom', '1.3'); await page.evaluate(() => { const e = document.getElementById('setCam'); e.value = 'wide'; e.dispatchEvent(new Event('change')); });
+check('the settings apply at once (left-handed layout)', await page.evaluate(() => document.body.classList.contains('lefty')));
+check('the settings are kept on the device', await page.evaluate(() => JSON.parse(localStorage.getItem('fs27.settings')).cam === 'wide'));
+await page.tap('#settingsClose');
+await page.evaluate(() => { const e = document.getElementById('setLefty'); });
 await page.tap('#startBtn');
 await page.waitForFunction(() => window.__fs27 && window.__fs27.snap && window.__fs27.snap.length > 13 && window.__fs27.state()[1] === 2, null, { timeout: 30000 });
 check('a match starts with a tap on JUGAR', true);
+check('the HUD tells who has the ball and the stamina', (await page.textContent('#possTxt')).length > 0 && (await page.textContent('#stamTxt')).length > 0);
 check('a hint explains the controls', await page.evaluate(() => !document.getElementById('hintbar').classList.contains('hidden')));
 await page.screenshot({ path: path.join(shots, 'offline-play.png') });
 // losing focus (a call, a notification) releases the stick and pauses the match (FS27-REQ-0053)
 await page.evaluate(() => window.dispatchEvent(new Event('blur')));
 await page.waitForTimeout(300);
 check('losing focus pauses the match and leaves nothing pressed', (await page.textContent('#banner')) === 'PAUSA');
+await page.waitForTimeout(100);
+check('the pause panel is shown', await page.evaluate(() => !document.getElementById('pausebox').classList.contains('hidden')));
 await page.tap('#btnPause'); await page.waitForTimeout(200);
 check('the pause button resumes it', (await page.textContent('#banner')) !== 'PAUSA');
 // a throw-in or corner of the person's team waits for him: aim, charge with the button, release (Phase 33)
@@ -48,6 +58,7 @@ if (found) {
 await page.evaluate(async () => { const B = window.__fs27.B; for (let i = 0; i < 14000 && B.Snapshot()[11] === 0; i++) { B.Advance(8 / 60); if (i % 400 === 0) await new Promise(r => setTimeout(r, 0)); } });
 await page.waitForSelector('#end:not(.hidden)', { timeout: 60000 });
 check('the end form appears', true, { title: await page.textContent('#endTitle'), score: await page.textContent('#endScore') });
+check('the final statistics are shown', (await page.evaluate(() => document.querySelectorAll('#endStats tr').length)) >= 7);
 check('six questions to rate', (await page.evaluate(() => document.querySelectorAll('#rates .rate').length)) === 6);
 await page.tap('#rates .stars[data-k="pass"] button[data-n="4"]'); await page.tap('#rates .stars[data-k="fun"] button[data-n="5"]');
 await page.fill('#notes', 'prueba automática');
@@ -55,6 +66,14 @@ await page.tap('#copyBtn');
 const report = await page.inputValue('#report');
 check('the text to send has the match, the ratings and the comment', report.includes('Partido:') && report.includes('Pases: 4') && report.includes('Diversión en general: 5') && report.includes('prueba automática') && report.includes('sin contestar'), report);
 await page.screenshot({ path: path.join(shots, 'offline-end.png') });
+// the practice: a second visit, five guided steps done by really doing them (FS27-REQ-0057)
+const p2 = await ctx.newPage(); await p2.goto('file://' + file); await p2.waitForSelector('#menu:not(.hidden)', { timeout: 60000 });
+check('the profile line remembers the finished match', (await p2.textContent('#profileLine')).includes('Tus partidos: 1'));
+await p2.tap('#practiceBtn'); await p2.waitForFunction(() => window.__fs27 && window.__fs27.state()[1] === 2, null, { timeout: 30000 });
+check('the practice shows its first step', (await p2.textContent('#tuTitle')).startsWith('1/5'));
+await p2.keyboard.down('d'); await p2.waitForTimeout(2200); await p2.keyboard.up('d'); await p2.waitForTimeout(300);
+check('moving advances the practice to the second step', (await p2.textContent('#tuTitle')).startsWith('2/5'), await p2.textContent('#tuTitle'));
+await p2.close();
 check('nothing was fetched from the network', requests === 0, { requests });
 check('no page errors', errors.length === 0, errors.slice(0, 3));
 await browser.close();
