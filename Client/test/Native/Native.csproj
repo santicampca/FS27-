@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><LangVersion>9.0</LangVersion><Nullable>disable</Nullable><AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  <EnableDefaultCompileItems>false</EnableDefaultCompileItems><NoWarn>$(NoWarn);CA1416;CS0649;CS0414;CS0169;CS0219</NoWarn></PropertyGroup>
+  <ItemGroup><Compile Include="../../../Assets/_Project/Scripts/Core/**/*.cs" /><Compile Include="../../Fs27.Wasm/GameBridge.cs" /><Compile Include="../../Fs27.Wasm/DataFiles.cs" /><Compile Include="Main.cs" /></ItemGroup>
+</Project>

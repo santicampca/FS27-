@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b3d1f">
+<title>FS27 — Jugable</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="view"></canvas>
+
+<div id="loading"><div class="box"><h1>FS27</h1><p id="loadmsg">Cargando el motor…</p><progress id="loadbar" max="100" value="0"></progress></div></div>
+
+<div id="menu" class="screen hidden">
+  <div class="box">
+    <h1>FS27</h1>
+    <label>Tu equipo <select id="homeSel"></select></label>
+    <label>Rival <select id="awaySel"></select></label>
+    <label>Modo <select id="modeSel"><option>Classic</option><option>Arena</option></select></label>
+    <label>Dificultad <select id="levelSel"><option>Novice</option><option>Amateur</option><option selected>Professional</option><option>Expert</option><option>Elite</option></select></label>
+    <button id="startBtn" class="big">JUGAR</button>
+    <p class="hint">Stick a la izquierda. A: tap = presionar / escudo, desliza abajo = disparo, arriba = vaselina. B: tap = pase corto, arriba = pase en profundidad. C: habilidad.</p>
+  </div>
+</div>
+
+<div id="hud" class="hidden">
+  <div id="score"><span id="hn">LOC</span> <b id="hs">0</b> – <b id="as">0</b> <span id="an">VIS</span> <span id="clock">00:00</span></div>
+  <div id="banner"></div>
+  <div id="stick"><div id="knob"></div></div>
+  <button id="btnA" class="act">A</button>
+  <button id="btnB" class="act">B</button>
+  <button id="btnC" class="act">C</button>
+  <button id="btnSw" class="small">⇄</button>
+  <button id="btnPause" class="small">❚❚</button>
+  <div id="fps"></div>
+</div>
+
+<div id="end" class="screen hidden"><div class="box"><h1 id="endTitle">Final</h1><p id="endScore"></p><button id="againBtn" class="big">OTRO PARTIDO</button></div></div>
+<script type="module" src="game.js"></script>
+</body>
+</html>
