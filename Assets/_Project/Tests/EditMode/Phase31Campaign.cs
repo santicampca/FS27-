@@ -22,6 +22,8 @@ namespace FS27.Core.Tests
             public double DepthAtt, DepthDef, WidthAtt, WidthDef; public int SamplesAtt, SamplesDef;
             public int Gains, HighGains, Shots, Goals, Passes, ForwardPasses, Fouls, Interceptions, PossessionSamples, AllSamples;
             public double ForwardComponent;
+            public int GiveAndReturn;   // A touches, B (a team-mate) touches, A touches again, each within 3.5 s: the give-and-return
+            public string T1, T2; public float Time1, Time2;
         }
 
         private static TeamRun[] PlayTacticMatch(GameMode mode, int homeTeam, int awayTeam, int seed, bool tactics, TeamTacticTuning tuning = null)
@@ -46,6 +48,10 @@ namespace FS27.Core.Tests
                     case GameplayEventKind.GoalScored: r.Goals++; break;
                     case GameplayEventKind.FoulCommitted: r.Fouls++; break;
                     case GameplayEventKind.InterceptionPerformed: r.Interceptions++; break;
+                    case GameplayEventKind.BallTouched:
+                        if (ev.PlayerId != null && ev.PlayerId != r.T2) { if (r.T1 != null && ev.PlayerId == r.T1 && r.T2 != null && ev.MatchTime - r.Time1 <= 3.5f && r.Time2 - r.Time1 <= 3.5f) r.GiveAndReturn++; r.T1 = r.T2; r.Time1 = r.Time2; r.T2 = ev.PlayerId; r.Time2 = ev.MatchTime; }
+                        runs[1 - (int)ev.Team].T1 = runs[1 - (int)ev.Team].T2 = null;
+                        break;
                     case GameplayEventKind.PossessionChanged: r.Gains++; if (ev.Position.X * sign(ev.Team) > 0f) r.HighGains++; break;
                 }
             };
@@ -87,10 +93,10 @@ namespace FS27.Core.Tests
             Func<double, int, double> div = (a, n) => n == 0 ? 0 : a / n;
             Func<double, string> f = v => v.ToString("0.000", CultureInfo.InvariantCulture);
             return string.Join(",", condition, seed.ToString(CultureInfo.InvariantCulture), r.Team == 0 ? "home" : "away", r.TeamId, f(div(r.DepthAtt, r.SamplesAtt)), f(div(r.DepthDef, r.SamplesDef)), f(div(r.WidthAtt, r.SamplesAtt)), f(div(r.WidthDef, r.SamplesDef)),
-                r.Gains, r.HighGains, r.Shots, r.Goals, r.Passes, r.ForwardPasses, f(div(r.ForwardComponent, r.Passes)), r.Fouls, r.Interceptions, f(div(r.PossessionSamples, r.AllSamples)));
+                r.Gains, r.HighGains, r.Shots, r.Goals, r.Passes, r.ForwardPasses, f(div(r.ForwardComponent, r.Passes)), r.Fouls, r.Interceptions, f(div(r.PossessionSamples, r.AllSamples)), r.GiveAndReturn);
         }
 
-        public const string TacticHeader = "condition,seed,side,team,depthWithBall,depthWithoutBall,widthWithBall,widthWithoutBall,gains,highGains,shots,goals,passes,forwardPasses,meanForward,fouls,interceptions,possession";
+        public const string TacticHeader = "condition,seed,side,team,depthWithBall,depthWithoutBall,widthWithBall,widthWithoutBall,gains,highGains,shots,goals,passes,forwardPasses,meanForward,fouls,interceptions,possession,giveAndReturn";
 
         [Test, Explicit]
         public void TacticCampaign_WritesCsv()
