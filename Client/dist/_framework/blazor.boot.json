@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Fs27.Wasm",
   "resources": {
-    "hash": "sha256-9vfGg5Mhpa3pSWmVuLouN8DD3Enu7ftd9sAwlivEDIg=",
+    "hash": "sha256-+oMlcR15EnAa+ugIHprJLewFU8VIkNMHXLC+GzJDaMI=",
     "jsModuleNative": {
       "dotnet.native.8.0.32.0nw8qdht41.js": "sha256-6mDkQm8wcqsePLieS1uDjmZJGTlxyzuaoKrjt7Rlztk="
     },
@@ -17,7 +17,7 @@
       "icudt_no_CJK.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
     },
     "assembly": {
-      "Fs27.Wasm.wasm": "sha256-nfH2vbjfXWbKSMZ0llOoQd64ucSnsgkB2Gwr1KHAL/k=",
+      "Fs27.Wasm.wasm": "sha256-k2izHXefOCa5K179zCTmwAve+hfXMF3KS3q3WWgJpdU=",
       "System.Collections.Concurrent.wasm": "sha256-HvcG7VddrC72Aunuo+wV21JdnkOpdhVQHMqklGfqj7A=",
       "System.Collections.wasm": "sha256-14UqbK/FCrYYtz/1M0kpXyk4wItK3/yJrIlfK2cBeOw=",
       "System.IO.Compression.wasm": "sha256-Er4LbEkboNFDb6b7G/dAhw6KuR89kBU6Su3/rb0iaT4=",

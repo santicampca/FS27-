@@ -90,6 +90,11 @@ await page.screenshot({ path: path.join(shots, 'offline-end.png') });
 // the practice: a second visit, five guided steps done by really doing them (FS27-REQ-0057)
 const p2 = await ctx.newPage(); await p2.goto('file://' + file); await p2.waitForSelector('#menu:not(.hidden)', { timeout: 60000 });
 check('the profile line remembers the finished match', (await p2.textContent('#profileLine')).includes('Tus partidos: 1'));
+await p2.evaluate(() => { const e = document.getElementById('levelSel'); e.value = 'Elite'; e.dispatchEvent(new Event('change')); });
+await p2.reload(); await p2.waitForSelector('#menu:not(.hidden)', { timeout: 60000 });
+check('the menu keeps the options the person chose when he comes back (FS27-REQ-0659)', (await p2.evaluate(() => document.getElementById('levelSel').value)) === 'Elite');
+check('the buttons have a label and a hint (FS27-REQ-0658)', (await p2.evaluate(() => ['btnA', 'btnB', 'btnC', 'btnSw'].every(id => document.getElementById(id).getAttribute('aria-label') && document.getElementById(id).title))));
+check('the online mode is shown as not available yet (FS27-REQ-0886)', (await p2.evaluate(() => document.getElementById('onlineBtn').getAttribute('aria-disabled') === 'true')));
 await p2.tap('#practiceBtn'); await p2.waitForFunction(() => window.__fs27 && window.__fs27.state()[1] === 2, null, { timeout: 30000 });
 check('the practice shows its first step', (await p2.textContent('#tuTitle')).startsWith('1/5'));
 await p2.keyboard.down('d'); await p2.waitForTimeout(2200); await p2.keyboard.up('d'); await p2.waitForTimeout(300);

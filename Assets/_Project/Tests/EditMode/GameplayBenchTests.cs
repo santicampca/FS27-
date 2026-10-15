@@ -53,6 +53,9 @@ namespace FS27.Core.Tests
             // GB_ATTR=aerial: the Phase-36 game (aerial rules and high-ball play off) against the Phase-37 one, and the reference
             if (Environment.GetEnvironmentVariable("GB_ATTR") == "aerial")
                 cfgs = new List<GbConfig> { GbReference, GbCurrent.With("noaerial", x => x.Aerial = false), GbCurrent };
+            // GB_ATTR=overlap: the game without and with the full-back who offers the outside (Phase 39)
+            if (Environment.GetEnvironmentVariable("GB_ATTR") == "overlap")
+                cfgs = new List<GbConfig> { GbReference, GbCurrent.With("nooverlap", x => x.Overlap = false), GbCurrent };
             if (Environment.GetEnvironmentVariable("GB_ATTR") == "1")
                 cfgs = new List<GbConfig> { GbReference, GbReference.With("tactics", x => x.Tactics = true), GbReference.With("keeper", x => x.Distribution = true), GbReference.With("assist", x => x.Assist = true), GbCurrent };
             List<GbRow> rows = GbMatrix(scenes, cfgs, Enumerable.Range(first, n));

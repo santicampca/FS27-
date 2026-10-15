@@ -518,6 +518,7 @@ namespace FS27.Core
                 request.Curve = 0f;
                 result = Perform(request);
             }
+            ReportSetPiece(RestartKind.FreeKick, fk.Beneficiary, taker.PlayerId, request, aim, destination, hasDestination, result);
             return result.Outcome == ActionOutcome.Rejected ? FreeKickExecuteResult.ActionRefused : FreeKickExecuteResult.Executed;
         }
 

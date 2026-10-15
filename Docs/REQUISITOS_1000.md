@@ -4,15 +4,13 @@ Fuente: `FS27_lista_maestra_1000_requisitos.md` (1.000 identificadores `FS27-REQ
 
 ## Estado de los 1.000 (generado por `Tools/requisitos_audit.py`)
 Cada fila de `Docs/requisitos_estado.csv` dice **cuánta confianza** tiene su estado:
-- **requisito** (142 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
-- **seccion** (858 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
+- **requisito** (163 filas): comprobado uno a uno contra una prueba, una escena del banco, el código o la prueba del cliente.
+- **seccion** (837 filas): el subsistema existe (o no) en el repositorio, pero el requisito **no se ha comprobado individualmente**. «Parcial» aquí significa «hay un subsistema con pruebas; falta verificar este comportamiento», no «medio hecho».
 
-Totales: **confirmado 60**, parcial 869, pendiente 31, requiere humano 40. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
+Totales: **confirmado 63**, parcial 873, pendiente 8, requiere humano 56. **No se han «integrado los 1.000»**: se han construido los grandes huecos que se podían construir (fases 33-35: cabezazos, saque y córner con fuerza y puntería, centro real, tiros libres y penaltis para la persona, ajustes, sonido sintetizado, vibración, práctica, perfil, estadísticas, registro de entradas, pausa) y el resto sigue como se indica.
 
 Pendientes por sección (los más numerosos):
-- Dirección visual y modelos: 20
 - Balones aéreos y juego de cabeza: 3
-- Córners, bandas y balón parado: control avanzado: 3
 - Centros y juego por las bandas: 2
 - Interfaz y HUD: 2
 - Multijugador futuro y límites de alcance: 1
@@ -69,9 +67,9 @@ Resumen por sección:
 | Gestión del partido y estados | 0 | 20 | 0 | 0 |
 | Multijugador futuro y límites de alcance | 16 | 1 | 1 | 2 |
 | Balance y sensación futbolística | 0 | 0 | 0 | 20 |
-| Dirección visual y modelos | 0 | 0 | 20 | 0 |
+| Dirección visual y modelos | 0 | 4 | 0 | 16 |
 | Prueba humana y lanzamiento de prototipo | 0 | 20 | 0 | 0 |
-| Córners, bandas y balón parado: control avanzado | 4 | 13 | 3 | 0 |
+| Córners, bandas y balón parado: control avanzado | 7 | 13 | 0 | 0 |
 | Reglas de diseño y prioridades de implementación | 5 | 15 | 0 | 0 |
 
 ## Honestidad sobre el alcance

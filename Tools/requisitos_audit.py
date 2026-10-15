@@ -103,6 +103,25 @@ ver([1000], 'parcial', 'criterio rector; no es comprobable automáticamente')
 
 
 
+
+# ---- phase 39: plan for the visual prototype (no art exists yet)
+ver([939], 'parcial', 'el Core no usa tipos de Unity (Tests/UnityLayerCheck) y produce solo estado y eventos; la sustitución de assets sin tocar el Core es el contrato de Docs/VISUAL_PARALLEL_PLAN.md, sin comprobar con assets reales')
+ver([933], 'parcial', 'el Core resuelve colisión con postes y larguero (GoalFrameCollider); la red y su aspecto son arte')
+ver([932], 'parcial', 'el balón tiene radio 0,2 m en el Core; contraste y tamaño visual dependen del arte')
+ver([921, 922, 924, 925, 926, 927, 928, 929, 930, 931, 934, 935, 936, 937, 940], 'requiere-humano', 'arte 3D, texturas, rigs, uniformes y rendimiento en móvil: no hay assets finales; Docs/VISUAL_PARALLEL_PLAN.md separa lo que puede empezar ya')
+ver([923], 'parcial', 'jugadores, equipos y árbitros son datos ficticios bloqueados (DATA_LOCK); los uniformes finales no existen')
+ver([938], 'requiere-humano', 'registrar origen y licencia de cada recurso es decisión y trabajo humano; hoy no hay recursos de terceros en el repositorio')
+
+
+# ---- phase 39: wing support, set-piece reports, menu
+ver([177], 'confirmado', 'Phase38Tests.TheWidePlayerBehind_OffersTheOutside_WhenTheWingerCarriesTheBallInside_AndOnlyThen (WingSupport; en 6v6 lo hace el jugador ancho que va detrás)')
+ver([169], 'confirmado', 'Phase38Tests.ACross_WithTheWeakFoot_IsLessPreciseThanWithTheGoodFoot')
+ver([980], 'confirmado', 'MatchController.SetPieceReports y Phase38Tests.EveryRestartATakenByAPerson_LeavesAReport: objetivo, potencia, acción y resultado de cada saque de una persona')
+ver([974], 'confirmado', 'el panel del tiro libre del cliente ofrece «Pase» (Client/web/game.js, zona -1) además de las tres zonas; ExecuteFreeKick lo trata como pase')
+ver([658], 'parcial', 'los botones A/B/C/⇄ tienen etiqueta y pista (offline.mjs) y la práctica los enseña; los iconos del HUD (posesión, resistencia) no tienen etiqueta propia')
+ver([659], 'confirmado', 'Client/test/offline.mjs: el menú recuerda equipo, rival, modo y dificultad al recargar')
+ver([968], 'confirmado', 'no existe viento en el Core ni en el cliente; el requisito lo permite solo como regla visible y medible')
+
 # ---- phase 38: readiness for a future multiplayer (no network code)
 ver([881, 884, 889, 897], 'confirmado', 'Docs/SYNC_READINESS_PHASE38.md: MatchController.State es la única fuente de verdad (reloj, marcador, balón, jugadores); el cliente solo envía entradas')
 ver([882], 'confirmado', 'Phase38Tests.TheSameCommands_ReproduceTheMatchBitForBit: 1.500 pasos, mismo checksum en cada control, también tras escribir y leer el registro')

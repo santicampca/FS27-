@@ -12,7 +12,7 @@ let stick = { x: 0, y: 0 }, mirror = 1;
 const stats = { frames: 0, steps: 0, lastT: 0, fps: 0, sps: 0, advanceMs: 0, snapshotMs: 0, drawMs: 0, worstFrameMs: 0 };
 let banner = '', bannerUntil = 0, lastScore = [0, 0];
 let session = null, sp = [0, 0, 0, 0, 1.2, 1], spHoldStart = 0, spZone = 1;                         // what the tester played (for the feedback text)
-const VERSION = 'FS27 prueba humana 6 (Core fase 37)';
+const VERSION = 'FS27 prueba humana 7 (Core fase 39)';
 
 // ---------------------------------------------------------------- settings and profile (kept on this device only; every access is guarded: a blocked storage must not break the game)
 const DEFAULTS = { vol: 0.7, mute: false, haptics: true, stickScale: 1, btnScale: 1, lefty: false, assist: true, cam: 'follow', zoom: 1.12, text: 1, color: false, reduce: false };
@@ -93,6 +93,12 @@ async function boot() {
   const opts = teams.map(t => `<option value="${t.i}">${t.name}</option>`).join('');
   $('homeSel').innerHTML = opts; $('awaySel').innerHTML = opts; $('awaySel').value = String(Math.min(1, teams.length - 1));
   $('assistChk').checked = settings.assist; profileLine(); applySettings();
+  // REQ-0659: the menu keeps what the person chose when he comes back to it
+  try {
+    const m = JSON.parse(localStorage.getItem('fs27.menu') || '{}');
+    for (const id of ['homeSel', 'awaySel', 'modeSel', 'levelSel']) if (m[id] != null && [...$(id).options].some(o => o.value === String(m[id]))) $(id).value = String(m[id]);
+  } catch (e) { /* no storage: defaults */ }
+  for (const id of ['homeSel', 'awaySel', 'modeSel', 'levelSel']) $(id).addEventListener('change', () => { try { const m = {}; for (const k of ['homeSel', 'awaySel', 'modeSel', 'levelSel']) m[k] = $(k).value; localStorage.setItem('fs27.menu', JSON.stringify(m)); } catch (e) { /* ignore */ } });
   $('menu').classList.remove('hidden');
 }
 $('practiceBtn').onclick = () => { $('menu').classList.add('hidden'); startMatch(+$('homeSel').value, +$('awaySel').value, (Math.random() * 1e6) | 0, 'Classic', 'Novice', true); };
