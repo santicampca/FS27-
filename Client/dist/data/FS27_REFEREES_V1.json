@@ -1,0 +1,228 @@
+{
+  "referees": [
+    {
+      "description": "Balanced control and authority.",
+      "fullName": "Szymon Marciniak",
+      "name": "Marciniak",
+      "nationality": "Poland",
+      "notes": [
+        {
+          "kind": "Verified",
+          "text": "Polish referee born 7 January 1981 in Płock; FIFA referee since 2011."
+        },
+        {
+          "kind": "Verified",
+          "text": "Refereed at the 2018 and 2022 World Cups, including the 2022 final."
+        },
+        {
+          "kind": "Verified",
+          "text": "Selected for the 2026 World Cup."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Style, profile values and description are authoring values supplied by the project; they are not measured statistics."
+        },
+        {
+          "kind": "AuthoringInference",
+          "text": "Profile values are a design reading of the referee's public reputation, not data from a source."
+        }
+      ],
+      "profile": {
+        "advantage": 80,
+        "cards": 50,
+        "communication": 90,
+        "consistency": 90,
+        "gameControl": 95,
+        "penaltySensitivity": 55,
+        "strictness": 55
+      },
+      "refereeId": "referee-szymon-marciniak",
+      "shortName": "MAR",
+      "style": "BalancedControl"
+    },
+    {
+      "description": "Permissive, favours continuity and advantage.",
+      "fullName": "Michael Oliver",
+      "name": "Oliver",
+      "nationality": "England",
+      "notes": [
+        {
+          "kind": "Verified",
+          "text": "English referee born 20 February 1985 in Ashington; FIFA badge 2012, UEFA Elite category 2018."
+        },
+        {
+          "kind": "Verified",
+          "text": "Refereed at Euro 2020, the 2022 World Cup and Euro 2024."
+        },
+        {
+          "kind": "Unverified",
+          "text": "Appointment to the 2026 World Cup could not be verified."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Style, profile values and description are authoring values supplied by the project; they are not measured statistics."
+        },
+        {
+          "kind": "AuthoringInference",
+          "text": "Profile values are a design reading of the referee's public reputation, not data from a source."
+        }
+      ],
+      "profile": {
+        "advantage": 90,
+        "cards": 45,
+        "communication": 85,
+        "consistency": 88,
+        "gameControl": 88,
+        "penaltySensitivity": 50,
+        "strictness": 45
+      },
+      "refereeId": "referee-michael-oliver",
+      "shortName": "OLI",
+      "style": "PermissiveFlow"
+    },
+    {
+      "description": "Technical and balanced.",
+      "fullName": "Clément Turpin",
+      "name": "Turpin",
+      "nationality": "France",
+      "notes": [
+        {
+          "kind": "Verified",
+          "text": "French referee born 16 May 1982 in Oullins; FIFA referee since 2010, UEFA Elite since 2012."
+        },
+        {
+          "kind": "Verified",
+          "text": "Refereed the 2022 Champions League final."
+        },
+        {
+          "kind": "Verified",
+          "text": "Selected for the 2026 World Cup."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Style, profile values and description are authoring values supplied by the project; they are not measured statistics."
+        },
+        {
+          "kind": "AuthoringInference",
+          "text": "Profile values are a design reading of the referee's public reputation, not data from a source."
+        }
+      ],
+      "profile": {
+        "advantage": 75,
+        "cards": 55,
+        "communication": 88,
+        "consistency": 92,
+        "gameControl": 92,
+        "penaltySensitivity": 55,
+        "strictness": 55
+      },
+      "refereeId": "referee-clement-turpin",
+      "shortName": "TUR",
+      "style": "TechnicalBalanced"
+    },
+    {
+      "description": "Disciplinary and interventionist.",
+      "fullName": "Danny Makkelie",
+      "name": "Makkelie",
+      "nationality": "Netherlands",
+      "notes": [
+        {
+          "kind": "Verified",
+          "text": "Dutch referee born 28 January 1983 in Willemstad, Curaçao; FIFA referee since 2011, UEFA Elite."
+        },
+        {
+          "kind": "Verified",
+          "text": "Selected for the 2026 World Cup."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Style, profile values and description are authoring values supplied by the project; they are not measured statistics."
+        },
+        {
+          "kind": "AuthoringInference",
+          "text": "Profile values are a design reading of the referee's public reputation, not data from a source."
+        }
+      ],
+      "profile": {
+        "advantage": 60,
+        "cards": 70,
+        "communication": 85,
+        "consistency": 88,
+        "gameControl": 92,
+        "penaltySensitivity": 55,
+        "strictness": 70
+      },
+      "refereeId": "referee-danny-makkelie",
+      "shortName": "MAK",
+      "style": "DisciplinaryControl"
+    },
+    {
+      "description": "Authority and intensity.",
+      "fullName": "István Kovács",
+      "name": "Kovács",
+      "nationality": "Romania",
+      "notes": [
+        {
+          "kind": "Verified",
+          "text": "Romanian referee born 16 September 1984 in Carei; FIFA referee since 2018, UEFA Elite since 2019."
+        },
+        {
+          "kind": "Verified",
+          "text": "Appointed to the 2025 Champions League final."
+        },
+        {
+          "kind": "Unverified",
+          "text": "Involvement in the 2026 World Cup could not be verified."
+        },
+        {
+          "kind": "Authoring",
+          "text": "Style, profile values and description are authoring values supplied by the project; they are not measured statistics."
+        },
+        {
+          "kind": "AuthoringInference",
+          "text": "Profile values are a design reading of the referee's public reputation, not data from a source."
+        }
+      ],
+      "profile": {
+        "advantage": 60,
+        "cards": 65,
+        "communication": 85,
+        "consistency": 88,
+        "gameControl": 92,
+        "penaltySensitivity": 60,
+        "strictness": 68
+      },
+      "refereeId": "referee-istvan-kovacs",
+      "shortName": "KOV",
+      "style": "AuthorityIntensity"
+    }
+  ],
+  "schemaVersion": "FS27.Referees.v1",
+  "styles": [
+    {
+      "description": "Balanced control and authority: keeps the match under control without excess.",
+      "name": "Balanced control",
+      "styleId": "BalancedControl"
+    },
+    {
+      "description": "Permissive, favours continuity: lets play flow and applies advantage generously.",
+      "name": "Permissive flow",
+      "styleId": "PermissiveFlow"
+    },
+    {
+      "description": "Technical and balanced: precise, consistent, little drama.",
+      "name": "Technical balanced",
+      "styleId": "TechnicalBalanced"
+    },
+    {
+      "description": "Disciplinary and interventionist: controls the match through firm decisions.",
+      "name": "Disciplinary control",
+      "styleId": "DisciplinaryControl"
+    },
+    {
+      "description": "Authority and intensity: imposes presence and tolerates physical contest within limits.",
+      "name": "Authority and intensity",
+      "styleId": "AuthorityIntensity"
+    }
+  ]
+}

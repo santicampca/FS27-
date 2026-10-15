@@ -212,6 +212,7 @@ namespace FS27.Core
             int carrierIdx = view.IndexOf(ball.PossessorId);
             WorldPlayer carrier = view[carrierIdx];
             if (carrier.Team != me.Team) return Defend(view, idx, me, carrierIdx, carrier, home);
+            if (view.Match.SetPieceTakerId != null && view.Match.SetPieceTakerId == carrier.PlayerId) return SetPieceOffer(view, me);
 
             // a team-mate has the ball
             if ((me.Position - home).Magnitude > t.FarFromHomeDistance) return MoveTo(me.PlayerId, me.Position, home, t.ChaseMagnitude, DecisionKind.MoveToPoint, DecisionReason.FarFromHome);
@@ -457,6 +458,7 @@ namespace FS27.Core
         private PlayerDecision WithBall(WorldView view, int idx, in WorldPlayer me)
         {
             if (view.Match.FreeKickTakerId != null && view.Match.FreeKickTakerId == me.PlayerId) return TakeFreeKick(view, idx, me);
+            if (view.Match.SetPieceTakerId != null && view.Match.SetPieceTakerId == me.PlayerId) return TakeSetPiece(view, idx, me);
             if (carrier.Tuning.Enabled) return CarrierDecision(view, idx, me);
             bool canKick = !me.KickCooldown;
             float nearestOpponent = obs.NearestOpponentDistance;
@@ -562,14 +564,20 @@ namespace FS27.Core
             return best;
         }
 
-        private PlayerDecision PassTo(WorldView view, in WorldPlayer me, in WorldPlayer receiver, DecisionReason reason)
+        private PlayerDecision PassTo(WorldView view, in WorldPlayer me, in WorldPlayer receiver, DecisionReason reason, bool lofted = false)
         {
             Vec2 dir = ActionModel.DirectionOr(receiver.Position - me.Position, me.Facing);
             float d = (receiver.Position - me.Position).Magnitude;
             FootballActionKind kind = FootballActionKind.ShortPass;
             if (d >= t.LobPassDistance && view.CanUse(me.PlayerId, FootballActionKind.SkillLobPass).Allowed) { kind = FootballActionKind.SkillLobPass; reason = DecisionReason.LobPassAvailable; }
-            else if (d >= t.LongPassDistance) kind = FootballActionKind.LongPass;
+            else if (lofted || d >= t.LongPassDistance) kind = FootballActionKind.LongPass;
             float power = Math.Min(1f, t.PassPowerBase + (1f - t.PassPowerBase) * d / t.PassPowerRefDistance);
+            if (t.PassPhysicsEnabled)
+            {
+                float planned = me.Profile.PassQuality * t.PlannedQualityShare;
+                bool closeRival = WorldGeometry.OpponentsWithin(view, me.Team, receiver.Position, attack.Tuning.ReceiverPressureRadius) > 0;
+                power = kind == FootballActionKind.ShortPass ? PassPhysics.GroundPower(d, closeRival ? t.PressedArrivalSpeed : t.GroundArrivalSpeed, planned, 1f) : PassPhysics.LoftedPower(d * t.LandingShare, planned);
+            }
             var intent = new ActionIntent(me.Team, me.PlayerId, kind, dir, power) { Target = PassTarget.ToPlayer(receiver.PlayerId) };
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = reason, HasAction = true, Action = intent, TargetPlayerId = receiver.PlayerId, HasMovement = true, Movement = MovementIntent.Stand };
         }
@@ -617,7 +625,7 @@ namespace FS27.Core
                     return BuildShot(view, me, goal, (goal - me.Position).Magnitude);
                 case CandidateType.Pass:
                 case CandidateType.ForwardPass:
-                    return PassTo(view, me, view[best.ReceiverIndex], best.Reason);
+                    return PassTo(view, me, view[best.ReceiverIndex], best.Reason, best.Reason == DecisionReason.CrossToBox);
                 case CandidateType.ThroughPass:
                     return ThroughTo(view, me, view[best.ReceiverIndex], best.Target);
                 case CandidateType.Dribble:
@@ -678,6 +686,7 @@ namespace FS27.Core
             Vec2 dir = ActionModel.DirectionOr(point - me.Position, me.Facing);
             float d = (point - me.Position).Magnitude;
             float power = Math.Min(1f, t.PassPowerBase + (1f - t.PassPowerBase) * d / t.PassPowerRefDistance);
+            if (t.PassPhysicsEnabled) power = PassPhysics.GroundPower(d, t.ThroughArrivalSpeed, me.Profile.PassQuality * t.PlannedQualityShare, ActionDefaults.ThroughSpeedBoost);
             var intent = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.ThroughPass, dir, power) { Target = PassTarget.ToPosition(point) };
             return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.SpacePass, HasAction = true, Action = intent, TargetPlayerId = runner.PlayerId, HasMovement = true, Movement = MovementIntent.Stand };
         }
@@ -701,18 +710,101 @@ namespace FS27.Core
             bool attacksPlusX = view.Match.HomeAttacksPositiveX;
             if (me.HasBall)
             {
-                int receiver = BestReceiver(view, idx, me, true, false, out _);
-                Vec2 dir; string targetId = null;
-                if (receiver >= 0) { dir = ActionModel.DirectionOr(view[receiver].Position - me.Position, me.Facing); targetId = view[receiver].PlayerId; }
-                else dir = AttackDirection(view, me.Team);
-                float d = receiver >= 0 ? (view[receiver].Position - me.Position).Magnitude : t.LongPassDistance;
-                var intent = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.GoalkeeperDistribution, dir, t.KeeperDistributePower) { Long = d >= t.LongPassDistance };
-                if (targetId != null) intent.Target = PassTarget.ToPlayer(targetId);
-                return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.KeeperDistribute, HasAction = true, Action = intent, TargetPlayerId = targetId, HasMovement = true, Movement = MovementIntent.Stand };
+                if (view.Match.SetPieceTakerId != null && view.Match.SetPieceTakerId == me.PlayerId) return TakeSetPiece(view, idx, me);
+                if (keeperAi.Enabled && keeperAi.DistributionEnabled) return KeeperPlayBall(view, idx, me);
+                return KeeperKick(view, me, BestReceiver(view, idx, me, true, false, out _));
             }
 
             if (!keeperAi.Enabled) return LegacyKeeper(view, me, attacksPlusX);
             return KeeperAi(view, me);
+        }
+
+        /// <summary>Phase 29: the keeper with the ball in his hands waits for a lane, plays short or long to the best option, or clears (see <see cref="GoalkeeperDistribution"/>).</summary>
+        private PlayerDecision KeeperPlayBall(WorldView view, int idx, in WorldPlayer me)
+        {
+            GoalkeeperParameters level = profile != null && profile.Goalkeeper != null ? profile.Goalkeeper : NeutralKeeper;
+            GoalkeeperSkill skill = GoalkeeperSkillModel.ResolveNormalized(level, me.Profile.KeeperReflexes, me.Profile.KeeperPositioning, me.Profile.KeeperCommand, me.Profile.KeeperDiving, me.Profile.KeeperHandling, keeperAi.Skill);
+            GoalkeeperPlayChoice choice = GoalkeeperDistribution.Choose(view, idx, me, t, keeperAi, view.Ball.SecondsSinceTouch, skill.DecisionMaking);
+            if (choice.Play == GoalkeeperPlay.Wait)
+                return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Idle, Reason = DecisionReason.KeeperWaitForLane, HasMovement = true, Movement = MovementIntent.Stand };
+            return KeeperKick(view, me, choice.Receiver);
+        }
+
+        /// <summary>The goalkeeper plays the ball he holds: to the team-mate (or, with nobody, long up the pitch), short or long by the distance, with the power the ball needs to get there.</summary>
+        private PlayerDecision KeeperKick(WorldView view, in WorldPlayer me, int receiver)
+        {
+            Vec2 dir; string targetId = null;
+            if (receiver >= 0) { dir = ActionModel.DirectionOr(view[receiver].Position - me.Position, me.Facing); targetId = view[receiver].PlayerId; }
+            else dir = AttackDirection(view, me.Team);
+            float d = receiver >= 0 ? (view[receiver].Position - me.Position).Magnitude : t.LongPassDistance;
+            bool longKick = d >= t.LongPassDistance;
+            float kickPower = t.KeeperDistributePower;
+            if (t.PassPhysicsEnabled)
+            {
+                float keeperQuality = (longKick ? ActionDefaults.KeeperLongKickShare * me.Profile.KeeperKicking + (1f - ActionDefaults.KeeperLongKickShare) * me.Profile.KeeperDistribution
+                                                : ActionDefaults.KeeperShortDistributionShare * me.Profile.KeeperDistribution + (1f - ActionDefaults.KeeperShortDistributionShare) * me.Profile.KeeperKicking) * t.PlannedQualityShare;
+                kickPower = longKick ? PassPhysics.LoftedPower(d * t.LandingShare, keeperQuality) : PassPhysics.GroundPower(d, t.GroundArrivalSpeed, keeperQuality, 1f);
+            }
+            var intent = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.GoalkeeperDistribution, dir, kickPower) { Long = longKick };
+            if (targetId != null) intent.Target = PassTarget.ToPlayer(targetId);
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.KeeperDistribute, HasAction = true, Action = intent, TargetPlayerId = targetId, HasMovement = true, Movement = MovementIntent.Stand };
+        }
+
+        // ------------------------------------------------------------------ Phase 28: throw-ins, goal kicks and corners
+
+        /// <summary>
+        /// The taker of a throw-in, goal kick or corner plays the ball from the spot (it waits there, the rivals are kept out of the circle): every team-mate is an option worth (value of the pass) times (the chance it arrives,
+        /// <see cref="PassRisk"/>); he plays the best one at once when it is safe enough, waits a moment for his team-mates to open a lane, then settles for the best that is still reasonable, and otherwise clears.
+        /// He never carries the ball away and never plays into a rival who stands on the lane.
+        /// </summary>
+        private PlayerDecision TakeSetPiece(WorldView view, int idx, in WorldPlayer me)
+        {
+            WorldMatch m = view.Match;
+            bool corner = m.SetPieceKind == RestartKind.Corner;
+            Vec2 goal = WorldGeometry.AttackGoal(m, view.Field, me.Team);
+            float fromGoal = (goal - me.Position).Magnitude;
+            int best = -1; float bestUtility = float.NegativeInfinity, bestChance = 0f; bool bestLofted = false;
+            for (int i = 0; i < view.PlayerCount; i++)
+            {
+                if (i == idx) continue;
+                WorldPlayer r = view[i];
+                if (!r.IsOnPitch || r.Team != me.Team || r.IsGoalkeeper) continue;
+                float dist = (r.Position - me.Position).Magnitude;
+                if (dist < t.PassMinDistance || dist > t.PassMaxDistance) continue;
+                float toGoal = (goal - r.Position).Magnitude;
+                bool lofted = corner && toGoal <= t.SetPieceBoxDepth;
+                float chance = PassRisk.SuccessChance(view, me, r, dist, t, lofted);
+                float gain = (fromGoal - toGoal) / view.Field.Length;
+                float space = Math.Min(WorldGeometry.NearestOpponentDistanceTo(view, me.Team, r.Position), t.SetPieceSpaceCap) / t.SetPieceSpaceCap;
+                float value = t.SetPieceBaseValue + t.SetPieceGainWeight * Math.Max(-t.SetPieceBackFloor, gain) + t.SetPieceSpaceWeight * space + (lofted ? t.SetPieceBoxBonus : 0f);
+                float utility = chance * value;
+                if (utility > bestUtility) { bestUtility = utility; best = i; bestChance = chance; bestLofted = lofted; }
+            }
+            bool waited = m.SetPieceSeconds >= t.SetPieceWaitSeconds;
+            if (best >= 0 && (bestChance >= t.SetPieceMinChance || (waited && bestChance >= t.SetPieceFallbackChance)))
+            {
+                if (me.IsGoalkeeper) return KeeperKick(view, me, best);
+                return PassTo(view, me, view[best], DecisionReason.SetPiecePass, bestLofted);
+            }
+            if (!waited)
+                return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Idle, Reason = DecisionReason.SetPieceWait, HasMovement = true, Movement = MovementIntent.Stand };
+            if (me.IsGoalkeeper) return KeeperKick(view, me, -1);
+            Vec2 attackDir = AttackDirection(view, me.Team);
+            Vec2 inward = new Vec2(0f, me.Position.Y > 0f ? -1f : 1f);
+            Vec2 clearDir = ActionModel.DirectionOr(attackDir + inward * t.SetPieceClearInward, attackDir);
+            var clear = new ActionIntent(me.Team, me.PlayerId, FootballActionKind.Clearance, clearDir, t.SetPieceClearPower);
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Pass, Reason = DecisionReason.SetPieceClear, HasAction = true, Action = clear, HasMovement = true, Movement = MovementIntent.Stand };
+        }
+
+        /// <summary>A team-mate of the taker of a set piece stays where the set-up put him (an open lane for the taker) and only steps away from a rival who comes too close.</summary>
+        private PlayerDecision SetPieceOffer(WorldView view, in WorldPlayer me)
+        {
+            float nearest = WorldGeometry.NearestOpponentDistanceTo(view, me.Team, me.Position);
+            if (nearest >= t.SetPieceOfferRivalDistance || obs.OpponentCount == 0)
+                return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.Idle, Reason = DecisionReason.SetPieceOffer, HasMovement = true, Movement = MovementIntent.Stand };
+            Vec2 away = ActionModel.DirectionOr(me.Position - view[obs.OpponentIndex(0)].Position, me.Facing * -1f);
+            Vec2 target = bounds.ClampPlayer(me.Position + away * t.SetPieceOfferStep);
+            return new PlayerDecision { PlayerId = me.PlayerId, Kind = DecisionKind.MoveToPoint, Reason = DecisionReason.SetPieceOffer, HasMovement = true, Movement = MovementIntent.TowardsTarget(me.Position, target, t.PositionMagnitude, t.ArriveRadius) };
         }
 
         /// <summary>The goalkeeper rule of Phase 15 (kept to compare): stand on the line from his goal to the ball; chase the ball inside seven metres.</summary>

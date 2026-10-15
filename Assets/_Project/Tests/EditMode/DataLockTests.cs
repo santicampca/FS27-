@@ -309,7 +309,18 @@ namespace FS27.Core.Tests
             IdentityCatalog a = IdentityGenerator.Generate(subjects, null, problems), b = IdentityGenerator.Generate(subjects, null, problems);
             Assert.AreEqual(IdentityJson.ToJson(a), IdentityJson.ToJson(b), "same subjects, same names");
             Assert.IsEmpty(problems, string.Join("\n", problems));
-            Assert.AreEqual(IdentityJson.ToJson(a).Trim(), Authoring("FS27_IDENTITIES_V1.json").Replace("\r\n", "\n").Trim(), "regenerate FS27_IDENTITIES_V1.json when the generator or the pools change");
+            // The data file is the generator's output, except for the entries a person edited by hand (IdentityEntry.Edited: "the generator never overwrites an edited entry, and the regeneration test skips it").
+            // Every entry that is NOT edited must equal what the generator makes for it on its own; an edited one keeps its subject (kind, culture, original name) but its names are the person's.
+            Assert.AreEqual(a.All.Count(), db.Identities.All.Count(), "the same people");
+            foreach (IdentityEntry generated in a.All)
+            {
+                Assert.IsTrue(db.Identities.TryGet(generated.Id, out IdentityEntry published), generated.Id);
+                Assert.AreEqual(generated.Kind, published.Kind, generated.Id); Assert.AreEqual(generated.Culture, published.Culture, generated.Id); Assert.AreEqual(generated.OriginalName, published.OriginalName, generated.Id);
+                if (published.Edited) continue;
+                Assert.AreEqual(generated.Name, published.Name, generated.Id + ": regenerate FS27_IDENTITIES_V1.json when the generator or the pools change");
+                Assert.AreEqual(generated.FullName, published.FullName, generated.Id); Assert.AreEqual(generated.ShortName, published.ShortName, generated.Id);
+            }
+            Assert.AreEqual(IdentityJson.ToJson(db.Identities).Trim(), Authoring("FS27_IDENTITIES_V1.json").Replace("\r\n", "\n").Trim(), "the data file is exactly what the writer produces (stable order and format)");
         }
 
         private static string NationalityOf(IdentityEntry e)
@@ -360,6 +371,8 @@ namespace FS27.Core.Tests
             {
                 Assert.AreNotEqual(ShortNameRule.Key(e.OriginalName), ShortNameRule.Key(e.Name), e.Id);
                 Assert.AreNotEqual(ShortNameRule.Key(e.OriginalName), ShortNameRule.Key(e.FullName), e.Id);
+                // generated names never share a word with a research name; a name a person wrote by hand (IdentityEntry.Edited) may (decision of the owner: the rule is relaxed for edited entries, which still may not equal the research name)
+                if (e.Edited) continue;
                 foreach (string w in e.FullName.Split(' ').Skip(1)) if (w.Length > 2) Assert.IsFalse(original.Contains(ShortNameRule.Key(w)), e.Id + ": '" + w + "' is a word of a research name");
                 Assert.IsFalse(original.Contains(ShortNameRule.Key(e.ShortName)), e.Id + ": short name '" + e.ShortName + "' is a word of a research name");
             }
@@ -375,7 +388,8 @@ namespace FS27.Core.Tests
         {
             var people = db.Identities.All.Where(e => e.Kind != IdentityKind.Referee).ToList();
             CollectionAssert.AllItemsAreUnique(people.Select(e => ShortNameRule.Key(e.FullName)));
-            CollectionAssert.AllItemsAreUnique(people.Select(e => ShortNameRule.Key(e.Name.Split(' ').Last())), "no two people share a family name");
+            // the family name is the last word, except that a generational suffix ("Jr") is not one: "Vinichus Jr" and "Reymar Jr" do not share the family name "Jr"
+            CollectionAssert.AllItemsAreUnique(people.Select(e => { string[] w = e.Name.Split(' '); int i = w.Length - 1; if (i > 0 && IdentityGenerator.IsGenerationalSuffix(w[i])) i--; return ShortNameRule.Key(w[i]); }), "no two people share a family name");
             var given = people.GroupBy(e => ShortNameRule.Key(e.Name.Split(' ')[0])).Select(g => g.Count());
             Assert.LessOrEqual(given.Max(), 3, "a given name repeats only rarely");
             Assert.Greater(people.Select(e => e.Culture).Distinct().Count(), 8, "several name cultures are in use");

@@ -40,6 +40,15 @@ namespace FS27.Core
             float distanceTerm = t.PassDistanceWeight * Math.Abs(d - t.PassPreferredDistance) / t.PassMaxDistance, angleTerm = t.PassAngleWeight * (1f - turn);
             float score = advance + spaceTerm - distanceTerm + angleTerm;
             parts.Advance = advance; parts.Space = spaceTerm; parts.Distance = -distanceTerm; parts.Angle = angleTerm;
+            // Phase 28: what the pass gains is worth the chance that it arrives; losing the ball costs more the nearer it is to the passer's own goal
+            if (!t.PassRiskDisabled)
+            {
+                float chance = PassRisk.SuccessChance(view, me, r, d, t);
+                float own = Math.Max(0f, Math.Min(1f, 1f - WorldGeometry.DistanceToOwnGoal(view, me) / t.PassRiskOwnZone));
+                float riskTerm = t.PassRiskWeight * (1f + t.PassRiskOwnGoalFactor * own) * (1f - chance);
+                score -= riskTerm;
+                parts.Risk = -riskTerm;
+            }
             if (!a.Enabled) return score;
 
             // the lane: more room on the way is better, up to a point

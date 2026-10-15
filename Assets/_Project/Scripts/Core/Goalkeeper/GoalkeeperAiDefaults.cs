@@ -84,6 +84,27 @@ namespace FS27.Core
         // ---- how the attributes weigh (the keeper's own capabilities, 0..1)
         /// <summary>How much the keeper's command (his experience of the game) sharpens his judgement of who gets to a loose ball first (0 = not at all).</summary>
         public const float CommandExitInfluence = 0.5f;
+
+        // ---- Phase 29, stage 1: what he does with the ball in his hands (wait / short / long / clear)
+        /// <summary>Whether he chooses what to do with the ball he holds (off: he plays it at once to the best-placed team-mate, as before Phase 29).</summary>
+        public const bool DistributionEnabled = true;
+        /// <summary>A rival this close (m) to the keeper holding the ball hurries him: he lowers his demand and does not wait.</summary>
+        public const float DistributionRushRadius = 5.0f;
+        /// <summary>The chance of arriving at which he plays at once, when hurried, and when he has waited long enough (a fallback).</summary>
+        public const float DistributionReleaseChance = 0.75f;
+        public const float DistributionRushedChance = 0.45f;
+        public const float DistributionFallbackChance = 0.55f;
+        /// <summary>The longest he waits for a lane to open (s), for a keeper of decision making 1; one of 0 waits this share of it.</summary>
+        public const float DistributionPatienceSeconds = 2.5f;
+        public const float DistributionPatienceFloor = 0.4f;
+        /// <summary>The worth of an option: a base, plus the ground it gains (share of the pitch length, not below minus the floor) and the space around the receiver (m, capped).</summary>
+        public const float DistributionBaseValue = 0.4f;
+        public const float DistributionGainWeight = 1.0f;
+        public const float DistributionBackFloor = 0.1f;
+        public const float DistributionSpaceWeight = 0.3f;
+        public const float DistributionSpaceCap = 8.0f;
+        /// <summary>How much of the chance of a pass survives a keeper with no kicking quality (1 = none lost).</summary>
+        public const float DistributionQualityFloor = 0.6f;
     }
 
     /// <summary>The editable copy of <see cref="GoalkeeperAiDefaults"/>. Arena and Classic differ in numbers only: <see cref="ArenaGoalkeeperDefaults"/>, <see cref="ClassicGoalkeeperDefaults"/>.</summary>
@@ -131,6 +152,19 @@ namespace FS27.Core
         public float ExitJudgementPeriod = GoalkeeperAiDefaults.ExitJudgementPeriod;
         public float ExitMagnitude = GoalkeeperAiDefaults.ExitMagnitude;
         public float CommandExitInfluence = GoalkeeperAiDefaults.CommandExitInfluence;
+        public bool DistributionEnabled = GoalkeeperAiDefaults.DistributionEnabled;
+        public float DistributionRushRadius = GoalkeeperAiDefaults.DistributionRushRadius;
+        public float DistributionReleaseChance = GoalkeeperAiDefaults.DistributionReleaseChance;
+        public float DistributionRushedChance = GoalkeeperAiDefaults.DistributionRushedChance;
+        public float DistributionFallbackChance = GoalkeeperAiDefaults.DistributionFallbackChance;
+        public float DistributionPatienceSeconds = GoalkeeperAiDefaults.DistributionPatienceSeconds;
+        public float DistributionPatienceFloor = GoalkeeperAiDefaults.DistributionPatienceFloor;
+        public float DistributionBaseValue = GoalkeeperAiDefaults.DistributionBaseValue;
+        public float DistributionGainWeight = GoalkeeperAiDefaults.DistributionGainWeight;
+        public float DistributionBackFloor = GoalkeeperAiDefaults.DistributionBackFloor;
+        public float DistributionSpaceWeight = GoalkeeperAiDefaults.DistributionSpaceWeight;
+        public float DistributionSpaceCap = GoalkeeperAiDefaults.DistributionSpaceCap;
+        public float DistributionQualityFloor = GoalkeeperAiDefaults.DistributionQualityFloor;
         /// <summary>Multipliers that only the modes use (1 = the common number): how late he starts, how wrong he reads, how far off his place he stands.</summary>
         public float ReactionScale = 1f;
         public float ReadErrorScale = 1f;

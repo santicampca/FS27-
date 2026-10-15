@@ -97,6 +97,8 @@ namespace FS27.Core
         internal void AddDiscipline(DisciplineRecord r) { discipline.Add(r); }
         /// <summary>Phase 22: the free kick the match is handling, or the last one it handled (null before the first). Classic only; Arena never has one.</summary>
         public FreeKickState FreeKick { get; internal set; }
+        /// <summary>Phase 28: the throw-in, goal kick or corner the match is handling, or the last one (null before the first). Classic only.</summary>
+        public SetPieceState SetPiece { get; internal set; }
         /// <summary>Phase 22: how many free kicks were awarded (and stopped play).</summary>
         public int FreeKicksAwarded { get; internal set; }
         /// <summary>Phase 23: the penalty (in the match or a kick of the shoot-out) the match is handling, or the last one (null before the first).</summary>

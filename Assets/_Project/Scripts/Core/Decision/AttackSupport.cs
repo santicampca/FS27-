@@ -39,6 +39,7 @@ namespace FS27.Core
         private readonly float[] support = new float[WorldState.MaxPlayers];
         private readonly float[] forward = new float[WorldState.MaxPlayers];
         private readonly float[] width = new float[WorldState.MaxPlayers];
+        private int overlapper = -1;
 
         public AttackPositioningTuning Tuning => a;
 
@@ -110,6 +111,7 @@ namespace FS27.Core
             float boost = recovering ? a.RecoveryBoost : 1f;
             int start = view.TeamStart(team), end = start + view.TeamCount(team);
             for (int i = 0; i < jobs.Length; i++) jobs[i] = AttackJob.None;
+            overlapper = -1;
             for (int i = start; i < end; i++)
             {
                 WorldPlayer p = view[i];
@@ -129,10 +131,49 @@ namespace FS27.Core
                     : float.NegativeInfinity;
                 width[i] = a.WidthLateralWeight * Math.Min(1f, Math.Abs(home.Y) / (view.Field.Width / 2f)) + (p.Zone == PitchZone.Wing ? a.WidthWingBonus : 0f) + RoleBias(p, AttackJob.Width);
             }
+            overlapper = ChooseOverlapper(view, carrierIdx, start, end, attack);
             Pick(start, end, AttackJob.Support, support, a.SupportRunners);
             Pick(start, end, AttackJob.Forward, forward, a.ForwardRunners);
             Pick(start, end, AttackJob.Width, width, a.WidthHolders);
         }
+
+        /// <summary>
+        /// Phase 28: the defender who joins the attack on the flank of the ball, or -1. Only while the team has had the ball for a moment past the middle of the pitch, with the carrier on a flank, and never if it would leave
+        /// the team without cover behind the ball. One at a time (<see cref="AttackPositioningTuning.OverlapRunners"/>). He is one of those who would otherwise just get open.
+        /// </summary>
+        private int ChooseOverlapper(WorldView view, int carrierIdx, int start, int end, Vec2 attack)
+        {
+            if (a.OverlapRunners <= 0) return -1;
+            WorldPlayer carrier = view[carrierIdx];
+            if (view.Ball.SecondsSincePossessionChange < a.OverlapMinPossession) return -1;
+            float ahead = Along(carrier.Position, attack);
+            if (ahead < -a.OverlapBackTolerance || Math.Abs(carrier.Position.Y) < a.OverlapMinCarrierWidth) return -1;
+            float side = carrier.Position.Y > 0f ? 1f : -1f;
+            int best = -1; float bestScore = float.NegativeInfinity;
+            for (int i = start; i < end; i++)
+            {
+                if (jobs[i] != AttackJob.GetOpen) continue;
+                WorldPlayer p = view[i];
+                Vec2 home = p.HasHome ? p.Home : p.Position;
+                if (Along(home, attack) > -a.OverlapMinHomeDepth || p.Stamina < a.OverlapMinStamina) continue;
+                if (home.Y * side <= 0f) continue;
+                float dC = (p.Position - carrier.Position).Magnitude;
+                if (dC > a.OverlapMaxCarrierDistance || Along(p.Position, attack) > ahead + a.OverlapMaxAhead) continue;
+                int cover = 0;
+                for (int k = start; k < end; k++)
+                {
+                    if (k == i || k == carrierIdx) continue;
+                    WorldPlayer o = view[k];
+                    if (!o.IsOnPitch || o.IsGoalkeeper) continue;
+                    if (Along(o.Position, attack) < ahead - a.OverlapCoverMargin) cover++;
+                }
+                if (cover < a.OverlapMinCover) continue;
+                float score = p.Stamina / a.OverlapStaminaScale - Math.Abs(dC - a.OverlapIdealDistance) / a.OverlapMaxCarrierDistance;
+                if (score > bestScore) { bestScore = score; best = i; }
+            }
+            return best;
+        }
+
 
         private void Pick(int start, int end, AttackJob job, float[] scores, int count)
         {
@@ -140,7 +181,7 @@ namespace FS27.Core
             {
                 int best = -1; float bestScore = float.NegativeInfinity;
                 for (int i = start; i < end; i++)
-                    if (jobs[i] == AttackJob.GetOpen && scores[i] > bestScore) { bestScore = scores[i]; best = i; }
+                    if (jobs[i] == AttackJob.GetOpen && i != overlapper && scores[i] > bestScore) { bestScore = scores[i]; best = i; }
                 if (best < 0) return;
                 jobs[best] = job;
             }
@@ -149,6 +190,7 @@ namespace FS27.Core
         /// <summary>The run a player is making after <see cref="Assign"/> (what a carrier needs to know; he does not need to know how it was decided).</summary>
         public RunKind RunOf(int playerIndex)
         {
+            if (playerIndex == overlapper && overlapper >= 0) return RunKind.Forward;
             switch (JobOf(playerIndex))
             {
                 case AttackJob.Support: return RunKind.Support;
@@ -204,6 +246,16 @@ namespace FS27.Core
                         break;
                     }
                 default:
+                    if (idx == overlapper && overlapper >= 0)
+                    {
+                        float side = carrier.Position.Y > 0f ? 1f : -1f;
+                        s.Center = new Vec2(carrier.Position.X + attack.X * a.OverlapAhead, side * (view.Field.Width / 2f - a.OverlapMargin)); s.MaxHomeDeviation = a.OverlapMaxHomeDeviation;
+                        s.BandMin = a.ForwardMinCarrierDistance; s.BandMax = t.PassMaxDistance; s.ForwardWeight = a.ForwardAdvanceWeight; s.LateralWeight = a.WidthLateralWeight;
+                        target = WorldGeometry.FindBestOpenPoint(view, idx, s, a, out _);
+                        magnitude = a.OverlapMagnitude;
+                        job = AttackJob.GetOpen;
+                        break;
+                    }
                     {
                         s.Center = openBase; s.MaxHomeDeviation = a.GetOpenMaxHomeDeviation;
                         target = WorldGeometry.FindBestOpenPoint(view, idx, s, a, out _);

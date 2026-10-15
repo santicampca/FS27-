@@ -231,7 +231,17 @@ namespace FS27.Core
         private static string FamilyOf(string name)
         {
             string[] w = (name ?? "").Split(' ');
-            return w.Length > 0 ? w[w.Length - 1] : "";
+            int last = w.Length - 1;
+            // a generational suffix ("Jr", "Junior", "Sr") is not a family name: "Name Jr" has the word before it
+            if (last > 0 && IsGenerationalSuffix(w[last])) last--;
+            return last >= 0 ? w[last] : "";
+        }
+
+        /// <summary>"Jr", "Jr.", "Junior", "Sr", "Sr." (ignoring case): a suffix that follows the name, never a family name by itself.</summary>
+        public static bool IsGenerationalSuffix(string word)
+        {
+            string k = (word ?? "").Trim().TrimEnd('.').ToLowerInvariant();
+            return k == "jr" || k == "junior" || k == "sr" || k == "senior";
         }
 
         private static IEnumerable<string> WordsOf(string name)

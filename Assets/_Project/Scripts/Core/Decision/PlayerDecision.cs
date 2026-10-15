@@ -98,7 +98,20 @@ namespace FS27.Core
         FreeKickClear,
         // Phase 23 (appended)
         /// <summary>A penalty is being taken: the goalkeeper's dive is moved by the Core.</summary>
-        PenaltyHold
+        PenaltyHold,
+        // Phase 28 (appended)
+        /// <summary>The taker of a throw-in, goal kick or corner waits on the spot for an option to open.</summary>
+        SetPieceWait,
+        /// <summary>The taker of a throw-in, goal kick or corner plays it to the team-mate with the best chance.</summary>
+        SetPiecePass,
+        /// <summary>The taker of a set piece has nobody he can reach: he sends it forward.</summary>
+        SetPieceClear,
+        /// <summary>A team-mate of the taker offers himself: he keeps clear of the rivals so the taker has a lane.</summary>
+        SetPieceOffer,
+        /// <summary>A cross from the flank to a team-mate in the box.</summary>
+        CrossToBox,
+        /// <summary>Phase 29: the keeper holds the ball and waits for a lane to open.</summary>
+        KeeperWaitForLane
     }
 
     /// <summary>

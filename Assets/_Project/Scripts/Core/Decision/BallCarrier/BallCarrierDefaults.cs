@@ -88,6 +88,34 @@ namespace FS27.Core
         /// <summary>Walking on with the ball when nothing else applies.</summary>
         public const float DribbleFallbackScore = 0.3f;
 
+        // ---- Phase 28: a pass with a rival already on the passer (see PassRisk.ReleaseMargin)
+        /// <summary>A pass loses up to this much when a rival can touch the ball in the first metres of its path (a presser who is already running at the passer).</summary>
+        public const float ReleaseWeight = 1.0f;
+        /// <summary>The penalty starts when the ball beats the nearest rival by less than this many seconds and is complete at this much less than nothing (scale).</summary>
+        public const float ReleaseSlack = 0.02f;
+        public const float ReleaseScale = 0.2f;
+        /// <summary>A presser needs this long to see the ball go before he turns to it (he is already moving), runs at this share of his top speed and takes the ball at this reach (m).</summary>
+        public const float ReleaseReaction = 0.15f;
+        public const float ReleaseSpeedShare = 1.0f;
+        public const float ReleaseReach = 1.0f;
+        /// <summary>The first this many metres of the pass are checked, at this many points.</summary>
+        public const float ReleaseSpan = 4.0f;
+        public const int ReleaseSamples = 3;
+
+        // ---- Phase 28: a cross from the flank to a team-mate in the box
+        /// <summary>A pass from a wide position in the attacking third to a team-mate in the box is a cross: lofted over the defenders, worth this much more times the chance it arrives.</summary>
+        public const float CrossBonus = 1.6f;
+        /// <summary>Wide = within this distance (m) of the touchline; the attacking third = within this distance (m) of the goal line.</summary>
+        public const float CrossWideZone = 6.0f;
+        public const float CrossMaxGoalDistance = 14.0f;
+        /// <summary>The box: within this depth (m) of the goal and this half-width (m) of its middle line.</summary>
+        public const float CrossBoxDepth = 8.0f;
+        public const float CrossBoxHalfWidth = 6.0f;
+        /// <summary>The receiver needs this much room around him (m); a cross is lofted only between these distances (m), nearer it is a ground pass.</summary>
+        public const float CrossMinSpace = 2.0f;
+        public const float CrossMinDistance = 6.0f;
+        public const float CrossMaxDistance = 16.0f;
+
         // ---- shielding the ball
         public const float ProtectBase = 0.4f;
         public const float ProtectPressureWeight = 1.2f;
@@ -169,6 +197,22 @@ namespace FS27.Core
         public float DribbleTiredWeight = BallCarrierDefaults.DribbleTiredWeight;
         public float SkillMoveScore = BallCarrierDefaults.SkillMoveScore;
         public float DribbleFallbackScore = BallCarrierDefaults.DribbleFallbackScore;
+        public float ReleaseWeight = BallCarrierDefaults.ReleaseWeight;
+        public float ReleaseSlack = BallCarrierDefaults.ReleaseSlack;
+        public float ReleaseScale = BallCarrierDefaults.ReleaseScale;
+        public float ReleaseReaction = BallCarrierDefaults.ReleaseReaction;
+        public float ReleaseSpeedShare = BallCarrierDefaults.ReleaseSpeedShare;
+        public float ReleaseReach = BallCarrierDefaults.ReleaseReach;
+        public float ReleaseSpan = BallCarrierDefaults.ReleaseSpan;
+        public int ReleaseSamples = BallCarrierDefaults.ReleaseSamples;
+        public float CrossBonus = BallCarrierDefaults.CrossBonus;
+        public float CrossWideZone = BallCarrierDefaults.CrossWideZone;
+        public float CrossMaxGoalDistance = BallCarrierDefaults.CrossMaxGoalDistance;
+        public float CrossBoxDepth = BallCarrierDefaults.CrossBoxDepth;
+        public float CrossBoxHalfWidth = BallCarrierDefaults.CrossBoxHalfWidth;
+        public float CrossMinSpace = BallCarrierDefaults.CrossMinSpace;
+        public float CrossMinDistance = BallCarrierDefaults.CrossMinDistance;
+        public float CrossMaxDistance = BallCarrierDefaults.CrossMaxDistance;
         public float ProtectBase = BallCarrierDefaults.ProtectBase;
         public float ProtectPressureWeight = BallCarrierDefaults.ProtectPressureWeight;
         public float ProtectWaitBonus = BallCarrierDefaults.ProtectWaitBonus;

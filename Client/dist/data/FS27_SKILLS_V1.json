@@ -1,0 +1,779 @@
+{
+  "deferredTags": [
+    {
+      "reason": "Depends on the offside rule, which is a later Classic-rules phase.",
+      "tag": "OffsideTrapExploitation"
+    },
+    {
+      "reason": "Depends on fouls and the referee, which are a later Classic-rules phase.",
+      "tag": "TacticalFoul"
+    }
+  ],
+  "schemaVersion": "FS27.Skills.v1",
+  "skills": [
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Regatea en espacios mínimos con el balón pegado al pie.",
+      "kind": "Dribble",
+      "name": "Regate de control cerrado",
+      "requirements": {
+        "Control": 74,
+        "Dribbling": 74
+      },
+      "skillId": "close_control_dribble",
+      "sourceTags": [
+        "CloseControlDribble",
+        "CloseControlSlalom",
+        "CloseControlPocketTurn",
+        "SlalomBoxDribble",
+        "ZonalSlalomDribble",
+        "ElusivePocketDribble",
+        "CloseQuarterSkill",
+        "SkillfulDribble"
+      ],
+      "unlocksAction": "SkillMove"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Se zafa del rival en uno contra uno con cambios de ritmo.",
+      "kind": "Dribble",
+      "name": "Regate escurridizo",
+      "requirements": {
+        "Agility": 74,
+        "Dribbling": 74
+      },
+      "skillId": "elusive_dribble",
+      "sourceTags": [
+        "OneVsOneDribble",
+        "OneVsOneIsolation",
+        "ExplosiveDribble",
+        "ChangeOfPaceDribble"
+      ],
+      "unlocksAction": "SkillMove"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Recursos de espectáculo: taconazo, arrastre, sombrero.",
+      "kind": "Dribble",
+      "name": "Regate de fantasía",
+      "requirements": {
+        "Dribbling": 76,
+        "Technique": 76
+      },
+      "skillId": "flair_dribble",
+      "sourceTags": [
+        "RainbowFlickDribble",
+        "DragBack"
+      ],
+      "unlocksAction": "SkillMove"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Pase que hace avanzar al equipo hacia campo rival.",
+      "kind": "Passing",
+      "name": "Pase progresivo",
+      "requirements": {
+        "Passing": 74
+      },
+      "skillId": "progressive_pass",
+      "sourceTags": [
+        "ProgressivePass",
+        "VerticalPass",
+        "HalfSpacePass",
+        "WideProgression",
+        "InvertedProgression",
+        "InvertedCutInsidePass"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Pase que atraviesa una línea defensiva.",
+      "kind": "Passing",
+      "name": "Pase rompe-líneas",
+      "requirements": {
+        "Passing": 76,
+        "Technique": 74
+      },
+      "skillId": "line_breaking_pass",
+      "sourceTags": [
+        "LineBreakingPass",
+        "PrecisionThroughBall",
+        "VisionaryThroughBall"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Pase largo en diagonal para cambiar de banda.",
+      "kind": "SpecialPass",
+      "name": "Cambio de orientación",
+      "requirements": {
+        "Passing": 76,
+        "Technique": 74
+      },
+      "skillId": "long_switch",
+      "sourceTags": [
+        "SwitchOfPlay",
+        "LongDiagonalPass",
+        "MidfieldDistribution"
+      ],
+      "unlocksAction": "SkillLobPass"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Pase de fantasía o de último tercio que otros no ven.",
+      "kind": "SpecialPass",
+      "name": "Pase creativo",
+      "requirements": {
+        "Passing": 72,
+        "Technique": 74
+      },
+      "skillId": "creative_pass",
+      "sourceTags": [
+        "CreativePass",
+        "NoLookPass",
+        "OutsideOfFootPass",
+        "DirectAssistance",
+        "CreativeAssistance",
+        "FinalThirdAssistance",
+        "Cutback",
+        "HalfSpaceOrchestration"
+      ],
+      "unlocksAction": "SkillLobPass"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Asegura la salida de balón y asocia con los compañeros.",
+      "kind": "Passing",
+      "name": "Salida y juego asociativo",
+      "requirements": {
+        "Control": 72,
+        "Passing": 72
+      },
+      "skillId": "build_up_play",
+      "sourceTags": [
+        "DeepBuildUp",
+        "TempoControl",
+        "LinkUpPlay",
+        "CombinationPlay",
+        "DropDeepToLink"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Centra al área con precisión (la acción de centro llega en una fase posterior).",
+      "kind": "Passing",
+      "name": "Centro de precisión",
+      "requirements": {
+        "Passing": 72,
+        "Technique": 72
+      },
+      "skillId": "precision_cross",
+      "sourceTags": [
+        "PrecisionCross",
+        "EarlyCross",
+        "LineBreakingCross"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Finisher",
+        "GoalHunter",
+        "Target",
+        "Creator",
+        "Winger",
+        "Explosive",
+        "Engine"
+      ],
+      "category": "Ball",
+      "description": "Convierte ocasiones con frialdad.",
+      "kind": "Shooting",
+      "name": "Definición",
+      "requirements": {
+        "Finishing": 76
+      },
+      "skillId": "clinical_finishing",
+      "sourceTags": [
+        "ClinicalFinishing",
+        "PrecisionShot",
+        "FinessePlacement",
+        "NearPostShot",
+        "OneVsOneFinishing",
+        "DirectShot"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Finisher",
+        "GoalHunter",
+        "Target",
+        "Creator",
+        "Winger",
+        "Explosive",
+        "Engine"
+      ],
+      "category": "Ball",
+      "description": "Remata sin controlar el balón.",
+      "kind": "Shooting",
+      "name": "Remate a primer toque",
+      "requirements": {
+        "Finishing": 74
+      },
+      "skillId": "first_time_finish",
+      "sourceTags": [
+        "FirstTouchShot",
+        "FirstTimeFinishing"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Dispara con potencia desde lejos.",
+      "kind": "Shooting",
+      "name": "Disparo de media distancia",
+      "requirements": {
+        "Shooting": 76
+      },
+      "skillId": "long_range_strike",
+      "sourceTags": [
+        "LongRangeStrike",
+        "PowerShot"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Pone efecto al balón para curvar el disparo.",
+      "kind": "SpecialShot",
+      "name": "Disparo con efecto",
+      "requirements": {
+        "Shooting": 74,
+        "Technique": 76
+      },
+      "skillId": "curve_shot",
+      "sourceTags": [
+        "CurlFinesseShot"
+      ],
+      "unlocksAction": "CurvedShot"
+    },
+    {
+      "archetypes": [
+        "Target",
+        "Finisher",
+        "GoalHunter",
+        "Wall",
+        "Guardian",
+        "Anchor",
+        "Engine"
+      ],
+      "category": "Ball",
+      "description": "Remata de cabeza en el área (el cabezazo llega en una fase posterior).",
+      "kind": "Shooting",
+      "name": "Remate de cabeza",
+      "requirements": {
+        "Strength": 70
+      },
+      "skillId": "header_finish",
+      "sourceTags": [
+        "SetPieceHeader",
+        "BackPostHeader",
+        "CloseRangeHeader",
+        "AerialBoxThreat",
+        "AerialThreat",
+        "AerialHeaderExpert"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Penaltis y faltas directas.",
+      "kind": "SpecialShot",
+      "name": "Especialista a balón parado",
+      "requirements": {
+        "Shooting": 74,
+        "Technique": 76
+      },
+      "skillId": "dead_ball_specialist",
+      "sourceTags": [
+        "PenaltySpecialist",
+        "DeadBallSpecialist"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Recibe y se gira entre líneas de presión.",
+      "kind": "FirstTouch",
+      "name": "Recepción entre líneas",
+      "requirements": {
+        "Control": 76,
+        "Technique": 74
+      },
+      "skillId": "pocket_receive",
+      "sourceTags": [
+        "PocketReceive",
+        "IntelligentPocketReading",
+        "BetweenLinesTurn"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Ball",
+      "description": "Protege el balón de espaldas y lo mantiene para el equipo.",
+      "kind": "Technique",
+      "name": "Pivote y protección",
+      "requirements": {
+        "Control": 72,
+        "Strength": 72
+      },
+      "skillId": "hold_up_play",
+      "sourceTags": [
+        "HoldUpPlay",
+        "PhysicalShielding",
+        "CounterAttackHoldUp",
+        "CentreBackDominance",
+        "CentreBackShielding",
+        "CentreBackHolding",
+        "PhysicalFriction"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Alcanza velocidad máxima en muy pocos metros.",
+      "kind": "Acceleration",
+      "name": "Arranque explosivo",
+      "requirements": {
+        "Acceleration": 80
+      },
+      "skillId": "explosive_burst",
+      "sourceTags": [
+        "ExplosiveBurst",
+        "WingBurst",
+        "AmbidextrousBurst",
+        "ExplosivePowerRun"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Ataca el espacio a alta velocidad en transición.",
+      "kind": "Acceleration",
+      "name": "Sprint de contraataque",
+      "requirements": {
+        "Speed": 80
+      },
+      "skillId": "counter_sprint",
+      "sourceTags": [
+        "CounterAttackPace",
+        "CounterAttackRun",
+        "TransitionSprint",
+        "ExplosiveTransition",
+        "LongStridePace",
+        "HighSpeedSpaceAttack",
+        "DirectRunning",
+        "HyperSpeedBreakaway"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Gira y arranca en la misma acción.",
+      "kind": "Agility",
+      "name": "Giro y aceleración",
+      "requirements": {
+        "Acceleration": 74,
+        "Agility": 76
+      },
+      "skillId": "turn_and_accelerate",
+      "sourceTags": [
+        "TurnAndAccelerate",
+        "ElusiveRun",
+        "SuddenChangeOfPace"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Avanza metros con el balón controlado.",
+      "kind": "BallCarrying",
+      "name": "Conducción progresiva",
+      "requirements": {
+        "Dribbling": 70
+      },
+      "skillId": "progressive_carry",
+      "sourceTags": [
+        "ProgressiveCarry",
+        "PowerProgressiveCarry",
+        "PowerCarryThroughCenter",
+        "ProgressiveDrive",
+        "DrivingRun",
+        "InsideDrive",
+        "PowerDrive",
+        "HalfSpaceDrive",
+        "OutsideWingerCarry",
+        "DirectGoalDrive"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Mantiene el balón con rivales encima.",
+      "kind": "BallCarrying",
+      "name": "Resistencia a la presión",
+      "requirements": {
+        "Agility": 72,
+        "Control": 76
+      },
+      "skillId": "press_resistance",
+      "sourceTags": [
+        "PressResistance",
+        "PressureEscape"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Se mete hacia el centro con el balón desde la banda.",
+      "kind": "BallCarrying",
+      "name": "Diagonal hacia dentro",
+      "requirements": {
+        "Dribbling": 72
+      },
+      "skillId": "cut_inside",
+      "sourceTags": [
+        "CutInside",
+        "WingCutInside",
+        "CutInsideAndShoot",
+        "CutInsideAndFinish",
+        "InsideSlash",
+        "FlankToCenterCut"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Se ofrece para recibir y da una opción de pase.",
+      "kind": "OffBall",
+      "name": "Apoyo sin balón",
+      "requirements": {
+        "Stamina": 70
+      },
+      "skillId": "support_run",
+      "sourceTags": [
+        "SupportRun",
+        "OffBallMovement",
+        "OffBallSpaceAttack"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Pasa por fuera del compañero que lleva el balón.",
+      "kind": "OffBall",
+      "name": "Desdoblamiento",
+      "requirements": {
+        "Speed": 70,
+        "Stamina": 70
+      },
+      "skillId": "overlapping_run",
+      "sourceTags": [
+        "OverlappingRun"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Ocupa y ataca los espacios entre banda y centro.",
+      "kind": "OffBall",
+      "name": "Movimiento en el carril interior",
+      "requirements": {
+        "Agility": 70
+      },
+      "skillId": "half_space_movement",
+      "sourceTags": [
+        "InsideMovement",
+        "HalfSpaceMovement",
+        "HalfSpaceOrbit",
+        "DiagonalRun",
+        "InsideDiagonalRun",
+        "DiagonalPenetration",
+        "OffBallPenetration",
+        "PocketPenetration",
+        "DeepRun"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Movement",
+      "description": "Aparece desde atrás en el área rival para rematar.",
+      "kind": "OffBall",
+      "name": "Llegada al área",
+      "requirements": {
+        "Stamina": 70
+      },
+      "skillId": "late_box_arrival",
+      "sourceTags": [
+        "LateBoxArrival",
+        "LateRunsIntoBox",
+        "LateBoxCrash",
+        "BoxRuns",
+        "BoxAttacking",
+        "GoalAreaArrival",
+        "BoxToBoxRun",
+        "CoreBoxPresence",
+        "WeakSideAttack"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Wall",
+        "Guardian",
+        "Anchor",
+        "Engine",
+        "Builder",
+        "Winger",
+        "Explosive"
+      ],
+      "category": "Defensive",
+      "description": "Anticipa el pase y lo corta.",
+      "kind": "Interception",
+      "name": "Lectura e intercepción",
+      "requirements": {
+        "Defense": 70
+      },
+      "skillId": "interception_reading",
+      "sourceTags": [
+        "Interception",
+        "CleanInterception",
+        "AggressiveInterception",
+        "Anticipation",
+        "PassingLaneBlock"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Wall",
+        "Guardian",
+        "Anchor",
+        "Engine",
+        "Builder",
+        "Winger",
+        "Explosive"
+      ],
+      "category": "Defensive",
+      "description": "Sale al cruce y va a por el balón.",
+      "kind": "Tackle",
+      "name": "Entrada agresiva",
+      "requirements": {
+        "Defense": 70
+      },
+      "skillId": "aggressive_tackle",
+      "sourceTags": [
+        "AggressiveTackle",
+        "FrontFootDefending"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Wall",
+        "Guardian",
+        "Anchor",
+        "Engine",
+        "Builder",
+        "Winger",
+        "Explosive"
+      ],
+      "category": "Defensive",
+      "description": "Aguanta al regateador sin dejarle girar.",
+      "kind": "Tackle",
+      "name": "Defensa del uno contra uno",
+      "requirements": {
+        "Agility": 68,
+        "Defense": 72
+      },
+      "skillId": "one_v_one_defending",
+      "sourceTags": [
+        "OneVsOneContainment"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Wall",
+        "Guardian",
+        "Anchor",
+        "Engine",
+        "Builder",
+        "Winger",
+        "Explosive"
+      ],
+      "category": "Defensive",
+      "description": "Se interpone en la línea de tiro o de pase.",
+      "kind": "Block",
+      "name": "Bloqueo",
+      "requirements": {
+        "Defense": 70
+      },
+      "skillId": "defensive_block",
+      "sourceTags": [
+        "PhysicalBlock"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Wall",
+        "Guardian",
+        "Anchor",
+        "Engine",
+        "Builder",
+        "Winger",
+        "Explosive"
+      ],
+      "category": "Defensive",
+      "description": "Cubre espacios y protege la zona delante de la defensa.",
+      "kind": "Block",
+      "name": "Cobertura y pantalla",
+      "requirements": {
+        "Defense": 68
+      },
+      "skillId": "defensive_screen",
+      "sourceTags": [
+        "DefensiveScreen",
+        "WideCover",
+        "DefensiveCover",
+        "BackLineCommand",
+        "DefensiveTracking"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Defensive",
+      "description": "Presiona arriba para forzar el error.",
+      "kind": "Pressure",
+      "name": "Presión alta",
+      "requirements": {
+        "Stamina": 72
+      },
+      "skillId": "high_press",
+      "sourceTags": [
+        "Pressing",
+        "HighPressing",
+        "HighIntensityPress",
+        "HighPressSurge",
+        "PressingDuels",
+        "DefendingFromFront"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Defensive",
+      "description": "Presiona justo tras perder el balón.",
+      "kind": "Pressure",
+      "name": "Contrapresión",
+      "requirements": {
+        "Stamina": 72
+      },
+      "skillId": "counter_press",
+      "sourceTags": [
+        "Counterpressing"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Defensive",
+      "description": "Gana segundas jugadas y recupera pelotas sueltas.",
+      "kind": "Pressure",
+      "name": "Recuperación de balón",
+      "requirements": {
+        "Stamina": 72
+      },
+      "skillId": "ball_recovery",
+      "sourceTags": [
+        "BallRecovery",
+        "DefensiveWorkrate",
+        "SidelineWorkrate"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [
+        "Wall",
+        "Guardian",
+        "Anchor",
+        "Engine",
+        "Builder",
+        "Winger",
+        "Explosive"
+      ],
+      "category": "Defensive",
+      "description": "Se repliega a toda velocidad.",
+      "kind": "Recovery",
+      "name": "Carrera de recuperación",
+      "requirements": {
+        "Speed": 74
+      },
+      "skillId": "recovery_sprint",
+      "sourceTags": [
+        "RecoveryRun",
+        "WideRecovery",
+        "DefensiveRecovery"
+      ],
+      "unlocksAction": "None"
+    },
+    {
+      "archetypes": [],
+      "category": "Defensive",
+      "description": "Gana duelos y despejes por alto.",
+      "kind": "Aerial",
+      "name": "Juego aéreo",
+      "requirements": {
+        "Strength": 72
+      },
+      "skillId": "aerial_duel",
+      "sourceTags": [
+        "AerialClearance",
+        "AerialDominance",
+        "AerialDuels",
+        "AerialShielding",
+        "DefensiveSetPieceClearance"
+      ],
+      "unlocksAction": "None"
+    }
+  ]
+}

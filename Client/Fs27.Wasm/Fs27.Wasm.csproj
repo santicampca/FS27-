@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <!-- FS27 browser client host: the REAL Core (compiled from its sources, unchanged) running in WebAssembly, driven by a touch client (Client/web).
+       Build: Client/build.sh. Needs the .NET 8 SDK and its "wasm-experimental" workload (dotnet workload install wasm-experimental). -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>FS27.Client</RootNamespace>
+    <AssemblyName>Fs27.Wasm</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <!-- the Core builds ids with string.Normalize (accents): it needs ICU data in the browser too -->
+    <WasmIncludeFullIcuData>false</WasmIncludeFullIcuData>
+    <NoWarn>$(NoWarn);CA1416;CS0649;CS0414;CS0169;CS0219</NoWarn>
+    <WasmEnableThreads>false</WasmEnableThreads>
+    <TrimMode>partial</TrimMode>
+    <WasmDebugLevel>0</WasmDebugLevel>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Assets/_Project/Scripts/Core/**/*.cs" />
+    <Compile Include="*.cs" />
+  </ItemGroup>
+</Project>

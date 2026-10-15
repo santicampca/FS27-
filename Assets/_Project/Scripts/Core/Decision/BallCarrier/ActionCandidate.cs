@@ -78,7 +78,7 @@ namespace FS27.Core
     /// <summary>The terms a receiver score is made of (their sum, in this order, is the score). Plain data.</summary>
     public struct ReceiverParts
     {
-        public float Advance, Space, Distance, Angle, Lane, Pressure, Move;
+        public float Advance, Space, Distance, Angle, Lane, Pressure, Move, Risk;
     }
 
     /// <summary>
@@ -110,7 +110,7 @@ namespace FS27.Core
     public static class CandidatePartNames
     {
         private static readonly string[] shoot = { "proximity", "angle", "line", "goalkeeper", "pressure" };
-        private static readonly string[] pass = { "advance", "space", "distance", "angle", "lane", "receiverPressure", "receiverMove", "run", "forwardBonus", "safePass", "backTurned" };
+        private static readonly string[] pass = { "advance", "space", "distance", "angle", "lane", "receiverPressure", "receiverMove", "run", "forwardBonus", "safePass", "backTurned", "risk" };
         private static readonly string[] through = { "base", "progress", "space", "race", "run", "risk" };
         private static readonly string[] dribble = { "advanceSpace", "pressure", "ownGoal", "fatigue", "skillMove" };
         private static readonly string[] protect = { "base", "pressure", "waitForRun" };

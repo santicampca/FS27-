@@ -211,6 +211,7 @@ namespace FS27.Core
             Vec2 standAt = spot - face * infrastructure.TakerOffset;
             PlacePlayer(r.Team, taker.PlayerId, Pitch.ClampPlayer(standAt), face.ToHeading());
             ClearAroundSpot(r, taker);
+            PlaceSetPieceOptions(r, taker);
             SeparateActivePlayers(r.Kind == RestartKind.KickOff);
             r.Status = RestartStatus.Placed;
             State.PendingRestart = r;
@@ -260,11 +261,12 @@ namespace FS27.Core
                     Vec2 d = pos - r.Position;
                     float dist = d.Magnitude;
                     bool moved = false;
-                    if (dist < radius && (kickoff || p.Team != r.Team || !p.InGoal))
+                    float reach = p.Team != r.Team ? RestartOpponentRadius(r.Kind) : radius;
+                    if (dist < reach && (kickoff || p.Team != r.Team || !p.InGoal))
                     {
                         // out of the circle, along the line from the spot (or along the pitch when he stands on it)
                         Vec2 axis = dist > 1e-4f ? d * (1f / dist) : -AttackDirectionOf(p.Team);
-                        pos = r.Position + axis * radius;
+                        pos = r.Position + axis * reach;
                         moved = true;
                     }
                     if (kickoff && !PitchBounds.InOwnHalf(pos, State.HomeAttacksPositiveX, p.Team))
@@ -291,7 +293,9 @@ namespace FS27.Core
             if (!ConfirmRestartReady()) return false;
             r.Status = RestartStatus.Confirmed;
             State.PendingRestart = r;
-            return GiveBallTo(r.Team, r.TakerId);
+            bool given = GiveBallTo(r.Team, r.TakerId);
+            if (given) BeginSetPiece(r);
+            return given;
         }
 
         // ------------------------------------------------------------------ control, selection

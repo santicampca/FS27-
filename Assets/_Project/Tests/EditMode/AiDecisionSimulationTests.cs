@@ -191,7 +191,7 @@ namespace FS27.Core.Tests
         {
             public string Fingerprint; public int Decisions, Attempted, Completed, Passes, Shots, Restarts, Issues, Goals;
             public int[] Kinds = new int[8];
-            public int PlayersDecided, PlayersMoved, FieldPlayersMoved;
+            public int PlayersDecided, PlayersMoved, FieldPlayersMoved, Dismissed;
             public float MaxStamina = 0f, MinStamina = 100f;
         }
 
@@ -226,7 +226,9 @@ namespace FS27.Core.Tests
                     r.MinStamina = Math.Min(r.MinStamina, w.Stamina); r.MaxStamina = Math.Max(r.MaxStamina, w.Stamina);
                     if ((w.Position - start[w.PlayerId]).Magnitude > 0.5f) moved.Add(w.PlayerId);
                 }
-                if (onPitch != 12) r.Issues++;
+                int dismissed = 0;   // Classic has red cards (Phase 21): a player sent off is no longer on the pitch, which is not a broken invariant (the attack and defence simulations count it the same way)
+                foreach (TeamMatchState team in new[] { c.State.Home, c.State.Away }) foreach (MatchPlayer sp in team.Players) if (sp.Status == MatchPlayerStatus.Dismissed) dismissed++;
+                if (onPitch != 12 - dismissed) r.Issues++;
                 Vec3 b = c.State.Ball.Physics.Position;
                 if (float.IsNaN(b.X) || float.IsNaN(b.Y) || float.IsNaN(b.Z) || Math.Abs(b.X) > 60f || Math.Abs(b.Z) > 40f) r.Issues++;
                 if (mode == GameMode.Arena && (Math.Abs(b.X) > 20.6f || Math.Abs(b.Z) > 13.1f) && c.State.Phase == MatchPhase.Playing) r.Issues++;
@@ -235,6 +237,7 @@ namespace FS27.Core.Tests
             for (int k = 0; k < 8; k++) r.Kinds[k] = driver.CountOf((DecisionKind)k);
             foreach (TeamMatchState t in new[] { c.State.Home, c.State.Away }) foreach (MatchPlayer p in t.Players.Where(x => x.IsActive)) if (driver.TryGetLast(p.PlayerId, out _)) r.PlayersDecided++;
             r.PlayersMoved = moved.Count; r.FieldPlayersMoved = moved.Count(id => !keepers.Contains(id));
+            foreach (TeamMatchState t in new[] { c.State.Home, c.State.Away }) foreach (MatchPlayer p in t.Players) if (p.Status == MatchPlayerStatus.Dismissed) r.Dismissed++;
             r.Goals = c.State.Score.Home + c.State.Score.Away;
             r.Fingerprint = Fingerprint(c) + "|" + r.Decisions + "|" + r.Attempted + "|" + r.Completed + "|" + r.Passes + "|" + r.Shots + "|" + string.Join(",", r.Kinds) + "|" + c.State.Score.Home + "-" + c.State.Score.Away;
             return r;
@@ -278,7 +281,7 @@ namespace FS27.Core.Tests
                 foreach (GameMode mode in new[] { GameMode.Arena, GameMode.Classic })
                 {
                     SimResult r = Simulate(mode, 41, pair.Item1, pair.Item2, 15f);
-                    Assert.AreEqual(0, r.Issues, mode + " " + pair.Item1 + "-" + pair.Item2); Assert.AreEqual(12, r.PlayersDecided); Assert.Greater(r.Completed, 0);
+                    Assert.AreEqual(0, r.Issues, mode + " " + pair.Item1 + "-" + pair.Item2); Assert.AreEqual(12 - r.Dismissed, r.PlayersDecided, "every player still on the pitch received decisions (a player sent off by the referee no longer does)"); Assert.Greater(r.Completed, 0);
                 }
         }
 

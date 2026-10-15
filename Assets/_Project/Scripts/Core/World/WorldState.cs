@@ -115,6 +115,10 @@ namespace FS27.Core
             match.PenaltyKeeperId = pen != null && pen.Stage == PenaltyStage.Kicked && !pen.KeeperTouched ? pen.KeeperId : null;
             match.BallLive = match.BallLive && !match.PenaltyHold;
             match.FreeKickTakerId = st.FreeKick != null && st.FreeKick.InProtection ? st.FreeKick.TakerId : null;
+            SetPieceState sp = st.SetPiece;
+            bool setPiece = sp != null && sp.Active;
+            match.SetPieceTakerId = setPiece ? sp.TakerId : null; match.SetPieceKind = setPiece ? sp.Kind : RestartKind.KickOff; match.SetPieceTeam = setPiece ? sp.Team : TeamSide.Home;
+            match.SetPieceSpot = setPiece ? sp.Spot : Vec2.Zero; match.SetPieceSeconds = setPiece ? sp.Seconds : 0f;
         }
 
         private void RefreshBall(MatchState st, MatchController controller)
