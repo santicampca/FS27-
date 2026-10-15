@@ -25,6 +25,19 @@ namespace FS27.Core
         public const float InterceptReach = 2.2f;
         /// <summary>Highest the lowest point of the ball may be for a foot/body touch.</summary>
         public const float MaxTouchHeight = 1.1f;
+        // ---- Phase 33: the ball in the air is played in the air (head), instead of waiting for it to fall within reach of the feet
+        /// <summary>Highest ball (m) a field player can head.</summary>
+        public const float HeadMaxHeight = 2.2f;
+        /// <summary>A header needs the ball this close horizontally (m): tighter than a foot's touch.</summary>
+        public const float HeaderReach = 0.9f;
+        /// <summary>Quality a header loses against a touch on the ground (added to the first-touch score as a negative bonus).</summary>
+        public const float HeaderPenalty = 0.2f;
+        /// <summary>A cushioned header leaves the ball at his feet-ish: this slow (m/s), along his facing.</summary>
+        public const float HeaderCushionSpeed = 3.0f;
+        /// <summary>A header away (clearance or pass on) leaves at this speed (m/s) and this lift (m/s), the direction off by up to HeaderErrorDegrees times (1 - quality).</summary>
+        public const float HeaderAwaySpeed = 8.0f, HeaderLift = 2.5f, HeaderErrorDegrees = 40.0f;
+        /// <summary>Within this distance (m) of the opponents' goal the header is at goal, at this speed (m/s).</summary>
+        public const float HeaderShotRange = 8.0f, HeaderShotSpeed = 13.0f;
         /// <summary>The last player to touch the ball cannot take it automatically again for this long (seconds): a kicker does not re-collect his own pass.</summary>
         public const float ReTouchCooldown = 0.3f;
         /// <summary>Phase 14: a player who has just kicked the ball does not touch it again while his kick recovers, even if somebody else touched it in between (before, one touch by anyone let him take his own pass back at once). 1 = on, 0 = off (the Phase 13 behaviour).</summary>
@@ -268,6 +281,12 @@ namespace FS27.Core
         public float ChallengeReach = ActionDefaults.ChallengeReach;
         public float InterceptReach = ActionDefaults.InterceptReach;
         public float MaxTouchHeight = ActionDefaults.MaxTouchHeight;
+        public float HeadMaxHeight = ActionDefaults.HeadMaxHeight;
+        public float HeaderReach = ActionDefaults.HeaderReach;
+        public float HeaderPenalty = ActionDefaults.HeaderPenalty;
+        public float HeaderCushionSpeed = ActionDefaults.HeaderCushionSpeed;
+        public float HeaderAwaySpeed = ActionDefaults.HeaderAwaySpeed, HeaderLift = ActionDefaults.HeaderLift, HeaderErrorDegrees = ActionDefaults.HeaderErrorDegrees;
+        public float HeaderShotRange = ActionDefaults.HeaderShotRange, HeaderShotSpeed = ActionDefaults.HeaderShotSpeed;
         public float ReTouchCooldown = ActionDefaults.ReTouchCooldown;
         public float KickerKeepsOffHisKick = ActionDefaults.KickerKeepsOffHisKick;
         public float KeeperHoldsBallOnThePitch = ActionDefaults.KeeperHoldsBallOnThePitch;

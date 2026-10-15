@@ -314,6 +314,19 @@ namespace FS27.Core
             return goalCentre + left * (sign * goalWidth * 0.5f * t.GoalZoneSideFraction);
         }
 
+        /// <summary>
+        /// Phase 33: the ONE place that turns an aim into a destination, for free kicks AND corners (and throw-ins): a goal zone wins over the dragged point, which wins over the drag direction; with nothing, <paramref name="fallback"/>.
+        /// <paramref name="hasDestination"/> is false when only a direction was given (the ball goes that way, to no particular point).
+        /// </summary>
+        public static Vec2 ResolveDestination(in FreeKickAim aim, Vec2 spot, Vec2 goalCentre, Vec2 attackDirection, float goalWidth, FreeKickTuning t, Func<Vec2, Vec2> insideLines, Vec2 fallback, out bool hasDestination)
+        {
+            hasDestination = true;
+            if (aim.HasZone) return GoalZonePoint(aim.Zone, goalCentre, attackDirection, goalWidth, t);
+            if (aim.HasDestination) return insideLines(aim.Destination);
+            if (aim.Direction.Magnitude > 1e-4f) { hasDestination = false; return spot + aim.Direction.Normalized; }
+            return fallback;
+        }
+
         /// <summary>The team-mate the drag points at: the one with the smallest angle to the drag inside the cone, ties to the nearer, then to the earlier in the list. Returns -1 when nobody is inside.</summary>
         public static int FindPassTarget(Vec2 spot, Vec2 direction, IList<Vec2> teammates, FreeKickTuning t)
         {
