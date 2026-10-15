@@ -92,7 +92,9 @@ namespace FS27.Core.Tests
             MatchController c = RealRoles(3, 8, seed, MatchSettings.CreateClassic());
             Assert.IsTrue(c.ConfirmRestart());
             c.AimAssist.Enabled = assist; c.SetControl(TeamSide.Home, ControlSource.Human);
-            var driver = new BasicDecisionDriver(c, BasicDecisionTuning.ForMode(GameMode.Classic), DefenseTuning.ForMode(GameMode.Classic), null, AttackPositioningTuning.ForMode(GameMode.Classic), BallCarrierTuning.ForMode(GameMode.Classic), GoalkeeperAiTuning.ForMode(GameMode.Classic));
+            AttackPositioningTuning attackT = AttackPositioningTuning.ForMode(GameMode.Classic);
+            foreach (string item in (Environment.GetEnvironmentVariable("HA_ATT") ?? "").Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)) { string[] kv = item.Split('='); typeof(AttackPositioningTuning).GetField(kv[0].Trim()).SetValue(attackT, float.Parse(kv[1], CultureInfo.InvariantCulture)); }
+            var driver = new BasicDecisionDriver(c, BasicDecisionTuning.ForMode(GameMode.Classic), DefenseTuning.ForMode(GameMode.Classic), null, attackT, BallCarrierTuning.ForMode(GameMode.Classic), GoalkeeperAiTuning.ForMode(GameMode.Classic));
             var profileT = new DecisionProfileTuning();
             driver.SetDifficulty(TeamSide.Home, DefaultDifficulties.Create(DifficultyLevel.Professional), Db.Players, c, profileT);
             driver.SetDifficulty(TeamSide.Away, DefaultDifficulties.Create(DifficultyLevel.Professional), Db.Players, c, profileT);

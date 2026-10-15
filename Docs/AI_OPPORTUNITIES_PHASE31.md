@@ -87,7 +87,7 @@ Prioridad: A alta, M media, B baja, - nada que hacer. «Dep.» = ítems de los q
 | 79 | Sin ventajas injustas | EX | La IA solo lee `WorldView`; tests prohíben tocar el estado. | - | - |
 | 80 | Variedad sin aleatoriedad absurda | EX | `DecisionDice` determinista. | - | - |
 | 81 | Apoyo contextual al poseedor humano | PE | Los compañeros lo tratan como a cualquier portador. | A | 82 |
-| 82 | Desmarques según su orientación | PE | `AttackSupport` ignora rumbo/velocidad del portador. | A | 81 |
+| 82 | Desmarques según su orientación | DE | Probado: las rupturas siguen el rumbo del portador humano (60 %). Con la persona simulada, pase al receptor previsto 18,6 %→20,0 % y pérdidas 68,4 %→66,6 %: dentro del ruido; revertido. | A | 81 |
 | 83 | Líneas de pase visibles | PE | Pista visual en el cliente (receptor sugerido). | A | 85 |
 | 84 | Respuesta a pases manuales | IM | Con ayuda, el pase fija receptor previsto y el compañero corre al balón. | - | - |
 | 85 | Asistencia de puntería configurable | IM | `HumanAssistTuning`; con 40° de error: pase al receptor previsto 4,1 %→18,6 %, pérdidas 85,6 %→63,3 %. | - | - |

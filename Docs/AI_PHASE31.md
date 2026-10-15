@@ -48,8 +48,10 @@ Nativo (esta máquina): 0,12 ms por paso de simulación con IA de los dos equipo
 - Riesgo de pase solo en la zona propia (`PassRiskOwnZoneOnly`): batería de 6 celdas, pases completados y goles sin cambio medible; revertido.
 - Que los compañeros del sacador busquen hueco en lugar de esperar: informe de conducta de 16 partidos, saque de banda 62→60 % perdido, saque de puerta 64→76 %, córner peor; revertido.
 
+- Rupturas alineadas con el rumbo del portador humano (60 % de la dirección): con la persona simulada +1,4 puntos en pases al receptor previsto, dentro del ruido; revertido.
+
 ## 5. Qué sigue (por impacto)
-1. Apoyo al poseedor humano y desmarques según su orientación (ítems 81-82): hoy los compañeros lo tratan como un portador de IA.
+1. Apoyo al poseedor humano (ítem 81): hoy los compañeros lo tratan como un portador de IA; alinear las rupturas con su rumbo no mostró mejora (82); hace falta jugarlo con una persona.
 2. Personalidades por jugador (73-74): `PlayingProfile` sigue sin conectar.
 3. Banco de escenarios de ataque y de defensa (91-92) y métrica real de paredes (31-32).
 4. Usar el xG en el tiro (14, 113) y el dial de riesgo (110).
