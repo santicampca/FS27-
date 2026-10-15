@@ -196,5 +196,28 @@ namespace FS27.Core.Tests
             Assert.Greater(plans.Select(p => p.BasePress).Distinct().Count(), 2, "the teams' pressing differs");
             Assert.Greater(plans.Select(p => p.Risk).Distinct().Count(), 4, "the teams' appetite for risk differs");
         }
+
+        [Test]
+        public void TheExplanation_IsTheDecisionsOwnRecord_AndChangesNothing()
+        {
+            MatchController dummy = RealRoles(3, 8, 1, MatchSettings.CreateClassic());
+            var engine = EngineWith(dummy, TeamTactic.From(Identity(line: 80, risk: 80, press: PressingStyle.HighPress)), TeamTactic.From(Identity()));
+            int carriers = 0, others = 0;
+            foreach (WorldView v in new[] { 1, 2, 3 }.SelectMany(seed => RealStates(seed, 14)))
+                for (int i = 0; i < v.PlayerCount; i++)
+                {
+                    if (!v[i].IsOnPitch) continue;
+                    string id = v[i].PlayerId;
+                    string before = Dump(engine.Decide(v, id));
+                    string text = DecisionExplainer.Explain(engine, v, id);
+                    Assert.AreEqual(before, Dump(engine.Decide(v, id)), "explaining does not change the decision");
+                    StringAssert.Contains(id, text); StringAssert.Contains("decided:", text);
+                    PlayerDecision d = engine.Decide(v, id);
+                    StringAssert.Contains(d.Reason.ToString(), text, "the explanation names the very reason the engine gave");
+                    if (v[i].HasBall && !v[i].IsGoalkeeper) { StringAssert.Contains("carrier saw", text); carriers++; } else others++;
+                    if (v[i].Team == TeamSide.Home) StringAssert.Contains("plan:", text);
+                }
+            Assert.Greater(carriers, 5); Assert.Greater(others, 50);
+        }
     }
 }

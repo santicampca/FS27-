@@ -42,6 +42,8 @@ namespace FS27.Core
         /// <summary>Metres the last decision was off the ideal place because of the level's positioning (0 when none).</summary>
         public float LastDrift;
         public BasicDecisionTuning Tuning => t;
+        /// <summary>The goalkeeper tuning of the mode last played (for the explanations).</summary>
+        public GoalkeeperAiTuning KeeperTuning => keeperAi;
         public DefenseTuning DefenseTuning => d;
         /// <summary>The attack without the ball (Phase 10): who does which job, and where each stands (of the mode last played).</summary>
         public AttackSupport Attack => attack;
